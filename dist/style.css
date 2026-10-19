@@ -12,3 +12,10 @@
 @media(max-width:560px){.delta-chip{font-size:11px;padding:6px 9px;gap:8px}.delta-chip b{font-size:12px}.outcome-ledger{margin-top:18px;padding-top:16px}.delta-list{gap:6px}.guide-table th,.guide-table td{padding:10px 8px;font-size:11px}.guide-table tbody th{width:82px}.effect-details summary{padding:8px 0}.sidebar-controls{gap:13px 19px}}
 
 .rules-notice{padding:16px 19px;background:#fff9e9;border:1px solid #f0e4c3;border-radius:12px;margin-bottom:24px}.rules-notice p{font-size:11px;line-height:1.9;color:#89734d}.rules-notice .text-button{font-size:11px;color:#82673d;margin-top:8px}
+
+/* Original animated cast and the offboarding trio. */
+.avatar.portrait-avatar img{object-position:50% 20%;transform:scale(1.2);transform-origin:50% 32%}
+.avatar.avatar-group{width:94px;height:51px;background:transparent;overflow:visible;border-radius:0;justify-content:flex-start;isolation:isolate}
+.avatar-group .avatar{width:38px;height:38px;border:2px solid #fff5f9;box-shadow:0 2px 5px #171c3110}
+.avatar-group .avatar+.avatar{margin-left:-10px}
+@media(max-width:560px){.avatar.avatar-group{width:78px;height:42px}.avatar-group .avatar{width:32px;height:32px}.avatar-group .avatar+.avatar{margin-left:-9px}}
