@@ -43,8 +43,15 @@ export function careerReadiness(run){
  return {target,service,minService,minTurn,ready:(assistant||run.rank<4)&&service>=minService&&run.turn>=minTurn};
 }
 
+// Manual preparation and automatic invitations share a workday cooldown.
+// e9 and older never call these new invitation rules.
+export function careerReviewWait(run){return run.turn-run.lastPromotion>=3&&run.turn>=(run.flags.career_defer_until||0);}
+export function careerInvitationEligible(run){
+ return run.seed.startsWith('e10-')&&run.turn>=3&&run.turn<20&&run.rank<4&&!run.pip?.active&&careerReviewWait(run)&&careerReadiness(run).ready&&getCareerReview(run).choices.slice(0,2).some(choice=>choice.available!==false);
+}
+
 export function getCareerReview(run){
- const assistant=run.assignment==='assistant',target=assistant?0:Math.min(4,run.rank+1),s=run.stats,balanced=run.seed.startsWith('e9-');
+ const assistant=run.assignment==='assistant',target=assistant?0:Math.min(4,run.rank+1),s=run.stats,balanced=/^e(?:9|10)-/.test(run.seed);
  const title=assistant?CAREER_LADDERS[run.actualRoleId][0]:CAREER_LADDERS[run.actualRoleId][target],merit=MERIT[target],politics=POLITICS[target];
  const healthy=(assistant||run.rank<4)&&!run.pip?.active&&s.energy>10&&s.mood>12&&(!balanced||careerReadiness(run).ready);
  const effect=assistant?'careerRegularize':'careerPromote';
@@ -55,6 +62,26 @@ export function getCareerReview(run){
   c('先補帶人的本事，下次帶著準備再來。','你找同事把交付、溝通和帶人的工作逐項補上。這次沒拿新名片，至少不是空著手等下一次評核。',balanced?{skill:5,lick:2,trust:3,mood:-3,energy:-4}:{skill:8,lick:4,trust:3,mood:-3,energy:-3},'careerTrain'),
   c('這次先不升。我想把現在的生活顧好。','你把這次評核留在這裡。少一張新名片，也少接一輪不是自己排進來的責任。',{mood:10,energy:8,slack:6,boss:-3},'careerDefer')
  ]);
+ if(run.seed.startsWith('e10-')){
+  const previous=run.flags.career_last_review_target===target+1?run.flags.career_last_review_result:0;
+  if(!event.choices.slice(0,2).some(choice=>choice.available!==false)){
+   event.title='先整理籌碼，不急著換名片。';
+   event.body=`你目前是${careerTitle(run)}，下一步想談的是${title}。這次先把交付、合作和帶人的紀錄整理好；正式往下一階談，準備和工作經歷都得跟得上。今天可以補強，也可以先回去過自己的日子。`;
+   event.wing='「先證明自己。職稱的事，之後再談。」';
+   if(previous===1)event.body+=' 上次補過的地方先留著，這回挑還沒準備好的部分。';
+   if(previous===2)event.body+=' 上次你說先不要，這次何時再準備，仍由你決定。';
+   if(previous===3)event.body+=' 上次那句「再觀察」沒有替你做事，這回也不用只等他的評語。';
+  }else if(previous===1){
+   event.title='準備過的那份，這次拿出來談。';
+   event.body=`上次你先補交付、合作和帶人的本事，沒有急著換名片。又做了一段時間的${careerTitle(run)}，現在把手上的紀錄攤開，重新談${title}。Wing還是先談責任，你這次沒有只帶著一句「我會努力」。`;
+  }else if(previous===2){
+   event.title='你上次說先不要，這次再問一次。';
+   event.body=`前一次你把升遷擱著，先顧好現在的生活。過了一陣子，${title}又被放上桌。你目前仍是${careerTitle(run)}，這回要往前談，還是照原本的打算走，都可以自己選。`;
+  }else if(previous===3){
+   event.title='再觀察之後，還是你來準備。';
+   event.body=`上回談${title}，Wing用一句「再觀察」收尾。這次你仍是${careerTitle(run)}，多了這段時間實際交付和合作的紀錄。新資料放上桌，他若又要談格局，至少不能說你只帶了上次那一份。`;
+  }
+ }
  if(balanced&&target>=3){event.body+=' 這一階還得等職缺與高層點頭，任期和成果夠了，也不保證這次輪得到你。';event.wing='「坐過那張椅子，不代表下一張就有你的名字。」';}
  return event;
 }

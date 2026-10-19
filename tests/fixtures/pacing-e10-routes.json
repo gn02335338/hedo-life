@@ -1,0 +1,318 @@
+[
+  {
+    "method": "Target-guided natural-action regression route search. Branches examined as a solver; this is not part of observational player probes.",
+    "roleId": "system",
+    "seed": "e10-tail-proof-23",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "copy-master-late",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "attendance-accidental-admin",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-common-fund",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "pm-human-buffer",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "ceo-tea-drop",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "bing-rumor",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "disk-suitcase-cloud",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "kind-workday",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "dp-php-volunteer",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-message-lottery",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "dp-professor-promise",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-fault-friendship",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "career-review",
+        "index": 3
+      },
+      {
+        "type": "choice",
+        "eventId": "video-no-strength",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-phone-wakeup",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-replaces-tests",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "efficiency-network-block",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-meeting-semantics",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "empty-floor-map",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "dinner-budget",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-ranked-architecture",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "finale",
+        "index": 3
+      },
+      {
+        "type": "choice",
+        "eventId": "rank-exit",
+        "index": 0
+      }
+    ],
+    "ending": "career_staff-system"
+  },
+  {
+    "method": "Target-guided natural-action regression route search. Branches examined as a solver; this is not part of observational player probes.",
+    "roleId": "system",
+    "seed": "e10-tail-proof-23",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "copy-master-late",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "attendance-accidental-admin",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-common-fund",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "pm-human-buffer",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "ceo-tea-drop",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "bing-rumor",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "disk-suitcase-cloud",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "kind-workday",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "dp-php-volunteer",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-message-lottery",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "dp-professor-promise",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-fault-friendship",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "career-review",
+        "index": 3
+      },
+      {
+        "type": "choice",
+        "eventId": "video-no-strength",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-phone-wakeup",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-replaces-tests",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "efficiency-network-block",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-meeting-semantics",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "empty-floor-map",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "dinner-budget",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-ranked-architecture",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 0
+      }
+    ],
+    "ending": "pip_exit-system"
+  }
+]

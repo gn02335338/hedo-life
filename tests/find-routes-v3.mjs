@@ -3,9 +3,9 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { ROLES } from '../dist/roles.js';
 import { FAMILIES, ENDINGS } from '../dist/endings.js';
-import { CAREER_FAMILIES, careerEndingAvailable } from '../dist/career.js';
+import { CAREER_FAMILIES, careerEndingAvailable, careerReadiness } from '../dist/career.js';
 import { eligibleStoryEndings } from '../dist/story-career.js';
-import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, validRun } from '../dist/engine.js';
+import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, validRun } from '../dist/engine.js';
 
 export function replayRoute(route, verify = () => {}) {
   let run = createRun(route.roleId, route.seed);
@@ -14,6 +14,7 @@ export function replayRoute(route, verify = () => {}) {
   for (const action of route.actions) {
     if (action.type === 'exit') run = requestExit(run);
     else if (action.type === 'break') run = requestBreak(run);
+    else if (action.type === 'career') run = requestCareer(run);
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
@@ -63,13 +64,14 @@ function utility(run,target) {
 }
 
 export function simulate(roleId,target,attempt) {
-  const seed=`e9-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  const seed=`e10-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[];
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
   const choose=index=>{actions.push({type:'choice',eventId:run.eventId,index});run=advance(applyChoice(run,index));};
   const leave=()=>{actions.push({type:'exit'});run=requestExit(run);};
   const targetRank=CAREER_FAMILIES.indexOf(target);
+  const desiredRank=()=>targetRank>=0?targetRank:target==='consultant'?2:target==='promotion'?Math.max(1,run.rank+((run.flags.promotions||0)>0?0:1)):0;
   const careerTarget=()=>targetRank>=0?(run.assignment!=='assistant'&&((run.rank===targetRank&&careerEndingAvailable(run))||(run.rank>targetRank&&!run.resumeEventId))):eligibleStoryEndings(run).includes(target)?true:target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1&&(run.flags.promotions||0)>0:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
   const effectIndex=effect=>evChoiceIndex(getEvent(run),effect);
   for(let step=0;step<150&&!run.completed;step++) {
@@ -77,6 +79,11 @@ export function simulate(roleId,target,attempt) {
       const menu=requestBreak(run),options=getEvent(menu).choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false&&c.effect==='finishBreak');
       const best=options.map(({i})=>({i,score:utility(applyChoice(menu,i),target)})).sort((a,b)=>b.score-a.score)[0];
       if(best&&best.score>utility(run,target)){actions.push({type:'break'});run=menu;choose(best.i);continue;}
+    }
+    if(canRequestCareer(run)&&target!=='assistant'&&(run.rank<desiredRank()||(run.assignment==='assistant'&&desiredRank()>0))){
+      const targetLevel=run.assignment==='assistant'?0:run.rank+1;
+      const skillNeed=[50,55,65,75,82][targetLevel],bossNeed=[35,40,45,50,60][targetLevel],trustNeed=[30,35,45,50,60][targetLevel];
+      if(careerReadiness(run).ready||run.stats.skill<skillNeed||run.stats.trust<trustNeed||run.stats.boss<bossNeed){actions.push({type:'career'});run=requestCareer(run);continue;}
     }
     const ev=getEvent(run);
     if(target==='ragequit'&&run.eventId==='onboarding'){choose(2);continue;}
@@ -113,7 +120,7 @@ export function simulate(roleId,target,attempt) {
       choose(1);continue;
     }
     if(run.eventId==='paperwork'){
-      choose(target==='fired_refused'?0:target==='layoff'?1:2);continue;
+      choose(target==='fired_refused'?0:target==='layoff'||ev.choices[2].available===false?1:2);continue;
     }
     if(run.eventId==='pip-review'){
       if(target==='pip_fail'){choose(2);continue;}
@@ -133,8 +140,8 @@ export function simulate(roleId,target,attempt) {
       choose(pass>=0&&target!=='assistant'?pass:2);continue;
     }
     if(run.eventId==='career-review'){
-      const desiredRank=targetRank>=0?targetRank:target==='consultant'?2:target==='promotion'?Math.max(1,run.rank+((run.flags.promotions||0)>0?0:1)):0;
-      const needsPromotion=target!=='assistant'&&(run.assignment==='assistant'?desiredRank>0:run.rank<desiredRank);
+      const desired=desiredRank();
+      const needsPromotion=target!=='assistant'&&(run.assignment==='assistant'?desired>0:run.rank<desired);
       const pass=ev.choices.findIndex((c,i)=>c.available!==false&&c.check&&['careerPromote','careerRegularize'].includes(applyChoice(run,i).pendingEffect));
       if(needsPromotion&&pass>=0){choose(pass);continue;}
       const candidates=needsPromotion?[2,3]:[3,2];
@@ -179,7 +186,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   }
   const hash=name=>createHash('sha256').update(readFileSync(new URL(`../dist/${name}.js`,import.meta.url))).digest('hex');
   return {
-    method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
+    method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
     sourceSha256:Object.fromEntries(['engine','roles','education','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,

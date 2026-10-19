@@ -165,8 +165,8 @@ for(const mode of ['accept','decline','poor']){
 
 // Use natural, published witnesses for new top-rank, voluntary step-down, and story exits.
 const careerRoutes=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8')).routes;
-for(const ending of ['career_staff-system','career_deputy-system','career_manager-system','career_director-system','career_chief-system','career_staff-executive','second_offer-system']){
-  const route=careerRoutes.find(row=>row.ending===ending);assert.ok(route,`expected current witness ${ending}`);assert.ok(route.seed.startsWith('e9-'));
+for(const ending of ['career_staff-system','career_deputy-system','career_manager-system','career_director-system','career_chief-system','career_staff-executive','second_offer-system','pip_exit-system']){
+  const route=careerRoutes.find(row=>row.ending===ending);assert.ok(route,`expected current witness ${ending}`);assert.ok(route.seed.startsWith('e10-'));
   const completedRun=replayRun(route.roleId,route.seed,route.actions);assert.equal(completedRun.endingId,ending);
   if(ending==='career_chief-system')assert.equal(completedRun.rank,4);
   if(ending==='career_staff-executive')assert.ok(route.actions.some(action=>action.eventId==='career-step-down'));
@@ -180,6 +180,26 @@ for(const ending of ['career_staff-system','career_deputy-system','career_manage
   const forged={...payload,runId:randomUUID(),actions:route.actions.map((action,index)=>index===route.actions.length-1?{...action,index:12}:action)};
   status(await call('/api/complete',{method:'POST',auth:careerToken,body:forged}),400);
 }
+
+// An explicit career request is replayed, rather than trusted as a client-side jump.
+const manualRoute=careerRoutes.find(route=>route.actions.some(action=>action.type==='career'));
+assert.ok(manualRoute,'expected a natural e10 manual-review witness');
+const manualToken=token();status(await call('/api/player',{method:'POST',body:{token:manualToken}}),200);
+const manualPayload={runId:randomUUID(),roleId:manualRoute.roleId,seed:manualRoute.seed,actions:manualRoute.actions};
+const manualSaved=await call('/api/complete',{method:'POST',auth:manualToken,body:manualPayload});status(manualSaved,200);assert.equal(manualSaved.body.endingId,manualRoute.ending);
+status(await call('/api/complete',{method:'POST',auth:manualToken,body:{...manualPayload,runId:randomUUID(),actions:[{type:'career'},...manualRoute.actions]}}),400);
+const repeatedCareer=structuredClone(manualRoute.actions),careerAt=repeatedCareer.findIndex(action=>action.type==='career');repeatedCareer.splice(careerAt,0,{type:'career'});
+status(await call('/api/complete',{method:'POST',auth:manualToken,body:{...manualPayload,runId:randomUUID(),actions:repeatedCareer}}),400);
+
+// Target-searched regression fixture, not evidence about how often players see PIP.
+const tailPipRoute=JSON.parse(readFileSync(new URL('../tests/fixtures/pacing-e10-routes.json',import.meta.url),'utf8'))[0];
+const tailPipRun=replayRun(tailPipRoute.roleId,tailPipRoute.seed,tailPipRoute.actions);
+assert.equal(tailPipRun.turn,23);assert.equal(tailPipRun.endingId,tailPipRoute.ending);assert.equal(tailPipRun.pipCount,1);
+assert.deepEqual(tailPipRun.history.filter(history=>history.kind==='fantasy').map(history=>history.turn),[20,21,22,23]);
+assert.equal(tailPipRun.pip,null);
+const tailToken=token();status(await call('/api/player',{method:'POST',body:{token:tailToken}}),200);
+const tailSaved=await call('/api/complete',{method:'POST',auth:tailToken,body:{runId:randomUUID(),roleId:tailPipRoute.roleId,seed:tailPipRoute.seed,actions:tailPipRoute.actions}});
+status(tailSaved,200);assert.equal(tailSaved.body.endingId,tailPipRoute.ending);
 const legacyRoute=JSON.parse(readFileSync(new URL('../tests/fixtures/legacy-e7-routes.json',import.meta.url),'utf8'))[0];
 const legacyToken=token();status(await call('/api/player',{method:'POST',body:{token:legacyToken}}),200);
 const legacySaved=await call('/api/complete',{method:'POST',auth:legacyToken,body:{runId:randomUUID(),roleId:legacyRoute.roleId,seed:legacyRoute.seed,actions:legacyRoute.actions}});
@@ -190,10 +210,15 @@ const legacyCareerToken=token();status(await call('/api/player',{method:'POST',b
 const legacyCareerSaved=await call('/api/complete',{method:'POST',auth:legacyCareerToken,body:{runId:randomUUID(),roleId:legacyCareerRoute.roleId,seed:legacyCareerRoute.seed,actions:legacyCareerRoute.actions}});
 status(legacyCareerSaved,200);assert.equal(legacyCareerSaved.body.endingId,legacyCareerRoute.ending);
 
+const legacyBalancedRoute=JSON.parse(readFileSync(new URL('../tests/fixtures/legacy-e9-routes.json',import.meta.url),'utf8')).find(route=>route.ending==='career_chief-system');
+const legacyBalancedToken=token();status(await call('/api/player',{method:'POST',body:{token:legacyBalancedToken}}),200);
+const legacyBalancedSaved=await call('/api/complete',{method:'POST',auth:legacyBalancedToken,body:{runId:randomUUID(),roleId:legacyBalancedRoute.roleId,seed:legacyBalancedRoute.seed,actions:legacyBalancedRoute.actions}});
+status(legacyBalancedSaved,200);assert.equal(legacyBalancedSaved.body.endingId,legacyBalancedRoute.ending);
+
 const rateToken = token();
 status(await call('/api/player', { method: 'POST', body: { token: rateToken } }), 200);
 for (let i = 0; i < 9; i++) status(await call('/api/me', { auth: rateToken }), 200);
 const limited = await call('/api/me', { auth: rateToken }); status(limited, 429); assert.equal(limited.headers.get('Retry-After'), '10');
 status(await call('/api/does-not-exist'), 404);
 status(await call('/api/player'), 405);
-console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, legacy/e6 self-care, e7 automatic Kind invitations and legacy queued completion, e9 balanced chief/step-down/story endings and statistics plus legacy e8 queued completion, tamper rejection, rate guard.');
+console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, legacy/e6 self-care, e7 automatic Kind invitations, e10 chief/step-down/story/PIP endings and manual career actions, legacy e7/e8/e9 queued completions, tamper rejection, rate guard.');

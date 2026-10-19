@@ -52,7 +52,14 @@ test('self-care action is accepted only for new-rule seeds and still requires re
   const workday={...body,seed:'e7-api-self-care'};assert.deepEqual(validateCompletion(workday,{ai:{}}),workday);
   const career={...body,seed:'e8-api-self-care'};assert.deepEqual(validateCompletion(career,{ai:{}}),career);
   const balanced={...body,seed:'e9-api-self-care'};assert.deepEqual(validateCompletion(balanced,{ai:{}}),balanced);
+  const paced={...body,seed:'e10-api-self-care'};assert.deepEqual(validateCompletion(paced,{ai:{}}),paced);
   for(const seed of ['api-test','e1-api-self-care']) assert.throws(()=>validateCompletion({...body,seed},{ai:{}}), error=>error.status===400);
+});
+
+test('manual career action is an e10-only envelope action whose timing is checked by replay',()=>{
+  const body={...validBody,seed:'e10-api-career',actions:[{type:'career'}]};
+  assert.deepEqual(validateCompletion(body,{ai:{}}),body);
+  for(const seed of ['api-test','e1-api-career','e8-api-career','e9-api-career'])assert.throws(()=>validateCompletion({...body,seed},{ai:{}}),error=>error.status===400);
 });
 
 test('rate guard allows ten per player per ten seconds and resets', () => {
