@@ -7,6 +7,8 @@ export const MAX_TURNS = 24;
 export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'老闆心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
+// Only prefixed new runs opt into the occasional chat. Published v3 seeds retain their original scheduling and RNG consumption.
+const occasionalEducation = run => run.seed.startsWith('e1-');
 const hash = value => {let h=2166136261;for(const c of String(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0||1;};
 function roll(run){let x=run.rng;x^=x<<13;x^=x>>>17;x^=x<<5;run.rng=x>>>0||1;return run.rng/4294967296;}
 function flag(run,name,n=1){run.flags[name]=(run.flags[name]||0)+n;}
@@ -37,15 +39,19 @@ export function getEvent(run){
  if(!run||run.completed)return null;
  const role=ROLE_MAP[run.roleId],actual=ROLE_MAP[run.actualRoleId],s=run.stats,f=run.flags;
  switch(run.eventId){
- case 'onboarding':return e('onboarding','錄取通知是真的，職稱另議。',run.assignment==='honest'?`你應徵${role.name}，門禁卡也寫${role.name}。你剛鬆一口氣，Wing補一句：「工作內容本來就要有彈性。」桌上那張JD，從這刻開始具有文學價值。`:run.assignment==='swapped'?`你應徵的是${role.name}，今天的實際工作卻是${actual.name}。${run.roleId==='ai'?'模型沒看到，CRUD與資料庫密碼倒是給得很齊。AI的A，原來是Anything。':'面試聊的專業，報到當天變成「你應該也會吧」。'}Wing把這叫跨領域，你把這叫掛羊頭賣狗肉。`:`你應徵${role.name}，實際拿到的卻是${actual.assistantTitle}任務。今天先訂便當、整理Excel、幫忙貼發票；你的專業等公司上市後再說。連遊戲月薪都從${run.offerPay}K縮成${run.pay}K。`,'「職稱只是名字，你不要把自己的格局做小了。」',[
+ case 'onboarding':{
+ const unchanged=run.assignment==='honest';
+ const title=unchanged?'職稱沒改，工作另議。':'錄取通知是真的，職稱另議。';
+ const body=unchanged?`你應徵的是「${role.name}」，報到後的實際職稱也是「${jobTitle(run)}」；這次沒有被改派。你剛鬆一口氣，Wing補一句：「工作內容本來就要有彈性。」職稱保住了，桌上那張JD卻從這刻開始具有文學價值。`:run.assignment==='swapped'?`你應徵的是「${role.name}」，報到時卻被改派為「${jobTitle(run)}」；這就是你現在的實際職稱。${run.roleId==='ai'?'模型沒看到，CRUD與資料庫密碼倒是給得很齊。AI的A，原來是Anything。':'面試聊的專業，報到當天變成「你應該也會吧」。'}Wing把這叫跨領域，你把這叫掛羊頭賣狗肉。`:`你應徵的是「${role.name}」，報到時的實際職稱卻被改成「${jobTitle(run)}」。不是暫時幫忙，是直接用助理職稱任用。今天先訂便當、整理Excel、幫忙貼發票；你的專業等公司上市後再說。連遊戲月薪都從${run.offerPay}K縮成${run.pay}K。`;
+ return e('onboarding',title,body,'「職稱只是名字，你不要把自己的格局做小了。」',[
  c('先坐下。房租不接受我的尊嚴付款。','接受目前分工，開始累積能力。','你坐進座位。桌子沒有名字，鍋倒是已經幫你訂製好了。',{mood:-5,skill:5,cash:5},null,['endure']),
- skillChoice(run,'拿錄取信，把工作範圍問清楚。',`協商條件：工作能力 ≥ 65（目前 ${s.skill}）`,s.skill>=65,'你把差異逐項攤開。這次換回原職務，代價是Wing記住了你「很有想法」。','你問得很具體，他回得很宏觀。職務沒換回來，卻先拿到一個「不好帶」的評語。','restoreJob',{boss:-14,mood:8},{boss:-20,mood:-8}),
+ skillChoice(run,'拿錄取信，把工作範圍問清楚。',`協商條件：工作能力 ≥ 65（目前 ${s.skill}）`,s.skill>=65,unchanged?'你拿錄取信逐項確認工作範圍。職稱維持不變，Wing倒是記住了你「很有想法」。':'你把差異逐項攤開，這次談回了錄取時的職務。代價是Wing記住了你「很有想法」。',unchanged?'你問得很具體，他回得很宏觀。職稱沒變，工作範圍也沒講清楚，卻先拿到一個「不好帶」的評語。':'你問得很具體，他回得很宏觀。職務沒換回來，卻先拿到一個「不好帶」的評語。','restoreJob',{boss:-14,mood:8},{boss:-20,mood:-8}),
  c('蛤？那我先走，這份JD留給平行宇宙。','第一天也可以直接結局。','椅子還沒坐熱，你已經完成離職交接：把門關上。',{mood:20},'ragequit')
- ],'onboarding');
+ ],'onboarding');}
  case 'education-review':{
  const ed=run.education;
- const reaction=ed.schoolId==='ntu'&&ed.degree!=='EMBA'&&ed.field==='stem'?'Wing看到「臺灣大學」，語氣忽然像更新到另一個版本。你的工作還沒開始做，他已經替你加了一段前途。':ed.degree==='EMBA'?'Wing把目光停在EMBA：「我說的讀書，不是你以為的那種讀書。」你發現同一張文憑，可以依照他的心情改變單位。':['humanities','business'].includes(ed.field)?'Wing掃過系所名稱：「你這個背景，平常到底有沒有在讀書？」你想說讀完才有這張畢業證書，但他的問題顯然不接受字面回答。':ed.sector==='private'?'Wing看見校名，先露出一個很會讓人理解的表情，再問你最近讀了什麼書。你開始懷疑這裡的書，封面是不是都要印同一間大學。':'Wing看完履歷：「學歷不能代表什麼，重點是你有沒有一直讀書。」下一秒，他又問起別人的學校。';
- return e('education-review','履歷讀到哪裡，全看他今天。',`你的履歷寫著「${educationLabel(ed)}」。${reaction}`,'「不要只會做事。人不讀書，格局就會卡在那裡。」',[
+ const reaction=ed.schoolId==='ntu'&&ed.degree!=='EMBA'&&ed.field==='stem'?'Wing一聽到「臺灣大學」，笑容突然多了一層認證：「台大的喔？那應該很會讀書。」同一張椅子上的你，前途忽然被重新估價。':ed.degree==='EMBA'?'聽到EMBA，Wing笑著補一句：「我說的讀書，不是你以為的那種讀書。」你發現同一張文憑，可以依照他的心情改變單位。':['humanities','business'].includes(ed.field)?'你才講完科系，Wing就接話：「你這個背景，平常到底有沒有在讀書？」你想說讀完才有畢業證書，但他的問題顯然不接受字面回答。':ed.sector==='private'?'校名一說出口，Wing先露出一個很會讓人理解的表情，再問你最近讀了什麼書。你開始懷疑這裡的書，封面是不是都要印同一間大學。':'Wing聽完點點頭：「學歷不能代表什麼，重點是你有沒有一直讀書。」下一秒，他又問起別人的學校。';
+ return e('education-review','一個看起來很普通的問題。',`工作聊到一半，Wing忽然笑著問：「你哪裡畢業的？」語氣很像普通閒聊。你照實回答：「${educationLabel(ed)}。」${reaction}`,'「不要只會做事。人不讀書，格局就會卡在那裡。」',[
  c('先聽著，回去把真正需要的知識補上。','','你翻開的是技術文件。他要的是哪本書，你決定暫時不要通靈。',{skill:7,boss:3,mood:-4},'educationDone'),
  c('書有讀。也想知道這件事跟交付有什麼關係。','','問題很合理，會議很安靜。Wing說你太愛辯，你把這句話記在讀書筆記旁邊。',{mood:9,boss:-15,trust:5},'educationDone',['evidence']),
  c('您推薦的那本，我已經放進待讀清單了。','','清單有建立，書不一定有買。Wing點點頭，這場讀書會暫時驗收了語氣。',{lick:7,boss:10,slack:3,dream:-4},'educationDone')
@@ -181,6 +187,7 @@ export function applyChoice(run,index){
  if(!family&&next.stats.cash<=0)family='broke';
  if(!family&&next.stats.energy<=0)family='burnout';
  if(!family&&choice.flags?.some(x=>['final_global','final_taiwan','final_acquire'].includes(x))){const goal=choice.flags.includes('final_global')?'nasdaq':choice.flags.includes('final_taiwan')?'taiwan':'acquired';if(endingEligibility(next,goal))family=goal;else effect='shortfall';}
+ if(event.id==='onboarding'&&index<2)result+=` 目前實際職稱：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
  next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay});
  next.pending=true;next.pendingEffect=effect;next.pendingFamily=family;return next;
 }
@@ -200,14 +207,15 @@ export function advance(run){
  if(['return','resume','finishPip','startPip','promote','declinePromotion','educationDone','salaryAccept','salaryRescind'].includes(effect)&&next.resumeEventId){next.eventId=next.resumeEventId;next.resumeEventId=null;}else if(normal)next.eventId=nextNormal(next);
  else if(last.kind==='career'||last.kind==='crisis'){next.eventId=next.resumeEventId||nextNormal(next);next.resumeEventId=null;}
  if(effect==='return')return next;
- if(normal&&!next.educationReviewed){next.resumeEventId=next.eventId;next.eventId='education-review';return next;}
+ if(normal&&!occasionalEducation(next)&&!next.educationReviewed){next.resumeEventId=next.eventId;next.eventId='education-review';return next;}
  if(next.pip?.active&&next.pip.remaining===0){next.resumeEventId=next.eventId;next.eventId='pip-review';return next;}
  if(next.stats.mood<=12&&next.eventId!=='crisis-mood'){next.resumeEventId=next.eventId;next.eventId='crisis-mood';return next;}
  if(next.stats.boss<=12&&!next.pip?.active&&next.crisisCooldown===0){next.resumeEventId=next.eventId;next.eventId='crisis-boss';return next;}
  if(normal&&!next.pip?.active&&!next.salaryCutOffered&&next.turn>=5&&next.turn<18&&next.stats.boss<55&&roll(next)<.3){
   const percent=15+Math.floor(roll(next)*21);next.salaryCutOffered=true;next.salaryCut={percent,from:next.pay,to:Math.max(20,Math.round(next.pay*(1-percent/100))),status:'pending'};next.resumeEventId=next.eventId;next.eventId='salary-cut';return next;
  }
- if(normal&&!next.pip?.active&&next.turn<20&&next.turn-next.lastPromotion>=4&&(next.turn%6===0||next.stats.boss>=90)&&(next.rank<4)) {next.resumeEventId=next.eventId;next.eventId='promotion-review';}
+ if(normal&&!next.pip?.active&&next.turn<20&&next.turn-next.lastPromotion>=4&&(next.turn%6===0||next.stats.boss>=90)&&(next.rank<4)) {next.resumeEventId=next.eventId;next.eventId='promotion-review';return next;}
+ if(normal&&occasionalEducation(next)&&!next.educationReviewed&&next.turn>=5&&next.turn<=16&&!next.pip&&!next.resumeEventId&&!next.exitReturnEventId&&getEvent(next)?.kind==='daily'&&roll(next)<.1){next.resumeEventId=next.eventId;next.eventId='education-review';}
  return next;
 }
 export function requestExit(run){if(!run||run.pending||run.completed)return run;if(['exit-menu','career-exit'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}

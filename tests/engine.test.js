@@ -122,6 +122,57 @@ test('pending consequences prevent duplicate choices; replay records choices and
  for(const index of [-1,99,.2,NaN])assert.throws(()=>applyChoice(first,index),/Unavailable/);
 });
 
+test('published v3 seeds preserve the original education timing and completed replay results',()=>{
+ const old=createRun('system','published-v3-seed');
+ assert.equal(choose(old,0).eventId,'education-review');
+ assert.equal(validRun(copy(old)),true);
+ const fixtures=JSON.parse(readFileSync(new URL('./fixtures/legacy-v3-routes.json',import.meta.url),'utf8'));
+ for(const fixture of fixtures){
+  assert.equal(fixture.seed.startsWith('e1-'),false);
+  const run=replayRun(fixture.roleId,fixture.seed,fixture.actions);
+  assert.equal(run.endingId,fixture.ending);assert.equal(run.turn,fixture.turns);assert.equal(run.rank,fixture.rank);assert.deepEqual(run.stats,fixture.stats);assert.equal(validRun(copy(run)),true);
+ }
+});
+
+test('new prefixed runs have an occasional mid-career education chat without spoiling its question order',()=>{
+ const daily=(seed,turn,extras={})=>{const r=createRun('system',seed);return {...r,eventId:EVENTS[0].id,rank:4,turn,salaryCutOffered:true,stats:{...r.stats,boss:70,mood:90,energy:90,cash:90},...extras};};
+ let count=0,sample=null;
+ for(let i=0;i<1000;i++){
+  const seed=`e1-education-${i}`,first=createRun('system',seed);
+  assert.notEqual(choose(first,0).eventId,'education-review');
+  const middle=choose(daily(seed,6),0);
+  if(middle.eventId==='education-review'){count++;sample=middle;}
+ }
+ assert.ok(count>30&&count<200,`${count}/1000 eligible mid-career chats`);
+ for(const turn of [0,1,2,3,16,17,18,19])for(let i=0;i<20;i++){
+  const before=daily(`e1-window-${i}`,turn),eligible=choose(before,0),suppressed=choose({...before,educationReviewed:true},0);
+  assert.notEqual(eligible.eventId,'education-review');assert.equal(eligible.rng,suppressed.rng,'No education RNG draw outside its window');
+ }
+ const event=getEvent(sample),question=event.body.indexOf('你哪裡畢業的？'),answer=event.body.indexOf('你照實回答');
+ assert.ok(question>=0&&answer>question);assert.ok(event.body.includes(sample.education.school));assert.ok(event.body.includes(sample.education.department));
+ assert.doesNotMatch(event.body,/履歷|掃過|翻閱|看見校名/);
+ const resumed=choose(sample,0);assert.equal(resumed.eventId,sample.resumeEventId);assert.equal(resumed.turn,sample.turn);assert.equal(resumed.educationReviewed,true);assert.equal(validRun(copy(resumed)),true);
+ for(let i=0;i<50;i++)assert.notEqual(choose(daily(`e1-repeat-${i}`,8,{educationReviewed:true}),0).eventId,'education-review');
+});
+
+test('new education scheduling never interrupts PIP, promotion, salary negotiation, or exit overlays',()=>{
+ for(let i=0;i<80;i++){
+  const r=createRun('system',`e1-priority-${i}`),normal={...r,eventId:EVENTS[0].id,turn:5,salaryCutOffered:true,stats:{...r.stats,boss:70,mood:90,energy:90,cash:90}};
+  const duringPip={...normal,pip:{active:true,remaining:2},pipCount:1};
+  const pip=choose(duringPip,0),pipControl=choose({...duringPip,educationReviewed:true},0);
+  assert.notEqual(pip.eventId,'education-review');assert.equal(pip.pip.remaining,1);assert.equal(pip.rng,pipControl.rng);
+  const promotion=choose(normal,0),promotionControl=choose({...normal,educationReviewed:true},0);
+  assert.equal(promotion.eventId,'promotion-review');assert.equal(promotion.rng,promotionControl.rng);
+ }
+ const salaryCut={percent:20,from:60,to:48,status:'pending'};
+ for(const eventId of ['education-review','promotion-review','pip-review','salary-cut','salary-final']){
+  const r=createRun('system',`e1-overlay-${eventId}`),state={...r,eventId,turn:7,resumeEventId:EVENTS[0].id,salaryCut};
+  const back=choose(requestExit(state),2);assert.equal(back.eventId,eventId);assert.equal(back.resumeEventId,EVENTS[0].id);assert.equal(back.rng,state.rng);
+ }
+ const r=createRun('system','e1-salary-return'),salary={...r,eventId:'salary-cut',turn:7,resumeEventId:EVENTS[0].id,salaryCut,salaryCutOffered:true,stats:{...r.stats,boss:70,mood:90}};
+ const resumed=choose(salary,0);assert.equal(resumed.eventId,EVENTS[0].id);assert.equal(resumed.educationReviewed,false);
+});
+
 test('boss crisis uses the exit team and preserves signed/refused/no-PIP departures',()=>{
  const crisis=choose(boundary('system','onboarding',{boss:0,mood:70}),0);assert.equal(crisis.eventId,'crisis-boss');assert.equal(getEvent(crisis).speaker,'exit-team');
  assert.equal(choose(crisis,0).endingId,'fired_signed-system');

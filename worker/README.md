@@ -14,6 +14,8 @@ Cloudflare Workers serves `dist/` as Static Assets and routes `/api/*` to the Wo
 
 `runId` must be a UUID. `seed` is 1–32 characters. `actions` is at most 160 entries from the engine's `run.actions`: `{type:'choice',eventId,index}` or `{type:'exit'}`. The server calls `replayRun(roleId,seed,actions)` and accepts only a completed run. Client-supplied endings and scores are ignored. Reusing a committed run ID by its player returns the existing record without increasing counts; a different player receives HTTP 409.
 
+New browser runs use an `e1-` seed prefix to select the mid-career, optional education conversation. Existing unprefixed v3 seeds retain their original event scheduling and random-number sequence, so saved games and queued completions can still be replayed. Preserve the complete seed, including its prefix; the maximum length remains 32 characters.
+
 The bearer token is the anonymous player's recovery credential. The browser should create it with cryptographically secure randomness, keep it locally, and send it only to this origin. The database stores its SHA-256 hash, never the token itself. Clearing local browser data loses access unless the player has retained that token elsewhere; there is no name, email, password, or cross-device account.
 
 ## Stored data and limits

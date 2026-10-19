@@ -1,0 +1,237 @@
+[
+  {
+    "roleId": "system",
+    "seed": "qa-system-pip_exit-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "education-review",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "blame-debate",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-bali-roadmap",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "telepathy-spec",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "system-printer",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 0
+      }
+    ],
+    "ending": "pip_exit-system",
+    "turns": 5,
+    "stats": {
+      "energy": 58,
+      "cash": 65,
+      "trust": 61,
+      "dream": 48,
+      "boss": 30,
+      "mood": 100,
+      "skill": 77,
+      "slack": 48,
+      "lick": 94
+    },
+    "rank": 0
+  },
+  {
+    "roleId": "ai",
+    "seed": "qa-ai-nasdaq-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "education-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "bing-rumor",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ceo-tea-drop",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "bell-before-product",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "dinner-budget",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "free-test-project",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "system-backup",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "system-printer",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "telepathy-spec",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-menu-freedom",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "blame-debate",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "cloud-attachment",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-bali-roadmap",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "slack-seven-lives",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-crud",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "copy-master-late",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "frozen-third-floor",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "system-weekend",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "hope-care-spreadsheet",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "askonly-unasked",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "finale",
+        "index": 0
+      }
+    ],
+    "ending": "nasdaq-ai",
+    "turns": 23,
+    "stats": {
+      "energy": 22,
+      "cash": 73,
+      "trust": 100,
+      "dream": 87,
+      "boss": 29,
+      "mood": 95,
+      "skill": 100,
+      "slack": 96,
+      "lick": 100
+    },
+    "rank": 3
+  }
+]
