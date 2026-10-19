@@ -7,8 +7,9 @@ export const MAX_TURNS = 24;
 export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'老闆心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
-// Only prefixed new runs opt into the occasional chat. Published v3 seeds retain their original scheduling and RNG consumption.
-const occasionalEducation = run => run.seed.startsWith('e1-');
+// Rule prefixes keep published seeds and queued completions on their original deterministic path.
+const rules2 = run => run.seed.startsWith('e2-');
+const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 const hash = value => {let h=2166136261;for(const c of String(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0||1;};
 function roll(run){let x=run.rng;x^=x<<13;x^=x>>>17;x^=x<<5;run.rng=x>>>0||1;return run.rng/4294967296;}
 function flag(run,name,n=1){run.flags[name]=(run.flags[name]||0)+n;}
@@ -19,6 +20,7 @@ export function bossLabel(n){return n<=12?'準備找你談談':n<30?'看誰都�
 export function createRun(roleId,seed=Date.now()){
  const role=ROLE_MAP[roleId];if(!role)throw new Error('Unknown role');
  const run={version:VERSION,seed:String(seed).slice(0,32),rng:hash(String(seed).slice(0,32)),roleId,actualRoleId:roleId,assignment:'honest',rank:0,pay:role.pay,offerPay:role.pay,basePay:role.pay,stats:{...role.stats},abilityDice:{},education:null,educationReviewed:false,salaryCutOffered:false,salaryCut:null,actions:[],flags:{},turn:0,eventId:'onboarding',seen:[],history:[],pending:false,completed:false,endingId:null,pendingEffect:null,pendingFamily:null,pip:null,pipCount:0,lastPromotion:-5,crisisCooldown:0,resumeEventId:null,exitReturnEventId:null,lastWeather:null};
+ if(rules2(run)){run.lastBreakTurn=-1;run.breakReturnEventId=null;}
  for(const key of ['skill','slack','lick']){const dice=Array.from({length:3},()=>1+Math.floor(roll(run)*6));run.abilityDice[key]=dice;run.stats[key]=25+(dice.reduce((a,b)=>a+b,0)-3)*4;}
  run.education=rollEducation(()=>roll(run));run.stats.boss=clamp(run.stats.boss+run.education.wingBias);
  run.offerPay=role.payRange[0]+Math.floor(roll(run)*(role.payRange[1]-role.payRange[0]+1));run.pay=run.offerPay;run.basePay=run.offerPay;
@@ -37,7 +39,7 @@ function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta
 }
 export function getEvent(run){
  if(!run||run.completed)return null;
- const role=ROLE_MAP[run.roleId],actual=ROLE_MAP[run.actualRoleId],s=run.stats,f=run.flags;
+ const role=ROLE_MAP[run.roleId],actual=ROLE_MAP[run.actualRoleId],s=run.stats,f=run.flags,modern=rules2(run);
  switch(run.eventId){
  case 'onboarding':{
  const unchanged=run.assignment==='honest';
@@ -72,16 +74,16 @@ export function getEvent(run){
  case 'crisis-boss':return e('crisis-boss','老闆心情見底。你的門禁也是。','Wing沒有出現。法務長Erich、行政長JenJen和MIS Sonny在會議室等你：一位翻文件，一位確認交接，一位等著收帳號。口頭上是公司叫你走，推來的表格卻寫「自願離職」。','「你簽一下，大家好聚好散。這是為你好。」',[
  c('算了，簽下去。只想趕快離開。','被開除／簽自願離職路線。','你簽了。系統的最後一行不是「被叫走」，是「個人生涯規劃」。',{},'fired_signed'),
  c('不簽。先把這到底算什麼講清楚。','進入書面離場分支，可走未經PIP資遣。','Erich說公司已經很有誠意，JenJen把表格往前推，Sonny看了一眼時間。你第一次覺得，慢一點也有用。',{boss:-3,mood:4},'paperwork',['evidence']),
- c('不是說績效？那就把PIP目標寫下來。','進入3個工作回合的PIP，不保證過關。','Hope寄來改善計畫。Wing沒有抄送你，只把意見交給HR長轉述。目標看似三項，真正那項叫「改善他對你的看法」。',{boss:35,mood:-8},'startPip',['evidence'])
+ c('不是說績效？那就把PIP目標寫下來。','進入3個工作回合的PIP，不保證過關。','Hope寄來改善計畫。Wing沒有抄送你，只把意見交給HR長轉述。目標看似三項，真正那項叫「改善他對你的看法」。',{boss:modern?0:35,mood:-8},'startPip',['evidence'])
  ]);
  case 'paperwork':return e('paperwork','同一個離場，三種公司說法。','自願離職書沒有簽成，三件套開始輪流解釋。Erich談文字，JenJen談時間，Sonny問筆電在哪裡。Wing仍然不在場，大家卻都能精準代言他的心情。','「程序不用搞那麼複雜吧？你是不是不信任公司？」',[
  c('拒簽到底，把來回紀錄留好。','開除／拒簽自願離職結局。','你帶走的是書面往來與自己的版本。故事沒有被那張空白表格全部改寫。',{mood:12},'fired_refused',['evidence']),
  c('既然說組織調整，就照資遣名義離場。','未走PIP的資遣結局。','這一局沒有改善期，也沒有準備演出。上一封信還在催進度，下一封已經要你交接。',{},'layoff'),
- c('願意做PIP，但目標和期限先寫清楚。','改走有PIP的支線；3回合後評核。','Hope接手主持PIP，交給你一張自評表。現在，工作除了原本的工作，還多了一份證明自己有在工作的工作。',{boss:35,mood:-5},'startPip',['evidence'])
+ c('願意做PIP，但目標和期限先寫清楚。','改走有PIP的支線；3回合後評核。','Hope接手主持PIP，交給你一張自評表。現在，工作除了原本的工作，還多了一份證明自己有在工作的工作。',{boss:modern?0:35,mood:-5},'startPip',['evidence'])
  ]);
  case 'crisis-mood':return e('crisis-mood','你的心情，已讀不回。','訊息通知再響一次，你開始認真研究窗外的天空。體力還能撐，心情已經把離職信寫到第三版。今天還要不要演「我很好」？','「這點壓力都受不了，以後怎麼跟我敲鐘？」',[
  c('幹，我不幹了。','自己受不了離職，現在就結局。','你第一次沒有替老闆的句子找台階。他的夢想留在群組，你的人生先下線。',{mood:30},'ragequit'),
- c('花一點存款，休息到能分清自己和工作。','存款 −12，心情 +38，體力 +20。','你把通知關掉。休息不是他的恩惠，是你替自己留下的操作空間。',{cash:-12,mood:38,energy:20},'resume'),
+ {...c('花一點存款，休息到能分清自己和工作。','存款 −12，心情 +38，體力 +20。','你把通知關掉。休息不是他的恩惠，是你替自己留下的操作空間。',{cash:-12,mood:38,energy:20},'resume'),...(modern?{available:s.cash>=12}:{})},
  c('先開省電模式。這個薪水，配這個演技。','練習偷懶，降低投入；仍會惹老闆不爽。','你把「正在處理」設成快捷鍵。不是事情做不完，是情緒不能再免費供應。',{mood:24,slack:15,boss:-5,dream:-12},'resume')
  ]);
  case 'pip-review':{
@@ -93,8 +95,8 @@ export function getEvent(run){
  ]);}
  case 'pip-passed':return e('pip-passed','PIP過了。恭喜，你還在禾多。','Hope寄來通過通知，只有一行。接下來是冷臉、跳過你的會議邀請，以及照樣準時出現的工作單。Wing沒有參加任何一場PIP，卻沒有漏掉任何一次不滿。','「讓你過，不代表我滿意。你自己要有自覺。」',[
  c('過關是證明，離開是決定。','PIP過關後主動離職結局。','你用成果證明能做，再用離職證明可以不做。這兩件事完全不衝突。',{mood:25},'pip_exit'),
- c('留下，但把每件事寫進紀錄。','繼續遊戲；重設怒氣警報。','你把感謝詞刪掉，留下日期、要求和交付。檔案夾開始長得像小型史冊。',{boss:45,mood:24,energy:12},'finishPip',['archive','evidence']),
- c('留下，順便學會什麼時候該裝忙。','繼續遊戲，強化偷懶與討好。','你有了兩份工作：一份解決問題，一份解決老闆看到問題時的心情。',{boss:50,mood:20,slack:15,lick:15},'finishPip')
+ c('留下，但把每件事寫進紀錄。','繼續遊戲；重設怒氣警報。','你把感謝詞刪掉，留下日期、要求和交付。檔案夾開始長得像小型史冊。',{boss:modern?0:45,mood:24,energy:12},'finishPip',['archive','evidence']),
+ c('留下，順便學會什麼時候該裝忙。','繼續遊戲，強化偷懶與討好。','你有了兩份工作：一份解決問題，一份解決老闆看到問題時的心情。',{boss:modern?0:50,mood:20,slack:15,lick:15},'finishPip')
  ]);
  case 'promotion-review':{
  const capable=s.skill>=65&&s.boss>=45;const flattering=s.lick>=65&&s.boss>=60;
@@ -103,6 +105,14 @@ export function getEvent(run){
  skillChoice(run,'把他的話做成金句，附在升遷簡報首頁。',`舔老闆 ≥65、老闆心情 ≥60（${s.lick}／${s.boss}）`,flattering,'你的簡報只有七頁，Wing的名字出現十八次。組織圖當場動了。','你以為是在表忠，他覺得你在套招。「你以為這樣就能升？」','promote',{lick:8,trust:-10,boss:8,cash:6},{mood:-6,boss:-8}),
  c('先不要升。我只想把下班時間保住。','心情與體力回復；偷懶能力增加。','你禮貌拒絕了「被更多人找到」的權利。公司少一位主管，你多一個晚上。',{mood:12,energy:10,slack:10,boss:-6},'declinePromotion')
  ],'career');}
+ case 'self-care':{
+ if(!modern||!run.breakReturnEventId)throw new Error('Invalid break');
+ return {...e('self-care','這筆錢，先花在自己身上。','行事曆的空白總會被公司填滿。你決定先替自己留一格，花的是遊戲存款，買回來的是一點能夠繼續選擇的心情。今天想怎麼對自己好一點？','通知先靜音。這次不用問公司的願景。',[
+ {...c('買杯喜歡的飲料，散步到冰塊融化。','小小犒賞。','你走了一段沒有KPI的路。飲料喝完了，至少不是一整天都只有吞下去。',{cash:-6,mood:12,energy:4},'finishBreak'),available:s.cash>6},
+ {...c('找朋友吃一頓，講講今天又怎麼了。','花一點錢，跟懂你的人吃飯。','朋友沒有叫你共體時艱，只問你要不要再點一道。這頓飯終於不需要靠願景吃飽。',{cash:-12,mood:23,energy:8,trust:3},'finishBreak'),available:s.cash>12},
+ {...c('訂一個不開通知的晚上，認真休息。','比較花錢，但今天想好好喘口氣。','你讓自己吃飽、睡好，手機停在勿擾。世界沒有因此停止，這件事讓你非常滿意。',{cash:-20,mood:34,energy:18},'finishBreak'),available:s.cash>20},
+ c('今天先把錢留著，回去處理原本的事。','','你沒有消費。想休息的念頭先存著，事情也還在原本的地方。',{},'cancelBreak')
+ ],'self-care','self'),era:'下班自救'};}
  case 'exit-menu':return e('exit-menu','今天，想怎麼離開？',`第${run.turn+1}個工作回合，${jobTitle(run)}，心情${s.mood}。你不需要等到敲鐘，才有權把這段人生結束。這裡沒有「再撐一下就好了」的系統提示。`,'「你走了，外面也不一定比較好喔。」',[
  c('那是外面的事。我現在選擇離職。','結束本局；保留已收集的結局。','你沒有為他的預言留下來驗證。門外有很多問題，但至少不是這一個。',{mood:20},f.pip_passed?'pip_exit':'ragequit'),
  c('有些事想做完，再把門帶上。','檢視升官、摸魚、舔王、史官等職涯結局。','你把這段經歷攤開，決定要用什麼頭銜替自己蓋章。',{},'careerExit'),
@@ -124,7 +134,7 @@ export function getEvent(run){
  ],'career');
  }
  const event=EVENTS.find(e=>e.id===run.eventId)||FANTASY_EVENTS.find(e=>e.id===run.eventId);
- if(!event)throw new Error(`Unknown event ${run.eventId}`);
+ if(!event||(event.minRules??0)>(modern?2:1))throw new Error(`Unknown event ${run.eventId}`);
  if(event===FANTASY_EVENTS[3])return {...event,kind:'fantasy',choices:[...event.choices,c('不去交易所。我的人生另有用途。','選擇職涯、離職或隱藏結局。','你從口袋裡拿出那張舊清單，翻到背面。空白，剛好可以寫自己的。',{},'careerExit')]};
  return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':'daily'};
 }
@@ -132,11 +142,12 @@ const WEATHER=[{text:'Wing看完官網英文，決定對全世界不爽。',delt
 function nextNormal(run){
  if(run.turn>=20&&run.turn<MAX_TURNS)return FANTASY_EVENTS[run.turn-20].id;
  if(run.turn>=MAX_TURNS)return 'career-exit';
- let pool=EVENTS.filter(ev=>!run.seen.includes(ev.id)&&(ev.minTurn??0)<=run.turn&&(ev.maxTurn??99)>=run.turn&&(!ev.roles||ev.roles.includes(run.actualRoleId)||ev.roles.includes(run.roleId)));
- if(!pool.length)pool=EVENTS.filter(ev=>!ev.roles||ev.roles.includes(run.actualRoleId)||ev.roles.includes(run.roleId));
+ const supported=ev=>(ev.minRules??0)<=(rules2(run)?2:1);
+ let pool=EVENTS.filter(ev=>supported(ev)&&!run.seen.includes(ev.id)&&(ev.minTurn??0)<=run.turn&&(ev.maxTurn??99)>=run.turn&&(!ev.roles||ev.roles.includes(run.actualRoleId)||ev.roles.includes(run.roleId)));
+ if(!pool.length)pool=EVENTS.filter(ev=>supported(ev)&&(!ev.roles||ev.roles.includes(run.actualRoleId)||ev.roles.includes(run.roleId)));
  const weighted=pool.map(ev=>({ev,w:(ev.weight||1)*(ev.roles?2:1)}));let n=roll(run)*weighted.reduce((v,x)=>v+x.w,0);for(const {ev,w}of weighted){n-=w;if(n<=0)return ev.id;}return pool.at(-1).id;
 }
-function finish(run,family){run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;return run;}
+function finish(run,family){run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;if(rules2(run))run.breakReturnEventId=null;return run;}
 export function endingEligibility(run,target){const s=run.stats;const common=s.energy>=20&&s.cash>=30&&s.skill>=65&&s.trust>=55;
  if(target==='nasdaq')return common&&s.dream>=70;
  if(target==='taiwan')return common&&s.dream>=45;
@@ -146,11 +157,12 @@ export function endingEligibility(run,target){const s=run.stats;const common=s.e
 export function applyChoice(run,index){
  if(run.completed||run.pending)return run;
  const event=getEvent(run),originalChoice=event.choices[index];if(!Number.isInteger(index)||!originalChoice||originalChoice.available===false)throw new Error('Unavailable choice');
- const next=structuredClone(run);const before={...run.stats};next.lastWeather=null;
+ const next=structuredClone(run);const before={...run.stats},modern=rules2(run),breakdown=[];next.lastWeather=null;
+ const change=(source,label,delta)=>{const actual={};for(const [key,value]of Object.entries(delta)){const previous=next.stats[key];next.stats[key]=clamp(previous+value);if(next.stats[key]!==previous)actual[key]=next.stats[key]-previous;}if(modern&&Object.keys(actual).length)breakdown.push({source,label,delta:actual});};
  next.actions.push({type:'choice',eventId:event.id,index});
  let chanceOutcome=null,choice=originalChoice;
  if(choice.check){const passed=roll(next)<choice.check.chance;choice={...choice,...choice.check[passed?'success':'failure']};chanceOutcome=passed?'success':'setback';}
- for(const k of STAT_KEYS)next.stats[k]=clamp(next.stats[k]+(choice.delta[k]||0));
+ change('choice','選擇結果',Object.fromEntries(STAT_KEYS.map(k=>[k,choice.delta[k]||0])));
  for(const name of choice.flags||[])flag(next,name);
  let result=choice.result;let effect=choice.effect;
  if(event.kind==='daily'||event.kind==='fantasy'){
@@ -159,25 +171,37 @@ export function applyChoice(run,index){
   const luck=roll(next),capability=before[specialty],goodChance=.13+capability*.0014,badChance=.28-before.slack*.0012;
   if(luck<goodChance){
    chanceOutcome='lucky';const bonus=specialty==='lick'?{boss:9,mood:3}:specialty==='slack'?{energy:7,mood:5}:{skill:4,boss:5,mood:3};
-   for(const [key,value]of Object.entries(bonus))next.stats[key]=clamp(next.stats[key]+value);
+   change('rng','臨場好運',bonus);
    result+=specialty==='lick'?' 恰好，這句話踩中他今天想聽的版本。對方自己替你把後半段補成了優點。':specialty==='slack'?' 剛好有人把會議延後，你安靜回收了一小段人生。今天的省電模式，沒有被發現。':' 剛好有人替你的成果說了一句話。事情本身沒變，待遇突然順了一點。';
   }else if(luck>1-badChance){
    chanceOutcome='setback';const extra=specialty==='lick'?{boss:-10,trust:-4}:specialty==='slack'?{boss:-9,mood:-4}:{energy:-6,mood:-5,boss:-4};
-   for(const [key,value]of Object.entries(extra))next.stats[key]=clamp(next.stats[key]+value);
+   change('rng','臨場變數',extra);
    result+=specialty==='lick'?' 不巧，他今天把稱讚聽成了敷衍。你說同一句話，得到跟上次相反的表情。':specialty==='slack'?' 不巧，那扇門就在你最不像在忙的時候打開。你和老闆完成了一次不必要的眼神交接。':' 不巧，臨時插進來的交辦把原定節奏打散。沒有人改期限，只有你重新排時間。';
   }else chanceOutcome='ordinary';
-  const weather=WEATHER[Math.floor(roll(next)*WEATHER.length)];next.stats.boss=clamp(next.stats.boss+weather.delta);next.lastWeather={...weather};
-  if(next.roleId==='executive'&&next.turn<=6){next.stats.boss=clamp(next.stats.boss-12);next.stats.trust=clamp(next.stats.trust-3);next.lastWeather.text+=' 空降蜜月退潮，連「新氣象」都開始聽起來像罪名。';next.lastWeather.delta-=12;}
-  if(next.assignment==='assistant'){next.stats.mood=clamp(next.stats.mood-2);}
-  if(next.turn>0&&next.turn%4===0){const income=Math.max(4,Math.round(next.pay/10));next.stats.cash=clamp(next.stats.cash+income);result+=` 本期遊戲薪資入帳，存款 +${income}。`;}
+  const weather=WEATHER[Math.floor(roll(next)*WEATHER.length)];change('weather','老闆今日天氣',{boss:weather.delta});next.lastWeather={...weather};
+  if(next.roleId==='executive'&&next.turn<=6){change('parachute','空降蜜月退潮',{boss:-12,trust:-3});next.lastWeather.text+=' 空降蜜月退潮，連「新氣象」都開始聽起來像罪名。';next.lastWeather.delta-=12;}
+  if(next.assignment==='assistant')change('assignment','職稱落差',{mood:-2});
+  if(modern){
+   const drain=4+Math.floor(roll(next)*4);change('workday','又上了一天班',{mood:-drain});
+   if(next.pip?.active)change('pip-pressure','PIP額外壓力',{mood:-3});
+   if(next.stats.energy<=25)change('fatigue','疲勞累積',{mood:-2});
+   if(next.salaryCut?.status==='accepted')change('pay-cut','降薪後的悶氣',{mood:-2});
+  }
+  if(next.turn>0&&next.turn%4===0){const income=Math.max(4,Math.round(next.pay/10)),previousCash=next.stats.cash;change('income','本期薪資入帳',{cash:income});result+=modern?` 本期遊戲薪資入帳，存款實際 +${next.stats.cash-previousCash}。`:` 本期遊戲薪資入帳，存款 +${income}。`;}
   if(next.pip?.active)next.pip.remaining=Math.max(0,next.pip.remaining-1);
+ }
+ if(modern&&effect==='finishBreak'){
+  const luck=roll(next),mood=luck<.25?3:luck>.8?-3:0;chanceOutcome=mood>0?'lucky':mood<0?'setback':'ordinary';
+  // Apply recovery variance before the cap, so an almost-full mood meter cannot turn paid rest into a loss.
+  change('rng',mood>0?'休息剛好對味':'休息的臨場感受',{mood:clamp(before.mood+(choice.delta.mood||0)+mood)-next.stats.mood});
+  result+=mood>0?' 剛好碰上喜歡的歌，今天的小事意外地很對味。':mood<0?' 路上還是想到一點工作，休息沒有完全照劇本走，但這段時間仍然是你的。':' 沒有奇蹟，也沒有加班訊息。這樣的一段時間已經很有用。';
  }
  if(effect==='restoreJob'){next.actualRoleId=next.roleId;next.assignment='honest';next.pay=next.offerPay;next.basePay=next.offerPay;}
  if(effect==='promote'){
   if(next.assignment==='assistant'){next.assignment='honest';next.rank=0;next.pay=Math.max(next.pay,rolePay(next));result+=' 助理轉正；';}else{next.rank=Math.min(4,next.rank+1);next.pay=Math.max(next.pay+5,rolePay(next));}next.lastPromotion=next.turn;flag(next,'promotions');result+=` 職稱變更：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
  }
  if(event.id==='promotion-review')next.lastPromotion=next.turn;
- if(effect==='startPip'){next.pip={active:true,remaining:3};next.pipCount++;next.crisisCooldown=3;next.stats.boss=Math.max(35,next.stats.boss);}
+ if(effect==='startPip'){next.pip={active:true,remaining:3};next.pipCount++;next.crisisCooldown=3;if(!modern)next.stats.boss=Math.max(35,next.stats.boss);}
  if(effect==='pipPassed'){next.pip={active:false,remaining:0};flag(next,'pip_passed');}
  if(effect==='finishPip'){next.pip=null;next.crisisCooldown=3;}
  if(effect==='educationDone')next.educationReviewed=true;
@@ -188,7 +212,7 @@ export function applyChoice(run,index){
  if(!family&&next.stats.energy<=0)family='burnout';
  if(!family&&choice.flags?.some(x=>['final_global','final_taiwan','final_acquire'].includes(x))){const goal=choice.flags.includes('final_global')?'nasdaq':choice.flags.includes('final_taiwan')?'taiwan':'acquired';if(endingEligibility(next,goal))family=goal;else effect='shortfall';}
  if(event.id==='onboarding'&&index<2)result+=` 目前實際職稱：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
- next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay});
+ next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{})});
  next.pending=true;next.pendingEffect=effect;next.pendingFamily=family;return next;
 }
 function rolePay(run){return Math.round(run.basePay*(1+run.rank*.15));}
@@ -196,6 +220,7 @@ export function advance(run){
  if(!run.pending||run.completed)return run;
  const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(next.pendingFamily)return finish(next,next.pendingFamily);
+ if(rules2(next)&&['finishBreak','cancelBreak'].includes(effect)){next.eventId=next.breakReturnEventId;next.breakReturnEventId=null;return next;}
  if(effect==='paperwork'){next.eventId='paperwork';return next;}
  if(effect==='pipPassed'){next.eventId='pip-passed';return next;}
  if(effect==='salaryFinal'){next.eventId='salary-final';return next;}
@@ -218,13 +243,16 @@ export function advance(run){
  if(normal&&occasionalEducation(next)&&!next.educationReviewed&&next.turn>=5&&next.turn<=16&&!next.pip&&!next.resumeEventId&&!next.exitReturnEventId&&getEvent(next)?.kind==='daily'&&roll(next)<.1){next.resumeEventId=next.eventId;next.eventId='education-review';}
  return next;
 }
-export function requestExit(run){if(!run||run.pending||run.completed)return run;if(['exit-menu','career-exit'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function canRequestBreak(run){return !!(run&&rules2(run)&&!run.pending&&!run.completed&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getEvent(run)?.kind));}
+export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;next.eventId='self-care';return next;}
+export function requestExit(run){if(!run||run.pending||run.completed)return run;if(['exit-menu','career-exit','self-care'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 export function replayRun(roleId,seed,actions){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
  for(const action of actions){
   if(!action||typeof action!=='object'||run.completed)throw new Error('Invalid replay action');
   if(action.type==='exit'){const next=requestExit(run);if(next===run)throw new Error('Duplicate exit');run=next;}
+  else if(action.type==='break'){const next=requestBreak(run);if(next===run)throw new Error('Unavailable break');run=next;}
   else if(action.type==='choice'){
    if(action.eventId!==run.eventId||!Number.isInteger(action.index))throw new Error('Replay event mismatch');
    run=advance(applyChoice(run,action.index));
@@ -241,7 +269,9 @@ export function validRun(run){
   if(!run.education||typeof run.education.school!=='string'||typeof run.education.department!=='string'||!['學士','碩士','EMBA'].includes(run.education.degree)||!['public','private','overseas'].includes(run.education.sector)||!Number.isInteger(run.education.wingBias))return false;
   if(!run.abilityDice||!['skill','slack','lick'].every(k=>Array.isArray(run.abilityDice[k])&&run.abilityDice[k].length===3&&run.abilityDice[k].every(n=>Number.isInteger(n)&&n>=1&&n<=6)))return false;
   if(typeof run.educationReviewed!=='boolean'||typeof run.salaryCutOffered!=='boolean'||!Array.isArray(run.actions)||run.actions.length>300)return false;
-  if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
+  if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
+  if(rules2(run)&&(!Number.isInteger(run.lastBreakTurn)||run.lastBreakTurn< -1||run.lastBreakTurn>run.turn||!(run.breakReturnEventId===null||typeof run.breakReturnEventId==='string')))return false;
+  if(rules2(run)&&run.breakReturnEventId!==null&&(run.eventId!=='self-care'||!['daily','fantasy'].includes(getEvent({...run,eventId:run.breakReturnEventId})?.kind)))return false;
   if(run.salaryCut&&(!Number.isInteger(run.salaryCut.from)||!Number.isInteger(run.salaryCut.to)||run.salaryCut.to<1||run.salaryCut.to>run.salaryCut.from||!Number.isInteger(run.salaryCut.percent)||!['pending','accepted','rescinded'].includes(run.salaryCut.status)))return false;
   if(!run.stats||!STAT_KEYS.every(k=>Number.isFinite(run.stats[k])&&run.stats[k]>=0&&run.stats[k]<=100))return false;
   if(!run.flags||Array.isArray(run.flags)||typeof run.flags!=='object'||!Object.values(run.flags).every(n=>Number.isInteger(n)&&n>=0&&n<=500))return false;
@@ -250,6 +280,6 @@ export function validRun(run){
   if(run.completed){if(run.pending||run.eventId!==null||!ENDINGS.some(e=>e.id===run.endingId&&e.roleId===run.roleId))return false;}else {if(typeof run.eventId!=='string'||!getEvent(run))return false;}
   if(run.pending&&!run.history.length)return false;
   if(run.pendingFamily!==null&&!ENDINGS.some(e=>e.id===`${run.pendingFamily}-${run.roleId}`))return false;
-  return run.history.every(h=>h&&typeof h.eventId==='string'&&typeof h.title==='string'&&typeof h.choiceText==='string'&&typeof h.result==='string'&&Array.isArray(h.sourceIds)&&h.delta&&STAT_KEYS.every(k=>Number.isFinite(h.delta[k])&&Math.abs(h.delta[k])<=100));
+  return run.history.every(h=>h&&typeof h.eventId==='string'&&typeof h.title==='string'&&typeof h.choiceText==='string'&&typeof h.result==='string'&&Array.isArray(h.sourceIds)&&h.delta&&STAT_KEYS.every(k=>Number.isFinite(h.delta[k])&&Math.abs(h.delta[k])<=100)&&(!rules2(run)||(Array.isArray(h.breakdown)&&h.breakdown.every(part=>part&&typeof part.source==='string'&&typeof part.label==='string'&&part.delta&&Object.entries(part.delta).every(([k,v])=>STAT_KEYS.includes(k)&&Number.isFinite(v)&&Math.abs(v)<=100)))));
  }catch{return false;}
 }

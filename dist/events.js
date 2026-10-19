@@ -812,3 +812,408 @@ if (budgetDinner) {
   budgetDinner.speaker = 'spencer';
   budgetDinner.choices = budgetDinner.choices.map((option) => ({ ...option, result: option.result.replaceAll('Wing', 'Spencer') }));
 }
+
+// Expanded fictional scenes are exclusive to e2 rules. Keep older scenes and their
+// order intact so earlier saved runs retain their original replay sequence.
+EVENTS.push(...[
+  {
+    id: 'rick-phone-wakeup', title: '待機中的資深經理，來電即喚醒', era: '史冊改編・乾兒子宇宙', speaker: 'rick', sourceIds: ['rickLore', 'characterFiction'], weight: 1.8,
+    body: '技術資深經理 Rick 剛才還閉著眼，Wing 的電話一響，立刻坐直：「老闆，你這個想法真的走在前面。」同事惡搞的角色卡寫著「工作 8／舔功 100」，技能叫「乾兒子模式」。你手上的故障單等了半小時，他的讚美卻沒有冷啟動時間。',
+    wing: '老闆的方向我完全理解。細節你先處理，我待會兒再看。',
+    choices: [
+      choice('把故障狀況整理成三句，等他掛電話。', '', '電話講完，Rick 把你那三句轉述給 Wing，開頭是「我剛剛查了一下」。問題有人聽見了，作者沒有。', { skill: 7, boss: 5, energy: -9, mood: -12 }, ['evidence']),
+      choice('學他那個點頭角度，幫忙補一句願景。', '', 'Rick 滿意地示範第二種笑聲。你今天沒有學到技術，倒是學會了聲帶如何替職涯服務。', { lick: 11, boss: 10, skill: -3, trust: -7, mood: -8 }),
+      choice('先和同事把故障修好，記下實際分工。', '', '故障恢復，Rick 說「我就知道你們可以」。你們的工單裡多了一條完成紀錄，以及一條未被領導過的領導成果。', { skill: 10, trust: 9, energy: -10, mood: -5, boss: -7 }, ['archive', 'evidence'])
+    ]
+  },
+  {
+    id: 'rick-author-name', title: '作者欄是他，使用說明是你', era: '史冊改編・技術資深轉接台', speaker: 'rick', sourceIds: ['rickLore'], roles: ['system', 'ai', 'mis', 'project', 'product'], weight: 1.4,
+    body: '你追查排程，在作者欄看到 Rick，便去問他設計原理。他說名字只是放上去方便管理，程式可以去問別組。你繞了一圈回來，別組正在等你接手。問題像電話，被轉接得很有禮貌。',
+    wing: '你先研究啊。你會了，我們部門不就都會了？',
+    choices: [
+      choice('讀程式、畫流程，附上真正的維護名單。', '', '你搞懂了排程，Rick 也收到一份。下次會議他說「我們很熟」，你已經不確定「我們」是一個代名詞還是一種授權方式。', { skill: 12, trust: 7, energy: -13, mood: -8 }, ['evidence']),
+      choice('請 Rick 親自帶你跑一次操作。', '', '他說下午再約，下午改成明天。你保住一點體力，也得到一個會自動展延的主管行事曆。', { slack: 8, energy: 4, boss: -12, mood: -7 }),
+      choice('把他寫成顧問，自己把問題處理掉。', '', '文件上的組織架構很完整，實際解題的人還是只有你。Rick 稱讚你開始懂得團隊合作了。', { skill: 6, lick: 7, boss: 9, energy: -10, mood: -11 })
+    ]
+  },
+  {
+    id: 'rick-vacation-proxy', title: '職務代理人，正在問登入網址', era: '史冊改編・休假前置作業', speaker: 'rick', sourceIds: ['rickLore', 'workRules'], minTurn: 3,
+    body: '人資提醒補休快到期，你填好休假單，代理人是 Rick。他先問當天誰要處理系統，再問後台在哪裡，最後問能不能請假時保持聯絡。休假明明還沒開始，你已經累了。',
+    wing: '我當然可以代理。真的有事，還是你最熟嘛。',
+    choices: [
+      choice('做一次交接演練，請他親手操作。', '', 'Rick 終於登入成功。你用半天證明了代理人的第一關叫做登入，而不是把電話轉給正在休假的人。', { skill: 9, trust: 6, energy: -10, mood: -7, boss: -8 }, ['evidence']),
+      choice('答應保持聯絡，先讓假單過關。', '', '假單寫著休假，通知寫著在線。Rick 說有你在比較放心，你開始覺得那張假單只是不同背景色的工單。', { boss: 9, lick: 5, mood: -14, energy: -7 }),
+      choice('把必要資訊交清楚，約定回來再處理非急件。', '', 'Rick 再問了一次「真的都在文件裡嗎」。你指出目錄，終於替自己的假期保留了一小塊沒有鈴聲的地方。', { mood: 6, energy: 7, boss: -14, trust: 4 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'rick-architecture-relic', title: '架構圖是真跡，箭頭方向請通靈', era: '史冊改編・技術會議', speaker: 'rick', sourceIds: ['rickLore'], roles: ['system', 'ai', 'mis', 'project', 'product', 'executive'], minTurn: 2,
+    body: 'Rick 拿出 Wing 手畫的架構圖，向廠商介紹未來。廠商問兩個方框之間傳什麼，他把同一支箭頭描粗一點。你原本來聽解法，現在像在參加書畫鑑賞。',
+    wing: '老闆畫這個一定有他的考量，你們再理解一下。',
+    choices: [
+      choice('補上資料流、介面與待確認項目。', '', '廠商終於能估工。Rick 說你的版本少了一點宏觀，你看著新增的十二個問號，覺得它已經很寬廣。', { skill: 12, trust: 8, boss: -10, energy: -9, mood: -5 }, ['evidence']),
+      choice('先把原圖做成漂亮簡報。', '', '箭頭變成漸層色，沒有任何資料因此知道自己該去哪裡。Rick 說這樣就有專業感了。', { lick: 8, boss: 11, skill: -4, mood: -9 }),
+      choice('請 Rick 解說每個方框負責什麼。', '', '他繞著圖講了一圈，最後說細節再請你補。你第一次看見一場真正沒有出口的架構。', { slack: 6, boss: -12, mood: -10, energy: -5 }, ['archive'])
+    ]
+  },
+  {
+    id: 'rick-two-voices', title: '兩個人報告，一個人知道系統在幹嘛', era: '史冊改編・父子雙聲道', speaker: 'rick', sourceIds: ['rickLore'], minTurn: 4, weight: 1.3,
+    body: '客戶追著成效問，Rick 拉你進會議，先說自己一直有掌握；Wing 接著稱讚方向正確。輪到你，投影片只剩一頁標著「工程待改善」。這份報告有兩個主持人，一個待辦事項。',
+    wing: '你把技術面的部分解釋一下，我們剛剛已經把大方向講完了。',
+    choices: [
+      choice('照時間線說明需求、決策與目前進度。', '', '你的說明讓問題變清楚，也讓氣氛變僵。Rick 說不要把大家分那麼細，剛才分功勞時倒是沒有這個困擾。', { skill: 8, trust: 11, boss: -18, mood: -6, energy: -7 }, ['evidence']),
+      choice('把問題先接下來，讓兩位順利下台。', '', 'Wing 覺得你這次有擔當。Rick 說辛苦了，轉身又說「我們處理得不錯」。你同時獲得兩份肯定與全部的加班。', { boss: 15, lick: 6, energy: -15, mood: -14, trust: -4 }),
+      choice('把下一步分成三份，逐一請負責人確認。', '', 'Rick 的那份被改叫「方向指導」。至少你與同事那兩份有了邊界，不必再替整場戲收字幕。', { skill: 7, trust: 8, boss: -10, energy: -5, mood: -4 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'rick-formula-owner', title: '公式改一下，誰決定的先別問', era: '史冊改編・報表口徑', speaker: 'rick', sourceIds: ['rickLore', 'productLore'], roles: ['system', 'ai', 'project', 'product', 'bd', 'sales'], minTurn: 4,
+    body: 'Rick 拿來一張新的內部試算表，說參數要調整，對外的說明之後再補。BD 已經在追兩個版本為什麼不同。你看見問題根本不在小數點，而在每個人拿著不同的答案。',
+    wing: '方向上面決定了，你先改，問題真的來了再說。',
+    choices: [
+      choice('先記錄口徑與核准人，請各部門確認。', '', '討論拖長了，正式參數也終於有人簽名。Rick 說你很愛留紀錄，你覺得這句評語比沒人承認的口頭指令可靠。', { skill: 10, trust: 10, boss: -14, energy: -7, mood: -5 }, ['evidence', 'archive']),
+      choice('只做模擬版本，留待對齊後才上線。', '', '兩張表放在一起，差異突然不再抽象。你多做一份比較，也少做一場日後必開的責任辯論。', { skill: 9, boss: -8, energy: -8, mood: -4 }, ['evidence']),
+      choice('先埋頭更新，之後再追說明。', '', '表改好了，BD 開始追你。Rick 說方向不是他定的。你發現只有程式碼能準確記得最後是誰按下儲存。', { boss: 8, skill: 4, trust: -10, energy: -10, mood: -15 })
+    ]
+  },
+  {
+    id: 'rick-common-fund', title: '共同基金，共同的部分由主管定義', era: '史冊改編・部門飲料', speaker: 'rick', sourceIds: ['rickLore', 'benefitsLore'], minTurn: 3,
+    body: '同事準備離開，想用還沒用完的部門活動額度請幫忙過的隔壁組喝飲料。Rick 說這樣範圍太廣。大家一起出的錢，忽然需要研究誰才算「大家」。',
+    wing: '部門的錢就要照部門的規矩，你不要每件事都想自己決定。',
+    choices: [
+      choice('整理帳目和使用規則，一起問清楚。', '', 'Rick 覺得一杯飲料沒有必要這麼複雜。你也這麼覺得，所以才想知道是誰把它弄得這麼複雜。', { skill: 6, trust: 11, boss: -13, energy: -6, mood: -7 }, ['evidence']),
+      choice('自己請大家喝，歡送先照辦。', '', '大家好好喝完一杯，也好好說了再見。Rick 說這樣處理就很好，你決定把收據留給自己，感謝留給同事。', { cash: -7, trust: 12, mood: 7, energy: 3, boss: 3 }),
+      choice('把聚會移到下班後，各自買喜歡的。', '', '沒有核准人，大家卻意外很會合作。你們坐在路邊聊了一晚，沒有任何人被要求代表部門感恩。', { cash: -3, mood: 8, trust: 7, boss: -6 }, ['archive'])
+    ]
+  },
+  {
+    id: 'rick-four-am-delivery', title: '凌晨四點交付，主管下午想起來', era: '史冊改編・急件時差', speaker: 'rick', sourceIds: ['rickLore', 'departures'], minTurn: 3, weight: 1.3,
+    body: 'Rick 昨天說急到不能等，你熬夜把東西送出去。今天問他看了沒，他說還沒空。你經過他的座位，手機螢幕暗著，眼睛也暗著。原來最急的只有你的睡眠。',
+    wing: '做完就好，先放著。我有需要的時候再找你。',
+    choices: [
+      choice('留下交付時間，約一個實際驗收時段。', '', '你終於約到驗收。Rick 說不必一直強調幾點完成，你心想那他昨天也可以不必一直強調幾點要。', { skill: 8, trust: 5, boss: -12, energy: -8, mood: -12 }, ['evidence']),
+      choice('順便多做兩版，證明自己扛得住。', '', '兩版都被收進「之後再看」。Rick 稱讚你積極，你把這份積極折算成了今天第三杯咖啡。', { skill: 7, boss: 12, energy: -17, mood: -14 }, ['allin']),
+      choice('先補休一下，醒來再回非急件。', '', '休息前有三則訊息，醒來還是那三則。你第一次用實驗證明，有些公司的急件可以自己等。', { energy: 13, mood: 5, boss: -15, slack: 7 })
+    ]
+  },
+  {
+    id: 'cdn-teacher-license', title: 'CDN 可以快取，老闆的面子不能失效', era: '史冊改編・網路常識', sourceIds: ['resourceLore'], roles: ['system', 'ai', 'mis', 'project'],
+    body: '連線數看起來不對，你才說出 CDN 三個字，Wing 就打斷你，表示這東西最早是他教大家的。數據還沒有開始解釋，講課資格已經先被撤銷。',
+    wing: '這些基本的東西我都知道，你不要把時間浪費在教我。',
+    choices: [
+      choice('跳過名詞，直接比對請求紀錄。', '', '紀錄指向快取設定。你把答案寫在報告裡，Wing 說這就是他原本想講的。至少設定終於能改了。', { skill: 12, boss: -8, energy: -7, mood: -7 }, ['evidence']),
+      choice('說「對，就是照您的思路查的」。', '', '同一張圖忽然變得容易理解。你看著邏輯終於通過人際關係防火牆，不知道該開心還是關機。', { lick: 10, boss: 12, mood: -10, skill: 3 }),
+      choice('讓監控先跑，會後和同事查。', '', '會議少吵一輪，你們多做一輪。晚上找到原因時，群組正在稱讚今天的會議很有效率。', { slack: 5, trust: 9, skill: 7, energy: -10, mood: -8 })
+    ]
+  },
+  {
+    id: 'disk-suitcase-cloud', title: '雲端空間不足，請裝進主管筆電', era: '史冊改編・硬碟搬家', sourceIds: ['resourceLore', 'cloud'], roles: ['system', 'ai', 'mis', 'project'],
+    body: '儲存空間快滿，擴充申請沒過。新解法是先把檔案下載到主管電腦。公司的雲終於有了具體形狀：一台明天可能被帶去出差的筆電。',
+    wing: '不能什麼問題都靠花錢，工程師就是要想辦法。',
+    choices: [
+      choice('先清理可刪資料，列出保留與備份需求。', '', '你省下一點空間，留下真正需要預算的清單。Wing 覺得這次有辦法，下次額度滿時應該還會覺得你有辦法。', { skill: 11, boss: 5, energy: -11, mood: -9 }, ['evidence']),
+      choice('做一份容量與故障風險比較。', '', '你解釋了筆電休眠與雲端可用性的關係。Wing 問能不能叫主管先不要休眠，包含電腦和人。', { skill: 9, trust: 7, boss: -12, mood: -7, energy: -6 }, ['evidence']),
+      choice('先分類冷資料，排定之後的搬遷。', '', '緊急警報暫時解除。你多出一張搬遷清單，清單最後一欄寫著「等預算」，沒有日期。', { slack: 8, skill: 6, boss: 4, mood: -6 })
+    ]
+  },
+  {
+    id: 'overtime-version-history', title: '加班是真的，計算單位持續更新', era: '史冊改編・工時版本庫', speaker: 'hope', sourceIds: ['workRules'], minTurn: 3,
+    body: '同事翻出舊公告：以前記分鐘，後來記半小時，現在又多了一道審核。Hope 說以最新版為準。你的疲勞沿用舊版累積，報表卻不提供版本轉換工具。',
+    wing: '我們先把流程補齊，不要讓一張表影響大家對你的觀感。',
+    choices: [
+      choice('把實際工時與主管交辦紀錄一起整理。', '', '表格變厚了，疲勞沒有變薄。至少哪天做了什麼，現在有一份不用靠誰記性的紀錄。', { skill: 7, trust: 6, energy: -8, mood: -9, boss: -10 }, ['evidence']),
+      choice('吞下這次麻煩，表態以後會更有效率。', '', 'Hope 說你的態度很好。你多學會一種效率：用一句自責，替所有人省掉研究制度的時間。', { lick: 8, boss: 10, mood: -15, dream: -6 }),
+      choice('重排工作量，把做不完的列給主管選。', '', '主管覺得每項都重要，你請他先選三項。清單沒有神奇縮短，你也沒有神奇長出另一個晚上。', { skill: 8, energy: 5, mood: -4, boss: -13 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'leave-still-online', title: '請你快點休假，順便快點回來', era: '史冊改編・補休雙重指令', speaker: 'hope', sourceIds: ['workRules'], minTurn: 3,
+    body: '昨天才提醒你補休快過期，今天假一排下去，主管又說辦公室需要幫忙。系統成功核准了一天休假，組織尚未核准你那天不存在。',
+    wing: '假還是你的假，只是大家有需要的時候互相體諒一下。',
+    choices: [
+      choice('確認代理窗口，把訊息通知關掉。', '', '回來後有人問你昨天為何沒回。你打開假單，大家像第一次見到這種可以預先告知的文件。', { energy: 12, mood: 7, boss: -16, slack: 5 }, ['evidence']),
+      choice('留在線上，至少不用通勤。', '', '你在家完成同樣的工作。公司少用一張椅子，你少了一天真正能補回來的休息。', { boss: 9, energy: -8, mood: -13, lick: 4 }),
+      choice('只接一個已約好的交接時段。', '', '十分鐘拖成半小時，你仍在時間到時收線。界線沒有完整守住，總比整天只剩一句「都可以」好。', { mood: 3, energy: 5, trust: 5, boss: -7 })
+    ]
+  },
+  {
+    id: 'clock-human-alarm', title: '18:30，會走路的下班鈴', era: '史冊改編・時間守恆', sourceIds: ['workRules'],
+    body: '一位同事收包起身，另一位的下班鬧鐘剛好響。整排的人同時抬頭，像收到一個久違的系統校時訊號。Wing 正在這時丟來一句「順便聊一下」。',
+    wing: '怎麼時間一到就走？你們對事情有沒有一點熱情？',
+    choices: [
+      choice('記下待辦，明天一早接著做。', '', '你準時走出門，背後還有一點不滿。外面的天空沒有要求你先寫熱情報告，感覺挺新鮮。', { energy: 10, mood: 6, boss: -14, slack: 4 }),
+      choice('留下來聽完那個「一下」。', '', '熱情被延長四十分鐘，內容可以濃縮成兩行。你錯過一班車，順便更新了對「一下」的認識。', { boss: 9, lick: 4, energy: -12, mood: -11 }),
+      choice('先問要決定什麼，再約明天的時段。', '', 'Wing 說只是聊聊，你說那明天聊得更完整。他不太高興，但行事曆終於有了一個有邊界的格子。', { skill: 6, mood: 3, energy: 6, boss: -9 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'shareholder-no-chair', title: '你有股份，現場沒有你的椅子', era: '史冊改編・股東座位有限', speaker: 'spencer', sourceIds: ['benefitsLore'], minTurn: 6,
+    body: '股東會通知到了，接著又有人提醒現場座位有限，員工股東可以委託出席。你當初買的是公司的一小部分，沒想到其中似乎不含一張折疊椅。',
+    wing: '大家都是一家人，程序有人幫忙處理就好。',
+    choices: [
+      choice('確認會議資料與出席方式。', '', '你拿到一份正式資料。Spencer 覺得你很認真，你則覺得認真是把錢放進去後很合理的後續動作。', { skill: 7, mood: -5, boss: -8, dream: -6 }, ['evidence']),
+      choice('交給熟悉的人，自己把工作做好。', '', '流程順利完成，你仍不知道那張空椅子最後坐了誰。對願景的參與感暫時維持在通訊軟體的已讀狀態。', { boss: 7, slack: 6, mood: -7, dream: -5 }),
+      choice('把問題和同事一起整理再提。', '', '你們發現問題其實很像：進度、資訊，以及自己到底有沒有被算進「大家」。共同持有的東西多了一份問題清單。', { trust: 11, skill: 5, mood: -4, boss: -10 }, ['archive', 'evidence'])
+    ]
+  },
+  {
+    id: 'travel-staff-prize', title: '員工旅遊，工作人員也想當員工', era: '史冊改編・加碼的邊界', speaker: 'spencer', sourceIds: ['benefitsLore'],
+    body: '各組比賽頒獎，Spencer 興致一來宣布加碼。你和幫忙搬東西、計分、控場的同事對看一眼：大家今天也有一組，名字叫工作人員。獎金表裡還沒找到這組。',
+    wing: '你們今天也很辛苦啦，這個我們回去再看看怎麼安排。',
+    choices: [
+      choice('請活動窗口記下用途、金額與後續負責人。', '', '一句加碼終於變成有人要追的事情。你得到的第一個獎品是追蹤表，希望最後一個不會也是它。', { skill: 6, trust: 8, boss: -8, energy: -5, mood: -7 }, ['evidence']),
+      choice('先說謝謝董事長，幫大家拍合照。', '', '照片裡每個人都很有收穫。你負責拍照，所以今天最完整的收穫仍然不包含你自己。', { lick: 8, boss: 11, energy: -6, mood: -10 }),
+      choice('收完最後一箱，和工作組自己吃點東西。', '', '大家終於能坐下。沒有頒獎台，但有人把最後一塊點心分給你，這份加碼當場到帳。', { cash: -4, trust: 11, mood: 8, energy: 6 })
+    ]
+  },
+  {
+    id: 'wireframe-revival', title: '昨天不收線框圖，今天問你會不會', era: '史冊改編・設計輪迴', sourceIds: ['designLore'], roles: ['design', 'product', 'project'], weight: 1.4,
+    body: '你照先前要求，把完整介面輸出成 PDF。Wing 看了一眼，開始介紹線框圖多麼適合溝通。你硬碟裡那份半年前被嫌「我要看真的畫面」的檔案，忽然等到了復活日。',
+    wing: '設計之前要先想流程，你們會不會用線框圖？',
+    choices: [
+      choice('打開舊稿，接著確認流程。', '', '舊稿得到今天的認可。你沒有說它上次被退回的原因，免得又要重畫一個更早的版本。', { skill: 9, slack: 7, boss: 5, mood: -8 }, ['loop']),
+      choice('把各階段要看的內容寫成確認表。', '', 'Wing 說不用搞得那麼制式。你留下一份自己看得懂的流程，至少下次復活時能找到墓碑。', { skill: 10, trust: 7, boss: -13, mood: -6, energy: -5 }, ['evidence']),
+      choice('稱讚新方法，重新包裝一次。', '', '同一條流程換了標題，成為今天最大的創新。你學到設計不只要會做，還要懂得何時假裝第一次做。', { lick: 10, boss: 12, energy: -8, mood: -11 })
+    ]
+  },
+  {
+    id: 'ai-copy-proofreader', title: 'AI 寫完了，人工請開始收尾', era: '史冊改編・新聞稿生成器', sourceIds: ['designLore', 'productLore'],
+    body: '一份生成的新聞稿被丟進群組，語氣雄心萬丈，產品名稱與繁簡字卻各自旅行。主管說只要稍微潤一下。這個「稍微」包含查資料、改語氣，以及把還不存在的功能請出文章。',
+    wing: '工具都幫你寫完了，怎麼還要花那麼久？',
+    choices: [
+      choice('逐項核對功能，再校稿。', '', '文章終於能讀，也比較接近能交付的產品。你花掉的時間沒有被叫做工作，被叫做工具還不熟。', { skill: 10, trust: 7, energy: -10, mood: -9, boss: -8 }, ['evidence']),
+      choice('先修最明顯的字，再列出待確認處。', '', '主管說括號太多，氣勢會斷。你想產品缺的地方也不少，只是現在先由括號負責誠實。', { skill: 6, slack: 5, boss: -6, mood: -5 }, ['evidence']),
+      choice('照他喜歡的口氣，再生成一個華麗版本。', '', '文章又長了一倍，產品沒有。主管覺得這版有高度，你負責往下看，確認下面到底還有沒有地板。', { lick: 7, boss: 11, skill: -3, mood: -10, dream: 3 })
+    ]
+  },
+  {
+    id: 'statistics-eighty-percent', title: '中位數以下，可以塞進八成人', era: '史冊改編・辦公室統計課', sourceIds: ['meetingLore'],
+    body: 'Wing 指著表格講績效分布，宣布大部分工程師都在中位數以下。你看著圖表，發現統計學今天也需要先通過試用期。會議室裡沒有人想當那個舉手的人。',
+    wing: '不要抓字眼，我在講的是你們整體還有很大的進步空間。',
+    choices: [
+      choice('把定義與資料範圍一起補在圖上。', '', '圖表正確了，Wing 說你太執著細節。你得到一張可以解釋的分布圖，與一個不能解釋的臉色。', { skill: 10, trust: 6, boss: -16, mood: -7 }, ['evidence']),
+      choice('點頭，改用「成長空間」當標題。', '', '數學沒有變，只是從標題撤退。Wing 說這樣就抓到重點了，你默默替中位數辦了離場手續。', { lick: 9, boss: 12, skill: -4, mood: -10 }),
+      choice('會後和同事確認各自真正要改善什麼。', '', '你們列出具體任務，終於有了不需要猜老闆情緒的進步方式。今天的課後輔導比正課有用。', { skill: 7, trust: 11, energy: -6, mood: 3, boss: -5 })
+    ]
+  },
+  {
+    id: 'chips-linear-algebra', title: '讀書會帶了洋芋片，忘了帶共識', era: '史冊改編・資料科學社團', sourceIds: ['meetingLore'], roles: ['ai', 'system', 'product', 'project'],
+    body: '有人想分享線性代數，有人想解決明天要上的功能。你抱著電腦坐中間，桌上洋芋片還沒吃完，會議已經開始爭論什麼才算真正的學習。',
+    wing: '你們平常到底有沒有讀書？可是工作進度也不能落後。',
+    choices: [
+      choice('把理論接到一個實際問題上。', '', '大家終於討論同一件事。你用一包洋芋片的時間完成一次翻譯：把學習翻成彼此聽得懂的需求。', { skill: 11, trust: 10, energy: -7, mood: 3 }),
+      choice('先說讀書重要，回座再補進度。', '', '會議有了氣質，你的晚上沒有了。你多懂一個公式，少了一段可以自由使用的時間。', { skill: 8, boss: 7, energy: -12, mood: -10 }),
+      choice('提議輪流分享，今天先收工。', '', '下一次的題目先排好了。大家走出會議室時各有一點不服，至少沒有把整週都拿來證明自己比較愛讀書。', { slack: 7, trust: 5, boss: -8, mood: -4, energy: 4 })
+    ]
+  },
+  {
+    id: 'aircon-career', title: '工程師的專長，取決於現在什麼壞了', era: '史冊改編・隱藏職務', sourceIds: ['resourceLore', 'officeLore'], roles: ['system', 'ai', 'mis', 'design'],
+    body: '辦公室冷氣沒開，你剛好離遙控器最近。主管問為什麼不處理，你看著自己的工作清單，發現冷氣、印表機、採買和主業正在角逐第一優先。今天的工程領域叫室內溫度。',
+    wing: '都是工程師，這種小事情還要分那麼清楚？',
+    choices: [
+      choice('處理眼前設備，順便把操作方式貼好。', '', '冷氣啟動，大家都舒服了。你多了一項人人記得的技能，和一項大家暫時忘記的原定交付。', { skill: 5, trust: 8, boss: 5, energy: -7, mood: -8 }),
+      choice('找設備窗口，先把主業完成。', '', '事情被交給真正的窗口。主管覺得你不夠彈性，你卻終於記起自己當初應徵的是什麼。', { skill: 8, energy: 3, boss: -12, mood: -4 }, ['evidence']),
+      choice('先接下來，笑說今天又跨域了。', '', '大家笑了，新的雜事也跟著來了。你發現幽默可以化解尷尬，不能自動縮小職務範圍。', { lick: 6, boss: 9, trust: 4, energy: -10, mood: -10 })
+    ]
+  },
+  {
+    id: 'monitor-chain', title: '螢幕串螢幕，責任串到 MIS', era: '史冊改編・桌面拓樸', speaker: 'sonny', sourceIds: ['officeLore'], roles: ['mis', 'system', 'ai'],
+    body: '有人把一台螢幕接到另一台，期待畫面自然延伸。兩台都不亮時，群組開始問 MIS 為什麼沒有弄好。你走近，覺得這個連線方式倒是很像公司的責任傳遞。',
+    wing: '先讓它亮，大家現在都在等。',
+    choices: [
+      choice('檢查輸出與線材，把接法重新整理。', '', '螢幕亮了，同事很感激。主管說這麼簡單怎麼花這麼久，你低頭收線，避免讓表情也成為故障項目。', { skill: 11, trust: 7, boss: 5, energy: -7, mood: -8 }),
+      choice('畫一張簡單接線圖，讓使用者一起確認。', '', '下次有人真的照圖接好了。你的支援時間少一點，圖卻被叫做「可以請你再畫一張」的開始。', { skill: 7, slack: 9, trust: 8, energy: -6, mood: -4 }),
+      choice('請大家先共用一台，等合適的線材。', '', '會議先開始，硬體需求也有了清單。你沒有現場變出轉接頭，這點讓某些人頗感失望。', { slack: 7, boss: -10, energy: 4, mood: -5 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'patent-php-hybrid', title: '專利工程師，請先把 PHP 修好', era: '史冊改編・職稱發明展', sourceIds: ['resourceLore', 'productLore'], roles: ['system', 'ai', 'mis', 'project', 'executive'],
+    body: '公司想申請更多專利，又覺得專門寫文件的人應該順便修系統。你被問能不能替新職缺寫 JD，條件逐漸變成一個人、一台電腦，以及不存在的時間總量。',
+    wing: '只做一件事太可惜，要能跨領域創造價值。',
+    choices: [
+      choice('拆出不同職能，列明各自工時。', '', 'JD 變得清楚，招募預算也變得難看。Wing 問有沒有更靈活的寫法，你沒有把工時改成心願。', { skill: 9, trust: 7, boss: -13, mood: -6, energy: -6 }, ['evidence']),
+      choice('寫上「跨域全能人才」，先完成需求。', '', '標題很吸引人，內容像三份工作黏在一起。你希望應徵者讀到最後一行之前還有咖啡。', { lick: 8, boss: 10, skill: -3, mood: -10 }),
+      choice('先排一個最需要解決的主職務。', '', '清單終於有了主次，其他項目仍在「未來可培養」。你把未來標得很遠，盡量別讓它週一就到。', { skill: 8, slack: 6, boss: -6, mood: -4 })
+    ]
+  },
+  {
+    id: 'bird-reminder-loop', title: '八哥一直叫，事情還是那一件', era: '史冊改編・工單自動化', sourceIds: ['productLore'],
+    body: '提醒機器人又把同一張工單推到你面前。Wing 說這套做好以後就能遠端工作。你看著通知一則接一則，感覺遠端已經先做到一半：老闆不用走過來，也能一直在旁邊。',
+    wing: '提醒這麼多次還沒做完，系統都幫你記住了耶。',
+    choices: [
+      choice('把重複提醒合併，標出真正的阻礙。', '', '通知安靜了，缺的核准還是缺。至少現在你不用每十分鐘重新認識同一個障礙。', { skill: 10, slack: 8, energy: -5, mood: 3, boss: -8 }, ['evidence']),
+      choice('每則都回「處理中」，維持可見的忙碌。', '', '你的回覆速度創新高，工單進度沒有。Wing 說最近溝通有改善，你開始懷疑這系統衡量的是手指運動。', { lick: 7, boss: 9, skill: -4, energy: -8, mood: -11 }, ['loop']),
+      choice('關掉非必要提醒，保留真正的急件。', '', '你終於能連續思考二十分鐘。有人問怎麼突然都沒看到你回覆，你只好說剛剛正在把事情做完。', { slack: 10, skill: 5, energy: 5, boss: -13, mood: 3 })
+    ]
+  },
+  {
+    id: 'slack-ipad-engineer', title: '別人的 App，公司的工程師來修', era: '史冊改編・相容性擔當', sourceIds: ['resourceLore'], roles: ['system', 'ai', 'mis'],
+    body: '平板上的通訊軟體少了一個功能，你被借來一台裝置研究。你解釋這是第三方 App，收到的回覆是「你不是工程師嗎」。你還沒領到對方公司的識別證，已經先接到維護責任。',
+    wing: '你先想辦法，不要一開始就跟我說不是我們能改的。',
+    choices: [
+      choice('重現問題，整理可用的替代操作。', '', '使用者終於能完成工作。你交付了一份操作指南，也正式成為下次所有平板問題的第一搜尋結果。', { skill: 9, trust: 7, energy: -8, mood: -7, boss: 5 }),
+      choice('查官方限制，列清楚支援範圍。', '', '限制有了來源。Wing 說他想聽的是解法，你覺得知道牆在哪裡也是地圖的一部分。', { skill: 8, boss: -13, mood: -7 }, ['evidence']),
+      choice('先讓對方改用電腦，回到原任務。', '', '事情用另一台裝置完成了。主管問為什麼不一開始就這樣，你決定把答案留在心裡，省一場會。', { slack: 9, energy: 4, boss: -7, mood: -4 })
+    ]
+  },
+  {
+    id: 'meeting-chair-host', title: '恭喜擔任會議主席，麥克風測試一下', era: '史冊改編・職稱與功能', sourceIds: ['meetingLore'], roles: ['project', 'product', 'sales', 'bd', 'executive'],
+    body: '你被宣布擔任專案會議主席，原以為終於能決定議程。會前收到的任務是點名、開連結、提醒下一位。你這才明白，主席的「主」是主持，決策的那一席還是別人的。',
+    wing: '先把場子帶順，方向我會掌握。',
+    choices: [
+      choice('把每題的決策人與期限記進會議紀錄。', '', '你不能替大家決定，至少可以記得是誰沒決定。會議終於留下比出席名單更有用的東西。', { skill: 9, trust: 7, boss: -9, energy: -6, mood: -5 }, ['evidence']),
+      choice('笑著控場，替老闆每次發言接掌聲。', '', 'Wing 說今天很有氣氛。你用上所有主持技巧，成功讓一場沒有結論的會議很像有結論。', { lick: 11, boss: 11, mood: -10, energy: -7 }),
+      choice('時間到了就問是否要另約續會。', '', 'Wing 說還有最後一點，那一點展開成三個分支。你仍替大家守住部分時間，收到幾個無聲的感謝。', { slack: 8, trust: 8, boss: -12, mood: -4, energy: 3 })
+    ]
+  },
+  {
+    id: 'attendance-accidental-admin', title: '補卡單寄給你，權限比職稱先升', era: '史冊改編・人事系統奇遇', speaker: 'jenjen', sourceIds: ['officeLore'],
+    body: '一張補卡單寄到你的信箱，你回報沒有權限，行政就幫你開了權限。你再看一次職稱，沒有任何變化。到了下午，權限又被收回，彷彿你短暫代理了一個系統誤會。',
+    wing: '先幫忙看一下，大家互相支援，不要想太多。',
+    choices: [
+      choice('確認真正的簽核人，再把單轉回去。', '', '補卡單回到對的人手上。你花了一點時間，阻止自己在不知道的情況下多出一份人事工作。', { skill: 8, boss: -6, mood: -5, energy: -5 }, ['evidence']),
+      choice('先按流程幫忙處理，等行政再通知。', '', '事情辦完了，權限也不見了。你今天的主管體驗版沒有薪資，只有到期通知。', { boss: 7, lick: 4, energy: -6, mood: -9 }),
+      choice('留下錯誤回報，順便檢查通知設定。', '', '你找到一個寄錯收件人的規則。系統修好後，再也沒有人覺得你突然升了人資主管。', { skill: 10, slack: 6, trust: 5, energy: -7, mood: -4 }, ['archive'])
+    ]
+  },
+  {
+    id: 'tissue-real-name', title: '日用品領用，先確認你的月配額', era: '史冊改編・行政精算', speaker: 'jenjen', sourceIds: ['officeLore'],
+    body: '你要領一包衛生紙，JenJen 把登記表推過來。公司談全球市場時不用填表，擦桌子時倒是需要留下姓名。你開始佩服組織能把成本控制精準到這個層級。',
+    wing: '不是不給你，是大家都要有節約的觀念。',
+    choices: [
+      choice('按規則登記，把用品缺口一併回報。', '', '衛生紙領到了，表格也填滿了。你今天的第一個具體交付，是證明自己有合理的擦拭需求。', { boss: 5, energy: -4, mood: -8, skill: 3 }),
+      choice('自己買一包放桌邊。', '', '問題用自己的錢快速解決。你不必再填表，但很清楚公司所謂效率，有時候是把帳單換個人收。', { cash: -2, mood: 3, slack: 5 }),
+      choice('和同事整理共同用品清單。', '', '大家發現缺的還有垃圾桶與幾條線。清單很小，足夠讓整間辦公室的願景突然變得具體。', { trust: 9, skill: 5, boss: -8, energy: -5, mood: -4 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'profit-credit-arena', title: 'ROAS 競技場：客人買單，部門搶單', era: '史冊改編・成效歸因', sourceIds: ['productLore'], roles: ['ai', 'product', 'project', 'sales', 'bd'],
+    body: '一筆訂單同時出現在三份成效報告。推薦系統說是它，投放說是它，另一位同事提醒那是固定團購客。客戶只刷了一次卡，內部已經慶功三次。',
+    wing: '這些數字怎麼差那麼多？你們先對齊，但成長不能變少。',
+    choices: [
+      choice('確認歸因窗口，把重複計算拆開。', '', '大家終於看到同一個數字，雖然那個數字沒剛才漂亮。你還原了成效，也不小心刪掉幾份簡報的高潮。', { skill: 11, trust: 8, boss: -13, mood: -6, energy: -7 }, ['evidence']),
+      choice('先各自列成效，把差異放註解。', '', '註解越寫越長，標題仍是成長亮眼。你學會了報表的一項特殊功能：可以同時裝下三種開心。', { lick: 7, boss: 10, skill: -3, mood: -9 }),
+      choice('直接訪談客戶，確認購買路徑。', '', '客戶說只是剛好要買。這個答案沒有神奇演算法，但至少足夠替下次實驗找一個正常起點。', { skill: 9, trust: 6, energy: -8, boss: -7, mood: -4 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'empty-floor-map', title: '辦公室更寬敞，因為同事更少了', era: '史冊改編・座位輪迴', sourceIds: ['officeLore', 'departures'], minTurn: 5,
+    body: '又一次換座位之後，整層樓安靜不少。你以前抱怨走道太窄，現在走到另一頭只為了找一個能問問題的人。空間利用率的改善方式，和你原本想的不太一樣。',
+    wing: '調整是為了讓組織更有效率，你們要往好的方向看。',
+    choices: [
+      choice('把剩下的系統與負責人重新整理。', '', '清單裡空白不少，你先補出可聯絡的窗口。組織圖看起來更簡單了，你的交接圖卻剛好相反。', { skill: 9, trust: 10, energy: -11, mood: -10 }, ['evidence']),
+      choice('主動接下空出的工作，爭取表現。', '', 'Wing 看見你的企圖心。你也看見更多工單，只是它們沒有像座位一樣，隨著人離開而消失。', { boss: 14, skill: 6, energy: -17, mood: -14 }, ['allin']),
+      choice('先和還在的同事吃頓飯。', '', '你們把聯絡方式留好，聊聊各自還想做什麼。飯桌上少了幾個人，但還有人記得你原本的樣子。', { cash: -5, trust: 12, mood: 7, energy: 4 }, ['archive'])
+    ]
+  },
+  {
+    id: 'dragon-office-quiz', title: '端午猜謎，題庫比交接文件完整', era: '史冊改編・共同記憶', sourceIds: ['dragonQuiz', 'archiveLore'],
+    body: '節慶活動開始，題目從公司標語一路問到誰最會附和老闆。你發現同事們記得每個梗，卻沒人知道最新規格在哪。這家公司其實很會知識管理，只是知識種類比較特別。',
+    wing: '活動要正向一點，不要什麼事情都拿來開玩笑。',
+    choices: [
+      choice('答共同經歷的題，避開別人的私事。', '', '大家笑得很熟悉。你們把難熬的日子換了一種講法，至少這次麥克風在自己手裡。', { trust: 12, mood: 8, boss: -6 }, ['archive']),
+      choice('每題都導向公司的偉大願景。', '', 'Wing 覺得這組態度很好。你的隊友則覺得你是不是拿到了另一份題庫，還附主管評分表。', { lick: 10, boss: 11, trust: -7, mood: -7 }, ['allin']),
+      choice('提議把常見工作問題也做成小抄。', '', '同事笑說你又在加班，還是一起補了幾條。梗圖與操作說明第一次待在同一個資料夾。', { skill: 7, trust: 8, energy: -5, mood: 4 }, ['archive', 'evidence'])
+    ]
+  },
+  {
+    id: 'ok-means-received', title: '那個 OK，只是代表他有看到', era: '史冊改編・手勢相容性', sourceIds: ['designLore', 'meetingLore'],
+    body: '上次提案時 Wing 比了 OK，大家照著做了一週。今天展示，他問為什麼會做成這樣。你翻出紀錄，才知道原來同一個手勢還有「我收到了」這個版本。',
+    wing: '我說收到，什麼時候說過可以照這樣做？',
+    choices: [
+      choice('逐項確認這次真正通過哪些內容。', '', '每個 OK 都被拆成一句具體的話。Wing 覺得你很囉唆，你覺得它們比下週的重做便宜。', { skill: 10, trust: 9, boss: -14, energy: -6, mood: -8 }, ['evidence']),
+      choice('先道歉，再把進度重排一次。', '', '大家的時間退回一週前，Wing 的心情往前一步。你的版本紀錄很完整，裡面每版都叫做最後一次。', { lick: 8, boss: 12, energy: -13, mood: -13 }, ['loop']),
+      choice('先保留可用部分，做一個小範圍確認。', '', '你用更小的交付換到更明確的回答。這次沒有大獲全勝，只有少一點白做，已經算是不錯的消息。', { skill: 8, slack: 6, boss: -7, mood: -5 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'boss-meeting-ticket', title: '老闆辦公室，請先領號碼牌', era: '史冊改編・第一時間', sourceIds: ['meetingLore'],
+    body: 'Wing 要大家問題一發現就報告，又說不要擠在門口，先向窗口預約。你拿著急件等了一上午，下午他問怎麼現在才講。號碼牌上沒有「老闆說他一直有空」這個選項。',
+    wing: '我中間明明有空檔，你們就是不夠積極。',
+    choices: [
+      choice('把問題、等候時間與可選方案一次寄出。', '', '訊息留下了時點與選項。Wing 說不用寫這麼長，你卻終於不用把整個上午壓縮成一句「對不起」。', { skill: 8, boss: -11, energy: -6, mood: -8 }, ['evidence']),
+      choice('趁門一開立刻跟上去。', '', '你成功卡進第一時間，也被問為什麼沒先預約。流程的兩個分支在你身上完成了合流。', { lick: 6, boss: 7, energy: -9, mood: -12 }),
+      choice('先處理能自主完成的部分，保留待決事項。', '', '工作至少往前了一小段。Wing 問為什麼沒先問，你看著那張號碼牌，決定把它當今天最準確的會議紀錄。', { skill: 8, slack: 7, boss: -10, mood: -6 }, ['archive'])
+    ]
+  },
+  {
+    id: 'budget-free-tools', title: '預算是零，功能請對標企業版', era: '史冊改編・免費的願景', sourceIds: ['resourceLore'],
+    body: '工具提示試用到期，素材需要授權，課程也要付費。Wing 問網路上不是都有免費的嗎。你看著待辦，突然理解「零成本」通常只是指沒有計算你。',
+    wing: '別人能做出來，你先研究，不要一開始就想到花錢。',
+    choices: [
+      choice('比較免費版限制與付費方案，請他取捨。', '', 'Wing 最後選了較小的範圍，仍不太高興。你保住一部分交付，也把不存在的功能從承諾裡刪掉。', { skill: 10, trust: 6, boss: -11, mood: -6, energy: -6 }, ['evidence']),
+      choice('用現有工具繞一圈做出替代方案。', '', '功能勉強完成，你的晚上也勉強結束。Wing 說早就知道有辦法，沒有提到這個辦法其實有一張人力帳單。', { skill: 8, boss: 10, energy: -14, mood: -12 }),
+      choice('和同事分享已經踩過的限制。', '', '大家少撞了幾次牆。預算沒有變多，但至少不用每個人都為同一堵牆重新寫一次研究報告。', { trust: 10, skill: 6, slack: 6, energy: -5, mood: -3 }, ['archive'])
+    ]
+  },
+  {
+    id: 'api-bill-surprise', title: '說好的公司會出，帳單來了先問你', era: '史冊改編・呼叫有價', sourceIds: ['resourceLore', 'productLore'], minTurn: 3,
+    body: '新功能需要外部 API，Wing 嫌免費額度太慢，要你快點處理。帳單到了，他又問為什麼會花這麼多。你發現公司的成本概念，有時候只在收到通知時才開始執行。',
+    wing: '我說可以花錢，不是叫你不知道節制。',
+    choices: [
+      choice('整理原先需求、使用量與預算上限。', '', '你把問題拆成可控制的數字。Wing 還是不太滿意，至少下一次上限不會只有一句「快一點」。', { skill: 11, trust: 6, boss: -13, energy: -8, mood: -9 }, ['evidence']),
+      choice('先降低呼叫頻率，再慢慢解釋。', '', '成本下來，速度也下來。Wing 問功能怎麼變慢了，你覺得自己正在替帳單與進度主持一場辯論。', { skill: 7, slack: 5, boss: -7, mood: -8, energy: -5 }),
+      choice('吞下責備，保證下次會提前報告。', '', '對話終於結束。你得到一份沒有寫進文件的新要求：每次照做之前，要先猜對方將來會怎麼想。', { lick: 8, boss: 10, mood: -14, dream: -6 })
+    ]
+  }
+  ,{
+    id: 'pm-human-buffer', title: '測試環境取消，緩衝層改成 PM', era: '史冊改編・正式環境見', sourceIds: ['productLore'], roles: ['system', 'ai', 'mis', 'project', 'product'], weight: 1.2,
+    body: '你建議先在測試環境確認產品整合，Wing 說不要浪費時間，正式上線才知道問題。至於客戶的反應，他指向 PM：「有人協調就好。」系統圖裡的緩衝層，突然有了健保卡。',
+    wing: '想那麼多幹嘛？有問題再改，PM 就是要會處理這些。',
+    choices: [
+      choice('縮小上線範圍，先驗證最容易出事的一段。', '', '你把風險壓到能處理的範圍。Wing 覺得進度不夠快，PM 看你的眼神倒是像看見消防通道。', { skill: 12, trust: 11, boss: -12, energy: -8, mood: -6 }, ['evidence']),
+      choice('先照要求推進，整晚留在線上。', '', '系統上線，通知也上線。Wing 稱讚執行力，PM 和你一起把這份執行力收拾到凌晨。', { boss: 12, skill: 5, energy: -17, mood: -15 }, ['allin']),
+      choice('把測試、回復與客戶溝通分工列清楚。', '', '大家終於知道自己要做什麼。Wing 問怎麼有這麼多流程，你看著那個原本只寫「PM」的風險欄，覺得它總算比較像人話。', { skill: 9, trust: 9, boss: -10, energy: -7, mood: -5 }, ['evidence'])
+    ]
+  },
+  {
+    id: 'ai-replaces-tests', title: '老闆用 AI 寫完了，剩下都是你的', era: '史冊改編・工程師轉型', sourceIds: ['productLore'], roles: ['system', 'ai', 'mis', 'design', 'project', 'product'],
+    body: 'Wing 宣布以後自己用 AI 寫程式，工程師只要測試。第一份成品看起來很完整，按下按鈕後什麼也沒發生。你的工作範圍突然縮成兩個字：其餘。',
+    wing: '你看，幾分鐘就能寫出來。你們以前到底在忙什麼？',
+    choices: [
+      choice('逐一測試，把缺的功能整理成清單。', '', '清單很長，Wing 說你怎麼一直挑毛病。你想這就是他剛剛宣布的新工作，只是工作成果不太討喜。', { skill: 12, trust: 7, boss: -14, energy: -9, mood: -9 }, ['evidence']),
+      choice('先稱讚雛形，再默默把功能補完。', '', '展示終於能跑，Wing 更確定 AI 已經取代大部分工程工作。你在背後完成的那部分，恰好不算在他的統計裡。', { skill: 7, lick: 8, boss: 12, energy: -15, mood: -14 }),
+      choice('請他示範一遍完整操作流程。', '', '示範卡在第二步，問題終於有了共同畫面。Wing 把鍵盤推給你，說現在輪到你展示專業了。', { slack: 7, skill: 6, boss: -11, mood: -6, energy: -5 }, ['archive'])
+    ]
+  },
+  {
+    id: 'platform-link-willpower', title: '不能點的連結，被判定是不夠用心', era: '史冊改編・平台功能許願', sourceIds: ['designLore'], roles: ['design', 'bd', 'sales', 'product', 'project'],
+    body: '這次活動使用的貼文版型不能直接放可點擊連結，你提供了替代入口。Wing 看完問為什麼不能直接點。平台功能的限制，到公司裡變成了你的態度問題。',
+    wing: '不要只跟我講限制，你有沒有真的想辦法？',
+    choices: [
+      choice('示範可用入口，讓大家選一個方案。', '', '大家完成了選擇。你沒有改造整個平台，卻花半天讓一個本來就存在的入口得到正式認可。', { skill: 10, trust: 6, boss: -7, energy: -7, mood: -7 }, ['evidence']),
+      choice('先說會研究，再換個位置放入口。', '', '同一個替代方案用「研究成果」的名義回來，這次順利通過。你發現路徑沒有變，只有尊重被重新命名。', { lick: 8, boss: 10, slack: 6, mood: -10 }),
+      choice('列出限制，請主管直接操作一次。', '', 'Wing 點了三次，連結依然沒有向管理職屈服。你終於可以回到設計工作，空氣卻比剛才冷了一點。', { skill: 6, boss: -16, mood: -5, trust: 5 }, ['archive'])
+    ]
+  },
+  {
+    id: 'efficiency-network-block', title: '為了提高效率，工作網站一起封了', era: '史冊改編・網路管理', speaker: 'sonny', sourceIds: ['officeLore', 'resourceLore'],
+    body: '公司決定限制上班看影片，新的網路規則一上線，連部分工作頁面也打不開。群組裡沒人在看影片了，大家都在問為什麼工作做不了。效率報告看起來應該很乾淨。',
+    wing: '先把不能用的處理好，但限制不能放掉。',
+    choices: [
+      choice('整理受影響清單，協助逐項調整規則。', '', '工作頁面逐漸恢復，你的原定工作逐漸延後。大家感謝救火，造成火勢的那張規則單沒有出來致詞。', { skill: 10, trust: 10, energy: -11, mood: -9 }, ['evidence']),
+      choice('把卡住的工作與時間一起回報。', '', '報告準確記錄了效率改善期間損失的效率。Wing 不喜歡這種寫法，但問題總算被當成問題。', { skill: 6, boss: -14, mood: -7, energy: -5 }, ['evidence']),
+      choice('先做離線工作，等窗口修復。', '', '你完成幾件不用登入的事。主管問進度時，你把那個載入失敗的畫面一起附上，省下一場口頭網速測試。', { slack: 8, energy: 4, boss: -7, mood: -5 })
+    ]
+  },
+  {
+    id: 'interview-wrong-paper', title: '考卷發錯了，請工程師重新出題', era: '史冊改編・招募流程', speaker: 'hope', sourceIds: ['resourceLore', 'officeLore'], minTurn: 3,
+    body: '面試者拿到別組的考題，分數不理想。Hope 要你重出一份回家作業，順便問考卷可不可以護貝重用。你原本下午要修系統，現在正在為四張紙與一場誤會開流程檢討。',
+    wing: '人選要求不低，我們一定要多確認，不能浪費公司的資源。',
+    choices: [
+      choice('先對齊職缺與測驗目的，再安排重測。', '', '流程總算回到要找什麼人。你花掉半個下午，阻止錯的考卷替一個尚未入職的人寫完整份評語。', { skill: 9, trust: 8, energy: -10, mood: -8, boss: -7 }, ['evidence']),
+      choice('快速出一份新題，先把這關過完。', '', 'Hope 覺得你很有效率。你的系統待辦仍在原地，沒有人幫它重新安排面試時間。', { boss: 9, skill: 5, energy: -12, mood: -11 }),
+      choice('把現有題庫分類，請對應主管接手。', '', '下一位面試者至少會拿到對的題目。你沒有替全公司重新發明招募，只是讓檔名終於跟內容一致。', { skill: 8, slack: 7, boss: -9, energy: -5, mood: -4 }, ['archive'])
+    ]
+  },
+  {
+    id: 'extension-big-company', title: '分機多一位數，公司就大了一點', era: '史冊改編・辦公室規模', speaker: 'jenjen', sourceIds: ['officeLore'],
+    body: '搬辦公室後，兩位數分機被嫌看起來像小公司，決定改成三位數。你準備更新清單，另一位主管又問這層樓到底需不需要電話。組織還沒變大，待辦已經先成長了。',
+    wing: '這種門面很重要，客戶一聽就知道我們的規模。',
+    choices: [
+      choice('確認使用需求，再統一修改設定與名單。', '', '電話能用了，名單也正確。沒有人因此多出一位同事，但你終於可以少接幾通問分機的電話。', { skill: 9, slack: 7, trust: 5, energy: -8, mood: -6 }, ['evidence']),
+      choice('先替新分機做一張很有規模的公告。', '', '公告看起來像跨國企業，電話依然在同一間辦公室響。主管很滿意，你的設計能力又完成一次行政轉職。', { lick: 8, boss: 11, energy: -7, mood: -10 }),
+      choice('請兩位主管先對齊需要哪些設備。', '', '討論再開一輪，最後清單短了一點。你省下一部分無效設定，也收到一句「不要什麼都等我們決定」。', { skill: 7, boss: -12, energy: -5, mood: -6 }, ['evidence'])
+    ]
+  }
+].map((event) => ({ minRules: 2, ...event })));

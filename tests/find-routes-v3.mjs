@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { ROLES } from '../dist/roles.js';
 import { FAMILIES, ENDINGS } from '../dist/endings.js';
-import { createRun, getEvent, applyChoice, advance, requestExit, validRun } from '../dist/engine.js';
+import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, validRun } from '../dist/engine.js';
 
 export function replayRoute(route, verify = () => {}) {
   let run = createRun(route.roleId, route.seed);
@@ -11,6 +11,7 @@ export function replayRoute(route, verify = () => {}) {
   checkpoint();
   for (const action of route.actions) {
     if (action.type === 'exit') run = requestExit(run);
+    else if (action.type === 'break') run = requestBreak(run);
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
@@ -47,7 +48,7 @@ function utility(run,target) {
 }
 
 export function simulate(roleId,target,attempt) {
-  const seed=`e1-${roleId}-${target}-${attempt}`;
+  const seed=`e2-${roleId}-${target}-${attempt}`;
   let run=createRun(roleId,seed),actions=[];
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
@@ -55,6 +56,11 @@ export function simulate(roleId,target,attempt) {
   const leave=()=>{actions.push({type:'exit'});run=requestExit(run);};
   const careerTarget=()=>target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
   for(let step=0;step<100&&!run.completed;step++) {
+    if(canRequestBreak(run)&&run.stats.mood<30&&run.stats.cash>35&&!['broke','burnout'].includes(target)){
+      const menu=requestBreak(run),options=getEvent(menu).choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false&&c.effect==='finishBreak');
+      const best=options.map(({i})=>({i,score:utility(applyChoice(menu,i),target)})).sort((a,b)=>b.score-a.score)[0];
+      if(best&&best.score>utility(run,target)){actions.push({type:'break'});run=menu;choose(best.i);continue;}
+    }
     const ev=getEvent(run);
     if(target==='ragequit'&&run.eventId==='onboarding'){choose(2);continue;}
     if(careerTarget()&&!['exit-menu','career-exit'].includes(run.eventId)){leave();continue;}
@@ -78,7 +84,7 @@ export function simulate(roleId,target,attempt) {
     }
     if(run.eventId==='pip-passed') {choose(target==='pip_exit'?0:1);continue;}
     if(run.eventId==='crisis-mood'){
-      choose(target==='broke'?1:run.stats.energy<25&&run.stats.cash>20?1:2);continue;
+      choose(ev.choices[1].available!==false&&(target==='broke'||run.stats.energy<25&&run.stats.cash>20)?1:2);continue;
     }
     if(run.eventId==='final-shortfall'){choose(0);continue;}
     if(run.eventId==='salary-cut'){choose(target==='broke'?0:applyChoice(run,2).pendingEffect==='salaryRescind'?2:0);continue;}
@@ -126,7 +132,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   }
   const hash=name=>createHash('sha256').update(readFileSync(new URL(`../dist/${name}.js`,import.meta.url))).digest('hex');
   return {
-    method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
+    method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
     sourceSha256:Object.fromEntries(['engine','roles','education','events','endings'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,

@@ -42,6 +42,12 @@ test('completion input is bounded and prototype names cannot become roles', () =
   ]) assert.throws(() => validateCompletion({ ...validBody, ...changes }, { ai: {} }), error => error.status === 400);
 });
 
+test('self-care action is accepted only for new-rule seeds and still requires replay validation', () => {
+  const body={...validBody,seed:'e2-api-self-care',actions:[{type:'break'}]};
+  assert.deepEqual(validateCompletion(body,{ai:{}}),body);
+  for(const seed of ['api-test','e1-api-self-care']) assert.throws(()=>validateCompletion({...body,seed},{ai:{}}), error=>error.status===400);
+});
+
 test('rate guard allows ten per player per ten seconds and resets', () => {
   const guard = new RateGuard();
   for (let i = 0; i < 10; i++) guard.check('one', 1_000);

@@ -1,0 +1,327 @@
+[
+  {
+    "roleId": "executive",
+    "seed": "e1-executive-layoff-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ceo-tea-drop",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-menu-freedom",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 1
+      }
+    ],
+    "ending": "layoff-executive",
+    "stateSha256": "123cb3ef69b787c620fdfdfe9f9a1eda36e61602a21cf301b322f7078fd2a6b7"
+  },
+  {
+    "roleId": "system",
+    "seed": "e1-system-pip_exit-1",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "invisible-effort",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "meeting-ten-minutes",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "feedback-survey",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-menu-freedom",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "contract-concern-chain",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 0
+      }
+    ],
+    "ending": "pip_exit-system",
+    "stateSha256": "ed3994b0cf7181dfa5eeb10f659a565b2d528e3d68b4b78b3ace8c2408dc80c3"
+  },
+  {
+    "roleId": "system",
+    "seed": "e1-system-nasdaq-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "dinner-budget",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ceo-tea-drop",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "help-at-six",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "invisible-effort",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "system-backup",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "icml-reading-club",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "deadline-yesterday",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "education-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "degree-ntu-footnote",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "sea-deck-tonight",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "slack-seven-lives",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-bali-roadmap",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "telepathy-spec",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-investor-deck",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "holiday-guilt",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "bell-before-product",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "payday-tiny-victory",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "free-test-project",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rmn-summit-adapter",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "expense-delay",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "finale",
+        "index": 0
+      }
+    ],
+    "ending": "nasdaq-system",
+    "stateSha256": "620b3e805366d4b6c394a59065a0aeee7817b27670086b1b3e1f98f3a5099333"
+  },
+  {
+    "roleId": "project",
+    "seed": "e1-project-historian-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "meme-archive",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-bali-roadmap",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ceo-tea-drop",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "project-four-urgent",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-menu-freedom",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "sea-deck-tonight",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "meeting-ten-minutes",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "cdp-single-truth",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "first-day-map",
+        "index": 2
+      },
+      {
+        "type": "exit"
+      },
+      {
+        "type": "choice",
+        "eventId": "exit-menu",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "career-exit",
+        "index": 4
+      }
+    ],
+    "ending": "historian-project",
+    "stateSha256": "1be58743a7a7a3b7649283c43a3b3662f1fe73c5b768e89abc844095dcb6070b"
+  }
+]

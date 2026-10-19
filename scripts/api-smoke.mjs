@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { randomBytes, randomUUID } from 'node:crypto';
-import { createRun, applyChoice, advance } from '../dist/engine.js';
+import { createRun, applyChoice, advance, requestBreak, requestExit, canRequestBreak } from '../dist/engine.js';
 
 const base = (process.env.API_BASE || 'http://127.0.0.1:4174').replace(/\/$/, '');
 const parsed = new URL(base);
@@ -69,10 +69,30 @@ const serializedStats = JSON.stringify(after.body);
 assert.ok(!serializedStats.includes(player.body.playerId)); assert.ok(!serializedStats.includes(first));
 assert.deepEqual(Object.keys(after.body).sort(), ['averageTurns', 'daily', 'endings', 'players', 'roles', 'totalRuns', 'uniqueEndings'].sort());
 
+// Verify the real server can replay the new self-care action, with a separate local identity.
+const restToken=token();
+status(await call('/api/player',{method:'POST',body:{token:restToken}}),200);
+let rested;
+for(let i=0;i<100;i++){
+  const candidate=advance(applyChoice(createRun('system',`e2-api-break-${i}`),0));
+  if(canRequestBreak(candidate)){rested=candidate;break;}
+}
+assert.ok(rested,'expected a natural workday eligible for self-care');
+rested=requestBreak(rested);
+rested=advance(applyChoice(rested,0));
+rested=requestExit(rested);
+rested=advance(applyChoice(rested,0));
+assert.equal(rested.completed,true);
+const restCompletion={runId:randomUUID(),roleId:rested.roleId,seed:rested.seed,actions:rested.actions};
+const restRecorded=await call('/api/complete',{method:'POST',auth:restToken,body:restCompletion});
+status(restRecorded,200);assert.equal(restRecorded.body.endingId,rested.endingId);
+const forgedBreak={...restCompletion,runId:randomUUID(),actions:[{type:'break'},...rested.actions]};
+status(await call('/api/complete',{method:'POST',auth:restToken,body:forgedBreak}),400);
+
 const rateToken = token();
 status(await call('/api/player', { method: 'POST', body: { token: rateToken } }), 200);
 for (let i = 0; i < 9; i++) status(await call('/api/me', { auth: rateToken }), 200);
 const limited = await call('/api/me', { auth: rateToken }); status(limited, 429); assert.equal(limited.headers.get('Retry-After'), '10');
 status(await call('/api/does-not-exist'), 404);
 status(await call('/api/player'), 405);
-console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, rate guard.');
+console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, self-care replay and tamper rejection, rate guard.');
