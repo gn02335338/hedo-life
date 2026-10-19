@@ -1,0 +1,421 @@
+[
+  {
+    "roleId": "system",
+    "seed": "e3-system-nasdaq-11",
+    "target": "nasdaq",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "office-access-escape-room",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-phone-wakeup",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "system-weekend",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-formula-owner",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "travel-staff-prize",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "system-backup",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "payday-tiny-victory",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "dinner-budget",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "sea-deck-tonight",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "cdp-single-truth",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "disk-suitcase-cloud",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-copy-proofreader",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "meme-archive",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "telepathy-spec",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-bali-roadmap",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "tissue-real-name",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "patent-php-hybrid",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-two-voices",
+        "index": 2
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-replaces-tests",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "finale",
+        "index": 0
+      }
+    ],
+    "ending": "nasdaq-system",
+    "turns": 23,
+    "stats": {
+      "energy": 48,
+      "cash": 43,
+      "trust": 100,
+      "dream": 75,
+      "boss": 67,
+      "mood": 48,
+      "skill": 95,
+      "slack": 100,
+      "lick": 100
+    },
+    "flags": {
+      "endure": 1,
+      "evidence": 6,
+      "archive": 2,
+      "allin": 3,
+      "promotions": 3,
+      "global": 2,
+      "final_global": 1
+    },
+    "assignment": "honest",
+    "rank": 3,
+    "stateSha256": "5076cbdcfd625e2e0953e40f572c09fbbaf9e03f89ef64124c46b928cac2cdb7"
+  },
+  {
+    "roleId": "system",
+    "seed": "e3-system-pip_exit-0",
+    "target": "pip_exit",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "monitor-chain",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-architecture-relic",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-four-am-delivery",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "boss-weather",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "first-day-map",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "meeting-ten-minutes",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 0
+      }
+    ],
+    "ending": "pip_exit-system",
+    "turns": 7,
+    "stats": {
+      "energy": 62,
+      "cash": 66,
+      "trust": 79,
+      "dream": 44,
+      "boss": 0,
+      "mood": 32,
+      "skill": 75,
+      "slack": 59,
+      "lick": 53
+    },
+    "flags": {
+      "bait_switch": 1,
+      "evidence": 5,
+      "archive": 1,
+      "pip_passed": 1
+    },
+    "assignment": "swapped",
+    "rank": 0,
+    "stateSha256": "01e032ba8cd23951f067e26383212e4aa781433896c2ec6f32260bb79ffa3d06"
+  },
+  {
+    "roleId": "system",
+    "seed": "e3-system-layoff-0",
+    "target": "layoff",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pm-human-buffer",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 1
+      }
+    ],
+    "ending": "layoff-system",
+    "turns": 2,
+    "stats": {
+      "energy": 64,
+      "cash": 60,
+      "trust": 66,
+      "dream": 48,
+      "boss": 8,
+      "mood": 74,
+      "skill": 77,
+      "slack": 65,
+      "lick": 61
+    },
+    "flags": {
+      "evidence": 2
+    },
+    "assignment": "honest",
+    "rank": 0,
+    "stateSha256": "4382a728a0bc8acbd9b4167bd12a3151724a228119a21f0c49dd3242ec3e6674"
+  },
+  {
+    "roleId": "system",
+    "seed": "e3-system-historian-1",
+    "target": "historian",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-phone-wakeup",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "private-coffee",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "meme-archive",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "api-bill-surprise",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-replaces-tests",
+        "index": 2
+      },
+      {
+        "type": "exit"
+      },
+      {
+        "type": "choice",
+        "eventId": "exit-menu",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "career-exit",
+        "index": 4
+      }
+    ],
+    "ending": "historian-system",
+    "turns": 6,
+    "stats": {
+      "energy": 60,
+      "cash": 67,
+      "trust": 74,
+      "dream": 42,
+      "boss": 43,
+      "mood": 10,
+      "skill": 86,
+      "slack": 72,
+      "lick": 73
+    },
+    "flags": {
+      "endure": 2,
+      "archive": 4,
+      "evidence": 1,
+      "pay_cut": 1
+    },
+    "assignment": "honest",
+    "rank": 0,
+    "stateSha256": "dd8da590a00047a7db27b813e9978fdeda3ab5ec9ee816a317f92911c8b4592e"
+  }
+]

@@ -8,7 +8,7 @@ export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 const hash = value => {let h=2166136261;for(const c of String(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0||1;};
@@ -143,7 +143,7 @@ const WEATHER=[{text:'Wing看完官網英文，決定對全世界不爽。',delt
 function nextNormal(run){
  if(run.turn>=20&&run.turn<MAX_TURNS)return FANTASY_EVENTS[run.turn-20].id;
  if(run.turn>=MAX_TURNS)return 'career-exit';
- const supported=ev=>(ev.minRules??0)<=contentRules(run);
+ const supported=ev=>(ev.minRules??0)<=contentRules(run)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0));
  let pool=EVENTS.filter(ev=>supported(ev)&&!run.seen.includes(ev.id)&&(ev.minTurn??0)<=run.turn&&(ev.maxTurn??99)>=run.turn&&(!ev.roles||ev.roles.includes(run.actualRoleId)||ev.roles.includes(run.roleId)));
  if(!pool.length)pool=EVENTS.filter(ev=>supported(ev)&&(!ev.roles||ev.roles.includes(run.actualRoleId)||ev.roles.includes(run.roleId)));
  const weighted=pool.map(ev=>({ev,w:(ev.weight||1)*(ev.roles?2:1)}));let n=roll(run)*weighted.reduce((v,x)=>v+x.w,0);for(const {ev,w}of weighted){n-=w;if(n<=0)return ev.id;}return pool.at(-1).id;
@@ -161,9 +161,14 @@ export function applyChoice(run,index){
  const next=structuredClone(run);const before={...run.stats},modern=rules2(run),breakdown=[];next.lastWeather=null;
  const change=(source,label,delta)=>{const actual={};for(const [key,value]of Object.entries(delta)){const previous=next.stats[key];next.stats[key]=clamp(previous+value);if(next.stats[key]!==previous)actual[key]=next.stats[key]-previous;}if(modern&&Object.keys(actual).length)breakdown.push({source,label,delta:actual});};
  next.actions.push({type:'choice',eventId:event.id,index});
- let chanceOutcome=null,choice=originalChoice;
+ let chanceOutcome=null,choice=originalChoice,eventOutcome=null;
+ if(contentRules(run)>=4&&choice.draw){
+  let ticket=roll(next)*choice.draw.outcomes.reduce((total,outcome)=>total+outcome.weight,0);
+  const selected=choice.draw.outcomes.find(outcome=>(ticket-=outcome.weight)<0)||choice.draw.outcomes.at(-1);
+  choice={...choice,...selected};eventOutcome={label:choice.draw.label,result:selected.label};
+ }
  if(choice.check){const passed=roll(next)<choice.check.chance;choice={...choice,...choice.check[passed?'success':'failure']};chanceOutcome=passed?'success':'setback';}
- change('choice','選擇結果',Object.fromEntries(STAT_KEYS.map(k=>[k,choice.delta[k]||0])));
+ change('choice',eventOutcome?`${eventOutcome.label}：${eventOutcome.result}`:'選擇結果',Object.fromEntries(STAT_KEYS.map(k=>[k,choice.delta[k]||0])));
  for(const name of choice.flags||[])flag(next,name);
  let result=choice.result;let effect=choice.effect;
  if(event.kind==='daily'||event.kind==='fantasy'){
@@ -213,7 +218,7 @@ export function applyChoice(run,index){
  if(!family&&next.stats.energy<=0)family='burnout';
  if(!family&&choice.flags?.some(x=>['final_global','final_taiwan','final_acquire'].includes(x))){const goal=choice.flags.includes('final_global')?'nasdaq':choice.flags.includes('final_taiwan')?'taiwan':'acquired';if(endingEligibility(next,goal))family=goal;else effect='shortfall';}
  if(event.id==='onboarding'&&index<2)result+=` 目前實際職稱：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
- next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{})});
+ next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{})});
  next.pending=true;next.pendingEffect=effect;next.pendingFamily=family;return next;
 }
 function rolePay(run){return Math.round(run.basePay*(1+run.rank*.15));}
@@ -281,6 +286,7 @@ export function validRun(run){
   if(run.completed){if(run.pending||run.eventId!==null||!ENDINGS.some(e=>e.id===run.endingId&&e.roleId===run.roleId))return false;}else {if(typeof run.eventId!=='string'||!getEvent(run))return false;}
   if(run.pending&&!run.history.length)return false;
   if(run.pendingFamily!==null&&!ENDINGS.some(e=>e.id===`${run.pendingFamily}-${run.roleId}`))return false;
+  if(run.history.some(h=>h?.eventOutcome&&(![h.eventOutcome.label,h.eventOutcome.result].every(v=>typeof v==='string'&&v.length<=100))))return false;
   return run.history.every(h=>h&&typeof h.eventId==='string'&&typeof h.title==='string'&&typeof h.choiceText==='string'&&typeof h.result==='string'&&Array.isArray(h.sourceIds)&&h.delta&&STAT_KEYS.every(k=>Number.isFinite(h.delta[k])&&Math.abs(h.delta[k])<=100)&&(!rules2(run)||(Array.isArray(h.breakdown)&&h.breakdown.every(part=>part&&typeof part.source==='string'&&typeof part.label==='string'&&part.delta&&Object.entries(part.delta).every(([k,v])=>STAT_KEYS.includes(k)&&Number.isFinite(v)&&Math.abs(v)<=100)))));
  }catch{return false;}
 }

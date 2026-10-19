@@ -74,7 +74,7 @@ const restToken=token();
 status(await call('/api/player',{method:'POST',body:{token:restToken}}),200);
 let rested;
 for(let i=0;i<100;i++){
-  const candidate=advance(applyChoice(createRun('system',`e3-api-break-${i}`),0));
+  const candidate=advance(applyChoice(createRun('system',`e4-api-break-${i}`),0));
   if(canRequestBreak(candidate)){rested=candidate;break;}
 }
 assert.ok(rested,'expected a natural workday eligible for self-care');
