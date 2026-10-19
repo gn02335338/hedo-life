@@ -3,13 +3,14 @@ import { EVENTS, FANTASY_EVENTS } from './events.js';
 import { ENDINGS } from './endings.js';
 import { rollEducation, educationLabel } from './education.js';
 import { applyEventCopy, polishEngineText } from './engine-copy.js';
+import { KIND_BREAK_CHANCE, getKindBreak } from './kind-break.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
 export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'老闆心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 const hash = value => {let h=2166136261;for(const c of String(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0||1;};
@@ -107,6 +108,9 @@ function rawGetEvent(run){
  skillChoice(run,'把他的話做成金句，附在升遷簡報首頁。',`舔老闆 ≥65、老闆心情 ≥60（${s.lick}／${s.boss}）`,flattering,'你的簡報只有七頁，Wing的名字出現十八次。組織圖當場動了。','你以為是在表忠，他覺得你在套招。「你以為這樣就能升？」','promote',{lick:8,trust:-10,boss:8,cash:6},{mood:-6,boss:-8}),
  c('先不要升。我只想把下班時間保住。','心情與體力回復；偷懶能力增加。','你禮貌拒絕了「被更多人找到」的權利。公司少一位主管，你多一個晚上。',{mood:12,energy:10,slack:10,boss:-6},'declinePromotion')
  ],'career');}
+ case 'kind-break':{
+ if(contentRules(run)<6||!run.breakReturnEventId)throw new Error('Invalid Kind break');
+ return getKindBreak(run);}
  case 'self-care':{
  if(!modern||!run.breakReturnEventId)throw new Error('Invalid break');
  return {...e('self-care','這筆錢，先花在自己身上。','行事曆的空白總會被公司填滿。你決定先替自己留一格，花的是遊戲存款，買回來的是一點能夠繼續選擇的心情。今天想怎麼對自己好一點？','通知先靜音。這次不用問公司的願景。',[
@@ -232,6 +236,7 @@ export function advance(run){
  if(!run.pending||run.completed)return run;
  const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(next.pendingFamily)return finish(next,next.pendingFamily);
+ if(contentRules(next)>=6&&effect==='kindDecline'){next.eventId='self-care';return next;}
  if(rules2(next)&&['finishBreak','cancelBreak'].includes(effect)){next.eventId=next.breakReturnEventId;next.breakReturnEventId=null;return next;}
  if(effect==='paperwork'){next.eventId='paperwork';return next;}
  if(effect==='pipPassed'){next.eventId='pip-passed';return next;}
@@ -256,8 +261,8 @@ export function advance(run){
  return next;
 }
 export function canRequestBreak(run){return !!(run&&rules2(run)&&!run.pending&&!run.completed&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getEvent(run)?.kind));}
-export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;next.eventId='self-care';return next;}
-export function requestExit(run){if(!run||run.pending||run.completed)return run;if(['exit-menu','career-exit','self-care'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;next.eventId=contentRules(next)>=6&&roll(next)<KIND_BREAK_CHANCE?'kind-break':'self-care';return next;}
+export function requestExit(run){if(!run||run.pending||run.completed)return run;if(['exit-menu','career-exit','self-care','kind-break'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 export function replayRun(roleId,seed,actions){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -283,7 +288,7 @@ export function validRun(run){
   if(typeof run.educationReviewed!=='boolean'||typeof run.salaryCutOffered!=='boolean'||!Array.isArray(run.actions)||run.actions.length>300)return false;
   if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
   if(rules2(run)&&(!Number.isInteger(run.lastBreakTurn)||run.lastBreakTurn< -1||run.lastBreakTurn>run.turn||!(run.breakReturnEventId===null||typeof run.breakReturnEventId==='string')))return false;
-  if(rules2(run)&&run.breakReturnEventId!==null&&(run.eventId!=='self-care'||!['daily','fantasy'].includes(getEvent({...run,eventId:run.breakReturnEventId})?.kind)))return false;
+  if(rules2(run)&&run.breakReturnEventId!==null&&(!['self-care',...(contentRules(run)>=6?['kind-break']:[])].includes(run.eventId)||!['daily','fantasy'].includes(getEvent({...run,eventId:run.breakReturnEventId})?.kind)))return false;
   if(run.salaryCut&&(!Number.isInteger(run.salaryCut.from)||!Number.isInteger(run.salaryCut.to)||run.salaryCut.to<1||run.salaryCut.to>run.salaryCut.from||!Number.isInteger(run.salaryCut.percent)||!['pending','accepted','rescinded'].includes(run.salaryCut.status)))return false;
   if(!run.stats||!STAT_KEYS.every(k=>Number.isFinite(run.stats[k])&&run.stats[k]>=0&&run.stats[k]<=100))return false;
   if(!run.flags||Array.isArray(run.flags)||typeof run.flags!=='object'||!Object.values(run.flags).every(n=>Number.isInteger(n)&&n>=0&&n<=500))return false;

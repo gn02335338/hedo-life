@@ -1,0 +1,472 @@
+[
+  {
+    "roleId": "system",
+    "seed": "e5-system-nasdaq-15",
+    "target": "nasdaq",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "slack-seven-lives",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rmn-summit-adapter",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "copy-master-late",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "feedback-survey",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "private-coffee",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "degree-ntu-footnote",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-ranked-architecture",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "system-printer",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-investor-deck",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "cdn-teacher-license",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "overtime-version-history",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 2
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "meme-archive",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "reading-list-rush",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-common-fund",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "tissue-real-name",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-self-reminder",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "dragon-office-quiz",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "video-message-workout",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-formula-owner",
+        "index": 2
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "finale",
+        "index": 0
+      }
+    ],
+    "ending": "nasdaq-system",
+    "turns": 23,
+    "stats": {
+      "energy": 50,
+      "cash": 50,
+      "trust": 90,
+      "dream": 74,
+      "boss": 62,
+      "mood": 16,
+      "skill": 95,
+      "slack": 85,
+      "lick": 100
+    },
+    "flags": {
+      "endure": 1,
+      "archive": 5,
+      "evidence": 8,
+      "pip_passed": 1,
+      "promotions": 1,
+      "global": 2,
+      "allin": 2,
+      "final_global": 1
+    },
+    "assignment": "honest",
+    "rank": 1,
+    "stateSha256": "f443383e1e2ad6c7a050ac18ba49bc77c9dfa39f20ca974046e715655343b078",
+    "savedStateSha256": "017321d1ca6848d270af50de69493f7a59fc013cb43749184ad44a325a0c3e73"
+  },
+  {
+    "roleId": "system",
+    "seed": "e5-system-pip_exit-0",
+    "target": "pip_exit",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "english-class",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "telepathy-spec",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "bing-rumor",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "reply-weekend",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "video-message-workout",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 0
+      }
+    ],
+    "ending": "pip_exit-system",
+    "turns": 6,
+    "stats": {
+      "energy": 57,
+      "cash": 47,
+      "trust": 64,
+      "dream": 48,
+      "boss": 11,
+      "mood": 75,
+      "skill": 64,
+      "slack": 70,
+      "lick": 61
+    },
+    "flags": {
+      "evidence": 4,
+      "loop": 1,
+      "allin": 1,
+      "pip_passed": 1
+    },
+    "assignment": "honest",
+    "rank": 0,
+    "stateSha256": "dfce031abd7165e75bc02a282296215dff404b5adc210b5ab9a15bccde287237",
+    "savedStateSha256": "2b6a875665c64c6146447d8448d8436c2aa996b305ca3bb82d794a3878256f6a"
+  },
+  {
+    "roleId": "system",
+    "seed": "e5-system-layoff-0",
+    "target": "layoff",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "chips-linear-algebra",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "video-pizza-overtime",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "patent-php-hybrid",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 1
+      }
+    ],
+    "ending": "layoff-system",
+    "turns": 4,
+    "stats": {
+      "energy": 76,
+      "cash": 60,
+      "trust": 71,
+      "dream": 48,
+      "boss": 0,
+      "mood": 46,
+      "skill": 54,
+      "slack": 77,
+      "lick": 73
+    },
+    "flags": {
+      "evidence": 2
+    },
+    "assignment": "honest",
+    "rank": 0,
+    "stateSha256": "bede476362fa45109e222b16816d1976aa0f224b93fee797d20405a56896cd8e",
+    "savedStateSha256": "a7e9b166f3d73a2ea6282b640bd919d35320158ab678f0a32481467bc8159456"
+  },
+  {
+    "roleId": "system",
+    "seed": "e5-system-historian-0",
+    "target": "historian",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "aircon-career",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-cheer-clock",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "meme-archive",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "farewell-perfect-attendance",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "ok-means-received",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "extension-big-company",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "blame-debate",
+        "index": 2
+      },
+      {
+        "type": "exit"
+      },
+      {
+        "type": "choice",
+        "eventId": "exit-menu",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "career-exit",
+        "index": 4
+      }
+    ],
+    "ending": "historian-system",
+    "turns": 8,
+    "stats": {
+      "energy": 67,
+      "cash": 66,
+      "trust": 93,
+      "dream": 48,
+      "boss": 20,
+      "mood": 21,
+      "skill": 65,
+      "slack": 85,
+      "lick": 71
+    },
+    "flags": {
+      "endure": 2,
+      "archive": 4,
+      "pay_cut": 1,
+      "evidence": 2
+    },
+    "assignment": "honest",
+    "rank": 0,
+    "stateSha256": "18d53379f1bc658246572d0f5342cc4e10e9b45d5ad1c81a88d7ef3f13175fa0",
+    "savedStateSha256": "28cc11dc17e0f83363fc8e993675bd74a0a4207a674a2f299465dc25d6ba20d6"
+  }
+]
