@@ -13,7 +13,7 @@ const hash = value => {let h=2166136261;for(const c of String(value)){h^=c.charC
 function roll(run){let x=run.rng;x^=x<<13;x^=x>>>17;x^=x<<5;run.rng=x>>>0||1;return run.rng/4294967296;}
 function flag(run,name,n=1){run.flags[name]=(run.flags[name]||0)+n;}
 const c=(text,detail,result,delta={},effect=null,flags=[])=>({text,detail,result,delta,effect,flags});
-const e=(id,title,body,wing,choices,kind='crisis',speaker=null)=>({id,title,body,wing,speaker:speaker||({'crisis-boss':'exit-team',paperwork:'exit-team','pip-review':'hope','pip-passed':'hope','salary-cut':'hope','salary-final':'hope'}[id]||'wing'),choices,kind,era:kind==='career'?'人事異動':'突發人事事件',sourceIds:[]});
+const e=(id,title,body,wing,choices,kind='crisis',speaker=null)=>({id,title,body,wing,speaker:speaker||({'crisis-boss':'exit-team',paperwork:'exit-team','pip-review':'hope','pip-passed':'hope','salary-cut':'hope','salary-final':'hope'}[id]||'wing'),choices,kind,era:kind==='onboarding'?'入職報到':kind==='career'?'人事異動':'突發人事事件',sourceIds:[]});
 export function jobTitle(run){const role=ROLE_MAP[run.actualRoleId];return run.assignment==='assistant'?role.assistantTitle:role.ladder[Math.min(run.rank,role.ladder.length-1)];}
 export function bossLabel(n){return n<=12?'準備找你談談':n<30?'看誰都不順眼':n<60?'今天還算陰天':n<85?'龍心尚可':'聖眷正濃';}
 export function createRun(roleId,seed=Date.now()){
