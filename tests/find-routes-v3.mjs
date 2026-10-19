@@ -3,6 +3,8 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { ROLES } from '../dist/roles.js';
 import { FAMILIES, ENDINGS } from '../dist/endings.js';
+import { CAREER_FAMILIES, careerEndingAvailable } from '../dist/career.js';
+import { eligibleStoryEndings } from '../dist/story-career.js';
 import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, validRun } from '../dist/engine.js';
 
 export function replayRoute(route, verify = () => {}) {
@@ -24,6 +26,7 @@ export function replayRoute(route, verify = () => {}) {
 }
 
 const safe = (value, minimum) => value < minimum ? (value-minimum)*8 : 0;
+const evChoiceIndex=(event,effect)=>event.choices.findIndex(choice=>choice.effect===effect&&choice.available!==false);
 function utility(run,target) {
   const s=run.stats, f=run.flags;
   let value=safe(s.energy,18)+safe(s.cash,18)+safe(s.mood,20);
@@ -40,6 +43,18 @@ function utility(run,target) {
   if(target==='sycophant') value+=Math.min(s.lick,75)*3+Math.min(s.boss,68)*3;
   if(target==='assistant'&&run.roleId==='executive')value+=Math.max(0,65-s.boss)*2+safe(s.boss,16);
   if(target==='historian') value+=Math.min(f.archive||0,4)*45;
+  const careerRank=CAREER_FAMILIES.indexOf(target);
+  if(careerRank>=0||target==='consultant'){
+    const rank=careerRank>=0?careerRank:2;
+    value+=Math.min(run.rank,rank)*180+Math.min(s.skill,90)*1.8+Math.min(s.trust,75)*1.2+Math.min(s.boss,82)*1.6+safe(s.boss,42);
+    if(run.assignment==='assistant')value-=200;
+    if(run.rank===rank&&careerEndingAvailable(run))value+=150;
+  }
+  if(target==='second_offer')value+=Math.min(f.offer_checked||0,2)*100+Math.min(f.alumni_links||0,2)*95+Math.min(s.skill,60);
+  if(target==='handover_author')value+=Math.min(f.handover_notes||0,3)*100+Math.min(f.archive||0,2)*95;
+  if(target==='alumni_network')value+=Math.min(f.alumni_links||0,3)*120+Math.min(s.trust,70)*2;
+  if(target==='consultant')value+=Math.min(f.consultant_offer||0,1)*180;
+  if(target==='merged_out')value+=Math.min(f.merge_notice||0,1)*220;
   if(['nasdaq','taiwan','acquired'].includes(target)) {
     value+=safe(s.energy,26)+safe(s.cash,38)+safe(s.trust,60)+safe(s.skill,target==='acquired'?76:70)+safe(s.dream,target==='nasdaq'?76:target==='taiwan'?50:0);
     value+=Math.min(s.energy,70)+Math.min(s.cash,65)+Math.min(s.trust,80)+Math.min(s.skill,85)+(target!=='acquired'?Math.min(s.dream,90):0);
@@ -48,14 +63,16 @@ function utility(run,target) {
 }
 
 export function simulate(roleId,target,attempt) {
-  const seed=`e7-${roleId}-${target}-${attempt}`;
+  const seed=`e8-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[];
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
   const choose=index=>{actions.push({type:'choice',eventId:run.eventId,index});run=advance(applyChoice(run,index));};
   const leave=()=>{actions.push({type:'exit'});run=requestExit(run);};
-  const careerTarget=()=>target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
-  for(let step=0;step<100&&!run.completed;step++) {
+  const targetRank=CAREER_FAMILIES.indexOf(target);
+  const careerTarget=()=>targetRank>=0?(run.assignment!=='assistant'&&((run.rank===targetRank&&careerEndingAvailable(run))||(run.rank>targetRank&&!run.resumeEventId))):eligibleStoryEndings(run).includes(target)?true:target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1&&(run.flags.promotions||0)>0:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
+  const effectIndex=effect=>evChoiceIndex(getEvent(run),effect);
+  for(let step=0;step<150&&!run.completed;step++) {
     if(canRequestBreak(run)&&run.stats.mood<30&&run.stats.cash>35&&!['broke','burnout'].includes(target)){
       const menu=requestBreak(run),options=getEvent(menu).choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false&&c.effect==='finishBreak');
       const best=options.map(({i})=>({i,score:utility(applyChoice(menu,i),target)})).sort((a,b)=>b.score-a.score)[0];
@@ -68,7 +85,23 @@ export function simulate(roleId,target,attempt) {
       const best=options.map(({i})=>{const preview=applyChoice(run,i);return{i,score:utility(preview,target)+(preview.pendingFamily?(preview.pendingFamily===target?10000:-10000):0)};}).sort((a,b)=>b.score-a.score)[0];
       choose(best.i);continue;
     }
-    if(careerTarget()&&!['exit-menu','career-exit'].includes(run.eventId)){leave();continue;}
+    if(run.eventId==='rank-exit'){
+      const direct=effectIndex(target);
+      if(direct>=0){choose(direct);continue;}
+      if(targetRank>=0){
+        const down=effectIndex('careerStepDown'),back=effectIndex('return');
+        if(run.rank>targetRank&&down>=0){choose(down);continue;}
+        choose(back>=0?back:effectIndex(run.flags.pip_passed?'pip_exit':'ragequit'));continue;
+      }
+      choose(effectIndex(eligibleStoryEndings(run).includes(target)?'storyCareer':'legacyCareer'));continue;
+    }
+    if(run.eventId==='career-step-down'){
+      choose(effectIndex(targetRank===1?'careerDemoteDeputy':'careerDemoteStaff'));continue;
+    }
+    if(run.eventId==='story-exit'){
+      const direct=effectIndex(target);choose(direct>=0?direct:effectIndex('rankHub'));continue;
+    }
+    if(careerTarget()&&!['exit-menu','career-exit','career-review','onboarding'].includes(run.eventId)){leave();continue;}
     if(run.eventId==='exit-menu'){choose(1);continue;}
     if(run.eventId==='career-exit'){
       const idx=ev.choices.findIndex(c=>c.effect===target&&c.available!==false);
@@ -98,6 +131,15 @@ export function simulate(roleId,target,attempt) {
       if(target==='broke'){const rejected=ev.choices.findIndex((c,i)=>c.check&&applyChoice(run,i).pendingEffect!=='promote');choose(rejected>=0?rejected:2);continue;}
       const pass=ev.choices.findIndex((c,i)=>applyChoice(run,i).pendingEffect==='promote');
       choose(pass>=0&&target!=='assistant'?pass:2);continue;
+    }
+    if(run.eventId==='career-review'){
+      const desiredRank=targetRank>=0?targetRank:target==='consultant'?2:target==='promotion'?Math.max(1,run.rank+((run.flags.promotions||0)>0?0:1)):0;
+      const needsPromotion=target!=='assistant'&&(run.assignment==='assistant'?desiredRank>0:run.rank<desiredRank);
+      const pass=ev.choices.findIndex((c,i)=>c.available!==false&&c.check&&['careerPromote','careerRegularize'].includes(applyChoice(run,i).pendingEffect));
+      if(needsPromotion&&pass>=0){choose(pass);continue;}
+      const candidates=needsPromotion?[2,3]:[3,2];
+      const best=candidates.map(i=>({i,score:utility(applyChoice(run,i),target)})).sort((a,b)=>b.score-a.score)[0];
+      choose(best.i);continue;
     }
     const eligible=ev.choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false&&c.effect!=='ragequit'&&c.effect!=='careerExit');
     let best=null;
@@ -139,7 +181,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['engine','roles','education','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','kind-break','endings'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['engine','roles','education','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };

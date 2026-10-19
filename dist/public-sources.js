@@ -16,6 +16,8 @@ export const SOURCES = {
   spring: privateChapter('春酒與遠大願景'),
   care: privateChapter('同事互助'),
   departures: privateChapter('離職與交接'),
+  departuresFiction: privateChapter('離職史冊：同事、交接與下一站'),
+  careerFiction: { title: '職級、責任與平行職涯', url: null, date: null, dateLabel: '原創職涯設定', summary: '五階職涯、管理抉擇與薪資為遊戲設計，不是公司實際組織或任職紀錄。' },
   quickExit: privateChapter('新人第一天'),
   labor: privateChapter('跨職類調動'),
   coffee: privateChapter('私人會議'),

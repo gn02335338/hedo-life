@@ -44,7 +44,7 @@ jobs:
         run: |
           {
             printf '## Deployment successful\n\n'
-            printf -- '- Game: [禾多人生](%s)\n' "$GAME_URL"
+            printf -- '- Game: [移動人生](%s)\n' "$GAME_URL"
             printf -- '- Commit: [%s](%s)\n' "$COMMIT_SHA" "$COMMIT_URL"
             printf -- '- Workflow: [View deployment run](%s)\n' "$RUN_URL"
           } >> "$GITHUB_STEP_SUMMARY"
