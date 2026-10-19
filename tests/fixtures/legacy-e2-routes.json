@@ -1,0 +1,519 @@
+[
+  {
+    "roleId": "ai",
+    "seed": "e2-ai-pip_exit-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "aircon-career",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "bell-before-product",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-author-name",
+        "index": 2
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "help-at-six",
+        "index": 2
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "system-weekend",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 0
+      }
+    ],
+    "ending": "pip_exit-ai",
+    "stateSha256": "92657258b44dc804b3085181917fdf05ea232faf6dfca37910542da382234f31"
+  },
+  {
+    "roleId": "design",
+    "seed": "e2-design-broke-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-menu-freedom",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "meeting-ten-minutes",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "expense-delay",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "statistics-eighty-percent",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "deadline-yesterday",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-mood",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "english-class",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "education-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "bing-rumor",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-mood",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "cdp-single-truth",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "help-at-six",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "platform-link-willpower",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-mood",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "travel-staff-prize",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-investor-deck",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "meeting-loop",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-mood",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-phone-wakeup",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "degree-ntu-footnote",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-mood",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-bali-roadmap",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "shareholder-no-chair",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "wireframe-revival",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-mood",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "sea-deck-tonight",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 2
+      }
+    ],
+    "ending": "broke-design",
+    "stateSha256": "02b2e232a634c3058bd62e02555006c9097a32f58be978e99db4a0230ba878e9"
+  },
+  {
+    "roleId": "system",
+    "seed": "e2-system-nasdaq-2",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "cdn-teacher-license",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "pm-human-buffer",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "disk-suitcase-cloud",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "telepathy-spec",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "feedback-survey",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "deadline-yesterday",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-copy-proofreader",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-bali-roadmap",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "system-weekend",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "free-test-project",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "sea-deck-tonight",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "slack-ipad-engineer",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-investor-deck",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "patent-php-hybrid",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "monitor-chain",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "reply-weekend",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "interview-wrong-paper",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "meme-archive",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-architecture-relic",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "finale",
+        "index": 0
+      }
+    ],
+    "ending": "nasdaq-system",
+    "stateSha256": "54cd965e4ff7064b1752dee27200da6c3586466fe33cbee8dfe40613b2ef63af"
+  },
+  {
+    "roleId": "executive",
+    "seed": "e2-executive-historian-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "first-day-map",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "patent-php-hybrid",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "executive-first-week",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "leave-still-online",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-investor-deck",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "meeting-chair-host",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "efficiency-network-block",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "dragon-office-quiz",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "spencer-menu-freedom",
+        "index": 2
+      },
+      {
+        "type": "exit"
+      },
+      {
+        "type": "choice",
+        "eventId": "exit-menu",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "career-exit",
+        "index": 4
+      }
+    ],
+    "ending": "historian-executive",
+    "stateSha256": "59575dae7e55a2736ba398384379e34675a2afb3321b985b7e5dd62d54259202"
+  }
+]

@@ -123,3 +123,30 @@ test('e1 persisted runs retain the full previous state, including RNG, history a
   assert.equal(actual,fixture.stateSha256,fixture.ending);assert.equal(validRun(copy(run)),true);
  }
 });
+
+test('published e2 runs retain their complete state after later chronicle additions',()=>{
+ const fixtures=JSON.parse(readFileSync(new URL('./fixtures/legacy-e2-routes.json',import.meta.url),'utf8'));
+ assert.equal(fixtures.length,4);
+ for(const fixture of fixtures){
+  const run=replayRun(fixture.roleId,fixture.seed,fixture.actions);
+  assert.equal(createHash('sha256').update(JSON.stringify(run)).digest('hex'),fixture.stateSha256,fixture.ending);
+  assert.equal(validRun(copy(run)),true);
+ }
+});
+
+test('latest story cohort draws new scenes while e2 keeps its published pool and break replay',()=>{
+ const probe={...EVENTS[0],id:'test-rules3-only',minRules:3,weight:1e12};EVENTS.push(probe);
+ try{
+  for(let i=0;i<20;i++){
+   const older=choose(createRun('system',`e2-cohort-${i}`),0);
+   assert.notEqual(older.eventId,probe.id);
+   assert.throws(()=>getEvent({...older,eventId:probe.id}),/Unknown event/);
+   const latest=choose(createRun('system',`e3-cohort-${i}`),0);
+   assert.equal(latest.eventId,probe.id);assert.equal(canRequestBreak(latest),true);
+   const rested=choose(requestBreak(latest),0);
+   assert.equal(rested.eventId,probe.id);assert.equal(validRun(copy(rested)),true);
+   const finished=choose(requestExit(rested),0);
+   assert.deepEqual(replayRun(finished.roleId,finished.seed,finished.actions),finished);
+  }
+ }finally{EVENTS.pop();}
+});

@@ -1217,3 +1217,27 @@ EVENTS.push(...[
     ]
   }
 ].map((event) => ({ minRules: 2, ...event })));
+
+// Added after e2 was published: keep these out of that revision's replay pool.
+EVENTS.push(...[
+  {
+    id: 'boss-mood-tabletop', title: '禾多殺：這次換老闆抽情緒 KPI', era: '幻想日常・午休桌遊', sourceIds: ['archiveLore', 'characterFiction'], minTurn: 4,
+    body: '同事把辦公室梗做成紙牌，午休試玩。你抽到一張幻想制度卡：老闆每次亂發脾氣，也要扣自己的績效。大家笑得太大聲，Wing 剛好走過來，問這遊戲為什麼要把時間花在這種地方。紙上的老闆已經快扣完了。',
+    wing: '管理哪有你們想得那麼簡單？你們先把自己的工作做好。',
+    choices: [
+      choice('邀他也抽一張，照規則玩一輪。', '', 'Wing 說自己很忙，沒有坐下。你們把制度卡留在桌上；它只存在遊戲裡，卻是今天最讓人想認真執行的制度。', { trust: 10, mood: 7, boss: -17, energy: 4 }, ['archive']),
+      choice('立刻解釋這張是老闆壓力管理獎勵卡。', '', '負分被你講成成長機會，Wing 點頭離開。同事說你的角色技能應該叫「規則即時改版」，舔功果然也能用在桌遊。', { lick: 10, boss: 11, trust: -5, mood: -8 }),
+      choice('先把牌收好，下班再和大家試玩。', '', '你們約了下班場，把今天新增的台詞寫進卡背。現實又出了一張牌，至少這次抽到它的人可以笑出來。', { slack: 7, trust: 9, mood: 5, boss: -6 }, ['archive'])
+    ]
+  },
+  {
+    id: 'office-access-escape-room', title: '公司密室逃脫：先找到你的門禁卡', era: '史冊改編・門禁驗收', speaker: 'sonny', sourceIds: ['officeLore'],
+    body: '門禁更新，熟悉的開門按鈕不見了。新人想出去裝水，才發現卡還放在座位，只好在門邊求救。你們今天第一個跨部門專案是「如何順利走出辦公室」，驗收對象就是所有每天要經過這扇門的人。',
+    wing: '先協助他通行，再把忘帶卡要找誰的流程寫清楚。',
+    choices: [
+      choice('聯絡門禁窗口協助通行，補測常見使用情境。', '', '新人終於裝到水，你把忘卡與緊急通行都列進檢核。系統以前只測會不會鎖，現在終於開始測人怎麼走。', { skill: 10, trust: 11, energy: -7, mood: -5 }, ['evidence']),
+      choice('幫新人找回卡，陪他再走一次流程。', '', '門開了，新人學會報到手冊沒寫的第一課。你多認識一個同事，也少了一段本來要拿來做正事的時間。', { trust: 12, skill: 4, energy: -6, mood: -4 }),
+      choice('把實際卡住的步驟整理給主管確認。', '', '主管說只是大家還不習慣。你把回報附上時間與步驟，讓「不習慣」至少有一份可以改善的說明書。', { skill: 7, boss: -10, mood: -7, energy: -5 }, ['archive', 'evidence'])
+    ]
+  }
+].map((event) => ({ minRules: 3, ...event })));

@@ -48,7 +48,7 @@ function utility(run,target) {
 }
 
 export function simulate(roleId,target,attempt) {
-  const seed=`e2-${roleId}-${target}-${attempt}`;
+  const seed=`e3-${roleId}-${target}-${attempt}`;
   let run=createRun(roleId,seed),actions=[];
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};

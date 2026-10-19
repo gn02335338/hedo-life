@@ -8,7 +8,8 @@ export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const rules2 = run => run.seed.startsWith('e2-');
+const contentRules = run => run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 const hash = value => {let h=2166136261;for(const c of String(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0||1;};
 function roll(run){let x=run.rng;x^=x<<13;x^=x>>>17;x^=x<<5;run.rng=x>>>0||1;return run.rng/4294967296;}
@@ -134,7 +135,7 @@ export function getEvent(run){
  ],'career');
  }
  const event=EVENTS.find(e=>e.id===run.eventId)||FANTASY_EVENTS.find(e=>e.id===run.eventId);
- if(!event||(event.minRules??0)>(modern?2:1))throw new Error(`Unknown event ${run.eventId}`);
+ if(!event||(event.minRules??0)>contentRules(run))throw new Error(`Unknown event ${run.eventId}`);
  if(event===FANTASY_EVENTS[3])return {...event,kind:'fantasy',choices:[...event.choices,c('不去交易所。我的人生另有用途。','選擇職涯、離職或隱藏結局。','你從口袋裡拿出那張舊清單，翻到背面。空白，剛好可以寫自己的。',{},'careerExit')]};
  return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':'daily'};
 }
@@ -142,7 +143,7 @@ const WEATHER=[{text:'Wing看完官網英文，決定對全世界不爽。',delt
 function nextNormal(run){
  if(run.turn>=20&&run.turn<MAX_TURNS)return FANTASY_EVENTS[run.turn-20].id;
  if(run.turn>=MAX_TURNS)return 'career-exit';
- const supported=ev=>(ev.minRules??0)<=(rules2(run)?2:1);
+ const supported=ev=>(ev.minRules??0)<=contentRules(run);
  let pool=EVENTS.filter(ev=>supported(ev)&&!run.seen.includes(ev.id)&&(ev.minTurn??0)<=run.turn&&(ev.maxTurn??99)>=run.turn&&(!ev.roles||ev.roles.includes(run.actualRoleId)||ev.roles.includes(run.roleId)));
  if(!pool.length)pool=EVENTS.filter(ev=>supported(ev)&&(!ev.roles||ev.roles.includes(run.actualRoleId)||ev.roles.includes(run.roleId)));
  const weighted=pool.map(ev=>({ev,w:(ev.weight||1)*(ev.roles?2:1)}));let n=roll(run)*weighted.reduce((v,x)=>v+x.w,0);for(const {ev,w}of weighted){n-=w;if(n<=0)return ev.id;}return pool.at(-1).id;
