@@ -1,0 +1,282 @@
+[
+  {
+    "roleId": "project",
+    "seed": "e6-project-taiwan-0",
+    "target": "taiwan",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "bing-rumor",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "wireframe-revival",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-vacation-proxy",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-four-word-review",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-two-voices",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "meme-archive",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "executive-auto-disappear",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "video-pizza-overtime",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-traffic-diet",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "kind-break",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "cdn-teacher-license",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-fault-friendship",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "employee-stock-payment",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-formula-owner",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "video-referee-committee",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-attitude-update",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-message-lottery",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-replaces-tests",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "interview-wrong-paper",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-resurrected-instance",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "finale",
+        "index": 1
+      }
+    ],
+    "ending": "taiwan-project",
+    "turns": 23,
+    "stats": {
+      "energy": 33,
+      "cash": 55,
+      "trust": 100,
+      "dream": 63,
+      "boss": 13,
+      "mood": 35,
+      "skill": 100,
+      "slack": 100,
+      "lick": 100
+    },
+    "flags": {
+      "endure": 1,
+      "evidence": 6,
+      "loop": 1,
+      "archive": 6,
+      "promotions": 3,
+      "allin": 2,
+      "kind_relaxed": 1,
+      "taiwan": 2,
+      "final_taiwan": 1
+    },
+    "assignment": "honest",
+    "rank": 3,
+    "stateSha256": "5298b43050fc7df69a4edd0c73968065a9228d30e03609d60093b07c1dbf61b9",
+    "savedStateSha256": "c6fad6b8a2f319d8fe7be252b2ac27dc48dcbf74d983dd88a30b54a25d7272fc"
+  },
+  {
+    "roleId": "system",
+    "seed": "e6-kind-decline-fixture-6",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "kind-break",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 3
+      },
+      {
+        "type": "exit"
+      },
+      {
+        "type": "choice",
+        "eventId": "exit-menu",
+        "index": 0
+      }
+    ],
+    "ending": "ragequit-system",
+    "stats": {
+      "energy": 72,
+      "cash": 65,
+      "trust": 55,
+      "dream": 48,
+      "boss": 48,
+      "mood": 69,
+      "skill": 50,
+      "slack": 45,
+      "lick": 45
+    },
+    "stateSha256": "1a235c1b44be9ca1bd3f56e8dae738af2f77b6f97fc799261940cd8975ed8603",
+    "savedStateSha256": "1a235c1b44be9ca1bd3f56e8dae738af2f77b6f97fc799261940cd8975ed8603"
+  },
+  {
+    "roleId": "system",
+    "seed": "e6-system-fired_signed-0",
+    "target": "fired_signed",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "askonly-unasked",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 0
+      }
+    ],
+    "ending": "fired_signed-system",
+    "turns": 2,
+    "stats": {
+      "energy": 66,
+      "cash": 60,
+      "trust": 61,
+      "dream": 48,
+      "boss": 0,
+      "mood": 45,
+      "skill": 71,
+      "slack": 45,
+      "lick": 61
+    },
+    "flags": {
+      "bait_switch": 1,
+      "evidence": 1
+    },
+    "assignment": "swapped",
+    "rank": 0,
+    "stateSha256": "b10d79a1893ed7ac7d9e86e4046e9ba3a41b4a46890324a530d4e16085ab976e",
+    "savedStateSha256": "5ef06ed065b4d13e5e056d41004d4446dc598528af02eefb9d6fb52b8cdd7325"
+  }
+]

@@ -48,7 +48,7 @@ function utility(run,target) {
 }
 
 export function simulate(roleId,target,attempt) {
-  const seed=`e6-${roleId}-${target}-${attempt}`;
+  const seed=`e7-${roleId}-${target}-${attempt}`;
   let run=createRun(roleId,seed),actions=[];
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
@@ -63,6 +63,11 @@ export function simulate(roleId,target,attempt) {
     }
     const ev=getEvent(run);
     if(target==='ragequit'&&run.eventId==='onboarding'){choose(2);continue;}
+    if(run.eventId==='kind-workday'){
+      const options=ev.choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false);
+      const best=options.map(({i})=>{const preview=applyChoice(run,i);return{i,score:utility(preview,target)+(preview.pendingFamily?(preview.pendingFamily===target?10000:-10000):0)};}).sort((a,b)=>b.score-a.score)[0];
+      choose(best.i);continue;
+    }
     if(careerTarget()&&!['exit-menu','career-exit'].includes(run.eventId)){leave();continue;}
     if(run.eventId==='exit-menu'){choose(1);continue;}
     if(run.eventId==='career-exit'){

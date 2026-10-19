@@ -2,10 +2,12 @@
 // These lines describe the game world, not a real person's finances or activities.
 export const KIND_BREAK_CHANCE=.28;
 export const KIND_BREAK_COST=36;
+export const KIND_WORKDAY_CHANCE=.16;
+export const KIND_WORKDAY_COOLDOWN=3;
 
 export function getKindBreak(run){
  const canAfford=run.stats.cash>=KIND_BREAK_COST;
- return {
+ const event={
   id:'kind-break',kind:'self-care',speaker:'kind',era:'臨時邀約・阿良的私房行程',sourceIds:['characterFiction'],
   title:'他說四手聯彈，你問誰彈琴。',
   body:'技術經理阿良（Kind）平常把薪水叫作「帳單轉運站」，對下班後的安排倒是從不馬虎。今天他看你又在對著通知嘆氣，忽然湊過來：「晚上要不要一起去紓壓？四手聯彈那種。」你問誰彈琴，他指著自己：「我就是鋼琴。」價錢聽起來很有份量，行程內容還是只有這句話。',
@@ -15,5 +17,11 @@ export function getKindBreak(run){
    {text:'不了，光聽就覺得髒。你自己去。',detail:'',result:'阿良把行程表收回去，笑著說你想太多。你沒有接著問，也沒有花這筆錢。各人有各人的休息方式，你回頭挑一種自己舒服的。',delta:{},flags:['kind_declined'],effect:'kindDecline'},
    {text:canAfford?'我只想吃宵夜，不想參加你的音樂班。':'先不要，我的錢包比心情更需要休息。',detail:'',result:canAfford?'阿良說那下次再揪。你把「私房」兩個字留給他，今晚的預算拿來吃飯、找朋友，或單純睡個好覺。':'你看一眼餘額，決定先別替帳單加戲。阿良沒有替你墊，也沒有勸你借；你還是可以選一種負擔得起的休息方式。',delta:{},flags:['kind_declined'],effect:'kindDecline'}
   ]
+ };
+ if(run.eventId!=='kind-workday')return event;
+ return {...event,id:'kind-workday',era:'上班途中・阿良的臨時邀約',
+  title:'工作還沒做完，阿良已經在排下班。',
+  body:'你剛處理完一輪工作，技術經理阿良（Kind）就把椅子滑過來：「看你臉這麼臭，晚上要不要一起去紓壓？」你問什麼行程，他壓低聲音：「四手聯彈。」你再問誰彈琴，他指著自己：「我就是鋼琴。」螢幕上的工作還沒開始催，這份私房邀請倒是先送到眼前了。',
+  choices:event.choices.map((choice,index)=>index===0?choice:{...choice,effect:'kindWorkDecline',result:index===1?'阿良聳聳肩，把邀請收回去。你沒有花錢，也沒有追問。椅子轉回螢幕，原本那件工作還在等你，至少今晚不用參加這堂音樂課。':canAfford?'阿良說下次再揪，你點個頭，把話題留在那裡。今晚想吃什麼可以晚點再決定，現在先回到原本的工作。':'你看一眼餘額，決定先把錢包保住。阿良沒有勸你借，也沒有替你墊；你把邀請婉拒，繼續處理手上的工作。'})
  };
 }

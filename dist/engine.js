@@ -3,14 +3,14 @@ import { EVENTS, FANTASY_EVENTS } from './events.js';
 import { ENDINGS } from './endings.js';
 import { rollEducation, educationLabel } from './education.js';
 import { applyEventCopy, polishEngineText } from './engine-copy.js';
-import { KIND_BREAK_CHANCE, getKindBreak } from './kind-break.js';
+import { KIND_BREAK_CHANCE, KIND_WORKDAY_CHANCE, KIND_WORKDAY_COOLDOWN, getKindBreak } from './kind-break.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
 export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'老闆心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 const hash = value => {let h=2166136261;for(const c of String(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0||1;};
@@ -24,6 +24,7 @@ export function createRun(roleId,seed=Date.now()){
  const role=ROLE_MAP[roleId];if(!role)throw new Error('Unknown role');
  const run={version:VERSION,seed:String(seed).slice(0,32),rng:hash(String(seed).slice(0,32)),roleId,actualRoleId:roleId,assignment:'honest',rank:0,pay:role.pay,offerPay:role.pay,basePay:role.pay,stats:{...role.stats},abilityDice:{},education:null,educationReviewed:false,salaryCutOffered:false,salaryCut:null,actions:[],flags:{},turn:0,eventId:'onboarding',seen:[],history:[],pending:false,completed:false,endingId:null,pendingEffect:null,pendingFamily:null,pip:null,pipCount:0,lastPromotion:-5,crisisCooldown:0,resumeEventId:null,exitReturnEventId:null,lastWeather:null};
  if(rules2(run)){run.lastBreakTurn=-1;run.breakReturnEventId=null;}
+ if(contentRules(run)>=7)run.lastKindInviteTurn=-1;
  for(const key of ['skill','slack','lick']){const dice=Array.from({length:3},()=>1+Math.floor(roll(run)*6));run.abilityDice[key]=dice;run.stats[key]=25+(dice.reduce((a,b)=>a+b,0)-3)*4;}
  run.education=rollEducation(()=>roll(run));run.stats.boss=clamp(run.stats.boss+run.education.wingBias);
  run.offerPay=role.payRange[0]+Math.floor(roll(run)*(role.payRange[1]-role.payRange[0]+1));run.pay=run.offerPay;run.basePay=run.offerPay;
@@ -110,6 +111,9 @@ function rawGetEvent(run){
  ],'career');}
  case 'kind-break':{
  if(contentRules(run)<6||!run.breakReturnEventId)throw new Error('Invalid Kind break');
+ return getKindBreak(run);}
+ case 'kind-workday':{
+ if(contentRules(run)<7||!run.breakReturnEventId)throw new Error('Invalid Kind workday');
  return getKindBreak(run);}
  case 'self-care':{
  if(!modern||!run.breakReturnEventId)throw new Error('Invalid break');
@@ -206,6 +210,7 @@ export function applyChoice(run,index){
   if(next.pip?.active)next.pip.remaining=Math.max(0,next.pip.remaining-1);
  }
  if(modern&&effect==='finishBreak'){
+  if(contentRules(next)>=7&&event.id==='kind-workday')next.lastBreakTurn=next.turn;
   const luck=roll(next),mood=luck<.25?3:luck>.8?-3:0;chanceOutcome=mood>0?'lucky':mood<0?'setback':'ordinary';
   // Apply recovery variance before the cap, so an almost-full mood meter cannot turn paid rest into a loss.
   change('rng',mood>0?'休息剛好對味':'休息的臨場感受',{mood:clamp(before.mood+(choice.delta.mood||0)+mood)-next.stats.mood});
@@ -236,6 +241,7 @@ export function advance(run){
  if(!run.pending||run.completed)return run;
  const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(next.pendingFamily)return finish(next,next.pendingFamily);
+ if(contentRules(next)>=7&&effect==='kindWorkDecline'){next.eventId=next.breakReturnEventId;next.breakReturnEventId=null;return next;}
  if(contentRules(next)>=6&&effect==='kindDecline'){next.eventId='self-care';return next;}
  if(rules2(next)&&['finishBreak','cancelBreak'].includes(effect)){next.eventId=next.breakReturnEventId;next.breakReturnEventId=null;return next;}
  if(effect==='paperwork'){next.eventId='paperwork';return next;}
@@ -258,11 +264,14 @@ export function advance(run){
  }
  if(normal&&!next.pip?.active&&next.turn<20&&next.turn-next.lastPromotion>=4&&(next.turn%6===0||next.stats.boss>=90)&&(next.rank<4)) {next.resumeEventId=next.eventId;next.eventId='promotion-review';return next;}
  if(normal&&occasionalEducation(next)&&!next.educationReviewed&&next.turn>=5&&next.turn<=16&&!next.pip&&!next.resumeEventId&&!next.exitReturnEventId&&getEvent(next)?.kind==='daily'&&roll(next)<.1){next.resumeEventId=next.eventId;next.eventId='education-review';}
+ if(contentRules(next)>=7&&last.kind==='daily'&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&!next.resumeEventId&&!next.exitReturnEventId&&!next.breakReturnEventId&&next.lastBreakTurn!==next.turn&&next.turn-next.lastKindInviteTurn>=KIND_WORKDAY_COOLDOWN&&getEvent(next)?.kind==='daily'&&roll(next)<KIND_WORKDAY_CHANCE){
+  next.breakReturnEventId=next.eventId;next.eventId='kind-workday';next.lastKindInviteTurn=next.turn;
+ }
  return next;
 }
 export function canRequestBreak(run){return !!(run&&rules2(run)&&!run.pending&&!run.completed&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getEvent(run)?.kind));}
-export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;next.eventId=contentRules(next)>=6&&roll(next)<KIND_BREAK_CHANCE?'kind-break':'self-care';return next;}
-export function requestExit(run){if(!run||run.pending||run.completed)return run;if(['exit-menu','career-exit','self-care','kind-break'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;const invite=contentRules(next)>=6&&!(contentRules(next)>=7&&next.lastKindInviteTurn===next.turn)&&roll(next)<KIND_BREAK_CHANCE;next.eventId=invite?'kind-break':'self-care';if(invite&&contentRules(next)>=7)next.lastKindInviteTurn=next.turn;return next;}
+export function requestExit(run){if(!run||run.pending||run.completed)return run;if(['exit-menu','career-exit','self-care','kind-break','kind-workday'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 export function replayRun(roleId,seed,actions){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -288,7 +297,9 @@ export function validRun(run){
   if(typeof run.educationReviewed!=='boolean'||typeof run.salaryCutOffered!=='boolean'||!Array.isArray(run.actions)||run.actions.length>300)return false;
   if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
   if(rules2(run)&&(!Number.isInteger(run.lastBreakTurn)||run.lastBreakTurn< -1||run.lastBreakTurn>run.turn||!(run.breakReturnEventId===null||typeof run.breakReturnEventId==='string')))return false;
-  if(rules2(run)&&run.breakReturnEventId!==null&&(!['self-care',...(contentRules(run)>=6?['kind-break']:[])].includes(run.eventId)||!['daily','fantasy'].includes(getEvent({...run,eventId:run.breakReturnEventId})?.kind)))return false;
+  if(contentRules(run)>=7&&(!Number.isInteger(run.lastKindInviteTurn)||run.lastKindInviteTurn< -1||run.lastKindInviteTurn>run.turn))return false;
+  if(rules2(run)&&run.breakReturnEventId!==null&&(!['self-care',...(contentRules(run)>=6?['kind-break']:[]),...(contentRules(run)>=7?['kind-workday']:[])].includes(run.eventId)||!['daily','fantasy'].includes(getEvent({...run,eventId:run.breakReturnEventId})?.kind)))return false;
+  if(contentRules(run)>=7&&run.eventId==='kind-workday'&&getEvent({...run,eventId:run.breakReturnEventId})?.kind!=='daily')return false;
   if(run.salaryCut&&(!Number.isInteger(run.salaryCut.from)||!Number.isInteger(run.salaryCut.to)||run.salaryCut.to<1||run.salaryCut.to>run.salaryCut.from||!Number.isInteger(run.salaryCut.percent)||!['pending','accepted','rescinded'].includes(run.salaryCut.status)))return false;
   if(!run.stats||!STAT_KEYS.every(k=>Number.isFinite(run.stats[k])&&run.stats[k]>=0&&run.stats[k]<=100))return false;
   if(!run.flags||Array.isArray(run.flags)||typeof run.flags!=='object'||!Object.values(run.flags).every(n=>Number.isInteger(n)&&n>=0&&n<=500))return false;

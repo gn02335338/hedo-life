@@ -116,10 +116,56 @@ for(const mode of ['accept','decline','ordinary']){
   status(await call('/api/complete',{method:'POST',auth:kindToken,body:forged}),400);
 }
 
+// e7 also offers Kind's invitation during ordinary work, without requesting a break.
+function bestWorkChoice(run){
+  return getEvent(run).choices.map((choice,index)=>({choice,index})).filter(({choice})=>choice.available!==false).map(({index})=>{
+    const next=advance(applyChoice(run,index)),s=next.stats;
+    return{index,score:(next.completed?-10000:0)+s.energy*1.6+s.mood*1.9+s.cash*1.4+s.boss*1.2+(s.slack+s.skill)*.2};
+  }).sort((a,b)=>b.score-a.score)[0].index;
+}
+function automaticKind(mode){
+  for(let i=0;i<300;i++){
+    let run=createRun('sales',`e7-api-workday-${mode}-${i}`);
+    for(let n=0;n<100&&!run.completed;n++){
+      if(run.eventId==='kind-workday'){
+        const canPay=getEvent(run).choices[0].available&&run.stats.cash>36;
+        if(mode==='poor'?!getEvent(run).choices[0].available:canPay)return run;
+        run=advance(applyChoice(run,canPay?0:1));
+      }else run=advance(applyChoice(run,bestWorkChoice(run)));
+    }
+  }
+  throw new Error(`No natural e7 ${mode} invitation`);
+}
+for(const mode of ['accept','decline','poor']){
+  const kindToken=token();
+  status(await call('/api/player',{method:'POST',body:{token:kindToken}}),200);
+  const menu=automaticKind(mode);
+  assert.equal(menu.actions.some(action=>action.type==='break'),false);
+  let finished=advance(applyChoice(menu,mode==='accept'?0:1));
+  assert.equal(finished.eventId,menu.breakReturnEventId);assert.equal(finished.turn,menu.turn);
+  if(mode!=='accept'){
+    assert.deepEqual(finished.stats,menu.stats);
+    const ordinary=requestBreak(finished);assert.equal(ordinary.eventId,'self-care');
+    finished=advance(applyChoice(ordinary,mode==='poor'?3:0));
+  }
+  finished=advance(applyChoice(requestExit(finished),0));assert.equal(finished.completed,true);
+  const payload={runId:randomUUID(),roleId:finished.roleId,seed:finished.seed,actions:finished.actions};
+  const saved=await call('/api/complete',{method:'POST',auth:kindToken,body:payload});
+  status(saved,200);assert.equal(saved.body.endingId,finished.endingId);
+  const swapped={...payload,runId:randomUUID(),actions:finished.actions.map(action=>action.eventId==='kind-workday'?{...action,eventId:'kind-break'}:action)};
+  status(await call('/api/complete',{method:'POST',auth:kindToken,body:swapped}),400);
+  const injected={...payload,runId:randomUUID(),actions:finished.actions.flatMap(action=>action.eventId==='kind-workday'?[{type:'break'},action]:[action])};
+  status(await call('/api/complete',{method:'POST',auth:kindToken,body:injected}),400);
+  if(mode==='poor'){
+    const forgedSpend={...payload,runId:randomUUID(),actions:finished.actions.map(action=>action.eventId==='kind-workday'?{...action,index:0}:action)};
+    status(await call('/api/complete',{method:'POST',auth:kindToken,body:forgedSpend}),400);
+  }
+}
+
 const rateToken = token();
 status(await call('/api/player', { method: 'POST', body: { token: rateToken } }), 200);
 for (let i = 0; i < 9; i++) status(await call('/api/me', { auth: rateToken }), 200);
 const limited = await call('/api/me', { auth: rateToken }); status(limited, 429); assert.equal(limited.headers.get('Retry-After'), '10');
 status(await call('/api/does-not-exist'), 404);
 status(await call('/api/player'), 405);
-console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, legacy/e6 self-care, paid/declined Kind invitation replay and tamper rejection, rate guard.');
+console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, legacy/e6 self-care, e7 automatic paid/declined/unaffordable Kind invitation replay and tamper rejection, rate guard.');
