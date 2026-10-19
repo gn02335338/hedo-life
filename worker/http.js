@@ -108,7 +108,7 @@ export function validateCompletion(body, roleMap) {
     if (!action || typeof action !== 'object' || Array.isArray(action)) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
-    if (action.type === 'exit' || (action.type === 'break' && /^e[2345678]-/.test(body.seed))) continue;
+    if (action.type === 'exit' || (action.type === 'break' && /^e[23456789]-/.test(body.seed))) continue;
     if (action.type !== 'choice' || typeof action.eventId !== 'string' || action.eventId.length > 100 ||
         !Number.isInteger(action.index) || action.index < 0 || action.index > 12) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');

@@ -166,7 +166,7 @@ for(const mode of ['accept','decline','poor']){
 // Use natural, published witnesses for new top-rank, voluntary step-down, and story exits.
 const careerRoutes=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8')).routes;
 for(const ending of ['career_staff-system','career_deputy-system','career_manager-system','career_director-system','career_chief-system','career_staff-executive','second_offer-system']){
-  const route=careerRoutes.find(row=>row.ending===ending);assert.ok(route,`expected current witness ${ending}`);assert.ok(route.seed.startsWith('e8-'));
+  const route=careerRoutes.find(row=>row.ending===ending);assert.ok(route,`expected current witness ${ending}`);assert.ok(route.seed.startsWith('e9-'));
   const completedRun=replayRun(route.roleId,route.seed,route.actions);assert.equal(completedRun.endingId,ending);
   if(ending==='career_chief-system')assert.equal(completedRun.rank,4);
   if(ending==='career_staff-executive')assert.ok(route.actions.some(action=>action.eventId==='career-step-down'));
@@ -185,10 +185,15 @@ const legacyToken=token();status(await call('/api/player',{method:'POST',body:{t
 const legacySaved=await call('/api/complete',{method:'POST',auth:legacyToken,body:{runId:randomUUID(),roleId:legacyRoute.roleId,seed:legacyRoute.seed,actions:legacyRoute.actions}});
 status(legacySaved,200);assert.equal(legacySaved.body.endingId,legacyRoute.ending);
 
+const legacyCareerRoute=JSON.parse(readFileSync(new URL('../tests/fixtures/legacy-e8-routes.json',import.meta.url),'utf8'))[0];
+const legacyCareerToken=token();status(await call('/api/player',{method:'POST',body:{token:legacyCareerToken}}),200);
+const legacyCareerSaved=await call('/api/complete',{method:'POST',auth:legacyCareerToken,body:{runId:randomUUID(),roleId:legacyCareerRoute.roleId,seed:legacyCareerRoute.seed,actions:legacyCareerRoute.actions}});
+status(legacyCareerSaved,200);assert.equal(legacyCareerSaved.body.endingId,legacyCareerRoute.ending);
+
 const rateToken = token();
 status(await call('/api/player', { method: 'POST', body: { token: rateToken } }), 200);
 for (let i = 0; i < 9; i++) status(await call('/api/me', { auth: rateToken }), 200);
 const limited = await call('/api/me', { auth: rateToken }); status(limited, 429); assert.equal(limited.headers.get('Retry-After'), '10');
 status(await call('/api/does-not-exist'), 404);
 status(await call('/api/player'), 405);
-console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, legacy/e6 self-care, e7 automatic Kind invitations and legacy queued completion, e8 chief/step-down/story endings and statistics, tamper rejection, rate guard.');
+console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, legacy/e6 self-care, e7 automatic Kind invitations and legacy queued completion, e9 balanced chief/step-down/story endings and statistics plus legacy e8 queued completion, tamper rejection, rate guard.');

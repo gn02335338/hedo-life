@@ -51,6 +51,7 @@ test('self-care action is accepted only for new-rule seeds and still requires re
   const kind={...body,seed:'e6-api-self-care'};assert.deepEqual(validateCompletion(kind,{ai:{}}),kind);
   const workday={...body,seed:'e7-api-self-care'};assert.deepEqual(validateCompletion(workday,{ai:{}}),workday);
   const career={...body,seed:'e8-api-self-care'};assert.deepEqual(validateCompletion(career,{ai:{}}),career);
+  const balanced={...body,seed:'e9-api-self-care'};assert.deepEqual(validateCompletion(balanced,{ai:{}}),balanced);
   for(const seed of ['api-test','e1-api-self-care']) assert.throws(()=>validateCompletion({...body,seed},{ai:{}}), error=>error.status===400);
 });
 

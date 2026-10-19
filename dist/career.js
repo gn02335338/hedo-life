@@ -35,18 +35,27 @@ export function careerInfo(run){
 export function careerSalary(run,rank=run.rank){return Math.min(500,Math.max(1,Math.round(run.basePay*CAREER_LEVELS[rank].payMultiplier)));}
 export function careerEndingAvailable(run){return run.assignment!=='assistant'&&(run.rank===0?run.turn>=3:(run.flags[`career_duty_${run.rank}`]||0)>0||(run.flags[`career_work_${run.rank}`]||0)>0);}
 
+// Actual work in the current position is separate from the review cooldown.
+// Published e8 runs keep their original schedule and check probabilities.
+export function careerReadiness(run){
+ const assistant=run.assignment==='assistant',target=assistant?0:Math.min(4,run.rank+1),service=run.flags.career_service||0;
+ const minService=assistant?2:([2,3,4,5,0][run.rank]),minTurn=assistant?3:([4,8,13,18,24][run.rank]);
+ return {target,service,minService,minTurn,ready:(assistant||run.rank<4)&&service>=minService&&run.turn>=minTurn};
+}
+
 export function getCareerReview(run){
- const assistant=run.assignment==='assistant',target=assistant?0:Math.min(4,run.rank+1),s=run.stats;
+ const assistant=run.assignment==='assistant',target=assistant?0:Math.min(4,run.rank+1),s=run.stats,balanced=run.seed.startsWith('e9-');
  const title=assistant?CAREER_LADDERS[run.actualRoleId][0]:CAREER_LADDERS[run.actualRoleId][target],merit=MERIT[target],politics=POLITICS[target];
- const healthy=(assistant||run.rank<4)&&!run.pip?.active&&s.energy>10&&s.mood>12;
+ const healthy=(assistant||run.rank<4)&&!run.pip?.active&&s.energy>10&&s.mood>12&&(!balanced||careerReadiness(run).ready);
  const effect=assistant?'careerRegularize':'careerPromote';
  const check=(choice,chance,available,success,failure)=>({...choice,available,check:{chance,success:{...success,effect},failure:{...failure,effect:null}}});
  const event=scene('career-review',assistant?'先把「助理」兩個字談掉。':`下一張名片，多一層責任。`,assistant?`你目前是${careerTitle(run)}。這次評核要談的是轉回正式專業職，還不是升任主管。Wing把「先證明自己」說得很熟練；你把這段時間交付的工作攤在桌上。`:`你目前是${careerTitle(run)}，這次要談的是${title}。薪資、帶的人和要替誰說明，都會跟著變。Wing說他看重的是承擔，你知道承擔通常會比授權先到。`,[
-  check(c('拿交付和合作紀錄，談下一個職級。',''),bounded(.12+s.skill*.0045+s.boss*.002+s.trust*.0015-target*.02,.18,.88),healthy&&Object.entries(merit).every(([key,value])=>s[key]>=value),{result:assistant?'交付紀錄攤開來，這次終於把助理兩個字拿掉。接下來要升什麼，是下一張考卷。':'你把做過的事情和同事的回饋放進同一份資料，換到了新的職級。薪水會調，責任也會照表寄來。',delta:{skill:4,trust:4,boss:3,mood:6,energy:-4},flags:['promotion_merit']},{result:'資料看過了，Wing說還要再觀察。職稱沒變，你至少把下一次要談的證據留下來。',delta:{skill:2,mood:-7,boss:-5}}),
-  check(c('把他的方向寫成成績，讓他願意點頭。',''),bounded(.12+s.lick*.006+s.boss*.003-target*.025,.18,.9),healthy&&Object.entries(politics).every(([key,value])=>s[key]>=value),{result:assistant?'Wing對這份報告的理解十分順利：都是他帶得好。你得到正式職稱，同事則替這次驗收交換了一個眼神。':'你把Wing的遠見放在首頁，連你沒做過的部分都寫成他帶領的成果。組織圖動了，群組裡願意跟你講真話的人少了幾個。',delta:{lick:5,boss:5,trust:-8,mood:4,energy:-4},flags:['promotion_politics']},{result:'他說你只會講漂亮話。這份稿上週還叫作方向正確，今天先算你沒有掌握重點。',delta:{mood:-8,boss:-7,trust:-3}}),
-  c('先補帶人的本事，下次帶著準備再來。','你找同事把交付、溝通和帶人的工作逐項補上。這次沒拿新名片，至少不是空著手等下一次評核。',{skill:8,lick:4,trust:3,mood:-3,energy:-3},'careerTrain'),
+  check(c('拿交付和合作紀錄，談下一個職級。',''),bounded(.12+s.skill*.0045+s.boss*.002+s.trust*.0015-target*.02-(balanced?(target===4?.22:target===3?.1:0):0),.18,balanced?(target===4?.55:target===3?.70:.88):.88),healthy&&Object.entries(merit).every(([key,value])=>s[key]>=value),{result:assistant?'交付紀錄攤開來，這次終於把助理兩個字拿掉。接下來要升什麼，是下一張考卷。':'你把做過的事情和同事的回饋放進同一份資料，換到了新的職級。薪水會調，責任也會照表寄來。',delta:{skill:4,trust:4,boss:3,mood:6,energy:-4},flags:['promotion_merit']},{result:'資料看過了，Wing說還要再觀察。職稱沒變，你至少把下一次要談的證據留下來。',delta:{skill:2,mood:-7,boss:-5}}),
+  check(c('把他的方向寫成成績，讓他願意點頭。',''),bounded(.12+s.lick*.006+s.boss*.003-target*.025-(balanced?(target===4?.3:target===3?.15:0):0),.18,balanced?(target===4?.50:target===3?.68:.9):.9),healthy&&Object.entries(politics).every(([key,value])=>s[key]>=value),{result:assistant?'Wing對這份報告的理解十分順利：都是他帶得好。你得到正式職稱，同事則替這次驗收交換了一個眼神。':'你把Wing的遠見放在首頁，連你沒做過的部分都寫成他帶領的成果。組織圖動了，群組裡願意跟你講真話的人少了幾個。',delta:{lick:5,boss:5,trust:-8,mood:4,energy:-4},flags:['promotion_politics']},{result:'他說你只會講漂亮話。這份稿上週還叫作方向正確，今天先算你沒有掌握重點。',delta:{mood:-8,boss:-7,trust:-3}}),
+  c('先補帶人的本事，下次帶著準備再來。','你找同事把交付、溝通和帶人的工作逐項補上。這次沒拿新名片，至少不是空著手等下一次評核。',balanced?{skill:5,lick:2,trust:3,mood:-3,energy:-4}:{skill:8,lick:4,trust:3,mood:-3,energy:-3},'careerTrain'),
   c('這次先不升。我想把現在的生活顧好。','你把這次評核留在這裡。少一張新名片，也少接一輪不是自己排進來的責任。',{mood:10,energy:8,slack:6,boss:-3},'careerDefer')
  ]);
+ if(balanced&&target>=3){event.body+=' 這一階還得等職缺與高層點頭，任期和成果夠了，也不保證這次輪得到你。';event.wing='「坐過那張椅子，不代表下一張就有你的名字。」';}
  return event;
 }
 
