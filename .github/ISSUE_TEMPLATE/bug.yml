@@ -1,0 +1,27 @@
+name: 這次真的不是命
+description: 回報卡關、按鈕失效、畫面與存檔問題。
+title: '[問題回報] '
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: 怎麼遇到這個問題？
+      placeholder: 應徵職業、當時畫面，以及操作步驟。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 預期與實際結果
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: 裝置與瀏覽器
+      placeholder: 例如 iPhone / Safari、Windows / Chrome
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 截圖或補充
+      description: 請遮蔽其他分頁、個資與匿名玩家的儲存金鑰；不用貼瀏覽器 localStorage。

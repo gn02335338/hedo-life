@@ -1,0 +1,50 @@
+name: 補一頁史冊
+description: 提供去識別的職場故事，作為虛構遊戲創作靈感。
+title: '[史冊靈感] '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        這裡是公開討論區。請用化名與自己的摘要，不要貼私人聯絡方式、未遮蔽的內部文件或完整聊天紀錄。投稿經整理後才可能改編，並不表示內容已查證。
+  - type: input
+    id: title
+    attributes:
+      label: 這一頁叫什麼？
+      placeholder: 一句大家看到會笑的標題
+    validations:
+      required: true
+  - type: textarea
+    id: story
+    attributes:
+      label: 故事或經典橋段
+      description: 用去識別的摘要說明情境、反差與笑點。
+    validations:
+      required: true
+  - type: textarea
+    id: choices
+    attributes:
+      label: 你想讓玩家怎麼選？
+      description: 可以提供幾個動作或不同反應，不一定要有標準答案。
+  - type: dropdown
+    id: nature
+    attributes:
+      label: 素材性質
+      options:
+        - 個人回憶的摘要
+        - 聽說的故事（未查證）
+        - 純原創虛構橋段
+        - 公開新聞或產品資料
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 可公開的參考來源（選填）
+      description: 只放本來就可公開的連結，請不要分享私人 Notion 頁或內部檔案。
+  - type: checkboxes
+    id: public
+    attributes:
+      label: 公開投稿
+      options:
+        - label: 我已移除個資與私人原始文件，知道此 Issue 將公開。
+          required: true

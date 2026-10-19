@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+artifacts/
+*.tar.gz
+.wrangler/
+.dev.vars*
+.env*
+!.env.example

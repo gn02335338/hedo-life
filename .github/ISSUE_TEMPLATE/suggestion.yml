@@ -1,0 +1,22 @@
+name: 讓人生更好玩
+description: 新機制、角色、職業、結局或介面建議。
+title: '[遊戲建議] '
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你希望改變什麼？
+      placeholder: 現在玩起來的感受，以及你想要的體驗。
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: 你的點子
+      placeholder: 可以寫例子、遊戲選項或一段劇情。
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: 補充

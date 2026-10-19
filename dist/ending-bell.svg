@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-labelledby="bell-title bell-desc">
+<title id="bell-title">禾多的上市鐘聲</title>
+<desc id="bell-desc">原創幻想結局插畫：明亮銅鐘懸在禾多上市舞台，青綠色股票走勢向上，彩紙飛散。</desc>
+<defs><pattern id="bell-dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".6" fill="#183f35" opacity=".1"/></pattern><clipPath id="bell-chart-clip"><path d="M169 197L547 65L757 188V457L378 589L169 466Z"/></clipPath></defs>
+<g stroke="#183f35" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round">
+<!-- One dream, built on a wonderfully improbable stage. -->
+<path d="M100 493L484 359L806 546L420 681Z" fill="#183f35" stroke="none" opacity=".06"/>
+<path d="M113 445L481 316L788 494L420 623Z" fill="#f4f1e8"/>
+<path d="M113 445L420 623V650L113 472Z" fill="#cbd8bf"/>
+<path d="M420 623L788 494V521L420 650Z" fill="#9bb98c"/>
+<path d="M164 415L164 179L542 47L763 175V411L384 543Z" fill="#dce3ce"/>
+<path d="M169 197L547 65L757 188V457L378 589L169 466Z" fill="#e9ecdc"/>
+<path d="M169 197L547 65L757 188V457L378 589L169 466Z" fill="url(#bell-dots)" stroke="none"/>
+<g clip-path="url(#bell-chart-clip)" opacity=".75">
+<path d="M172 253L549 120L762 244M172 313L549 180L762 304M172 373L549 240L762 364M172 433L549 300L762 424M172 493L549 360L762 484" fill="none" stroke="#adc39f" stroke-width=".8"/>
+<path d="M235 174V508M309 148V534M383 122V560M457 96V534M531 70V508M605 95V508M679 140V481" fill="none" stroke="#adc39f" stroke-width=".8"/>
+<path d="M181 416L237 386L289 391L344 338L405 328L451 266L496 275L545 205L591 214L638 160L681 174L726 122" fill="none" stroke="#7f9e67" stroke-width="5"/>
+<path d="M708 127L726 122L721 143" fill="none" stroke="#7f9e67" stroke-width="5"/>
+</g>
+<!-- The familiar ticker, placed gently in the architecture. -->
+<path d="M184 219L329 169V211L184 261Z" fill="#183f35"/>
+<g transform="matrix(1 -.35 0 1 197 231)" fill="#b5db8a" stroke="none" font-family="Arial, sans-serif"><text font-weight="700" font-size="17" letter-spacing="3">HEDO</text><text y="15" font-family="monospace" font-size="8" letter-spacing="1">▲ 88.88  +∞</text></g>
+<path d="M632 303L726 270V342L632 375Z" fill="#f4f1e8"/>
+<g transform="matrix(1 -.35 0 1 645 323)" fill="#183f35" stroke="none" font-family="monospace"><text font-size="9" letter-spacing="1.1">DREAM INDEX</text><text y="25" font-size="23">1,000</text></g>
+<!-- A round platform with three layers. -->
+<path d="M266 462V489C266 548 634 548 634 489V462Z" fill="#829f74"/>
+<ellipse cx="450" cy="462" rx="184" ry="61" fill="#e5e5d8"/>
+<ellipse cx="450" cy="459" rx="158" ry="49" fill="#d6e6bc" stroke-width="1.1"/>
+<path d="M300 460c12 45 284 45 300 0" fill="none" stroke="#f4f1e8" stroke-width="1.2"/>
+<!-- The bell frame. -->
+<path d="M329 437V177L353 162V421Z" fill="#4d7755"/>
+<path d="M329 177L353 162L570 162L591 177L569 190H352Z" fill="#b5db8a"/>
+<path d="M329 177V200H591V177Z" fill="#183f35"/>
+<path d="M569 200V420L591 436V200Z" fill="#375c43"/>
+<path d="M569 420L591 436L567 449L545 435Z" fill="#b5db8a"/>
+<path d="M329 420L351 435L329 449L306 434Z" fill="#b5db8a"/>
+<path d="M306 434V442L329 457L329 449Z" fill="#6f9063"/>
+<path d="M329 449V457L351 444V435Z" fill="#4d7755"/>
+<path d="M545 435V444L567 458V449Z" fill="#6f9063"/>
+<path d="M567 449V458L591 445V436Z" fill="#4d7755"/>
+<!-- Copper bell: its irregular warmth is all in the contour. -->
+<path d="M440 213V199H464V213" fill="#ed895a"/>
+<ellipse cx="452" cy="217" rx="18" ry="13" fill="#e5e5d8"/>
+<path d="M441 211c-52 10-64 37-68 79-3 35-10 58-31 86l-12 12c42 32 199 32 241 0l-14-13c-20-27-28-49-32-85-4-43-17-69-61-79Z" fill="#ed895a"/>
+<path d="M441 211c-26 16-31 43-34 76-4 46-9 73-24 99 16 8 30 10 44 11-3-28-3-62-1-103 1-38 5-62 15-83Z" fill="#f4bb7b" stroke="none"/>
+<path d="M479 220c22 24 24 61 28 93 4 36 10 58 23 78l25-2-8-14c-20-27-28-49-32-85-3-31-11-54-36-70Z" fill="#cb754b" stroke="none" opacity=".75"/>
+<path d="M374 286c44 14 109 14 150 0M368 315c49 16 119 16 161 0" fill="none" stroke="#a96242" stroke-width="1.1"/>
+<path d="M366 320c51 16 121 16 164 0" fill="none" stroke="#f4bb7b" stroke-width="1.2"/>
+<path d="M337 380c51 29 178 29 227 0" fill="none" stroke="#f4bb7b" stroke-width="3"/>
+<ellipse cx="451" cy="389" rx="120" ry="24" fill="#e3a16c"/>
+<ellipse cx="451" cy="391" rx="102" ry="16" fill="#6f523d"/>
+<path d="M442 394v22c0 13 22 13 22 0v-22" fill="#ed895a"/>
+<path d="M452 422v25c0 12 17 11 17 24 0 12-14 11-14 24" fill="none" stroke="#183f35" stroke-width="2.2"/>
+<path d="M455 494l-5 12m5-12 5 12m-5-12v13" fill="none" stroke="#183f35" stroke-width="1.3"/>
+<!-- A small edition plate. -->
+<path d="M382 483h136v31H382Z" fill="#183f35"/>
+<text x="450" y="496" font-family="Arial, sans-serif" font-size="7" letter-spacing="1.8" text-anchor="middle" fill="#b5db8a" stroke="none">THE OPENING BELL</text>
+<text x="450" y="508" font-family="monospace" font-size="7.2" letter-spacing="1.3" text-anchor="middle" fill="#f4f1e8" stroke="none">HEDO / GOOD END</text>
+<!-- Sound, celebration and a little improbable luck. -->
+<g id="bell-sound" fill="none" stroke="#ed895a" stroke-width="2.2"><path d="M300 292c-14-17-13-36 0-52M282 307c-23-29-23-55-3-82M606 238c13 16 14 35 0 52M625 222c20 27 20 53-3 82"/></g>
+<g id="bell-confetti" stroke-width="1.2">
+<path d="M252 107l12-10 8 12-12 10Z" fill="#ed895a"/>
+<path d="M626 94l8-9 11 9-8 9Z" fill="#b5db8a"/>
+<path d="M695 406l12-5 5 12-12 5Z" fill="#ed895a"/>
+<path d="M202 387l7-11 11 7-7 11Z" fill="#b5db8a"/>
+<path d="M292 570l13-6 4 10-13 6Z" fill="#ed895a"/>
+<path d="M637 551l10-9 7 10-10 9Z" fill="#b5db8a"/>
+<path d="M349 95l4-11 7 13-2 10" fill="none" stroke="#8ca779" stroke-width="2"/>
+<path d="M199 296l-3-11-8 7-4-12M714 232l9 6 6-12 10 8" fill="none" stroke="#ed895a" stroke-width="2"/>
+<path d="M535 591l-1-13 10 4 1-10" fill="none" stroke="#8ca779" stroke-width="2"/>
+</g>
+<g fill="none" stroke="#8ca779" stroke-width="1.3"><path d="M143 343v13m-6.5-6.5h13M739 99v15m-7.5-7.5h15M406 34v11m-5.5-5.5h11M697 573v12m-6-6h12"/><circle cx="297" cy="62" r="3"/><circle cx="806" cy="389" r="3"/><circle cx="218" cy="537" r="2"/></g>
+</g></svg>
