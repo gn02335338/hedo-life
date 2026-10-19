@@ -24,7 +24,7 @@ async function call(path, { method = 'GET', auth, body, origin = parsed.origin, 
 }
 const status = (response, expected) => assert.equal(response.status, expected, JSON.stringify(response.body));
 const health = await call('/api/health'); status(health, 200); assert.deepEqual(health.body, { ok: true, version: 3 });
-const home = await fetch(base); assert.equal(home.status, 200); assert.match(await home.text(), /禾多人生/);
+const home = await fetch(base); assert.equal(home.status, 200); assert.match(await home.text(), /移動人生/);
 const before = await call('/api/stats'); status(before, 200);
 const player = await call('/api/player', { method: 'POST', body: { token: first } }); status(player, 200);
 assert.deepEqual(player.body.unlocked, []); assert.equal(player.body.totalRuns, 0);
@@ -74,7 +74,7 @@ const restToken=token();
 status(await call('/api/player',{method:'POST',body:{token:restToken}}),200);
 let rested;
 for(let i=0;i<100;i++){
-  const candidate=advance(applyChoice(createRun('system',`e4-api-break-${i}`),0));
+  const candidate=advance(applyChoice(createRun('system',`e5-api-break-${i}`),0));
   if(canRequestBreak(candidate)){rested=candidate;break;}
 }
 assert.ok(rested,'expected a natural workday eligible for self-care');

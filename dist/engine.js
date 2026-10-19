@@ -2,13 +2,14 @@ import { ROLES, ROLE_MAP } from './roles.js';
 import { EVENTS, FANTASY_EVENTS } from './events.js';
 import { ENDINGS } from './endings.js';
 import { rollEducation, educationLabel } from './education.js';
+import { applyEventCopy, polishEngineText } from './engine-copy.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
 export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'老闆心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 const hash = value => {let h=2166136261;for(const c of String(value)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0||1;};
@@ -38,7 +39,7 @@ function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta
  const failedEffect=['pipPassed','pip_fail'].includes(effect)?'pip_fail':null;
  return {...c(text,detail,yes,yesDelta,effect),check:{chance,success:{result:yes,delta:yesDelta,effect:effect==='pip_fail'?'pipPassed':effect},failure:{result:no,delta:noDelta,effect:failedEffect}}};
 }
-export function getEvent(run){
+function rawGetEvent(run){
  if(!run||run.completed)return null;
  const role=ROLE_MAP[run.roleId],actual=ROLE_MAP[run.actualRoleId],s=run.stats,f=run.flags,modern=rules2(run);
  switch(run.eventId){
@@ -139,6 +140,10 @@ export function getEvent(run){
  if(event===FANTASY_EVENTS[3])return {...event,kind:'fantasy',choices:[...event.choices,c('不去交易所。我的人生另有用途。','選擇職涯、離職或隱藏結局。','你從口袋裡拿出那張舊清單，翻到背面。空白，剛好可以寫自己的。',{},'careerExit')]};
  return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':'daily'};
 }
+export function getEvent(run){
+ const event=rawGetEvent(run);
+ return event&&contentRules(run)>=5?applyEventCopy(event,run,{jobTitle,educationLabel}):event;
+}
 const WEATHER=[{text:'Wing看完官網英文，決定對全世界不爽。',delta:-9},{text:'他剛開完別人的會，你負責承受餘震。',delta:-7},{text:'今天不知道誰先拍對馬屁，辦公室暫時放晴。',delta:6},{text:'Wing想到掛牌願景，暫時看誰都像未來股東。',delta:7},{text:'公司沒發生什麼事，老闆也先沒有。',delta:0},{text:'一個未回覆的訊息，讓今天變成臨時考核。',delta:-5}];
 function nextNormal(run){
  if(run.turn>=20&&run.turn<MAX_TURNS)return FANTASY_EVENTS[run.turn-20].id;
@@ -218,6 +223,7 @@ export function applyChoice(run,index){
  if(!family&&next.stats.energy<=0)family='burnout';
  if(!family&&choice.flags?.some(x=>['final_global','final_taiwan','final_acquire'].includes(x))){const goal=choice.flags.includes('final_global')?'nasdaq':choice.flags.includes('final_taiwan')?'taiwan':'acquired';if(endingEligibility(next,goal))family=goal;else effect='shortfall';}
  if(event.id==='onboarding'&&index<2)result+=` 目前實際職稱：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
+ if(contentRules(run)>=5){result=polishEngineText(result);if(next.lastWeather)next.lastWeather.text=polishEngineText(next.lastWeather.text);}
  next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{})});
  next.pending=true;next.pendingEffect=effect;next.pendingFamily=family;return next;
 }

@@ -1,0 +1,498 @@
+[
+  {
+    "roleId": "system",
+    "seed": "e4-system-nasdaq-0",
+    "target": "nasdaq",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "tissue-real-name",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "clock-human-alarm",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-credit-heirloom",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "campus-double-standard",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "system-printer",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-message-lottery",
+        "index": 2
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "askonly-unasked",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-cheer-clock",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "degree-weekly-question",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "reply-weekend",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "gratitude-admission",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "meme-archive",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "dinner-budget",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ai-copy-proofreader",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "boss-meeting-ticket",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-assistant-stack",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "employee-stock-payment",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "credit-parade",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "empty-floor-map",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "road",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "runway",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "audit",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "finale",
+        "index": 0
+      }
+    ],
+    "ending": "nasdaq-system",
+    "turns": 23,
+    "stats": {
+      "energy": 47,
+      "cash": 36,
+      "trust": 92,
+      "dream": 70,
+      "boss": 44,
+      "mood": 37,
+      "skill": 100,
+      "slack": 100,
+      "lick": 100
+    },
+    "flags": {
+      "endure": 1,
+      "evidence": 8,
+      "allin": 2,
+      "archive": 4,
+      "pip_passed": 1,
+      "promotions": 1,
+      "global": 2,
+      "final_global": 1
+    },
+    "assignment": "honest",
+    "rank": 1,
+    "stateSha256": "aed8408858241dea015d2683e9274426f619545543071f1467e7ce23e43ccdee",
+    "savedStateSha256": "30467ab333014499abd23feae59a2e3e38aaa803bf2a18d23b7825dfa2891423"
+  },
+  {
+    "roleId": "system",
+    "seed": "e4-system-pip_exit-0",
+    "target": "pip_exit",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "blame-debate",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "clock-human-alarm",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-lucky-mushroom",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "boss-mode-migration",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-review",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "pip-passed",
+        "index": 0
+      }
+    ],
+    "ending": "pip_exit-system",
+    "turns": 5,
+    "stats": {
+      "energy": 42,
+      "cash": 65,
+      "trust": 68,
+      "dream": 48,
+      "boss": 5,
+      "mood": 49,
+      "skill": 53,
+      "slack": 57,
+      "lick": 71
+    },
+    "flags": {
+      "archive": 1,
+      "evidence": 4,
+      "pip_passed": 1
+    },
+    "assignment": "honest",
+    "rank": 0,
+    "stateSha256": "0a0ae29ba7338720b41a35065ba7ce5871cab6888df6674642142ec7fbc97bb1",
+    "savedStateSha256": "63b40bb471aa626ee9e26431026380a53cbc3166c7c0e8a1ebddc7b379c327f7"
+  },
+  {
+    "roleId": "system",
+    "seed": "e4-system-layoff-0",
+    "target": "layoff",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "degree-weekly-question",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "wing-three-status-channels",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "crisis-boss",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "paperwork",
+        "index": 1
+      }
+    ],
+    "ending": "layoff-system",
+    "turns": 3,
+    "stats": {
+      "energy": 67,
+      "cash": 60,
+      "trust": 72,
+      "dream": 48,
+      "boss": 2,
+      "mood": 38,
+      "skill": 81,
+      "slack": 65,
+      "lick": 57
+    },
+    "flags": {
+      "bait_switch": 1,
+      "evidence": 3
+    },
+    "assignment": "swapped",
+    "rank": 0,
+    "stateSha256": "3fe9f5577353c35d08aaaa14199fdbbeec21e5b34d1e4ed5bc604ab9927eb4a3",
+    "savedStateSha256": "524235069ed3f9b81e7d961370eb49596386e8d4189e6609ed4736a5d472c688"
+  },
+  {
+    "roleId": "system",
+    "seed": "e4-system-historian-0",
+    "target": "historian",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-author-name",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "cdn-teacher-license",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "ceo-tea-drop",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "askonly-unasked",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "promotion-review",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-credit-heirloom",
+        "index": 2
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "telepathy-spec",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "salary-cut",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "clock-human-alarm",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "rick-assistant-stack",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "extension-big-company",
+        "index": 1
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "bing-rumor",
+        "index": 0
+      },
+      {
+        "type": "choice",
+        "eventId": "education-review",
+        "index": 2
+      },
+      {
+        "type": "choice",
+        "eventId": "shareholder-no-chair",
+        "index": 2
+      },
+      {
+        "type": "exit"
+      },
+      {
+        "type": "choice",
+        "eventId": "exit-menu",
+        "index": 1
+      },
+      {
+        "type": "choice",
+        "eventId": "career-exit",
+        "index": 4
+      }
+    ],
+    "ending": "historian-system",
+    "turns": 12,
+    "stats": {
+      "energy": 57,
+      "cash": 60,
+      "trust": 77,
+      "dream": 44,
+      "boss": 71,
+      "mood": 34,
+      "skill": 65,
+      "slack": 58,
+      "lick": 100
+    },
+    "flags": {
+      "endure": 1,
+      "promotions": 1,
+      "archive": 4,
+      "evidence": 2,
+      "loop": 1
+    },
+    "assignment": "honest",
+    "rank": 1,
+    "stateSha256": "1f20dc8610211b8ab4bfb39f42b279bcc0b672322b695c291832b86128fe2b82",
+    "savedStateSha256": "54da2c4160e8ca097fc097b2026f9bd1fd31543556318f8f6c0d1f579a8e354e"
+  }
+]

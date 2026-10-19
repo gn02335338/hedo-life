@@ -1,9 +1,9 @@
 // Public-safe bibliography. Private research and raw Notion exports stay outside dist.
-const privateChapter = (title) => ({ title, url: null, date: null, dateLabel: '遊戲改編章節', summary: '私人史冊虛構敘事改編。人物對白、情境、數值與結局均經遊戲創作。' });
+const privateChapter = (title) => ({ title, url: null, date: null, dateLabel: '遊戲改編章節', summary: '依私人史冊改編；對白、情境、數值與結局經過遊戲創作。' });
 const official = (title, url, summary, date = null) => ({ title, url, summary, date, dateLabel: date || '官方產品介紹' });
 
 export const SOURCES = {
-  dream: privateChapter('禾多大夢'),
+  dream: privateChapter('移動大夢'),
   meeting: privateChapter('每週會議'),
   cloud: privateChapter('雲端化與附件'),
   bing: privateChapter('產品消息查證'),
@@ -48,6 +48,7 @@ export const SOURCES = {
   imageWing: privateChapter('圖像史冊：老闆指令與群組日常'),
   imageExit: privateChapter('圖像史冊：人事、交接與離場'),
   imageOffice: privateChapter('圖像史冊：同事暗號與辦公室生活'),
+  videoOffice: privateChapter('影音史冊：同事活動與辦公室擂台'),
   officialHome: official('AviviD 官方網站', 'https://www.avividai.com/', 'UI 配色與幾何版式參考；官網介紹第一方數據、Likr CDP/RMN、AviviD 360 與推播服務。遊戲情節為另行創作。'),
   officialStore: official('來客數位店長', 'https://www.avividai.com/product/conversation', '官網介紹站內推薦、用戶輪廓與個人化商品推薦。遊戲中的工作對話及任務為原創。'),
   officialMedia: official('媒體合作解決方案', 'https://www.avividai.com/solution/press-media', '官網列有來客品牌大聲公、文案大師與 LCDP 會員數據平台，作為遊戲產品場景靈感。'),

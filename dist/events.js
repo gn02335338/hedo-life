@@ -1,6 +1,7 @@
 // Satirical adaptation of private recollections. Every Wing line, choice and outcome
 // is original fictional dialogue; sourceIds identify inspiration, never verified accusations.
 import { IMAGE_EVENTS } from './events-images.js';
+import { VIDEO_EVENTS } from './events-video.js';
 const choice = (text, detail, result, delta, flags = []) => ({ text, detail, result, delta, flags });
 
 export const EVENTS = [
@@ -1245,3 +1246,4 @@ EVENTS.push(...[
 
 // e4-only: published cohorts keep their original draw pools and replay outcomes.
 EVENTS.push(...IMAGE_EVENTS);
+EVENTS.push(...VIDEO_EVENTS);
