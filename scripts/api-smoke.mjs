@@ -166,7 +166,7 @@ for(const mode of ['accept','decline','poor']){
 // Use natural, published witnesses for new top-rank, voluntary step-down, and story exits.
 const careerRoutes=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8')).routes;
 for(const ending of ['career_staff-system','career_deputy-system','career_manager-system','career_director-system','career_chief-system','career_staff-executive','second_offer-system','pip_exit-system']){
-  const route=careerRoutes.find(row=>row.ending===ending);assert.ok(route,`expected current witness ${ending}`);assert.ok(route.seed.startsWith('e10-'));
+  const route=careerRoutes.find(row=>row.ending===ending);assert.ok(route,`expected current witness ${ending}`);assert.ok(route.seed.startsWith('e11-'));
   const completedRun=replayRun(route.roleId,route.seed,route.actions);assert.equal(completedRun.endingId,ending);
   if(ending==='career_chief-system')assert.equal(completedRun.rank,4);
   if(ending==='career_staff-executive')assert.ok(route.actions.some(action=>action.eventId==='career-step-down'));
@@ -183,13 +183,26 @@ for(const ending of ['career_staff-system','career_deputy-system','career_manage
 
 // An explicit career request is replayed, rather than trusted as a client-side jump.
 const manualRoute=careerRoutes.find(route=>route.actions.some(action=>action.type==='career'));
-assert.ok(manualRoute,'expected a natural e10 manual-review witness');
+assert.ok(manualRoute,'expected a natural e11 manual-review witness');
 const manualToken=token();status(await call('/api/player',{method:'POST',body:{token:manualToken}}),200);
 const manualPayload={runId:randomUUID(),roleId:manualRoute.roleId,seed:manualRoute.seed,actions:manualRoute.actions};
 const manualSaved=await call('/api/complete',{method:'POST',auth:manualToken,body:manualPayload});status(manualSaved,200);assert.equal(manualSaved.body.endingId,manualRoute.ending);
 status(await call('/api/complete',{method:'POST',auth:manualToken,body:{...manualPayload,runId:randomUUID(),actions:[{type:'career'},...manualRoute.actions]}}),400);
 const repeatedCareer=structuredClone(manualRoute.actions),careerAt=repeatedCareer.findIndex(action=>action.type==='career');repeatedCareer.splice(careerAt,0,{type:'career'});
 status(await call('/api/complete',{method:'POST',auth:manualToken,body:{...manualPayload,runId:randomUUID(),actions:repeatedCareer}}),400);
+
+// Both education outcomes are derived from a natural e11 story, never client flags.
+for(const branch of ['salary-cut','crisis-boss']){
+  const route=careerRoutes.find(route=>{const at=route.actions.findIndex(action=>action.eventId==='education-scrutiny');return at>=0&&route.actions[at+1]?.eventId===branch;});
+  assert.ok(route,`natural education ${branch} route`);
+  const educationToken=token();status(await call('/api/player',{method:'POST',body:{token:educationToken}}),200);
+  const payload={runId:randomUUID(),roleId:route.roleId,seed:route.seed,actions:route.actions};
+  const saved=await call('/api/complete',{method:'POST',auth:educationToken,body:payload});status(saved,200);assert.equal(saved.body.endingId,route.ending);
+  const swapped=route.actions.map(action=>action.eventId==='education-scrutiny'?{...action,eventId:'education-review'}:action);
+  status(await call('/api/complete',{method:'POST',auth:educationToken,body:{...payload,runId:randomUUID(),actions:swapped}}),400);
+  const skipped=route.actions.filter(action=>action.eventId!=='education-scrutiny');
+  status(await call('/api/complete',{method:'POST',auth:educationToken,body:{...payload,runId:randomUUID(),actions:skipped}}),400);
+}
 
 // Target-searched regression fixture, not evidence about how often players see PIP.
 const tailPipRoute=JSON.parse(readFileSync(new URL('../tests/fixtures/pacing-e10-routes.json',import.meta.url),'utf8'))[0];
@@ -215,10 +228,16 @@ const legacyBalancedToken=token();status(await call('/api/player',{method:'POST'
 const legacyBalancedSaved=await call('/api/complete',{method:'POST',auth:legacyBalancedToken,body:{runId:randomUUID(),roleId:legacyBalancedRoute.roleId,seed:legacyBalancedRoute.seed,actions:legacyBalancedRoute.actions}});
 status(legacyBalancedSaved,200);assert.equal(legacyBalancedSaved.body.endingId,legacyBalancedRoute.ending);
 
+const legacyPacedRoute=JSON.parse(readFileSync(new URL('../tests/fixtures/legacy-e10-routes.json',import.meta.url),'utf8')).find(route=>route.actions.some(action=>action.type==='career'));
+assert.ok(legacyPacedRoute,'a queued e10 manual-review completion remains valid');
+const legacyPacedToken=token();status(await call('/api/player',{method:'POST',body:{token:legacyPacedToken}}),200);
+const legacyPacedSaved=await call('/api/complete',{method:'POST',auth:legacyPacedToken,body:{runId:randomUUID(),roleId:legacyPacedRoute.roleId,seed:legacyPacedRoute.seed,actions:legacyPacedRoute.actions}});
+status(legacyPacedSaved,200);assert.equal(legacyPacedSaved.body.endingId,legacyPacedRoute.ending);
+
 const rateToken = token();
 status(await call('/api/player', { method: 'POST', body: { token: rateToken } }), 200);
 for (let i = 0; i < 9; i++) status(await call('/api/me', { auth: rateToken }), 200);
 const limited = await call('/api/me', { auth: rateToken }); status(limited, 429); assert.equal(limited.headers.get('Retry-After'), '10');
 status(await call('/api/does-not-exist'), 404);
 status(await call('/api/player'), 405);
-console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, legacy/e6 self-care, e7 automatic Kind invitations, e10 chief/step-down/story/PIP endings and manual career actions, legacy e7/e8/e9 queued completions, tamper rejection, rate guard.');
+console.log('API smoke passed: static assets, health, registration, hash identity, bearer auth, origin/body guards, replay validation, idempotency, run ownership, unique collection, aggregate privacy, legacy/e6 self-care, e7 automatic Kind invitations, e11 education salary/dismissal outcomes, chief/step-down/story/PIP endings and manual career actions, legacy e7/e8/e9/e10 queued completions, tamper rejection, rate guard.');

@@ -2,6 +2,7 @@ import { ROLES, ROLE_MAP } from './roles.js';
 import { EVENTS, FANTASY_EVENTS } from './events.js';
 import { ENDINGS } from './endings.js';
 import { rollEducation, educationLabel } from './education.js';
+import { educationRisk, getEducationScrutiny } from './education-risk.js';
 import { applyEventCopy, polishEngineText } from './engine-copy.js';
 import { KIND_BREAK_CHANCE, KIND_WORKDAY_CHANCE, KIND_WORKDAY_COOLDOWN, getKindBreak } from './kind-break.js';
 import { CAREER_LEVELS, careerTitle, careerSalary, careerReadiness, careerReviewWait, careerInvitationEligible, getCareerReview, getCareerDuty, getRankExit, getCareerStepDown } from './career.js';
@@ -12,7 +13,7 @@ export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 // Leave three full work scenes for improvement, then review before the finale.
@@ -40,6 +41,7 @@ export function createRun(roleId,seed=Date.now()){
  if(contentRules(run)>=8){if(roleId==='executive'){run.rank=2;run.basePay=Math.round(run.offerPay/CAREER_LEVELS[2].payMultiplier);}run.flags.career_peak_rank=run.rank;}
  if(contentRules(run)>=9)run.flags.career_service=0;
  if(contentRules(run)>=10)run.flags.boss_crisis_armed=1;
+ if(contentRules(run)>=11){run.flags.education_risk_due=2+Math.floor(roll(run)*3);run.flags.education_risk_checked=0;run.flags.education_dispute=0;run.flags.education_case_active=0;run.flags.education_outcome=0;}
  return run;
 }
 function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta={}){
@@ -52,6 +54,7 @@ function rawGetEvent(run){
  if(!run||run.completed)return null;
  const role=ROLE_MAP[run.roleId],actual=ROLE_MAP[run.actualRoleId],s=run.stats,f=run.flags,modern=rules2(run);
  switch(run.eventId){
+ case 'education-scrutiny':if(contentRules(run)<11||!f.education_case_active)throw new Error('Invalid education dispute');return getEducationScrutiny(run,jobTitle(run));
  case 'career-review':if(contentRules(run)<8)throw new Error('Unknown career event');return getCareerReview(run);
  case 'career-duty-1':case 'career-duty-2':case 'career-duty-3':case 'career-duty-4':if(contentRules(run)<8)throw new Error('Unknown career event');return getCareerDuty(run);
  case 'rank-exit':if(contentRules(run)<8)throw new Error('Unknown career event');return getRankExit(run);
@@ -266,6 +269,20 @@ export function applyChoice(run,index){
  if(effect==='pipPassed'){next.pip={active:false,remaining:0};flag(next,'pip_passed');}
  if(effect==='finishPip'){next.pip=null;next.crisisCooldown=contentRules(next)>=9?6:3;}
  if(effect==='educationDone')next.educationReviewed=true;
+ if(contentRules(next)>=11&&effect==='educationResponse'){
+  const reasons=next.flags.education_dispute;
+  const dismissalChance=Math.min(.42,.2+((reasons&8)?.08:0)+((reasons&4)?.06:0)+(index===2?.08:index===1?-.06:0));
+  const dismissal=roll(next)<dismissalChance;
+  next.flags.education_outcome=dismissal?2:1;
+  eventOutcome={label:'Wing的臨時決定',result:dismissal?'交給人事處理':'重新談薪資'};
+  if(dismissal){effect='educationDismissal';result+=' 他說了一句「我覺得不適合」，人就走了。隔一會，Erich、JenJen和Sonny請你進會議室。';}
+  else{
+   const percent=18+Math.floor(roll(next)*19)+((reasons&8)?5:0);
+   next.salaryCutOffered=true;next.salaryCut={percent,from:next.pay,to:Math.max(20,Math.round(next.pay*(1-percent/100))),status:'pending',reason:'education'};
+   effect='educationSalary';result+=` Hope隨後傳來Wing的要求：遊戲月薪從${next.salaryCut.from}K改成${next.salaryCut.to}K。錄取條件才確認沒幾天，現在又要你確認能不能接受。`;
+  }
+ }
+ if(contentRules(next)>=11&&['startPip','salaryAccept','salaryRescind'].includes(effect))next.flags.education_case_active=0;
  if(effect==='salaryAccept'){next.pay=next.salaryCut.to;next.basePay=Math.round(next.pay/(contentRules(next)>=8?CAREER_LEVELS[next.rank].payMultiplier:1+next.rank*.15));next.salaryCut.status='accepted';flag(next,'pay_cut');result+=` 遊戲月薪變更為${next.pay}K。`;}
  if(effect==='salaryRescind')next.salaryCut.status='rescinded';
  let family=ENDINGS.some(e=>e.family===effect)?effect:null;
@@ -283,6 +300,7 @@ export function advance(run){
  const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(next.pendingFamily)return finish(next,next.pendingFamily);
  if(contentRules(next)>=8&&effect==='careerPromote'){next.eventId=`career-duty-${next.rank}`;return next;}
+ if(contentRules(next)>=11&&['educationSalary','educationDismissal'].includes(effect)){next.eventId=effect==='educationSalary'?'salary-cut':'crisis-boss';return next;}
  if(contentRules(next)>=8&&effect==='rankHub'){next.eventId='rank-exit';return next;}
  if(contentRules(next)>=8&&effect==='legacyCareer'){next.eventId='career-exit';return next;}
  if(contentRules(next)>=8&&effect==='storyCareer'){next.eventId='story-exit';return next;}
@@ -305,6 +323,18 @@ export function advance(run){
  if(normal&&!occasionalEducation(next)&&!next.educationReviewed){next.resumeEventId=next.eventId;next.eventId='education-review';return next;}
  if(next.pip?.active&&next.pip.remaining===0){next.resumeEventId=next.eventId;next.eventId='pip-review';return next;}
  if(next.stats.mood<=12&&next.eventId!=='crisis-mood'){next.resumeEventId=next.eventId;next.eventId='crisis-mood';return next;}
+ // One early assessment, never on onboarding or inside a modal/PIP. If the
+ // ordinary boss dispute is already imminent, expose its specific cause first.
+ if(contentRules(next)>=11&&last.kind==='daily'&&!next.flags.education_risk_checked){
+  const risk=educationRisk(next);
+  if(next.turn>=next.flags.education_risk_due||(next.turn>=2&&next.stats.boss<=12&&risk.eligible)){
+   next.flags.education_risk_checked=1;
+   if(next.turn<=4&&!next.pip?.active&&!next.salaryCutOffered&&!next.resumeEventId&&!next.exitReturnEventId&&!next.breakReturnEventId&&risk.eligible&&roll(next)<risk.chance){
+    next.flags.education_dispute=risk.reasons;next.flags.education_case_active=1;next.flags.boss_crisis_armed=0;next.educationReviewed=true;
+    next.resumeEventId=next.eventId;next.eventId='education-scrutiny';return next;
+   }
+  }
+ }
  if(next.stats.boss<=12&&!next.pip?.active&&next.crisisCooldown===0&&(contentRules(next)<10||next.flags.boss_crisis_armed===1)){if(contentRules(next)>=10)next.flags.boss_crisis_armed=0;next.resumeEventId=next.eventId;next.eventId='crisis-boss';return next;}
  if(normal&&!next.pip?.active&&!next.salaryCutOffered&&next.turn>=5&&next.turn<18&&next.stats.boss<55&&roll(next)<.3){
   const percent=15+Math.floor(roll(next)*21);next.salaryCutOffered=true;next.salaryCut={percent,from:next.pay,to:Math.max(20,Math.round(next.pay*(1-percent/100))),status:'pending'};next.resumeEventId=next.eventId;next.eventId='salary-cut';return next;
@@ -358,6 +388,7 @@ export function validRun(run){
   if(contentRules(run)>=8&&(!Number.isInteger(run.flags.career_peak_rank)||run.flags.career_peak_rank<run.rank||run.flags.career_peak_rank>4))return false;
   if(contentRules(run)>=9&&!Number.isInteger(run.flags.career_service))return false;
   if(contentRules(run)>=10&&![0,1].includes(run.flags.boss_crisis_armed))return false;
+ if(contentRules(run)>=11&&(!Number.isInteger(run.flags.education_risk_due)||run.flags.education_risk_due<2||run.flags.education_risk_due>4||![0,1].includes(run.flags.education_risk_checked)||![0,1].includes(run.flags.education_case_active)||!Number.isInteger(run.flags.education_dispute)||run.flags.education_dispute<0||run.flags.education_dispute>15||![0,1,2].includes(run.flags.education_outcome)))return false;
   if(!Array.isArray(run.history)||run.history.length>300||!Array.isArray(run.seen)||typeof run.pending!=='boolean'||typeof run.completed!=='boolean'||!Number.isInteger(run.pipCount)||run.pipCount<0||!Number.isInteger(run.crisisCooldown))return false;
   if(run.pip&&(!Number.isInteger(run.pip.remaining)||run.pip.remaining<0||run.pip.remaining>3||typeof run.pip.active!=='boolean'))return false;
   if(run.completed){if(run.pending||run.eventId!==null||!ENDINGS.some(e=>e.id===run.endingId&&e.roleId===run.roleId))return false;}else {if(typeof run.eventId!=='string'||!getEvent(run))return false;}

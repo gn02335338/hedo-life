@@ -128,7 +128,7 @@ test('e10 review difficulty and tenure remain equal to e9 instead of undoing the
 });
 
 test('natural e10 witnesses validate manual career actions and every saved checkpoint without injection',()=>{
- const routes=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8')).routes;
+ const routes=JSON.parse(readFileSync(new URL('./fixtures/legacy-e10-routes.json',import.meta.url),'utf8'));
  const route=routes.find(r=>r.actions.some(a=>a.type==='career'));assert.ok(route,'expected a natural manual-review witness');
  const finished=replayRoute(route,state=>assert.equal(validRun(copy(state)),true));assert.deepEqual(finished,replayRun(route.roleId,route.seed,route.actions));
  assert.equal(finished.endingId,route.ending);

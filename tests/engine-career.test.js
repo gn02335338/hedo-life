@@ -7,7 +7,7 @@ import {EVENTS,FANTASY_EVENTS} from '../dist/events.js';
 import {ENDINGS} from '../dist/endings.js';
 import {CAREER_FAMILIES,CAREER_LEVELS,CAREER_LADDERS,careerSalary,careerEndingAvailable} from '../dist/career.js';
 import {eligibleStoryEndings} from '../dist/story-career.js';
-import {STAT_KEYS,createRun,getEvent,applyChoice,advance,requestExit,requestBreak,replayRun,validRun,jobTitle} from '../dist/engine.js';
+import {STAT_KEYS,createRun,getEvent,applyChoice,advance,requestExit,requestBreak,requestCareer,replayRun,validRun,jobTitle} from '../dist/engine.js';
 import {replayRoute} from './find-routes-v3.mjs';
 const copy=value=>JSON.parse(JSON.stringify(value));
 const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -15,7 +15,7 @@ const choose=(run,index)=>advance(applyChoice(run,index));
 const byEffect=(run,effect)=>{const index=getEvent(run).choices.findIndex(c=>c.effect===effect&&c.available!==false);assert.ok(index>=0,`${run.eventId}/${effect}`);return choose(run,index);};
 function assertRankContext(run){
  const event=getEvent(run);
- if(/^e(?:8|9|10)-/.test(run.seed)&&event?.kind==='daily'){
+ if(/^e(?:8|9|10|11)-/.test(run.seed)&&event?.kind==='daily'){
   assert.ok(run.rank>=(event.minRank??0),`${event.id} below minimum rank`);
   assert.ok(run.rank<=(event.maxRank??4),`${event.id} above maximum rank`);
  }
@@ -38,13 +38,14 @@ function checkpoints(route){
  for(const action of route.actions){
   if(action.type==='exit')run=requestExit(run);
   else if(action.type==='break')run=requestBreak(run);
+  else if(action.type==='career')run=requestCareer(run);
   else{assert.equal(run.eventId,action.eventId);run=applyChoice(run,action.index);hashes.push(digest(run));run=advance(run);}
   hashes.push(digest(run));
  }
  return hashes;
 }
 function report(){return JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8'));}
-function routeFor(ending){const route=report().routes.find(r=>r.ending===ending);assert.ok(route,`natural witness ${ending}`);assert.ok(route.seed.startsWith('e10-'));return route;}
+function routeFor(ending){const route=report().routes.find(r=>r.ending===ending);assert.ok(route,`natural witness ${ending}`);assert.ok(route.seed.startsWith('e11-'));return route;}
 
 test('e8 nine-role career ladders have five distinct stages while published role titles remain intact',()=>{
  assert.deepEqual(CAREER_LEVELS.map(x=>x.rank),[0,1,2,3,4]);
@@ -226,7 +227,16 @@ test('published e9 fixtures retain complete states and every direct/JSON checkpo
  }
 });
 
-test('natural e10 witnesses prove every role can finish all five tiers and preserve saved replays',()=>{
+test('published e10 fixtures retain complete states and every direct/JSON checkpoint hash',()=>{
+ const fixtures=JSON.parse(readFileSync(new URL('./fixtures/legacy-e10-routes.json',import.meta.url),'utf8'));
+ for(const fixture of fixtures){
+  const direct=replayRun(fixture.roleId,fixture.seed,fixture.actions),savedHashes=[];
+  assert.equal(digest(direct),fixture.stateSha256);assert.equal(digest(replayRoute(fixture,state=>savedHashes.push(digest(state)))),fixture.savedStateSha256);
+  assert.deepEqual(checkpoints(fixture),fixture.directCheckpoints);assert.deepEqual(savedHashes,fixture.savedCheckpoints);assert.equal(validRun(copy(direct)),true);
+ }
+});
+
+test('natural e11 witnesses prove every role can finish all five tiers and preserve saved replays',()=>{
  for(const role of ROLES)for(const family of CAREER_FAMILIES){
   const route=routeFor(`${family}-${role.id}`),run=replayRoute(route,state=>{assert.equal(validRun(copy(state)),true);assertRankContext(state);});
   assert.equal(run.endingId,`${family}-${role.id}`);assert.deepEqual(replayRun(run.roleId,run.seed,run.actions),run);

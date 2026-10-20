@@ -267,7 +267,7 @@ test('save validation rejects malformed dice, school, actions, salary and lifecy
 test('every ending has a natural replayable witness using only ordinary actions',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8'));
  assert.equal(report.complete,true);assert.equal(report.found,234);assert.deepEqual(report.missing,[]);
- for(const name of ['engine','roles','education','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures']){
+ for(const name of ['engine','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures']){
   const hash=createHash('sha256').update(readFileSync(new URL(`../dist/${name}.js`,import.meta.url))).digest('hex');assert.equal(report.sourceSha256[name],hash,`${name} changed after witnesses`);
  }
  assert.deepEqual(report.routes.map(r=>r.ending).sort(),ENDINGS.map(e=>e.id).sort());
