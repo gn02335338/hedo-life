@@ -3,6 +3,8 @@ import { replayRun, VERSION, MAX_TURNS } from '../dist/engine.js';
 import { ROLE_MAP } from '../dist/roles.js';
 import { ENDINGS } from '../dist/endings.js';
 import { ApiError, RateGuard, assertSameOrigin, bearerToken, errorResponse, json, readJson, tokenHash, validToken, validateCompletion } from './http.js';
+import { validateFeedback, validatePublisherToken } from './feedback.js';
+import { FeedbackStore } from './feedback-store.js';
 
 const ENDING_IDS = new Set(ENDINGS.map(ending => ending.id));
 
@@ -11,6 +13,7 @@ export class HedoArchive extends DurableObject {
     super(ctx, env);
     this.sql = ctx.storage.sql;
     this.rate = new RateGuard();
+    this.feedbackEnv = env;
     this.sql.exec(`
       CREATE TABLE IF NOT EXISTS players (
         id TEXT PRIMARY KEY,
@@ -38,6 +41,20 @@ export class HedoArchive extends DurableObject {
         PRIMARY KEY (player_id, ending_id)
       );
     `);
+    this.feedback = new FeedbackStore(this.sql, ctx.storage);
+    ctx.blockConcurrencyWhile(() => this.scheduleFeedbackCleanup());
+  }
+
+  async scheduleFeedbackCleanup() {
+    const next = this.feedback.nextCleanup();
+    if (next === null) return;
+    const current = await this.ctx.storage.getAlarm();
+    if (current === null || current > next) await this.ctx.storage.setAlarm(next);
+  }
+
+  async alarm() {
+    this.feedback.cleanup(Date.now());
+    await this.scheduleFeedbackCleanup();
   }
 
   playerSnapshot(playerId) {
@@ -122,11 +139,30 @@ export class HedoArchive extends DurableObject {
     try {
       const path = new URL(request.url).pathname;
       if (request.method === 'POST') assertSameOrigin(request);
+      if (path.startsWith('/api/feedback-publisher/')) {
+        const token = /^Bearer (\S+)$/i.exec(request.headers.get('Authorization') || '')?.[1];
+        await validatePublisherToken(token, this.feedbackEnv);
+        if (request.method !== 'POST') throw new ApiError(405, 'method_not_allowed', '這個端點不接受此操作。');
+        const body = await readJson(request);
+        if (path === '/api/feedback-publisher/claim') return json(this.feedback.claim());
+        if (path === '/api/feedback-publisher/ack') return json(this.feedback.ack(body));
+      }
+      if (path === '/api/feedback-config' && request.method === 'GET') return json(this.feedback.config());
+      if (path === '/api/feedback' && request.method === 'POST') {
+        const playerId = await this.authenticate(request);
+        const payload = validateFeedback(await readJson(request));
+        const receipt = await this.feedback.submit(playerId, payload, request.headers.get('CF-Connecting-IP') || '');
+        await this.scheduleFeedbackCleanup();
+        return json(receipt, 202);
+      }
+      if (path.startsWith('/api/feedback/') && request.method === 'GET') {
+        return json(this.feedback.status(await this.authenticate(request), path.slice('/api/feedback/'.length)));
+      }
       if (path === '/api/player' && request.method === 'POST') return await this.register(request);
       if (path === '/api/me' && request.method === 'GET') return json(this.playerSnapshot(await this.authenticate(request)));
       if (path === '/api/complete' && request.method === 'POST') return await this.complete(request);
       if (path === '/api/stats' && request.method === 'GET') return this.stats();
-      if (['/api/player', '/api/me', '/api/complete', '/api/stats'].includes(path)) {
+      if (['/api/player', '/api/me', '/api/complete', '/api/stats', '/api/feedback', '/api/feedback-config'].includes(path)) {
         throw new ApiError(405, 'method_not_allowed', '這個端點不接受此操作。');
       }
       throw new ApiError(404, 'not_found', '找不到這個史冊端點。');

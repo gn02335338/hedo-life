@@ -11,6 +11,11 @@ Cloudflare Workers serves `dist/` as Static Assets and routes `/api/*` to the Wo
 | GET | `/api/me` | `Authorization: Bearer <token>` | `{playerId,unlocked,totalRuns}` |
 | POST | `/api/complete` | Bearer token; `{runId,roleId,seed,actions}` | Player snapshot plus `{runId,endingId,recorded:true,duplicate}` |
 | GET | `/api/stats` | — | `{players,totalRuns,uniqueEndings,averageTurns,roles,endings,daily}` |
+| GET | `/api/feedback-config` | — | Posting availability, public destination and limits |
+| POST | `/api/feedback` | Bearer token; acknowledged, category-specific text and UUID `submissionId` | HTTP 202: `{submissionId,status,issueUrl}`; retrying identical content returns its existing receipt |
+| GET | `/api/feedback/:submissionId` | Bearer token | Only the submitting player's receipt; no raw text or identity |
+| POST | `/api/feedback-publisher/claim` | GitHub OIDC Bearer token; `{}` | Private leased batch, at most three items |
+| POST | `/api/feedback-publisher/ack` | GitHub OIDC Bearer token; receipt and matching lease | Marks publication complete and clears stored text |
 
 `runId` must be a UUID. `seed` is 1–32 characters. `actions` is at most 160 entries from the engine's `run.actions`: `{type:'choice',eventId,index}` or `{type:'exit'}`; new `e2-` / `e3-` / `e4-` / `e5-` / `e6-` / `e7-` / `e8-` / `e9-` / `e10-` / `e11-` / `e12-` runs also allow `{type:'break'}`. `e10-`, `e11-` and `e12-` runs additionally allow `{type:'career'}`. The server calls `replayRun(roleId,seed,actions)` and accepts only a completed run. Client-supplied endings and scores are ignored. Reusing a committed run ID by its player returns the existing record without increasing counts; a different player receives HTTP 409.
 
@@ -51,12 +56,26 @@ The bearer token is the anonymous player's recovery credential. The browser shou
 - `players`: random player UUID, token hash, creation time.
 - `runs`: UUID, player UUID, actual ending, advertised and actual roles, rank, fictional salary, turns, engine version, completion time.
 - `player_endings`: unique player/ending pair and first-unlocked time.
-- Seed, action history, education, IP, user agent, and name are not stored by this application.
+- Seed, action history, education, raw IP, user agent, and name are not automatically stored by this application. Explicit feedback submissions are separate, as described below.
 - Public stats contain only aggregates. Role counts use the role selected on entry. Turns match the UI: a first-day exit counts as 1 and the maximum is 24. Daily counts use UTC dates. `players` counts registered anonymous identities, not distinct humans.
 - JSON bodies are streamed and capped at 64 KiB. POST requests reject a foreign `Origin` or cross-site fetch metadata; command-line requests without `Origin` remain supported. All API responses use `Cache-Control: private, no-store`.
 - A lightweight memory guard allows 10 authenticated/registration requests per token hash per 10 seconds; HTTP 429 includes `Retry-After: 10`. The guard resets when the Durable Object restarts.
 - Replay verification rejects basic fabricated results. Users can replay a valid route under a new UUID or create a new anonymous identity. These are recreational statistics, not a competitive leaderboard or unique-human measurement.
 - Worker observability is disabled in configuration. No application request-body/token logging is implemented. Cloudflare's service-level processing is separate from these application tables.
+
+## Website feedback → GitHub Issues
+
+The three website forms accept memories, game suggestions, and bug reports. Text is transmitted only after an explicit submit with an unchecked-by-default public acknowledgement. The public Issue contains only the selected form fields and a random submission UUID, never the anonymous player UUID, credential, or game history. User text is rendered in safely sized plain-text fences; mentions, Markdown images and HTML cannot execute or notify people. The submission UUID is also a final-line reconciliation marker.
+
+`feedback_submissions` stores the player UUID, submission UUID, normalized text, payload hash, creation time, processing lease and receipt. Same-ID/same-player/same-content retries are idempotent; altered content conflicts. Status lookup is owner-only. Text is cleared immediately after a successful acknowledgement; unconfirmed text expires after 30 days. A retained receipt does not prove a failed remote POST was never published: check GitHub before reposting an expired submission. Daily quota buckets use a random daily salt and a one-way connection-IP hash; no raw address is stored. A Durable Object alarm schedules salt/bucket cleanup within three days and text expiry at thirty days, even without page views or publisher activity. Reads also clear expired records; platform outages can delay alarm execution. Limits persist across Worker restarts: three submissions per anonymous player, five per connection bucket, thirty globally per UTC day, plus ninety pending items. These are modest spam controls, not proof of distinct humans.
+
+The `Publish player feedback` Actions workflow runs every five minutes, after a successful production deploy, or via **Actions → Publish player feedback → Run workflow**. GitHub schedules may be delayed or dropped, and public repositories may have schedules disabled after 60 days without activity. The website stops accepting new submissions if no authenticated publisher heartbeat has arrived for 24 hours; drafts and the direct GitHub fallback remain available. A manual workflow run restores the heartbeat and processes the queue. No instant publication guarantee is made.
+
+The publisher uses only the job's short-lived `GITHUB_TOKEN` with `issues: write` and `contents: read`. `id-token: write` obtains a signed GitHub OIDC token for the private outbox. The Worker verifies RS256 against GitHub's fixed JWKS URL and pins issuer, audience, immutable repository/owner IDs, repository name, main ref, workflow path, event type and token lifetime. Only the named publisher workflow can claim/ack; no new personal token or bridge secret is required. Trust settings are public non-secret `wrangler.jsonc` variables. The workflow never handles deploy credentials. Forks and PR workflows are rejected.
+
+An exclusive 15-minute lease, workflow concurrency, and exact final-line Issue markers from `github-actions[bot]` handle retries. Before each create, the publisher lists all recent open/closed Issues (not the search index); if an earlier create succeeded before an acknowledgement failed, it reconciles the original Issue. Ambiguous creates are never immediately retried. Private text/tokens do not enter Actions logs, which contain aggregate batch counts only.
+
+References: [GitHub OIDC claims](https://docs.github.com/en/actions/reference/security/oidc), [scheduled workflow limits](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule), [temporary GITHUB_TOKEN permissions](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token).
 
 ## Local verification
 

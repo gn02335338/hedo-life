@@ -20,7 +20,7 @@ function persist(){
 async function api(path,body,method=body?'POST':'GET'){
  const response=await fetch(path,{method,headers:{...(body?{'Content-Type':'application/json'}:{}),...(token?{Authorization:`Bearer ${token}`}:{})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(7000)});
  const data=await response.json().catch(()=>({}));
- if(!response.ok)throw Object.assign(new Error(data.error||'服務暫時無法連線'),{status:response.status,retryAfter:Number(response.headers.get('Retry-After'))||0});
+ if(!response.ok)throw Object.assign(new Error(data.message||data.error||'服務暫時無法連線'),{code:data.error,status:response.status,retryAfter:Number(response.headers.get('Retry-After'))||0});
  return data;
 }
 function scheduleRetry(error){
@@ -88,6 +88,17 @@ export const cloud={
   if(!ready){status='pending';emit();await this.init();}else{emit();await flush();}
  },
  async stats(){return api('/api/stats');},
+ async feedbackConfig(){return api('/api/feedback-config');},
+ async submitFeedback(payload){
+  if(!ready)await this.init();
+  if(!ready)throw new Error('無法建立匿名投稿身分，請先保留草稿，稍後再試。');
+  return api('/api/feedback',payload);
+ },
+ async feedbackStatus(submissionId){
+  if(!ready)await this.init();
+  if(!ready)throw new Error('暫時無法查詢，請先保留這個分頁。');
+  return api(`/api/feedback/${encodeURIComponent(submissionId)}`);
+ },
  async retry(){return this.init();}
 };
 window.addEventListener('online',()=>{clearRetry();void cloud.init();});

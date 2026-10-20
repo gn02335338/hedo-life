@@ -2,9 +2,11 @@
 
 一款繁體中文職場黑色幽默遊戲。九種應徵職業、雙心情、隨機人設、升遷與離場，收集 234 種職業結局。
 
-**[開始遊戲](https://hedo-life.bvstudio.workers.dev)** · **[史冊補完計畫](https://github.com/gn02335338/hedo-life/issues/new/choose)**
+**[開始遊戲／史冊補完計畫](https://hedo-life.bvstudio.workers.dev)** · **[GitHub Issues](https://github.com/gn02335338/hedo-life/issues)**
 
 ## 這次的人生
+
+- 「史冊補完計畫」可在遊戲網頁填寫，不用 GitHub 帳號。可補故事、提建議或回報問題；預覽並確認公開後，由背景流程代開 Issue。私人佇列只暫存原文，成功後刪除站內副本；公開內容留在 GitHub，投稿不會自動加入遊戲。
 
 - 系統工程師、AI 工程師、MIS 工程師、專案經理、產品經理、設計師、商務開發、業務、空降主管。
 - 五階職涯：專業員工 → 副理 → 經理 → 總監 → C-level／副總。九種職業各有職稱路線與每階結局；助理先轉正，空降主管從經理級開始，也能選擇卸任。專案經理、產品經理等專業職稱不等於管理職級。

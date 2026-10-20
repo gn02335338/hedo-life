@@ -3,6 +3,13 @@
   "name": "hedo-life",
   "main": "worker/index.js",
   "compatibility_date": "2026-10-19",
+  "vars": {
+    "FEEDBACK_REPOSITORY": "gn02335338/hedo-life",
+    "FEEDBACK_REPOSITORY_ID": "1425568058",
+    "FEEDBACK_OWNER_ID": "25317404",
+    "FEEDBACK_WORKFLOW_REF": "gn02335338/hedo-life/.github/workflows/feedback-issues.yml@refs/heads/main",
+    "FEEDBACK_AUDIENCE": "https://hedo-life.bvstudio.workers.dev/api/feedback-publisher"
+  },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
