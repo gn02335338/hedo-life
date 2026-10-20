@@ -151,10 +151,10 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e19 and the guide describes the current speaker', () => {
+test('new browser lives use e20 and the guide describes the current speaker', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e19-[a-f0-9]+$/);
+  assert.match(seed, /^e20-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
@@ -311,4 +311,75 @@ test('the guide explains independent talk-pay limits only for new lives', () => 
   app.render(engine.createRun('system', 'e18-ui-existing-guide'));
   vm.runInContext('statGuide()', app.context);
   assert.doesNotMatch(app.nodes.get('#dialog-content').innerHTML, /\$ \/ 談薪|每局最多三次/);
+});
+
+// These deliberately isolated UI states exercise presentation and entry controls.
+// Natural save/replay witnesses cover how the engine reaches them separately.
+function watchDutyState(eventId = 'watch-empty-corridor') {
+  const initial = engine.createRun('system', 'e20-ui-watch-card');
+  return {
+    ...initial, actualRoleId: 'system', assignment: 'honest', rank: 1, turn: 9,
+    eventId, pipCount: 1, pip: { active: false, remaining: 0 },
+    stats: { ...initial.stats, energy: 75, mood: 65, cash: 70, boss: 40 },
+    flags: { ...initial.flags, pip_passed: 1, post_pip_tolerance: 1, floor_watch: 1, floor_watch_days: 1 },
+  };
+}
+const actionButton = (html, action) => renderedButtons(html).find(button =>
+  button.attributes.includes(`data-action="${action}"`));
+
+test('watch duty shows the real floor arrangement without replacing the player career title', () => {
+  const app = appHarness(), run = watchDutyState(), html = app.render(run);
+  const card = html.match(/<div class="player-card">[\s\S]*?<\/div><div class="boss-panel/)?.[0];
+  assert.ok(card);
+  assert.match(card, /<h2>工程師<\/h2>/);
+  assert.equal(engine.jobTitle(run), '工程師');
+  assert.match(card, /aria-label="目前人事狀態"/);
+  assert.match(card, /<b>三樓看門中<\/b>/);
+  assert.match(card, /辦公室在五樓・原職稱保留/);
+  assert.match(card, /PIP 已通過・仍在觀察/);
+  assert.doesNotMatch(card, /<h2>[^<]*(?:看門|三樓)|機率|百分|成功率/);
+});
+
+test('watch duty carries the floor reminder into the mobile workbar and keeps ordinary self-care available', () => {
+  const app = appHarness(), html = app.render(watchDutyState());
+  const mobile = html.match(/<div class="mobile-workbar">[\s\S]*?<\/div>/)?.[0];
+  assert.ok(mobile);assert.match(mobile, /三樓看門中/);
+  assert.match(mobile, /心情 65 · 體力 75 · 存款 70/);
+  assert.match(actionButton(html, 'career').attributes, /\bdisabled\b/);
+  assert.match(actionButton(html, 'raise').attributes, /\bdisabled\b/);
+  assert.doesNotMatch(actionButton(html, 'break').attributes, /\bdisabled\b/);
+  assert.doesNotMatch(actionButton(html, 'exit').attributes, /\bdisabled\b/);
+  assert.match(html, /class="tag">三樓待命<\/span>/);
+});
+
+test('passed PIP observation remains visible after work returns, without claiming watch duty continues', () => {
+  const run = watchDutyState('meimei-product-loop');run.flags.floor_watch = 0;
+  const app = appHarness(), html = app.render(run);
+  assert.match(html, /class="personnel-status post-pip-status"/);
+  assert.match(html, /PIP 已通過・仍在觀察/);
+  assert.doesNotMatch(html, /三樓看門中|辦公室在五樓・原職稱保留/);
+  assert.match(html, /<h2>工程師<\/h2>/);
+});
+
+test('new personnel notices keep sidebar exits from bypassing the choices on screen', () => {
+  const app = appHarness();
+  for (const eventId of ['dismissal-final', 'labor-claim', 'labor-mediation', 'floor-notice', 'watch-review', 'watch-future']) {
+    const html = app.render(watchDutyState(eventId));
+    assert.match(html, /class="tag">人事通知<\/span>/, eventId);
+    for (const action of ['career', 'raise', 'break', 'exit']) {
+      const button = actionButton(html, action);assert.ok(button, `${eventId}: ${action}`);
+      assert.match(button.attributes, /\bdisabled\b/, `${eventId}: ${action}`);
+    }
+  }
+});
+
+test('Water Snake has her own illustrated speaker and existing characters keep their own portrait', () => {
+  const app = appHarness(), run = watchDutyState('watch-invisible-invite'), html = app.render(run);
+  const quote = html.match(/<div class="character-quote">[\s\S]*?<\/div><\/div>/)?.[0];
+  assert.ok(quote);assert.match(quote, /src="\.\/assets\/meimei\.png"/);
+  assert.match(quote, /水蛇/);assert.match(quote, /業務經理/);
+  assert.doesNotMatch(quote, /美美|Meimei|Wing|src="\.\/assets\/wing\.png"/);
+  assert.match(html, /src="\.\/assets\/wing\.png"/);
+  const legacy = app.render(engine.createRun('system', 'e19-ui-no-new-status'));
+  assert.doesNotMatch(legacy, /class="personnel-status|三樓看門中|PIP 已通過・仍在觀察/);
 });

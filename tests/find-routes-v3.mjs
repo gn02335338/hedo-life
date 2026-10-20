@@ -6,7 +6,7 @@ import { FAMILIES, ENDINGS } from '../dist/endings.js';
 import { careerEndingAvailable, careerReadiness } from '../dist/career-api.js';
 import { CAREER_FAMILIES_V17 } from '../dist/career-v17.js';
 import { eligibleStoryEndings } from '../dist/story-career.js';
-import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, requestRage, validRun } from '../dist/engine.js';
+import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, requestRaise, canRequestRaise, requestRage, canRequestRage, validRun } from '../dist/engine.js';
 
 export function replayRoute(route, verify = () => {}) {
   let run = createRun(route.roleId, route.seed);
@@ -17,15 +17,16 @@ export function replayRoute(route, verify = () => {}) {
     if (action.type === 'exit') run = requestExit(run);
     else if (action.type === 'break') run = requestBreak(run);
     else if (action.type === 'career') run = requestCareer(run);
+    else if (action.type === 'raise') run = requestRaise(run);
     else if (action.type === 'rage') {
       run=requestRage(run);checkpoint();
-      if(/^e(?:14|15|16|17|18|19)-/.test(route.seed))run=advance(run);
+      if(/^e(?:14|15|16|17|18|19|20)-/.test(route.seed))run=advance(run);
     }
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
       checkpoint();
-      if(!(/^e(?:14|15|16|17|18|19)-/.test(route.seed)&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
+      if(!(/^e(?:14|15|16|17|18|19|20)-/.test(route.seed)&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
     }
     checkpoint();
   }
@@ -40,10 +41,14 @@ function utility(run,target) {
   if (target!=='burnout') value+=Math.min(s.energy,65)*.5;
   if (target!=='broke') value+=Math.min(s.cash,55)*.35;
   value+=Math.min(s.mood,60)*.65;
-  const combat=['fired_signed','fired_refused','layoff','pip_fail','pip_exit'].includes(target)&&!run.pip&&!f.pip_passed;
+  const personnelTarget=['cold_storage','mediation_settled','mediation_pending'].includes(target);
+  const combat=['fired_signed','fired_refused','layoff','pip_fail','pip_exit'].includes(target)&&!run.pip&&!f.pip_passed
+    ||personnelTarget&&!f.floor_watch&&!run.pip?.active;
   if(combat) value+=(100-s.boss)*2.8;
   else value+=safe(s.boss,28)+Math.min(s.boss,75)*.2;
   if(target==='pip_exit') value+=Math.min(s.skill,70)*2+Math.min(f.evidence||0,2)*18;
+  if(target==='cold_storage')value+=Math.min(s.skill,72)*1.7+Math.min(f.evidence||0,3)*20+(f.pip_passed||0)*160+(f.floor_watch||0)*500+Math.min(f.floor_watch_days||0,3)*70;
+  if(['mediation_settled','mediation_pending'].includes(target))value+=Math.min(s.skill,70)*1.4+Math.min(f.evidence||0,4)*25+(f.floor_watch||0)*100;
   if(target==='burnout') value=-s.energy*4+safe(s.cash,12)+safe(s.mood,28)+safe(s.boss,20);
   if(target==='broke') value=-s.cash*4-s.mood*.7-run.pay*Math.max(0,24-run.turn)/10+safe(s.energy,18)+safe(s.boss,20);
   if(target==='promotion') value+=Math.min(s.skill,65)*2+Math.min(s.boss,50)*2+(f.promotions||0)*200;
@@ -71,7 +76,7 @@ function utility(run,target) {
 }
 
 function simulateRage(roleId,target,attempt) {
-  const seed=`e19-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  const seed=`e20-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let start=advance(requestRage(createRun(roleId,seed)));
   let fallback=start;
   function search(run,depth){
@@ -87,10 +92,10 @@ function simulateRage(roleId,target,attempt) {
   return {run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}};
 }
 
-export function simulate(roleId,target,attempt) {
+export function simulate(roleId,target,attempt,{raise=false}={}) {
   if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt);
-  const seed=`e19-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
-  let run=createRun(roleId,seed),actions=[];
+  const seed=`e20-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  let run=createRun(roleId,seed),actions=[],openedRaise=false;
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
   const choose=index=>{actions.push({type:'choice',eventId:run.eventId,index});run=advance(applyChoice(run,index));};
@@ -100,6 +105,7 @@ export function simulate(roleId,target,attempt) {
   const careerTarget=()=>targetRank>=0?((run.rank===targetRank&&careerEndingAvailable(run))||(run.rank>targetRank&&run.rank>=4&&!run.resumeEventId)):eligibleStoryEndings(run).includes(target)?true:target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1&&(run.flags.promotions||0)>0:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
   const effectIndex=effect=>evChoiceIndex(getEvent(run),effect);
   for(let step=0;step<150&&!run.completed;step++) {
+    if(raise&&!openedRaise&&canRequestRaise(run)){actions.push({type:'raise'});run=requestRaise(run);openedRaise=true;continue;}
     if(canRequestBreak(run)&&(run.stats.mood<45||run.stats.energy<35)&&run.stats.cash>=8&&!['broke','burnout'].includes(target)){
       const menu=requestBreak(run),plans=[];
       const inspect=(candidate,prefix=[])=>{
@@ -128,11 +134,34 @@ export function simulate(roleId,target,attempt) {
       if(careerReadiness(run).ready||canApply||usefulTraining){actions.push({type:'career'});run=menu;continue;}
     }
     const ev=getEvent(run);
+    if(raise&&run.eventId.startsWith('raise-')){
+      const options=ev.choices.map((choice,index)=>({choice,index})).filter(({choice})=>choice.available!==false&&choice.effect!=='raiseCancel')
+        .map(({index})=>({index,preview:applyChoice(run,index)})).sort((a,b)=>a.preview.stats.boss-b.preview.stats.boss);
+      choose(options[0].index);continue;
+    }
     if(target==='ragequit'&&run.eventId==='onboarding'){choose(2);continue;}
     if(run.eventId==='kind-workday'){
       const options=ev.choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false);
       const best=options.map(({i})=>{const preview=applyChoice(run,i);return{i,score:utility(preview,target)+(preview.pendingFamily?(preview.pendingFamily===target?10000:-10000):0)};}).sort((a,b)=>b.score-a.score)[0];
       choose(best.i);continue;
+    }
+    if(run.eventId==='dismissal-final'){
+      choose(['mediation_settled','mediation_pending'].includes(target)?1:0);continue;
+    }
+    if(run.eventId==='labor-claim'){choose(0);continue;}
+    if(run.eventId==='labor-mediation'){
+      const options=ev.choices.map((choice,index)=>({choice,index})).filter(({choice})=>choice.available!==false);
+      const exact=options.find(({index})=>applyChoice(run,index).pendingFamily===target);
+      choose(exact?.index??0);continue;
+    }
+    if(run.eventId==='floor-notice'){
+      choose(['mediation_settled','mediation_pending'].includes(target)?3:run.stats.mood<35?2:0);continue;
+    }
+    if(run.eventId==='watch-review'){
+      choose(['mediation_settled','mediation_pending'].includes(target)?1:0);continue;
+    }
+    if(run.eventId==='watch-future'){
+      choose(target==='cold_storage'?0:['mediation_settled','mediation_pending'].includes(target)?3:1);continue;
     }
     if(run.eventId==='rank-exit'){
       const direct=effectIndex(target);
@@ -237,15 +266,85 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['engine','persona','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };
 }
 
+export function collectPersonnelWitnesses(report,{maxExtraAttempts=250}={}){
+  const found=new Map(),families=new Set(['cold_storage','mediation_settled','mediation_pending']);
+  const record=(id,run,actions,route)=>{
+    if(found.has(id))return;
+    if(!validRun(run))throw new Error(`Invalid personnel witness ${id}`);
+    found.set(id,{id,roleId:route.roleId,seed:route.seed,actions:JSON.parse(JSON.stringify(actions)),
+      ...(run.completed?{ending:run.endingId}:{}),expected:{eventId:run.eventId,endingId:run.endingId,turn:run.turn,pipCount:run.pipCount,floorWatch:run.flags.floor_watch||0,floorDays:run.flags.floor_watch_days||0}});
+  };
+  const inspect=(run,actions,route,meta={})=>{
+    if(run.eventId==='dismissal-final')record(run.flags.pip_passed?'direct-after-pip':'direct-without-pip',run,actions,route);
+    if(run.eventId==='floor-notice'&&meta.source)record(meta.source==='pip-passed'?'floor-after-pip':'floor-after-provocation',run,actions,route);
+    if(run.eventId==='pip-passed')record('pip-passed-notice',run,actions,route);
+    if(meta.source==='pip-passed'&&meta.effect==='finishPip'&&!run.flags.floor_watch&&!['floor-notice','mood-collapse'].includes(run.eventId))record('passed-back-at-work',run,actions,route);
+    if(run.eventId==='watch-review')record('watch-dispute',run,actions,route);
+    if(run.eventId==='watch-future')record('watch-three-days',run,actions,route);
+    if(run.pipCount===2&&run.pip?.active)record('rare-second-pip',run,actions,route);
+    if(meta.effect==='watchContinue')record('watch-continue',run,actions,route);
+    if(meta.effect==='watchRecall')record('watch-recalled',run,actions,route);
+    if(meta.effect==='directDismissal'&&meta.source==='watch-future')record('watch-dismissed',run,actions,route);
+    if(!run.raiseContext&&['dismissal-final','floor-notice','crisis-boss'].includes(run.eventId)&&run.history.some(item=>item.eventId.startsWith('raise-')))record('raise-to-personnel',run,actions,route);
+    if(run.eventId==='mood-collapse'&&(run.personnelPending||['dismissal-final','floor-notice','crisis-boss'].includes(run.meltdownReturnEventId)))record('meltdown-with-personnel',run,actions,route);
+  };
+  const visit=route=>{
+    let run=createRun(route.roleId,route.seed),actions=[];
+    for(let index=0;index<route.actions.length;index++){
+      if(getEvent(run)?.speaker==='meimei'&&canRequestRage(run)){
+        const raging=requestRage(run),mode=raging.rageContext?.mode;
+        if(['imagined','real'].includes(mode))record(`meimei-rage-${mode}`,advance(raging),[...actions,raging.actions.at(-1)],route);
+      }
+      const action=route.actions[index];actions.push(action);
+      if(action.type==='choice'){
+        const pending=applyChoice(run,action.index);
+        if(pending.personnelPending&&canRequestRage(pending)){
+          const raging=requestRage(pending);
+          if(raging.rageContext?.mode==='imagined'){
+            const dreamed=advance(raging),dreamActions=[...actions,raging.actions.at(-1)];
+            record('dream-result-restores-personnel',dreamed,dreamActions,route);
+          }
+        }
+        run=route.actions[index+1]?.type==='rage'&&route.actions[index+1].phase==='result'?pending:advance(pending);
+        inspect(run,actions,route,{source:action.eventId,effect:pending.pendingEffect});
+      }else if(action.type==='rage')run=advance(requestRage(run));
+      else run=({exit:requestExit,break:requestBreak,career:requestCareer,raise:requestRaise})[action.type](run);
+      inspect(run,actions,route);
+      if(['floor-notice','watch-review','watch-future'].includes(run.eventId)&&!run.pending){
+        for(const [choiceIndex,choice]of getEvent(run).choices.entries())if(choice.available!==false){
+          const pending=applyChoice(run,choiceIndex),fork=advance(pending);
+          inspect(fork,[...actions,{type:'choice',eventId:run.eventId,index:choiceIndex}],route,{source:run.eventId,effect:pending.pendingEffect});
+        }
+      }
+    }
+    if(run.completed&&families.has(run.endingId.slice(0,-route.roleId.length-1)))record(`ending-${run.endingId}`,run,actions,route);
+  };
+  for(const route of report.routes)visit(route);
+  const extras=['raise-to-personnel','rare-second-pip','meltdown-with-personnel','floor-after-provocation','dream-result-restores-personnel'];
+  for(let attempt=0;attempt<maxExtraAttempts&&extras.some(id=>!found.has(id));attempt++){
+    for(const raise of [false,true])visit(simulate('system','cold_storage',attempt,{raise}).route);
+  }
+  for(const witness of found.values()){
+    const replay=replayRoute(witness,state=>{if(!validRun(state))throw new Error(`Invalid saved personnel witness ${witness.id}`);});
+    if(replay.eventId!==witness.expected.eventId||replay.endingId!==witness.expected.endingId)throw new Error(`Personnel replay drift ${witness.id}`);
+  }
+  return {method:'Natural createRun seeds and canonical game actions only; no state injection. Prefixes and alternate choices are replayed from the beginning, including salary talks and dream interruption.',routes:[...found.values()]};
+}
+
 if(process.argv[1]===fileURLToPath(import.meta.url)){
   const report=findRoutes({maxAttempts:Number(process.argv[2])||3000,onProgress:p=>{if(!p.found||p.family==='historian')console.log(JSON.stringify(p));}});
   writeFileSync(new URL('../research/reachability-v3.json',import.meta.url),JSON.stringify(report,null,2)+'\n');
+  if(report.complete&&process.argv.includes('--personnel')){
+    const witnesses=collectPersonnelWitnesses(report);
+    writeFileSync(new URL('./fixtures/personnel-routes-v20.json',import.meta.url),JSON.stringify(witnesses,null,2)+'\n');
+    console.log(JSON.stringify({personnelWitnesses:witnesses.routes.length,features:witnesses.routes.filter(route=>!route.id.startsWith('ending-')).map(route=>route.id)}));
+  }
   console.log(JSON.stringify({complete:report.complete,found:report.found,expected:report.expected,missing:report.missing}));
   if(!report.complete)process.exitCode=1;
 }

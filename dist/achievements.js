@@ -42,7 +42,9 @@ export const ACHIEVEMENTS=Object.freeze([
  badge('rage-legal','附件裡也有自己。','真正出手後，走完正式處理的分支。對方的話和自己的動作，都不能跳過。','rage'),
  badge('rage-defeated','腦內片尾沒有這段。','真正出手後反而落入下風。原本想像的勝利畫面，現場一格都沒播。','rage'),
  badge('rage-coup','名牌怎麼換成我？','在失控後的荒謬宇宙裡接班。董事會的邏輯比你的報到流程還離奇。','rage'),
- ...EXTRA_ACHIEVEMENTS
+ ...EXTRA_ACHIEVEMENTS,
+ badge('rage-meimei','這筆不在報價裡。','對水蛇暴走一次。客戶資料夾還在手上，今天的對話已經超出原訂議程。','rage'),
+ badge('dream-meimei','這一下要開需求單嗎？','在腦內對水蛇揮拳，聽完她的離譜報價才回過神。現場的客戶資料夾沒有動過。','rage')
 ]);
 export const ACHIEVEMENT_MAP=Object.freeze(Object.fromEntries(ACHIEVEMENTS.map(item=>[item.id,item])));
 export const ACHIEVEMENT_GROUPS=Object.freeze({office:'上班日常',career:'職涯與離場',rage:'失控世界線',banquet:'尾牙之夜',wallet:'存款的用處',craft:'本事與代價'});
@@ -57,19 +59,20 @@ export function deriveAchievements(run){
  add('assistant',onboard&&flags.assistant>0);
  add('robot',onboard&&run.roleId==='ai'&&run.actualRoleId!=='ai');
  add('promotion',flags.promotions>0);
- const promotedPeak=/^e(?:18|19)-/.test(run.seed||'')?flags.career_promoted_peak:flags.career_peak_rank;
- add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19)-/.test(run.seed||'')?5:2));
- add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19)-/.test(run.seed||'')?6:3));
+ const promotedPeak=/^e(?:18|19|20)-/.test(run.seed||'')?flags.career_promoted_peak:flags.career_peak_rank;
+ add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20)-/.test(run.seed||'')?5:2));
+ add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20)-/.test(run.seed||'')?6:3));
  add('pip',run.pipCount>0);
  add('pip-pass',flags.pip_passed>0);
  add('pay-cut',flags.pay_cut>0);
  add('salary-save',run.salaryCut?.status==='rescinded');
  add('education',flags.education_outcome>0);
- add('self-care',history.filter(item=>item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19)-/.test(run.seed||'')?7:3)).length>=3);
+ add('self-care',history.filter(item=>item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20)-/.test(run.seed||'')?7:3)).length>=3);
  add('kind-decline',flags.kind_declined>0);
- for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack'])add(`rage-${person}`,flags[`rage_target_${person}`]>0);
+ for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei'])add(`rage-${person}`,flags[`rage_target_${person}`]>0);
  add('rage-catharsis',flags.rage_catharsis>0);
- const current=/^e(?:18|19)-/.test(run.seed||''),resolved=history.filter(item=>Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0);
+ const current=/^e(?:18|19|20)-/.test(run.seed||''),resolved=history.filter(item=>Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0);
+ add('dream-meimei',resolved.some(item=>item.eventId==='rage-release'&&item.speaker==='meimei'&&item.eventOutcome?.result==='腦內劇場'));
  add('rage-absent',flags.rage_absent>0||(current&&resolved.some(item=>item.eventId==='rage-release'&&item.speaker==='kind'&&item.eventOutcome?.result==='腦內劇場')));
  add('rage-documented',flags.rage_documented>0||(current&&resolved.some(item=>item.eventId==='rage-legal')));
  add('banquet',flags.banquet_attended>0);

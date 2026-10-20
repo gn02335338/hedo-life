@@ -28,18 +28,18 @@ const checkOutcome=(eventId,index,extras={},wanted='promote')=>{
  throw new Error(`No ${wanted} check result`);
 };
 
-test('nine careers retain the published 144 endings and expand to a 314-card catalog with eight career stages',()=>{
+test('nine careers retain the published 144 endings and expand to a 341-card catalog with eight career stages',()=>{
  assert.equal(VERSION,3);assert.equal(ROLES.length,9);assert.equal(STAT_KEYS.length,9);
  assert.equal(FAMILIES.slice(0,16).length,16);assert.equal(ENDINGS.slice(0,144).length,144);
- assert.equal(FAMILIES.length,35);assert.equal(ENDINGS.length,314);
+ assert.equal(FAMILIES.length,38);assert.equal(ENDINGS.length,341);
  for(const list of [ROLES,EVENTS,FANTASY_EVENTS,ENDINGS])assert.equal(new Set(list.map(x=>x.id)).size,list.length);
- assert.equal(EVENTS.length,215);assert.equal(FANTASY_EVENTS.length,4);
+ assert.equal(EVENTS.length,223);assert.equal(FANTASY_EVENTS.length,4);
  for(const role of ROLES){
   assert.deepEqual(Object.keys(role.stats).sort(),[...STAT_KEYS].sort());
   assert.equal(role.ladder.length,5);assert.ok(role.assistantTitle);
   assert.ok(role.payRange[1]>role.payRange[0]);
   assert.equal(ENDINGS.slice(0,144).filter(e=>e.roleId===role.id).length,16);
-  assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,role.id==='executive'?34:35);
+  assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,role.id==='executive'?37:38);
  }
  assert.equal(new Set(ENDINGS.map(e=>e.title)).size,ENDINGS.length);
  assert.equal(new Set(ENDINGS.map(e=>e.body)).size,ENDINGS.length);
@@ -266,8 +266,8 @@ test('save validation rejects malformed dice, school, actions, salary and lifecy
 
 test('every ending has a natural replayable witness using only ordinary actions',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8'));
- assert.equal(report.complete,true);assert.equal(report.found,314);assert.deepEqual(report.missing,[]);
- for(const name of ['salary-raise-v19','resources-v18','relationships-v18','meltdown-v18','achievements-v18','career-api','career-v17','onboarding-v17','endings-career-v17','engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','banquet','endings-rage','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures']){
+ assert.equal(report.complete,true);assert.equal(report.found,341);assert.deepEqual(report.missing,[]);
+ for(const name of ['personnel-v20','endings-personnel-v20','events-meimei-v20','rage-v20','salary-raise-v19','resources-v18','relationships-v18','meltdown-v18','achievements-v18','career-api','career-v17','onboarding-v17','endings-career-v17','engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','banquet','endings-rage','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures']){
   const hash=createHash('sha256').update(readFileSync(new URL(`../dist/${name}.js`,import.meta.url))).digest('hex');assert.equal(report.sourceSha256[name],hash,`${name} changed after witnesses`);
  }
  assert.deepEqual(report.routes.map(r=>r.ending).sort(),ENDINGS.map(e=>e.id).sort());

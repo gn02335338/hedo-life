@@ -6,15 +6,19 @@ import {ENDINGS} from '../dist/endings.js';
 import {LEGACY_ENDINGS} from '../dist/legacy.js';
 import {ACHIEVEMENTS} from '../dist/achievements.js';
 import {SOURCES} from '../dist/public-sources.js';
+import {getRageV20,rageTargetForV20} from '../dist/rage-v20.js';
+import {getRageV16} from '../dist/rage-v16.js';
 
 test('all named game characters have stable IDs, public aliases and original portrait paths',()=>{
- const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'Moon Dog',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克'};
+ const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'Moon Dog',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇'};
  assert.deepEqual(Object.fromEntries(Object.keys(PERSONAS).map(id=>[id,displayName(id)])),expected);
  for(const [id,person]of Object.entries(PERSONAS)){
   assert.equal(person.image,`./assets/${id}.png`);
   assert.ok(Object.isFrozen(person));assert.ok(person.title.length>0);
  }
  assert.equal(PERSONAS.jack.title,'研發部經理');
+ assert.equal(PERSONAS.meimei.title,'業務經理');
+ assert.equal(PERSONAS.meimei.portrait,true);
  assert.equal(displayName('self'),'self');
 });
 
@@ -27,6 +31,40 @@ test('display aliases handle Chinese-adjacent names and existing nicknames witho
  assert.equal(displayText('空降主管／資深空降主管／禾多人生'),'高階主管／資深高階主管／移動人生');
  assert.equal(displayText('空降事業部經理'),'事業部經理');
  assert.equal(displayText('https://example.test/Wing。Wing回來了'),'https://example.test/Wing。翅膀回來了');
+ assert.equal(displayText('美美／Meimei／MeiMei／MEIMEI'),'水蛇／水蛇／水蛇／水蛇');
+ const meimeiIdentifiers='meimei rage_meimei ./assets/meimei.png https://example.test/Meimei';
+ assert.equal(displayText(meimeiIdentifiers),meimeiIdentifiers);
+});
+
+test('Water Snake is a conversational rage target while published character releases stay identical',()=>{
+ assert.equal(rageTargetForV20({speaker:'meimei'}),'meimei');
+ assert.equal(rageTargetForV20({speaker:'jack'}),'jack');
+ assert.equal(rageTargetForV20({id:'paperwork',speaker:'exit-team'}),'jenjen');
+ assert.equal(rageTargetForV20({id:'exit',speaker:'exit-team'}),'erich');
+ assert.equal(rageTargetForV20({speaker:'self'}),null);
+ assert.equal(rageTargetForV20(null),null);
+ for(const target of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack']){
+  const run={eventId:'rage-release',stats:{mood:50,boss:50},turn:5,rageContext:{target,eventId:'workday',phase:'event'}};
+  assert.deepEqual(getRageV20(run),getRageV16(run),target);
+ }
+ const run={eventId:'rage-release',stats:{mood:50,boss:50},turn:5,rageContext:{target:'meimei',eventId:'workday',phase:'event'}};
+ const original=JSON.stringify(run),event=getRageV20(run),outcomes=event.choices[0].draw.outcomes;
+ assert.equal(event.speaker,'meimei');assert.equal(event.choices[0].rageTarget,'meimei');
+ assert.deepEqual(event.sourceIds,['characterFiction']);
+ assert.doesNotMatch(JSON.stringify(event),/美美|漫畫|Meimei/);
+ assert.equal(outcomes.reduce((sum,item)=>sum+item.weight,0),100);
+ assert.deepEqual(outcomes.map(item=>[item.label,item.effect]),[['腦內劇場','rageReturn'],['真的失控了','rageAftermath']]);
+ assert.match(outcomes[0].result,/腦內.*資料夾/);assert.match(outcomes[0].result,/手仍放在膝上/);
+ assert.match(outcomes[1].result,/真的發生/);assert.ok(outcomes[1].flags.includes('rage_real'));
+ const hot=getRageV20({...run,stats:{...run.stats,mood:10}}).choices[0].draw.outcomes[1].weight;
+ const calm=getRageV20({...run,stats:{...run.stats,mood:90}}).choices[0].draw.outcomes[1].weight;
+ assert.ok(hot>outcomes[1].weight&&outcomes[1].weight>calm);
+ assert.match(getRageV20({...run,rageContext:{...run.rageContext,phase:'result'}}).choices[0].draw.outcomes[0].result,/剛才已經回了話/);
+ for(const eventId of ['rage-aftermath','rage-legal','rage-showdown']){
+  const after=getRageV20({...run,eventId});
+  assert.match(after.body,/水蛇/);assert.doesNotMatch(after.body,/undefined|美美/);
+ }
+ assert.equal(JSON.stringify(run),original,'rendering the scene consumes no RNG or input state');
 });
 
 test('all public collections can be displayed with aliases while original catalog data stays unchanged',()=>{

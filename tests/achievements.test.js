@@ -7,9 +7,9 @@ import {createRun,getEvent,applyChoice,advance,requestRage,replayRun,validRun} f
 const copy=value=>JSON.parse(JSON.stringify(value));
 const choose=(run,index)=>advance(applyChoice(run,index));
 
-test('112 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
- assert.equal(ACHIEVEMENTS.length,112);
- assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,112);
+test('114 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
+ assert.equal(ACHIEVEMENTS.length,114);
+ assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,114);
  assert.deepEqual(Object.keys(ACHIEVEMENT_MAP),ACHIEVEMENTS.map(item=>item.id));
  const pictures=new Set();
  for(const achievement of ACHIEVEMENTS){
@@ -85,7 +85,7 @@ test('published complete routes derive real onboarding, PIP, salary and career a
  for(const id of ['assistant','switch','robot','promotion','manager','director','pip','pip-pass','pay-cut','education','kind-decline','nasdaq'])assert.ok(covered.has(id),`natural goal ${id}`);
 });
 
-test('public canonical route fixtures prove all 112 achievements are reachable without injected state',()=>{
+test('published e18 routes still prove their original 112 achievements without injected state',()=>{
  const routes=JSON.parse(readFileSync(new URL('./fixtures/achievement-routes-v18.json',import.meta.url),'utf8'));
  const covered=new Set();
  assert.ok(routes.length>0);
@@ -101,7 +101,8 @@ test('public canonical route fixtures prove all 112 achievements are reachable w
   for(const id of route.expectedAchievements)covered.add(id);
  }
  assert.equal(covered.size,112);
- assert.deepEqual(ACHIEVEMENTS.filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.map(item=>item.id));
+ assert.deepEqual(ACHIEVEMENTS.filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.slice(0,112).map(item=>item.id));
+ assert.deepEqual(ACHIEVEMENTS.slice(112).map(item=>item.id),['rage-meimei','dream-meimei']);
 });
 
 test('natural banquet choices unlock attendance, sharing and Kind’s ghosting, without guessing a future lottery',()=>{
@@ -202,6 +203,26 @@ test('dream badges match the resolved person and outcome from the same attempt',
  assert.ok(deriveAchievements(natural).includes('dream-wing'));
  assert.equal(validRun(copy(natural)),true);
  assert.deepEqual(deriveAchievements(replayRun(natural.roleId,natural.seed,natural.actions)),deriveAchievements(natural));
+});
+
+test('Water Snake achievements follow a committed target and the same resolved imagined attempt',()=>{
+ const newIds=run=>deriveAchievements(run).filter(id=>id.endsWith('-meimei'));
+ assert.deepEqual(newIds({achievements:['rage-meimei','dream-meimei'],eventId:'rage-release',rageContext:{target:'meimei'},history:[],flags:{}}),[]);
+ assert.deepEqual(newIds({flags:{rage_target_meimei:1}}),['rage-meimei']);
+ const history=[
+  {eventId:'rage-release',speaker:'meimei',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'真的失控了'}},
+  {eventId:'rage-release',speaker:'jack',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}
+ ];
+ assert.deepEqual(newIds({flags:{rage_target_meimei:1,rage_real:1,rage_imagined:1},history}),['rage-meimei']);
+ const imagined={eventId:'rage-release',speaker:'meimei',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}};
+ assert.deepEqual(newIds({history:[imagined]}),['dream-meimei']);
+ assert.deepEqual(newIds({flags:{rage_target_meimei:1},history:[imagined]}),['rage-meimei','dream-meimei']);
+ for(const invalid of [
+  {...imagined,choiceIndex:-1},
+  {...imagined,eventId:'meimei-workday'},
+  {...imagined,eventOutcome:{label:'腦內劇場',result:'真的失控了'}},
+  {...imagined,eventOutcome:{label:'腦內劇場'}}
+ ])assert.deepEqual(newIds({history:[invalid]}),[],'unresolved or unrelated records do not earn the dream badge');
 });
 
 test('personnel, exploration and banquet combinations use completed decisions rather than menu presence',()=>{

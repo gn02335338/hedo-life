@@ -6,6 +6,7 @@ import { CAREER_DAILY_EVENTS } from './career.js';
 import { DEPARTURE_EVENTS } from './events-departures.js';
 import { ADVISOR_EVENTS } from './events-advisor.js';
 import { JACK_EVENTS } from './events-jack.js';
+import { MEIMEI_EVENTS } from './events-meimei-v20.js';
 const choice = (text, detail, result, delta, flags = []) => ({ text, detail, result, delta, flags });
 
 export const EVENTS = [
@@ -1262,3 +1263,6 @@ EVENTS.push(...ADVISOR_EVENTS);
 
 // New chronicler scenes never enter published e15 or earlier pools.
 EVENTS.push(...JACK_EVENTS);
+
+// e20 adds original sales-manager scenes without changing earlier draw pools.
+EVENTS.push(...MEIMEI_EVENTS);

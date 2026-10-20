@@ -1,0 +1,5283 @@
+{
+  "method": "Natural createRun seeds and canonical game actions only; no state injection. Prefixes and alternate choices are replayed from the beginning, including salary talks and dream interruption.",
+  "routes": [
+    {
+      "id": "dream-result-restores-personnel",
+      "roleId": "system",
+      "seed": "e20-system-0-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "disk-suitcase-cloud"
+        }
+      ],
+      "expected": {
+        "eventId": "education-scrutiny",
+        "endingId": null,
+        "turn": 2,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "meimei-rage-imagined",
+      "roleId": "ai",
+      "seed": "e20-ai-0-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "meimei-screen-patrol"
+        }
+      ],
+      "expected": {
+        "eventId": "meimei-screen-patrol",
+        "endingId": null,
+        "turn": 2,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "direct-without-pip",
+      "roleId": "system",
+      "seed": "e20-system-0-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-month-for-month",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pm-human-buffer",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "monitor-chain",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-cdp-responsibility",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "dismissal-final",
+        "endingId": null,
+        "turn": 7,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "meimei-rage-real",
+      "roleId": "system",
+      "seed": "e20-system-3-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "attendance-accidental-admin",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "reply-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-month-for-month",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "meimei-missing-ticket"
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "endingId": null,
+        "turn": 6,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "pip-passed-notice",
+      "roleId": "system",
+      "seed": "e20-system-4-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cdp-single-truth",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "degree-ntu-footnote",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-third-party-server",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-cdp-responsibility",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-job-three-conditions",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sea-deck-tonight",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "pip-passed",
+        "endingId": null,
+        "turn": 9,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "passed-back-at-work",
+      "roleId": "mis",
+      "seed": "e20-mis-6-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "first-day-map",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meme-archive",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "office-chairman-mv",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-resignation-race",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-weather",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pm-human-buffer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mood-tabletop",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "dp-php-volunteer",
+        "endingId": null,
+        "turn": 10,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "floor-after-pip",
+      "roleId": "ai",
+      "seed": "e20-ai-7-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "clock-human-alarm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-toggle",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-seven-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-designer-benchmark",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-phone-wakeup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "askonly-unasked",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-praise-pawn",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-team-member",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-office-wifi",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-promotion-transfer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-loop",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pm-human-buffer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-last-handshake",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "floor-notice",
+        "endingId": null,
+        "turn": 18,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "watch-dispute",
+      "roleId": "ai",
+      "seed": "e20-ai-7-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "clock-human-alarm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-toggle",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-seven-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-designer-benchmark",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-phone-wakeup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "askonly-unasked",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-praise-pawn",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-team-member",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-office-wifi",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-promotion-transfer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-loop",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pm-human-buffer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-last-handshake",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "watch-review",
+        "endingId": null,
+        "turn": 18,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "meltdown-with-personnel",
+      "roleId": "bd",
+      "seed": "e20-bd-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "tissue-real-name",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-designer-benchmark",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "office-access-escape-room",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-self-reminder",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-cup-and-exit",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-stay-together",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "bonus-phishing-rehearsal",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "mood-collapse",
+        "endingId": null,
+        "turn": 9,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "watch-three-days",
+      "roleId": "project",
+      "seed": "e20-project-m-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-loop",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-assistant-stack",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-name-version",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "project-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-free-floorplan",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-ranked-architecture",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "watch-future",
+        "endingId": null,
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "watch-recalled",
+      "roleId": "project",
+      "seed": "e20-project-m-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-loop",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-assistant-stack",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-name-version",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "project-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-free-floorplan",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-ranked-architecture",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "wing-growth-empty-seats",
+        "endingId": null,
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "watch-continue",
+      "roleId": "project",
+      "seed": "e20-project-m-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-loop",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-assistant-stack",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-name-version",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "project-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-free-floorplan",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-ranked-architecture",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "watch-empty-corridor",
+        "endingId": null,
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-system",
+      "roleId": "system",
+      "seed": "e20-system-z-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-third-party-server",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-system",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-system",
+        "turn": 11,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "floor-after-provocation",
+      "roleId": "ai",
+      "seed": "e20-ai-z-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-screen-patrol",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-message-workout",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-intern-no-owner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-bot-acknowledgment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder-no-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "floor-notice",
+        "endingId": null,
+        "turn": 10,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "direct-after-pip",
+      "roleId": "ai",
+      "seed": "e20-ai-z-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-screen-patrol",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-message-workout",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-intern-no-owner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-bot-acknowledgment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder-no-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "dismissal-final",
+        "endingId": null,
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "watch-dismissed",
+      "roleId": "ai",
+      "seed": "e20-ai-z-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-screen-patrol",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-message-workout",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-intern-no-owner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-bot-acknowledgment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder-no-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "dismissal-final",
+        "endingId": null,
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-ai",
+      "roleId": "ai",
+      "seed": "e20-ai-z-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-screen-patrol",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-message-workout",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-intern-no-owner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-bot-acknowledgment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder-no-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-ai",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-ai",
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-project",
+      "roleId": "project",
+      "seed": "e20-project-z-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "free-test-project",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "degree-weekly-question",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-two-company-badge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "project-four-urgent",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-missing-interviewer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-bot-committee",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-project",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-project",
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-product",
+      "roleId": "product",
+      "seed": "e20-product-z-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-message-lottery",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "video-designer-benchmark",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-third-party-server",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-professor-promise",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-job-three-conditions",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-resurrected-instance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-product",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-product",
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-design",
+      "roleId": "design",
+      "seed": "e20-design-z-m",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wireframe-revival",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "degree-weekly-question",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-typhoon-reply",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ok-means-received",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-design",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-design",
+        "turn": 9,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-bd",
+      "roleId": "bd",
+      "seed": "e20-bd-z-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "slack-seven-lives",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-icons-worldwide",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-forwarded-owner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-intern-no-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd-network",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-empty-onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "attendance-accidental-admin",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-bd",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-bd",
+        "turn": 11,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-sales",
+      "roleId": "sales",
+      "seed": "e20-sales-z-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "slack-seven-lives",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-product-loop",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "interview-wrong-paper",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-loop",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-phone-wakeup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-alumni-boundaries",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-promise",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-one-year-lecture",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-sales",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-sales",
+        "turn": 12,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-mis",
+      "roleId": "mis",
+      "seed": "e20-mis-z-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-product-loop",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-meeting-semantics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "reading-list-rush",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-architecture-relic",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-four-word-review",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-two-company-badge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "expense-delay",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mis-account-handover",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-third-party-server",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-mis",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-mis",
+        "turn": 17,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-cold_storage-executive",
+      "roleId": "executive",
+      "seed": "e20-executive-z-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-product-loop",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-missing-ticket",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-name-version",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-three-status-channels",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-empty-corridor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-invisible-invite",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-exam-room",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "watch-future",
+          "index": 0
+        }
+      ],
+      "ending": "cold_storage-executive",
+      "expected": {
+        "eventId": null,
+        "endingId": "cold_storage-executive",
+        "turn": 9,
+        "pipCount": 1,
+        "floorWatch": 1,
+        "floorDays": 3
+      }
+    },
+    {
+      "id": "ending-mediation_settled-system",
+      "roleId": "system",
+      "seed": "e20-system-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pm-human-buffer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-toggle",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-screen-patrol",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-stay-together",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-three-status-channels",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-comp-time-cycle",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-praise-pawn",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "transcript-speaker",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "office-access-escape-room",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-common-fund",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-birthday-host",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-pizza-overtime",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-resurrected-instance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-salary-unit",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "video-no-strength",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-return-as-vendor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-bot-committee",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "clock-human-alarm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-system",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-system",
+        "turn": 20,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_settled-ai",
+      "roleId": "ai",
+      "seed": "e20-ai-10-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "private-coffee",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-ai",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-ai",
+        "turn": 4,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_settled-project",
+      "roleId": "project",
+      "seed": "e20-project-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "copy-master-late",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-phone-wakeup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "tissue-real-name",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "api-bill-surprise",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "office-chairman-mv",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "first-day-map",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-project",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-project",
+        "turn": 9,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_settled-product",
+      "roleId": "product",
+      "seed": "e20-product-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-bali-roadmap",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pm-human-buffer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "platform-link-willpower",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-weather",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-self-reminder",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-toggle",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "product-boss-user",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-designer-benchmark",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-paid-study-hall",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-office-wifi",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-product",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-product",
+        "turn": 13,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "rare-second-pip",
+      "roleId": "design",
+      "seed": "e20-design-10-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-paid-study-hall",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-four-am-delivery",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-resignation-race",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-referral-renewal",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-returning-talent",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-typhoon-reply",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "extension-big-company",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-salary-unit",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-logo-bigger",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "english-class",
+        "endingId": null,
+        "turn": 14,
+        "pipCount": 2,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_settled-design",
+      "roleId": "design",
+      "seed": "e20-design-10-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-paid-study-hall",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-four-am-delivery",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-resignation-race",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-referral-renewal",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-returning-talent",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-typhoon-reply",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "extension-big-company",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-salary-unit",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-logo-bigger",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "expense-delay",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "reply-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-design",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-design",
+        "turn": 17,
+        "pipCount": 2,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_settled-bd",
+      "roleId": "bd",
+      "seed": "e20-bd-10-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd-network",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "hope-care-spreadsheet",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-resignation-race",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-cheer-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-vacation-proxy",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "invisible-effort",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "tissue-real-name",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-product-loop",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-free-floorplan",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-bd",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-bd",
+        "turn": 12,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_settled-sales",
+      "roleId": "sales",
+      "seed": "e20-sales-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-message-lottery",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mode-migration",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "tissue-real-name",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-missing-ticket",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-family-plan",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-empty-onboarding",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-assistant",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-commission",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "contract-concern-chain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-returning-talent",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-sales",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-sales",
+        "turn": 12,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_settled-mis",
+      "roleId": "mis",
+      "seed": "e20-mis-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "slack-ipad-engineer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dragon-office-quiz",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meme-archive",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-four-am-delivery",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-salary-unit",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-application-progress",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-mis",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-mis",
+        "turn": 10,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_settled-executive",
+      "roleId": "executive",
+      "seed": "e20-executive-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-phone-wakeup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "manager-pip-signature",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-overruled",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_settled-executive",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_settled-executive",
+        "turn": 5,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-system",
+      "roleId": "system",
+      "seed": "e20-system-11-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-icons-worldwide",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-typhoon-reply",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 1
+        }
+      ],
+      "ending": "mediation_pending-system",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-system",
+        "turn": 4,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-ai",
+      "roleId": "ai",
+      "seed": "e20-ai-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "degree-ntu-footnote",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-product-loop",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "telepathy-spec",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-human-fallback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "reply-weekend",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-resurrected-instance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-message-lottery",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "blame-debate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_pending-ai",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-ai",
+        "turn": 10,
+        "pipCount": 1,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-project",
+      "roleId": "project",
+      "seed": "e20-project-11-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_pending-project",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-project",
+        "turn": 2,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-product",
+      "roleId": "product",
+      "seed": "e20-product-11-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "slack-seven-lives",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "farewell-chair",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_pending-product",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-product",
+        "turn": 3,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-design",
+      "roleId": "design",
+      "seed": "e20-design-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-weather",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "farewell-chair",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_pending-design",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-design",
+        "turn": 3,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-bd",
+      "roleId": "bd",
+      "seed": "e20-bd-10-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "likr-employee-recommendation",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_pending-bd",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-bd",
+        "turn": 3,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-sales",
+      "roleId": "sales",
+      "seed": "e20-sales-11-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "farewell-chair",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 1
+        }
+      ],
+      "ending": "mediation_pending-sales",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-sales",
+        "turn": 3,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-mis",
+      "roleId": "mis",
+      "seed": "e20-mis-11-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sea-deck-tonight",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ],
+      "ending": "mediation_pending-mis",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-mis",
+        "turn": 2,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "ending-mediation_pending-executive",
+      "roleId": "executive",
+      "seed": "e20-executive-11-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-copy-proofreader",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-ten-minutes",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 1
+        }
+      ],
+      "ending": "mediation_pending-executive",
+      "expected": {
+        "eventId": null,
+        "endingId": "mediation_pending-executive",
+        "turn": 4,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    },
+    {
+      "id": "raise-to-personnel",
+      "roleId": "system",
+      "seed": "e20-system-z-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "free-test-project",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "crisis-boss",
+        "endingId": null,
+        "turn": 4,
+        "pipCount": 0,
+        "floorWatch": 0,
+        "floorDays": 0
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@ export const PERSONAS = Object.freeze(Object.fromEntries([
  ['kind','阿良','技術經理'],
  ['hope','希望','HR長'],
  ['jack','傑克','研發部經理'],
+ ['meimei','水蛇','業務經理'],
 ].map(([id,name,title])=>[id,Object.freeze({name,title,image:`./assets/${id}.png`,portrait:!['wing','spencer'].includes(id)})])));
 
 const names = Object.freeze({
@@ -17,6 +18,7 @@ const names = Object.freeze({
  Erich:'法師',ERICH:'法師',Sonny:'阿福',SONNY:'阿福',
  JenJen:'Moon Dog',JENJEN:'Moon Dog',Rick:'老闆乾兒子',RICK:'老闆乾兒子',
  Kind:'阿良',KIND:'阿良',Hope:'希望',HOPE:'希望',Jack:'傑克',JACK:'傑克',
+ Meimei:'水蛇',MeiMei:'水蛇',MEIMEI:'水蛇',
 });
 const namePattern = new RegExp(`(?<![A-Za-z0-9_])(?:${Object.keys(names).join('|')})(?![A-Za-z0-9_])`,'g');
 
@@ -27,6 +29,7 @@ function renameCopy(value){
   .replaceAll('阿良（Kind）','阿良').replaceAll('阿良 (Kind)','阿良')
   .replace(/(?:Rick|RICK)[（(](?:老闆)?乾兒子[）)]/g,'老闆乾兒子')
   .replace(/(?:Jack|JACK)[（(]傑克[）)]/g,'傑克')
+  .replaceAll('美美','水蛇')
   .replace(/林澤教授|林澤/g,'顧問教授')
   .replace(namePattern,name=>names[name])
   .replaceAll('空降事業部經理','事業部經理')
