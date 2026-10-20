@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 import {createRun,getEvent,jobTitle,applyChoice,advance,requestExit,requestBreak,requestCareer,requestRage,canRequestRage,replayRun,validRun,STAT_KEYS} from '../dist/engine.js';
 import {JACK_EVENTS} from '../dist/events-jack.js';
 import {deriveAchievements,ACHIEVEMENTS} from '../dist/achievements.js';
-import {displayText} from '../dist/persona.js';
+import {displayText,replayText} from '../dist/persona.js';
 import {validateCompletion} from '../worker/http.js';
 const copy=x=>JSON.parse(JSON.stringify(x));
 const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
@@ -67,12 +67,17 @@ test('six Jack colleague scenes have valid aliases, evidence choices and an elig
  }
 });
 
-test('new natural route histories contain only public aliases and original controls stay replayable',()=>{
+test('published e16 histories retain canonical aliases while the current display name stays separate',()=>{
  const routes=JSON.parse(readFileSync(new URL('./fixtures/legacy-e16-routes.json',import.meta.url))).filter(route=>!route.ending.startsWith('feature-'));
  for(const route of routes){
   assert.ok(route.seed.startsWith('e16-'));
   const run=replayRun(route.roleId,route.seed,route.actions);assert.equal(run.completed,true);
-  for(const h of run.history)for(const field of ['title','body','choiceText','result','jobTitle'])assert.equal(displayText(h[field]),h[field],route.ending+'/'+field);
+  for(const h of run.history)for(const field of ['title','body','choiceText','result','jobTitle']){
+   assert.equal(replayText(h[field]),h[field],route.ending+'/'+field);
+   const shown=displayText(h[field]);
+   assert.doesNotMatch(shown,/Moon Dog/);
+   if(h[field].includes('Moon Dog'))assert.ok(shown.includes('真真'));
+  }
  }
 });
 

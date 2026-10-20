@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PERSONAS,displayName,displayText,applyPersonaCopy} from '../dist/persona.js';
+import {PERSONAS,displayName,displayText,replayText,applyPersonaCopy} from '../dist/persona.js';
 import {ROLES} from '../dist/roles.js';
 import {ENDINGS} from '../dist/endings.js';
 import {LEGACY_ENDINGS} from '../dist/legacy.js';
@@ -10,7 +10,7 @@ import {getRageV20,rageTargetForV20} from '../dist/rage-v20.js';
 import {getRageV16} from '../dist/rage-v16.js';
 
 test('all named game characters have stable IDs, public aliases and original portrait paths',()=>{
- const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'Moon Dog',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友'};
+ const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友'};
  assert.deepEqual(Object.fromEntries(Object.keys(PERSONAS).map(id=>[id,displayName(id)])),expected);
  for(const [id,person]of Object.entries(PERSONAS)){
   assert.equal(person.image,`./assets/${id}.png`);
@@ -23,7 +23,7 @@ test('all named game characters have stable IDs, public aliases and original por
 });
 
 test('display aliases handle Chinese-adjacent names and existing nicknames without changing identifiers or URLs',()=>{
- assert.equal(displayText('Wing問Rick，Hope跟Erich／JenJen／Sonny在旁邊。Spencer叫Jack跟Kind過來。'),'翅膀問老闆乾兒子，希望跟法師／Moon Dog／阿福在旁邊。屎潘蛇叫傑克跟阿良過來。');
+ assert.equal(displayText('Wing問Rick，Hope跟Erich／JenJen／Sonny在旁邊。Spencer叫Jack跟Kind過來。'),'翅膀問老闆乾兒子，希望跟法師／真真／阿福在旁邊。屎潘蛇叫傑克跟阿良過來。');
  assert.equal(displayText('阿良（Kind）、Rick（乾兒子）、Jack（傑克）、林澤教授。'),'阿良、老闆乾兒子、傑克、顧問教授。');
  assert.equal(displayText('SPENCER / WING / RICK / HOPE'),'屎潘蛇 / 翅膀 / 老闆乾兒子 / 希望');
  const unchanged='kind hopeful Wingman Rickshaw wing rage_wing WingFeature ./assets/Wing.png https://example.test/Wing?Kind=Hope';
@@ -34,6 +34,21 @@ test('display aliases handle Chinese-adjacent names and existing nicknames witho
  assert.equal(displayText('美美／Meimei／MeiMei／MEIMEI'),'水蛇／水蛇／水蛇／水蛇');
  const meimeiIdentifiers='meimei rage_meimei ./assets/meimei.png https://example.test/Meimei';
  assert.equal(displayText(meimeiIdentifiers),meimeiIdentifiers);
+});
+
+test('Zhen Zhen is a display rename while canonical replay prose and identifiers remain stable',()=>{
+ const text='JenJen／JENJEN／Moon Dog正在等你，真真也在。';
+ assert.equal(displayText(text),'真真／真真／真真正在等你，真真也在。');
+ assert.equal(replayText(text),'Moon Dog／Moon Dog／Moon Dog正在等你，真真也在。');
+ assert.equal(displayText(displayText(text)),displayText(text));
+ const identifiers='jenjen rage_jenjen ./assets/jenjen.png https://example.test/Moon-Dog?JenJen=MoonDog Moon_Dog Moon Doggy';
+ assert.equal(displayText(identifiers),identifiers);
+ const event={id:'legacy-exit',speaker:'jenjen',body:'JenJen與Moon Dog都是這份舊紀錄裡的名字。',choices:[{text:'請JenJen說明',result:'Moon Dog拿出交接表',delta:{trust:4}}]};
+ const before=JSON.stringify(event),canonical=applyPersonaCopy(event);
+ assert.equal(canonical.body,'Moon Dog與Moon Dog都是這份舊紀錄裡的名字。');
+ assert.equal(displayText(canonical.body),'真真與真真都是這份舊紀錄裡的名字。');
+ assert.equal(canonical.speaker,'jenjen');assert.deepEqual(canonical.choices[0].delta,{trust:4});
+ assert.equal(JSON.stringify(event),before);
 });
 
 test('Water Snake is a conversational rage target while published character releases stay identical',()=>{

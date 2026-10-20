@@ -13,7 +13,7 @@ import { getRage } from './rage.js';
 import { RAGE_WORLD_EVENTS, getRageV14, rageTargetFor } from './rage-v14.js';
 import { getBanquet } from './banquet.js';
 import { getRageV16, rageTargetForV16 } from './rage-v16.js';
-import { applyPersonaCopy, displayText } from './persona.js';
+import { applyPersonaCopy, displayText, replayText } from './persona.js';
 import { applyOnboardingV17 } from './onboarding-v17.js';
 import { normalizeAbilitiesV18, abilityRebalanceV18, moodEnergyPulseV18, getSelfCareV18 } from './resources-v18.js';
 import { scopedBossDeltaV18 } from './relationships-v18.js';
@@ -354,7 +354,7 @@ export function applyChoice(run,index){
  if(!family&&choice.flags?.some(x=>['final_global','final_taiwan','final_acquire'].includes(x))){const goal=choice.flags.includes('final_global')?'nasdaq':choice.flags.includes('final_taiwan')?'taiwan':'acquired';if(endingEligibility(next,goal))family=goal;else effect='shortfall';}
  if(event.id==='onboarding'&&index<2)result+=` 目前實際職稱：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
  if(contentRules(run)>=5){result=polishEngineText(result);if(next.lastWeather)next.lastWeather.text=polishEngineText(next.lastWeather.text);}
- if(contentRules(run)>=16){result=displayText(result);if(next.lastWeather)next.lastWeather.text=displayText(next.lastWeather.text);}
+ if(contentRules(run)>=16){result=replayText(result);if(next.lastWeather)next.lastWeather.text=replayText(next.lastWeather.text);}
  next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{})});
  next.pending=true;next.pendingEffect=effect;next.pendingFamily=family;return next;
 }

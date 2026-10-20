@@ -6,7 +6,7 @@ export const PERSONAS = Object.freeze(Object.fromEntries([
  ['spencer','屎潘蛇','董事長'],
  ['erich','法師','法務長'],
  ['sonny','阿福','MIS','史冊裡也叫桑尼。工單、點名和腕力賽，各有一套尚待補充的說法。'],
- ['jenjen','Moon Dog','行政長'],
+ ['jenjen','真真','行政長'],
  ['rick','老闆乾兒子','技術資深經理'],
  ['kind','阿良','技術經理'],
  ['hope','希望','HR長'],
@@ -40,17 +40,23 @@ function renameCopy(value){
   .replaceAll('禾多','移動');
 }
 
-// Skip URLs and asset paths even when they appear inside a text paragraph.
-// Only exact character names change: “kind”, “hopeful”, “Wingman” and internal
-// identifiers such as “rage_wing” are not names to rewrite.
-export function displayText(value=''){
+// Keep the published names in engine-authored prose. New display aliases must
+// not rewrite existing replay histories or queued server proofs.
+function proseText(value,transform){
  return String(value).split(/((?:https?:\/\/|\.{1,2}\/)[^\s<>"'，。；）]+)/u)
-  .map(part=>/^(?:https?:\/\/|\.{1,2}\/)/u.test(part)?part:renameCopy(part)).join('');
+  .map(part=>/^(?:https?:\/\/|\.{1,2}\/)/u.test(part)?part:transform(part)).join('');
+}
+export function replayText(value=''){return proseText(value,renameCopy);}
+
+// Skip URLs, asset paths and identifiers while rendering both saved aliases
+// and original names with the current public name.
+export function displayText(value=''){
+ return proseText(value,part=>renameCopy(part).replace(/(?<![A-Za-z0-9_])Moon\s+Dog(?![A-Za-z0-9_])/g,'真真'));
 }
 
 function copyFields(value,keys){
  const next={...value};
- for(const key of keys)if(typeof value[key]==='string')next[key]=displayText(value[key]);
+ for(const key of keys)if(typeof value[key]==='string')next[key]=replayText(value[key]);
  return next;
 }
 
