@@ -108,3 +108,5 @@
 .self-care-availability-note{margin:18px 0;padding:12px 15px;border-left:3px solid #dc91b3;background:#fff6fa;color:#696575;font-size:12px;line-height:1.85;border-radius:0 8px 8px 0}
 
 .achievement-mode{align-self:flex-start;display:inline-flex;margin:9px 0 1px;padding:4px 8px;border-radius:99px;font-size:10px;line-height:1.5;background:#f2edf9;color:#705583}.achievement-mode.real{background:#ffedf1;color:#b52d54}.legacy-rage-achievements{margin-top:32px;padding-top:26px;border-top:1px solid var(--line)}.legacy-rage-achievements>h3{font-size:18px;margin:0 0 8px}.legacy-rage-achievements>p{font-size:12px;line-height:1.9;color:var(--muted);margin:0 0 20px}.legacy-rage-card{border-color:#e5e0e8}.legacy-rage-card .achievement-art{background:#f5f2f7}.legacy-rage-card .achievement-category{color:#82758c}
+
+.character-bio{margin:14px 20px 0;font-size:12px;line-height:1.9;color:#8d7c89}

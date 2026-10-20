@@ -34,9 +34,9 @@ function bookHarness(cloud,cache=null){
   return {book,dialog,store,focus,get html(){return html;},replace(value){html=value;},change(id,value){handlers.get('change')({target:{id,value}});},retry(){handlers.get('click')({target:{closest:selector=>selector==='[data-character-retry]'?{}:null}});}};
 }
 
-test('the cast archive contains ten alias-only portraits and never lists locked endings',()=>{
+test('the cast archive contains eleven alias-only portraits and never lists locked endings',()=>{
  const html=characterBookHTML();
- assert.equal([...html.matchAll(/class="character-card"/g)].length,10);
+ assert.equal([...html.matchAll(/class="character-card"/g)].length,11);
  for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));assert.ok(html.includes(persona.PERSONAS[id].name));}
  assert.doesNotMatch(html,/Wing|Spencer|Erich|Sonny|JenJen|Rick|Hope|Kind|Jack|美美/);
  assert.doesNotMatch(html,/納斯達克幻想|自願離職陷阱|勉強通關|成功率/);
@@ -111,6 +111,55 @@ test('offline archive preserves cached verified values and retry replaces them w
  app.retry();await tick();await tick();
  assert.match(app.html,/已驗證雲端紀錄/);assert.doesNotMatch(app.html,/全站紀錄暫時無法更新/);
  assert.match(firstTable(app.html),/<td>3<small>次<\/small><\/td><td>9<small>次/);
+});
+
+test('an old ten-character public cache preserves its offline totals and dates while Helen stays unknown',async()=>{
+ const legacy=rows({wing:{encounters:7,realHits:2}}).filter(row=>row.id!=='helen');
+ const cached={version:1,characters:legacy,trackingSince:'2026-09-01T00:00:00.000Z',fetchedAt:'2026-09-30T12:34:56.000Z'};
+ const cloud={state:{status:'local',characters:[],pending:0},init:async()=>null,characters:async()=>{throw new Error('offline');}};
+ const app=bookHarness(cloud,cached);await app.book.open();
+ assert.match(firstTable(app.html),/<td>—<\/td><td>7<small>次<\/small>/);
+ assert.match(firstTable(app.html),/<td>—<\/td><td>2<small>次<\/small>/);
+ for(const value of [cached.fetchedAt,cached.trackingSince])assert.ok(app.html.includes(new Date(value).toLocaleString('zh-TW',{hour12:false})));
+ assert.deepEqual(JSON.parse(app.store.get('hedo-character-public-v1')),cached,'offline reading does not rewrite the ten-person snapshot');
+ app.change('character-filter','helen');
+ assert.equal([...firstTable(app.html).matchAll(/<td>—<\/td>/g)].length,10);
+ assert.doesNotMatch(firstTable(app.html),/<td>0/);
+ assert.match(app.html,/前女友/);
+});
+
+test('a fresh eleven-character public response replaces the legacy cache and supplies actual Helen totals',async()=>{
+ const cached={version:1,characters:rows({wing:{encounters:7}}).filter(row=>row.id!=='helen'),trackingSince:'2026-09-01T00:00:00.000Z',fetchedAt:'2026-09-30T12:34:56.000Z'};
+ const cloud={state:{status:'local',characters:[],pending:0},init:async()=>null,characters:async()=>{throw new Error('offline');}};
+ const app=bookHarness(cloud,cached);await app.book.open();
+ const fresh=rows({wing:{encounters:9},helen:{encounters:5,realHits:4}});
+ cloud.state={status:'online',characters:rows(),pending:0};cloud.init=async()=>({});
+ cloud.characters=async()=>({version:1,characters:fresh,trackingSince:cached.trackingSince});
+ app.retry();await tick();await tick();
+ app.change('character-filter','helen');
+ assert.match(firstTable(app.html),/<td>0<small>次<\/small><\/td><td>5<small>次<\/small>/);
+ assert.match(firstTable(app.html),/<td>0<small>次<\/small><\/td><td>4<small>次<\/small>/);
+ const saved=JSON.parse(app.store.get('hedo-character-public-v1'));
+ assert.deepEqual(saved.characters,fresh);assert.equal(saved.characters.length,11);
+ assert.equal(saved.trackingSince,cached.trackingSince);assert.notEqual(saved.fetchedAt,cached.fetchedAt);
+});
+
+test('malformed Helen rows and missing original characters cannot masquerade as compatible public caches',async()=>{
+ const good=rows({wing:{encounters:7}}),helen=good.find(row=>row.id==='helen'),missingMetric={...helen};delete missingMetric.affinityLost;
+ const invalid=[good.map(row=>row.id==='helen'?{...row,realHits:-1}:row),good.map(row=>row.id==='helen'?missingMetric:row),good.filter(row=>row.id!=='sonny')];
+ const legacy={version:1,characters:good.filter(row=>row.id!=='helen'),trackingSince:'2026-09-01T00:00:00.000Z',fetchedAt:'2026-09-30T12:34:56.000Z'};
+ for(const bad of invalid){
+  const cloud={state:{status:'local',characters:[],pending:0},init:async()=>null,characters:async()=>{throw new Error('offline');}};
+  const rejected=bookHarness(cloud,{...legacy,characters:bad});await rejected.book.open();
+  assert.equal([...firstTable(rejected.html).matchAll(/<td>—<\/td>/g)].length,10);
+  assert.doesNotMatch(firstTable(rejected.html),/<td>7<small>/);
+  const retained=bookHarness(cloud,legacy);await retained.book.open();
+  cloud.characters=async()=>({version:1,characters:bad,trackingSince:legacy.trackingSince});
+  retained.retry();await tick();await tick();
+  assert.match(firstTable(retained.html),/<td>—<\/td><td>7<small>次<\/small>/);
+  assert.match(retained.html,/全站紀錄暫時無法更新，顯示上次取得的數字/);
+  assert.deepEqual(JSON.parse(retained.store.get('hedo-character-public-v1')),legacy);
+ }
 });
 
 test('a delayed archive response cannot replace another dialog or an explicitly newer request',async()=>{

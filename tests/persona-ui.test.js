@@ -10,7 +10,7 @@ import {getRageV20,rageTargetForV20} from '../dist/rage-v20.js';
 import {getRageV16} from '../dist/rage-v16.js';
 
 test('all named game characters have stable IDs, public aliases and original portrait paths',()=>{
- const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'Moon Dog',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇'};
+ const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'Moon Dog',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友'};
  assert.deepEqual(Object.fromEntries(Object.keys(PERSONAS).map(id=>[id,displayName(id)])),expected);
  for(const [id,person]of Object.entries(PERSONAS)){
   assert.equal(person.image,`./assets/${id}.png`);

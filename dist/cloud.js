@@ -18,13 +18,17 @@ try{
  const savedProgress=JSON.parse(localStorage.getItem(PROGRESS)||'[]');
  if(Array.isArray(savedProgress))progress=savedProgress;
 }catch{token=null;status='local';storageError='此瀏覽器無法保存匿名同步資料，請保留目前頁面。';}
-const characterIds=['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei'];
+const legacyCharacterIds=['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei'];
+const characterIds=[...legacyCharacterIds,'helen'];
 const characterMetrics=['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents'];
 function safeCharacterRows(value){
  if(!Array.isArray(value)||!value.length)return null;
  const rows=characterIds.map(id=>value.find(row=>row?.id===id));
- if(rows.some(row=>!row||!characterMetrics.every(key=>Number.isSafeInteger(row[key])&&row[key]>=0)))return null;
- return rows.map(row=>({id:row.id,...Object.fromEntries(characterMetrics.map(key=>[key,row[key]]))}));
+ const valid=row=>row&&characterMetrics.every(key=>Number.isSafeInteger(row[key])&&row[key]>=0);
+ // A verified ten-person cache predates Helen. Keep its real totals and leave
+ // her absent until a verified response supplies her row; absence is not zero.
+ if(rows.slice(0,legacyCharacterIds.length).some(row=>!valid(row))||rows.at(-1)!==undefined&&!valid(rows.at(-1)))return null;
+ return rows.filter(Boolean).map(row=>({id:row.id,...Object.fromEntries(characterMetrics.map(key=>[key,row[key]]))}));
 }
 async function characterOwnerHash(){
  const bytes=new Uint8Array(token.match(/../g).map(byte=>parseInt(byte,16)));

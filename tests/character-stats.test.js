@@ -30,11 +30,11 @@ function directPlay(roleId,seed,actions,saved=false){
  return run;
 }
 
-test('character projection always returns the ten public IDs and bounded integer metrics without accepting supplied totals',()=>{
- assert.deepEqual(CHARACTER_IDS,Object.keys(PERSONAS));assert.equal(CHARACTER_IDS.length,10);
+test('character projection always returns the eleven public IDs and bounded integer metrics without accepting supplied totals',()=>{
+ assert.deepEqual(CHARACTER_IDS,Object.keys(PERSONAS));assert.equal(CHARACTER_IDS.length,11);
  assert.deepEqual(CHARACTER_METRICS,['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents']);
  for(const value of [null,undefined,{},[],{history:null},{characters:[{id:'wing',realHits:999}],flags:{rage_real:999,rage_target_wing:999}}]){
-  const result=deriveCharacterStats(value);assert.equal(result.length,10);
+  const result=deriveCharacterStats(value);assert.equal(result.length,11);
   for(const row of result){assert.deepEqual(Object.keys(row),['id',...CHARACTER_METRICS]);for(const key of CHARACTER_METRICS)assert.equal(row[key],0);}
   assert.deepEqual(characterHistoryChanges(value),[]);
  }

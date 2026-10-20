@@ -16,7 +16,7 @@ const copy=value=>JSON.parse(JSON.stringify(value));
 const scene=(id,roles)=>({id,roles,weight:1});
 
 test('sixty new single-profession scenes prioritize sales, BD and design with authored absurd choices',()=>{
- const events=newEvents();assert.equal(events.length,60);assert.equal(EVENTS.length,283);
+ const events=newEvents();assert.equal(events.length,60);assert.equal(EVENTS.filter(event=>(event.minRules||1)<=21).length,283);
  for(const role of ROLES)assert.equal(events.filter(event=>event.roles[0]===role.id).length,['sales','bd','design'].includes(role.id)?12:4,role.id);
  assert.equal(new Set(events.map(event=>event.id)).size,60);
  for(const event of events){
@@ -86,9 +86,9 @@ test('natural e21 first work scenes belong to the current job, while every saved
  }
 });
 
-test('the latest complete report uses e21 and retains every profession and every ending',()=>{
+test('the latest complete report uses e22 and retains every profession and every ending',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
  assert.equal(report.complete,true);assert.equal(report.found,341);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>route.seed.startsWith('e21-')));
+ assert.ok(report.routes.every(route=>route.seed.startsWith('e22-')));
  for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id&&route.actions.some(action=>newEvents().some(event=>event.id===action.eventId))),role.id);
 });

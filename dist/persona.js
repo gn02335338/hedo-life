@@ -5,14 +5,15 @@ export const PERSONAS = Object.freeze(Object.fromEntries([
  ['wing','翅膀','執行長'],
  ['spencer','屎潘蛇','董事長'],
  ['erich','法師','法務長'],
- ['sonny','阿福','MIS'],
+ ['sonny','阿福','MIS','史冊裡也叫桑尼。工單、點名和腕力賽，各有一套尚待補充的說法。'],
  ['jenjen','Moon Dog','行政長'],
  ['rick','老闆乾兒子','技術資深經理'],
  ['kind','阿良','技術經理'],
  ['hope','希望','HR長'],
  ['jack','傑克','研發部經理'],
  ['meimei','水蛇','業務經理'],
-].map(([id,name,title])=>[id,Object.freeze({name,title,image:`./assets/${id}.png`,portrait:!['wing','spencer'].includes(id)})])));
+ ['helen','前女友','產品開發總監','海倫的辦公室綽號。離場後仍在延長的交接與特權，被同事比喻成一段分不乾淨的關係；不代表實際交往紀錄。'],
+].map(([id,name,title,about])=>[id,Object.freeze({name,title,image:`./assets/${id}.png`,portrait:!['wing','spencer'].includes(id),...(about?{about}:{})})])));
 
 const names = Object.freeze({
  Wing:'翅膀',WING:'翅膀',Spencer:'屎潘蛇',SPENCER:'屎潘蛇',
@@ -20,6 +21,7 @@ const names = Object.freeze({
  JenJen:'Moon Dog',JENJEN:'Moon Dog',Rick:'老闆乾兒子',RICK:'老闆乾兒子',
  Kind:'阿良',KIND:'阿良',Hope:'希望',HOPE:'希望',Jack:'傑克',JACK:'傑克',
  Meimei:'水蛇',MeiMei:'水蛇',MEIMEI:'水蛇',
+ Helen:'前女友',HELEN:'前女友',
 });
 const namePattern = new RegExp(`(?<![A-Za-z0-9_])(?:${Object.keys(names).join('|')})(?![A-Za-z0-9_])`,'g');
 
