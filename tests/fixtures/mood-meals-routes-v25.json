@@ -1,0 +1,6922 @@
+{
+  "method": "Natural e25 game actions from createRun; no state, stats, pay, role, flags, mood counters, events or RNG are injected.",
+  "routes": [
+    {
+      "id": "meal-guests",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        }
+      ],
+      "expected": {
+        "eventId": "meal-guests-a",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": null
+        }
+      }
+    },
+    {
+      "id": "meal-with-wing",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-wing",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": "wing"
+        }
+      }
+    },
+    {
+      "id": "meal-wing-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 59,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-wing-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 80,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-spencer",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-spencer",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": "spencer"
+        }
+      }
+    },
+    {
+      "id": "meal-spencer-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 70,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-spencer-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 89,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-erich",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-erich",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": "erich"
+        }
+      }
+    },
+    {
+      "id": "meal-erich-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 97,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-erich-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-sonny",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-sonny",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": "sonny"
+        }
+      }
+    },
+    {
+      "id": "meal-sonny-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 86,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-sonny-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 98,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-jenjen",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-jenjen",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": "jenjen"
+        }
+      }
+    },
+    {
+      "id": "meal-jenjen-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 99,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-jenjen-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-rick",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-rick",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": "rick"
+        }
+      }
+    },
+    {
+      "id": "meal-rick-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 82,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-rick-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 96,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-kind",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-kind",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": "kind"
+        }
+      }
+    },
+    {
+      "id": "meal-kind-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-kind-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-hope",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-hope",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 0,
+          "guest": "hope"
+        }
+      }
+    },
+    {
+      "id": "meal-hope-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 94,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-hope-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 99,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-jack",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-jack",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 1,
+          "guest": "jack"
+        }
+      }
+    },
+    {
+      "id": "meal-jack-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-jack-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-meimei",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-meimei",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 1,
+          "guest": "meimei"
+        }
+      }
+    },
+    {
+      "id": "meal-meimei-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-meimei-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-helen",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-helen",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 1,
+          "guest": "helen"
+        }
+      }
+    },
+    {
+      "id": "meal-helen-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-helen-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-sophie",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-sophie",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 1,
+          "guest": "sophie"
+        }
+      }
+    },
+    {
+      "id": "meal-sophie-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-sophie-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-jonathan",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-jonathan",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 1,
+          "guest": "jonathan"
+        }
+      }
+    },
+    {
+      "id": "meal-jonathan-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-jonathan-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-owen",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-owen",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 1,
+          "guest": "owen"
+        }
+      }
+    },
+    {
+      "id": "meal-owen-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-owen-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-sam",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-sam",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 1,
+          "guest": "sam"
+        }
+      }
+    },
+    {
+      "id": "meal-sam-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 92,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-sam-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-with-cindy",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        }
+      ],
+      "expected": {
+        "eventId": "meal-with-cindy",
+        "turn": 1,
+        "mood": 65,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "self-care",
+          "page": 1,
+          "guest": "cindy"
+        }
+      }
+    },
+    {
+      "id": "meal-cindy-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-cindy-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "job-system-rollback",
+        "turn": 1,
+        "mood": 100,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meal-crisis-guests",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "meal-guests-a",
+        "turn": 7,
+        "mood": 1,
+        "crashes": 0,
+        "mealContext": {
+          "origin": "crisis-mood",
+          "page": 0,
+          "guest": null
+        }
+      }
+    },
+    {
+      "id": "meal-crisis-reply",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "system-backup",
+        "turn": 7,
+        "mood": 44,
+        "crashes": 0,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "collapse-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "mood-collapse",
+        "turn": 8,
+        "mood": 0,
+        "crashes": 1,
+        "mealContext": null
+      }
+    },
+    {
+      "id": "self-destruct-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        }
+      ],
+      "expected": {
+        "eventId": "mood-self-destruct",
+        "turn": 8,
+        "mood": 0,
+        "crashes": 1,
+        "mealContext": null
+      }
+    },
+    {
+      "id": "self-destruct-1-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "campus-double-standard",
+        "turn": 8,
+        "mood": 42,
+        "crashes": 1,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "self-destruct-1-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "campus-double-standard",
+        "turn": 8,
+        "mood": 16,
+        "crashes": 1,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "self-destruct-1-reply-2",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": null,
+        "turn": 8,
+        "mood": 12,
+        "crashes": 1,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "collapse-2",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "mood-collapse",
+        "turn": 9,
+        "mood": 0,
+        "crashes": 2,
+        "mealContext": null
+      }
+    },
+    {
+      "id": "self-destruct-2",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        }
+      ],
+      "expected": {
+        "eventId": "mood-self-destruct",
+        "turn": 9,
+        "mood": 0,
+        "crashes": 2,
+        "mealContext": null
+      }
+    },
+    {
+      "id": "self-destruct-2-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "raise-title-only",
+        "turn": 9,
+        "mood": 30,
+        "crashes": 2,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "self-destruct-2-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "raise-title-only",
+        "turn": 9,
+        "mood": 10,
+        "crashes": 2,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "self-destruct-2-reply-2",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": null,
+        "turn": 9,
+        "mood": 12,
+        "crashes": 2,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "collapse-3",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "mood-collapse",
+        "turn": 10,
+        "mood": 0,
+        "crashes": 3,
+        "mealContext": null
+      }
+    },
+    {
+      "id": "self-destruct-3",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        }
+      ],
+      "expected": {
+        "eventId": "mood-self-destruct",
+        "turn": 10,
+        "mood": 0,
+        "crashes": 3,
+        "mealContext": null
+      }
+    },
+    {
+      "id": "self-destruct-3-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "system-weekend",
+        "turn": 10,
+        "mood": 20,
+        "crashes": 3,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "self-destruct-3-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "system-weekend",
+        "turn": 10,
+        "mood": 6,
+        "crashes": 3,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "self-destruct-3-reply-2",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": null,
+        "turn": 10,
+        "mood": 12,
+        "crashes": 3,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "collapse-4",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "mood-collapse",
+        "turn": 12,
+        "mood": 0,
+        "crashes": 4,
+        "mealContext": null
+      }
+    },
+    {
+      "id": "self-destruct-4",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        }
+      ],
+      "expected": {
+        "eventId": "mood-self-destruct",
+        "turn": 12,
+        "mood": 0,
+        "crashes": 4,
+        "mealContext": null
+      }
+    },
+    {
+      "id": "self-destruct-4-reply-0",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "jonathan-today-release",
+        "turn": 12,
+        "mood": 10,
+        "crashes": 4,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "self-destruct-4-reply-1",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "low-pay-tip",
+        "turn": 12,
+        "mood": 4,
+        "crashes": 4,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "self-destruct-4-reply-2",
+      "roleId": "system",
+      "seed": "e25-mood-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": null,
+        "turn": 12,
+        "mood": 12,
+        "crashes": 4,
+        "mealContext": null
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-fault-friendship",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-retention-bonus",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "campus-double-standard",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-title-only",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-self-destruct",
+          "index": 2
+        }
+      ]
+    }
+  ]
+}

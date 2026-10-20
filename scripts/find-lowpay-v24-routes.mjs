@@ -101,7 +101,7 @@ const expected = ['proposal-below-30', 'accepted-cut', 'cut-to-30', 'deferred-mo
   ...[0, 1, 2].map(index => `tip-choice-${index}`), ...['event', 'result'].flatMap(phase => ['imagined', 'real'].map(mode => `tip-${phase}-rage-${mode}`))];
 for (let attempt = 0; attempt < 600 && expected.some(id => !found.has(id)); attempt++) {
   for (const role of ROLES.filter(role => role.id !== 'executive')) {
-    visit(simulate(role.id, ['broke', 'historian', 'nasdaq', 'cold_storage', 'promotion', 'second_offer'][attempt % 6], attempt).route);
+    visit(simulate(role.id, ['broke', 'historian', 'nasdaq', 'cold_storage', 'promotion', 'second_offer'][attempt % 6], attempt, {seedPrefix:'e24'}).route);
   }
 }
 const missing = expected.filter(id => !found.has(id));
