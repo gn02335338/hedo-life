@@ -54,13 +54,15 @@ test('self-care action is accepted only for new-rule seeds and still requires re
   const balanced={...body,seed:'e9-api-self-care'};assert.deepEqual(validateCompletion(balanced,{ai:{}}),balanced);
   const paced={...body,seed:'e10-api-self-care'};assert.deepEqual(validateCompletion(paced,{ai:{}}),paced);
   const education={...body,seed:'e11-api-self-care'};assert.deepEqual(validateCompletion(education,{ai:{}}),education);
+  const wild={...body,seed:'e12-api-self-care'};assert.deepEqual(validateCompletion(wild,{ai:{}}),wild);
   for(const seed of ['api-test','e1-api-self-care']) assert.throws(()=>validateCompletion({...body,seed},{ai:{}}), error=>error.status===400);
 });
 
-test('manual career action is an e10/e11 envelope action whose timing is checked by replay',()=>{
+test('manual career action is an e10/e11/e12 envelope action whose timing is checked by replay',()=>{
   const body={...validBody,seed:'e10-api-career',actions:[{type:'career'}]};
   assert.deepEqual(validateCompletion(body,{ai:{}}),body);
-  const latest={...body,seed:'e11-api-career'};assert.deepEqual(validateCompletion(latest,{ai:{}}),latest);
+  const education={...body,seed:'e11-api-career'};assert.deepEqual(validateCompletion(education,{ai:{}}),education);
+  const latest={...body,seed:'e12-api-career'};assert.deepEqual(validateCompletion(latest,{ai:{}}),latest);
   for(const seed of ['api-test','e1-api-career','e8-api-career','e9-api-career'])assert.throws(()=>validateCompletion({...body,seed},{ai:{}}),error=>error.status===400);
 });
 

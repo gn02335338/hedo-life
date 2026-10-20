@@ -138,7 +138,7 @@ test('new education state rejects malformed saves and old e10 saves do not acqui
  assert.equal(validRun({...old,eventId:'education-scrutiny'}),false);
 });
 
-test('natural e11 routes prove education salary and dismissal branches survive JSON saves and server replay',()=>{
+test('natural e12 routes prove education salary and dismissal branches survive JSON saves and server replay',()=>{
  const routes=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8')).routes;
  const examples={salary:null,dismissal:null};
  for(const route of routes){
@@ -147,7 +147,7 @@ test('natural e11 routes prove education salary and dismissal branches survive J
   if(next==='salary-cut')examples.salary??=route;if(next==='crisis-boss')examples.dismissal??=route;
  }
  for(const [branch,route]of Object.entries(examples)){
-  assert.ok(route,`natural ${branch} education witness`);assert.ok(route.seed.startsWith('e11-'));
+  assert.ok(route,`natural ${branch} education witness`);assert.ok(route.seed.startsWith('e12-'));
   const finished=replayRoute(route,state=>assert.equal(validRun(copy(state)),true));assert.equal(finished.endingId,route.ending);assert.deepEqual(finished,replayRun(route.roleId,route.seed,route.actions));
   assert.equal(finished.history.filter(row=>row.eventId==='education-scrutiny').length,1);
   const forged=copy(route.actions),at=forged.findIndex(action=>action.eventId==='education-scrutiny');forged[at].eventId='education-review';assert.throws(()=>replayRun(route.roleId,route.seed,forged),/Replay event mismatch/);
