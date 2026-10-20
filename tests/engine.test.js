@@ -28,10 +28,10 @@ const checkOutcome=(eventId,index,extras={},wanted='promote')=>{
  throw new Error(`No ${wanted} check result`);
 };
 
-test('nine careers retain the published 144 endings and expand to a complete 234-card matrix',()=>{
+test('nine careers retain the published 144 endings and expand to a complete 288-card matrix',()=>{
  assert.equal(VERSION,3);assert.equal(ROLES.length,9);assert.equal(STAT_KEYS.length,9);
  assert.equal(FAMILIES.slice(0,16).length,16);assert.equal(ENDINGS.slice(0,144).length,144);
- assert.equal(FAMILIES.length,26);assert.equal(ENDINGS.length,234);
+ assert.equal(FAMILIES.length,32);assert.equal(ENDINGS.length,288);
  for(const list of [ROLES,EVENTS,FANTASY_EVENTS,ENDINGS])assert.equal(new Set(list.map(x=>x.id)).size,list.length);
  assert.equal(EVENTS.length,205);assert.equal(FANTASY_EVENTS.length,4);
  for(const role of ROLES){
@@ -39,7 +39,7 @@ test('nine careers retain the published 144 endings and expand to a complete 234
   assert.equal(role.ladder.length,5);assert.ok(role.assistantTitle);
   assert.ok(role.payRange[1]>role.payRange[0]);
   assert.equal(ENDINGS.slice(0,144).filter(e=>e.roleId===role.id).length,16);
-  assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,26);
+  assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,32);
  }
  assert.equal(new Set(ENDINGS.map(e=>e.title)).size,ENDINGS.length);
  assert.equal(new Set(ENDINGS.map(e=>e.body)).size,ENDINGS.length);
@@ -266,8 +266,8 @@ test('save validation rejects malformed dice, school, actions, salary and lifecy
 
 test('every ending has a natural replayable witness using only ordinary actions',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8'));
- assert.equal(report.complete,true);assert.equal(report.found,234);assert.deepEqual(report.missing,[]);
- for(const name of ['engine','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures']){
+ assert.equal(report.complete,true);assert.equal(report.found,288);assert.deepEqual(report.missing,[]);
+ for(const name of ['engine','rage','rage-v14','banquet','endings-rage','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures']){
   const hash=createHash('sha256').update(readFileSync(new URL(`../dist/${name}.js`,import.meta.url))).digest('hex');assert.equal(report.sourceSha256[name],hash,`${name} changed after witnesses`);
  }
  assert.deepEqual(report.routes.map(r=>r.ending).sort(),ENDINGS.map(e=>e.id).sort());

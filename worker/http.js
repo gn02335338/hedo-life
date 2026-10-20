@@ -101,7 +101,7 @@ export function validateCompletion(body, roleMap) {
   if (typeof body.seed !== 'string' || body.seed.length < 1 || body.seed.length > 32) {
     throw new ApiError(400, 'invalid_seed', '遊戲種子無效。');
   }
-  const actionLimit = body.seed.startsWith('e13-') ? 300 : MAX_ACTIONS;
+  const actionLimit = /^e(?:13|14)-/.test(body.seed) ? 300 : MAX_ACTIONS;
   if (!Array.isArray(body.actions) || body.actions.length < 1 || body.actions.length > actionLimit) {
     throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
   }
@@ -109,7 +109,7 @@ export function validateCompletion(body, roleMap) {
     if (!action || typeof action !== 'object' || Array.isArray(action)) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
-    if (action.type === 'exit' || (action.type === 'break' && /^e(?:[2-9]|10|11|12|13)-/.test(body.seed)) || (action.type === 'career' && /^e(?:10|11|12|13)-/.test(body.seed)) || (action.type === 'rage' && body.seed.startsWith('e13-'))) continue;
+    if (action.type === 'exit' || (action.type === 'break' && /^e(?:[2-9]|10|11|12|13|14)-/.test(body.seed)) || (action.type === 'career' && /^e(?:10|11|12|13|14)-/.test(body.seed)) || (action.type === 'rage' && (body.seed.startsWith('e13-') || (body.seed.startsWith('e14-') && ['event','result'].includes(action.phase) && typeof action.eventId === 'string' && action.eventId.length > 0 && action.eventId.length <= 100)))) continue;
     if (action.type !== 'choice' || typeof action.eventId !== 'string' || action.eventId.length > 100 ||
         !Number.isInteger(action.index) || action.index < 0 || action.index > 12) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');

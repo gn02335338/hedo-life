@@ -16,14 +16,14 @@ export const ACHIEVEMENTS=Object.freeze([
  badge('education','畢業後的臨時考試','回應過 Wing 在前期以學歷或科系挑起的薪資爭議。畢業證書沒有附這一題。','office'),
  badge('self-care','這筆預算留給我。','同一局花錢照顧自己三次。每一筆都有理由，收據不用交公司。','office'),
  badge('kind-decline','今晚不當鋼琴。','拒絕阿良的私房紓壓邀請。各人有各人的行程，你留住了自己的。','office'),
- badge('rage-wing','執行長，接招。','把 Wing 選為卡通暴走的對象，親眼看完一次結果。','rage'),
- badge('rage-spencer','董事長也有這一天。','把 Spencer 選為卡通暴走的對象，親眼看完一次結果。','rage'),
- badge('rage-rick','乾兒子的起床號','把 Rick 選為卡通暴走的對象。這次不是老闆的來電。','rage'),
- badge('rage-hope','改善一下這個。','把 Hope 選為卡通暴走的對象。評核表突然多出一欄她沒準備的。','rage'),
- badge('rage-erich','法務長，請收件。','把 Erich 選為卡通暴走的對象，讓法務有了新的辦公室案例。','rage'),
- badge('rage-jenjen','行政流程跑歪了。','把 JenJen 選為卡通暴走的對象。這張申請單沒有範本。','rage'),
- badge('rage-sonny','門禁以外的請求','把 Sonny 選為卡通暴走的對象。工單分類一時找不到這一項。','rage'),
- badge('rage-kind','鋼琴先暫停。','把阿良選為卡通暴走的對象。今晚的節奏，跟他安排的不一樣。','rage'),
+ badge('rage-wing','執行長，接招。','對 Wing 暴走一次，親眼看完這場衝動究竟演到哪裡。','rage'),
+ badge('rage-spencer','董事長也有這一天。','對 Spencer 暴走一次。董事長這回沒有站在合照中央。','rage'),
+ badge('rage-rick','乾兒子的起床號','對 Rick 暴走一次。這次叫醒他的不是老闆來電。','rage'),
+ badge('rage-hope','改善一下這個。','對 Hope 暴走一次。評核表突然多出一欄她沒準備的。','rage'),
+ badge('rage-erich','法務長，請收件。','對 Erich 暴走一次，讓法務有了新的辦公室案例。','rage'),
+ badge('rage-jenjen','行政流程跑歪了。','對 JenJen 暴走一次。這張申請單沒有現成範本。','rage'),
+ badge('rage-sonny','門禁以外的請求','對 Sonny 暴走一次。工單分類一時找不到這一項。','rage'),
+ badge('rage-kind','鋼琴先暫停。','對阿良暴走一次。今晚的節奏，跟他安排的不一樣。','rage'),
  badge('rage-catharsis','整間辦公室都聽見了。','在卡通暴走中得到一次痛快的情緒出口。這回沒有把話吞回去。','rage'),
  badge('rage-absent','人呢？拳頭也在等。','卡通暴走時撲了個空。人沒找到，心裡那齣戲已經演完。','rage'),
  badge('rage-documented','此畫面已被存證。','一次卡通暴走被留下紀錄。你終於也成了附件裡的人。','rage'),
@@ -33,10 +33,16 @@ export const ACHIEVEMENTS=Object.freeze([
  badge('banquet-shared','同桌的人才是主菜。','尾牙中獎後，照說好的請同桌喝一輪飲料。獎金有人分，甜度自己選。','banquet'),
  badge('kind-ghost','他說好，然後人就沒了。','約阿良去暗黑續攤，收到他的答應，也等到他的消失。','banquet'),
  badge('first-ending','第一張離場證明','完成一段人生。這個結尾已經收好，下一局可以換一種活法。','career'),
- badge('nasdaq','願景真的敲得響。','走到納斯達克敲鐘的結局。這一次，鐘聲不是會議通知。','career')
+ badge('nasdaq','願景真的敲得響。','走到納斯達克敲鐘的結局。這一次，鐘聲不是會議通知。','career'),
+ badge('rage-imagined','腦內有聲，現場靜音。','衝動在腦中演完，手還放在原處。對方不知道自己剛才經歷了什麼。','rage'),
+ badge('rage-real','這次沒有醒過來。','一次暴走真的越過了想像，走進必須自己處理後果的世界線。','rage'),
+ badge('rage-first-day','你好，我是今天來的。','報到時就對 Wing 暴走。工作證還沒暖，他已經不知道這場新人介紹該怎麼接。','rage'),
+ badge('rage-legal','附件裡也有自己。','真正出手後，走完正式處理的分支。對方的話和自己的動作，都不能跳過。','rage'),
+ badge('rage-defeated','腦內片尾沒有這段。','真正出手後反而落入下風。原本想像的勝利畫面，現場一格都沒播。','rage'),
+ badge('rage-coup','名牌怎麼換成我？','在失控後的荒謬宇宙裡接班。董事會的邏輯比你的報到流程還離奇。','rage')
 ]);
 export const ACHIEVEMENT_MAP=Object.freeze(Object.fromEntries(ACHIEVEMENTS.map(item=>[item.id,item])));
-export const ACHIEVEMENT_GROUPS=Object.freeze({office:'上班日常',career:'職涯與離場',rage:'辦公室卡通',banquet:'尾牙之夜'});
+export const ACHIEVEMENT_GROUPS=Object.freeze({office:'上班日常',career:'職涯與離場',rage:'失控世界線',banquet:'尾牙之夜'});
 
 export function deriveAchievements(run){
  if(!run||typeof run!=='object')return [];
@@ -68,5 +74,9 @@ export function deriveAchievements(run){
  add('kind-ghost',flags.kind_afterparty_ghost>0);
  add('first-ending',run.completed===true);
  add('nasdaq',run.completed===true&&typeof run.endingId==='string'&&run.endingId.startsWith('nasdaq-'));
+ add('rage-imagined',flags.rage_imagined>0);
+ add('rage-real',flags.rage_real>0);
+ add('rage-first-day',flags.rage_first_day>0&&flags.rage_target_wing>0);
+ for(const family of ['legal','defeated','coup'])add(`rage-${family}`,run.completed===true&&typeof run.endingId==='string'&&run.endingId.startsWith(`rage_${family}-`));
  return ACHIEVEMENTS.filter(item=>ids.has(item.id)).map(item=>item.id);
 }

@@ -5,21 +5,26 @@ import { ROLES } from '../dist/roles.js';
 import { FAMILIES, ENDINGS } from '../dist/endings.js';
 import { CAREER_FAMILIES, careerEndingAvailable, careerReadiness } from '../dist/career.js';
 import { eligibleStoryEndings } from '../dist/story-career.js';
-import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, validRun } from '../dist/engine.js';
+import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, requestRage, validRun } from '../dist/engine.js';
 
 export function replayRoute(route, verify = () => {}) {
   let run = createRun(route.roleId, route.seed);
   const checkpoint=()=>{run=JSON.parse(JSON.stringify(run));verify(run);};
   checkpoint();
-  for (const action of route.actions) {
+  for (let position=0;position<route.actions.length;position++) {
+    const action=route.actions[position];
     if (action.type === 'exit') run = requestExit(run);
     else if (action.type === 'break') run = requestBreak(run);
     else if (action.type === 'career') run = requestCareer(run);
+    else if (action.type === 'rage') {
+      run=requestRage(run);checkpoint();
+      if(route.seed.startsWith('e14-'))run=advance(run);
+    }
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
       checkpoint();
-      run = advance(run);
+      if(!(route.seed.startsWith('e14-')&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
     }
     checkpoint();
   }
@@ -63,8 +68,26 @@ function utility(run,target) {
   return value;
 }
 
+function simulateRage(roleId,target,attempt) {
+  const seed=`e14-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  let start=advance(requestRage(createRun(roleId,seed)));
+  let fallback=start;
+  function search(run,depth){
+    if(run.completed){fallback=run;return run.endingId===`${target}-${roleId}`?run:null;}
+    if(depth<=0||!run.eventId.startsWith('rage-'))return null;
+    const event=getEvent(run);
+    for(let index=0;index<event.choices.length;index++)if(event.choices[index].available!==false){
+      const found=search(advance(applyChoice(run,index)),depth-1);if(found)return found;
+    }
+    return null;
+  }
+  const run=search(start,4)||fallback;
+  return {run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}};
+}
+
 export function simulate(roleId,target,attempt) {
-  const seed=`e13-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt);
+  const seed=`e14-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[];
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
@@ -186,9 +209,9 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   }
   const hash=name=>createHash('sha256').update(readFileSync(new URL(`../dist/${name}.js`,import.meta.url))).digest('hex');
   return {
-    method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
+    method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['engine','rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['engine','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };

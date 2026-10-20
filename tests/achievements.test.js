@@ -7,9 +7,9 @@ import {createRun,getEvent,applyChoice,advance,requestRage,replayRun,validRun} f
 const copy=value=>JSON.parse(JSON.stringify(value));
 const choose=(run,index)=>advance(applyChoice(run,index));
 
-test('32 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
- assert.equal(ACHIEVEMENTS.length,32);
- assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,32);
+test('38 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
+ assert.equal(ACHIEVEMENTS.length,38);
+ assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,38);
  assert.deepEqual(Object.keys(ACHIEVEMENT_MAP),ACHIEVEMENTS.map(item=>item.id));
  const pictures=new Set();
  for(const achievement of ACHIEVEMENTS){

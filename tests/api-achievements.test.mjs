@@ -76,3 +76,13 @@ test('concurrent milestone retries are idempotent and later valid choices add ne
   assert.deepEqual(await h.store.record('owner',id,rage),[]);
   h.db.close();
 });
+
+test('e14 rage envelope requires an explicit visible phase and scene, with no client-authoritative target',()=>{
+ const proof={runId:randomUUID(),roleId:'system',seed:'e14-api-direct',actions:[{type:'rage',phase:'event',eventId:'onboarding'}]};
+ assert.deepEqual(validateCompletion(proof,{system:{}}),proof);
+ for(const action of [{type:'rage'},{type:'rage',phase:'fake',eventId:'onboarding'},{type:'rage',phase:'event'},{type:'rage',phase:'event',eventId:''}]){
+  assert.throws(()=>validateCompletion({...proof,actions:[action]},{system:{}}));
+ }
+ assert.doesNotThrow(()=>validateCompletion({...proof,actions:Array(300).fill(proof.actions[0])},{system:{}}));
+ assert.throws(()=>validateCompletion({...proof,actions:Array(301).fill(proof.actions[0])},{system:{}}));
+});
