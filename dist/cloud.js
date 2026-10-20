@@ -1,8 +1,9 @@
-const KEY='hedo-anonymous-v1', QUEUE='hedo-sync-queue-v3', MAX_QUEUE=500;
-let token=null,queue=[],ready=false,playerId=null,status='connecting',lastError='',storageError='';
+const KEY='hedo-anonymous-v1', QUEUE='hedo-sync-queue-v3', PROGRESS='hedo-achievement-queue-v1', MAX_QUEUE=500;
+let token=null,queue=[],progress=[],ready=false,playerId=null,status='connecting',lastError='',storageError='';
 let flushing=null,initializing=null,retryTimer=null,retryDelay=2000,snapshot=null;
 const listeners=new Set();
-const state=()=>({status,playerId,lastError:storageError||lastError,pending:queue.length});
+const pendingCount=()=>queue.length+progress.length;
+const state=()=>({status,playerId,lastError:storageError||lastError,pending:pendingCount(),achievements:snapshot?.achievements||[]});
 function emit(){for(const fn of listeners)fn(state());}
 try{
  token=localStorage.getItem(KEY);
@@ -12,9 +13,11 @@ try{
  }
  const saved=JSON.parse(localStorage.getItem(QUEUE)||'[]');
  if(Array.isArray(saved))queue=saved; // Never truncate unsent runs on reload.
+ const savedProgress=JSON.parse(localStorage.getItem(PROGRESS)||'[]');
+ if(Array.isArray(savedProgress))progress=savedProgress;
 }catch{token=null;status='local';storageError='此瀏覽器無法保存匿名同步資料，請保留目前頁面。';}
 function persist(){
- try{localStorage.setItem(QUEUE,JSON.stringify(queue));storageError='';}
+ try{localStorage.setItem(QUEUE,JSON.stringify(queue));localStorage.setItem(PROGRESS,JSON.stringify(progress));storageError='';}
  catch{storageError='同步紀錄暫時無法存入瀏覽器；請保持此頁開啟並恢復連線。';}
 }
 async function api(path,body,method=body?'POST':'GET'){
@@ -31,20 +34,22 @@ function scheduleRetry(error){
 }
 function clearRetry(){if(retryTimer)clearTimeout(retryTimer);retryTimer=null;retryDelay=2000;}
 function removeRun(runId){queue=queue.filter(item=>item.runId!==runId);persist();}
+function removeProgress(item){progress=progress.filter(p=>p.runId!==item.runId||p.actions.length>item.actions.length);persist();}
 async function flush(){
  if(flushing)return flushing;
- if(!ready||!queue.length)return;
+ if(!ready||!pendingCount())return;
  flushing=(async()=>{
   let rejected=false;
   try{
-   while(queue.length){
-    const item=queue[0];
-    try{snapshot=await api('/api/complete',item);removeRun(item.runId);}
+   while(pendingCount()){
+    const completing=queue.length>0,item=completing?queue[0]:progress[0];
+    const remove=()=>completing?removeRun(item?.runId):removeProgress(item);
+    try{snapshot=await api(completing?'/api/complete':'/api/achievements',item);remove();if(completing)removeProgress(item);}
     catch(error){
      if([400,409,422].includes(error.status)){
       // Invalid old replays cannot be repaired by retrying. Their local ending
       // collection remains intact; let later valid runs reach the server.
-      removeRun(item?.runId);rejected=true;continue;
+      remove();rejected=true;continue;
      }
      if(error.status===401)ready=false;
      throw error;
@@ -69,10 +74,10 @@ export const cloud={
     snapshot=await api('/api/player',{token});ready=true;playerId=snapshot.playerId;
     status='online';lastError='';emit();
     await flush();
-    if(!queue.length)clearRetry();
+    if(!pendingCount())clearRetry();
     return snapshot;
    }catch(error){
-    ready=false;status=queue.length?'pending':'local';lastError='觀測站暫時無法連線，本機收藏照常保留。';
+    ready=false;status=pendingCount()?'pending':'local';lastError='觀測站暫時無法連線，本機收藏照常保留。';
     if(!error.status||error.status===429||error.status>=500)scheduleRetry(error);
     emit();return null;
    }finally{initializing=null;}
@@ -88,6 +93,19 @@ export const cloud={
   if(!ready){status='pending';emit();await this.init();}else{emit();await flush();}
  },
  async stats(){return api('/api/stats');},
+ async achievementProgress(run){
+  if(!run?.runId||!Array.isArray(run.actions)||!run.actions.length)return null;
+  const proof={runId:run.runId,roleId:run.roleId,seed:run.seed,actions:structuredClone(run.actions)};
+  const existing=progress.findIndex(p=>p.runId===proof.runId);
+  if(existing>=0){if(progress[existing].actions.length<=proof.actions.length)progress[existing]=proof;}
+  else{
+   if(progress.length>=MAX_QUEUE){status='pending';lastError='成就已留在本機，請恢復連線再同步目前人生。';emit();return null;}
+   progress.push(proof);
+  }
+  persist();
+  if(!ready){status='pending';emit();await this.init();}else{emit();await flush();}
+  return snapshot;
+ },
  async feedbackConfig(){return api('/api/feedback-config');},
  async submitFeedback(payload){
   if(!ready)await this.init();

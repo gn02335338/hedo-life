@@ -85,3 +85,36 @@ test('the browser run UUID survives choices, advancement, JSON persistence, and 
   assert.equal(run.completed, true);
   assert.equal(validRun(run), true);
 });
+
+test('offline milestone proofs keep only the latest prefix and retry when online', async () => {
+  let online=false;
+  const c=client([],path=>{
+    if(!online)throw new TypeError('offline');
+    return path==='/api/player'?registered():Response.json({playerId:'test-player',unlocked:[],totalRuns:0,achievements:[{id:'work-card',unlockedAt:'2026-10-20T00:00:00.000Z'}]});
+  });
+  const run=item();
+  await c.cloud.achievementProgress(run);
+  await c.cloud.achievementProgress({...run,actions:[...run.actions,{type:'rage'}]});
+  const pending=JSON.parse(c.saved.get('hedo-achievement-queue-v1'));
+  assert.equal(pending.length,1);assert.equal(pending[0].actions.length,2);assert.equal(c.cloud.state.pending,1);
+  online=true;await c.cloud.retry();
+  assert.equal(c.cloud.state.pending,0);
+  assert.equal(c.cloud.state.achievements[0].id,'work-card');
+  assert.equal(c.requests.filter(r=>r.path==='/api/achievements').length,1);
+});
+
+test('a newer milestone proof arriving during upload is not discarded by the older response', async () => {
+  let release,started;
+  const gate=new Promise(resolve=>{started=resolve;});
+  const c=client([],async(path,body)=>{
+    if(path==='/api/player')return registered();
+    if(body.actions.length===1){started();await new Promise(resolve=>{release=resolve;});}
+    return Response.json({playerId:'test-player',unlocked:[],totalRuns:0,achievements:[{id:'work-card',unlockedAt:'2026-10-20T00:00:00.000Z'}]});
+  });
+  await c.cloud.init();
+  const first=item(),a=c.cloud.achievementProgress(first);await gate;
+  const b=c.cloud.achievementProgress({...first,actions:[...first.actions,{type:'rage'}]});
+  release();await Promise.all([a,b]);
+  assert.deepEqual(c.requests.filter(r=>r.path==='/api/achievements').map(r=>r.body.actions.length),[1,2]);
+  assert.equal(c.cloud.state.pending,0);
+});

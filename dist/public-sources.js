@@ -51,6 +51,7 @@ export const SOURCES = {
   imageExit: privateChapter('圖像史冊：人事、交接與離場'),
   imageOffice: privateChapter('圖像史冊：同事暗號與辦公室生活'),
   videoOffice: privateChapter('影音史冊：同事活動與辦公室擂台'),
+  chronicleBanquet: privateChapter('尾牙、抽獎與散場之後'),
   officialHome: official('AviviD 官方網站', 'https://www.avividai.com/', 'UI 配色與幾何版式參考；官網介紹第一方數據、Likr CDP/RMN、AviviD 360 與推播服務。遊戲情節為另行創作。'),
   officialStore: official('來客數位店長', 'https://www.avividai.com/product/conversation', '官網介紹站內推薦、用戶輪廓與個人化商品推薦。遊戲中的工作對話及任務為原創。'),
   officialMedia: official('媒體合作解決方案', 'https://www.avividai.com/solution/press-media', '官網列有來客品牌大聲公、文案大師與 LCDP 會員數據平台，作為遊戲產品場景靈感。'),

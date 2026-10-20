@@ -37,7 +37,7 @@ export const WILD_SYSTEM={
 
 export const WILD_OPTIONS={...WILD_BASE,...WILD_EXPANDED,...WILD_SYSTEM};
 export function applyWildOptions(event,run){
- if(!event||!run?.seed.startsWith('e12-'))return event;
+ if(!event||!/^e(?:12|13)-/.test(run?.seed||''))return event;
  const patch=WILD_OPTIONS[event.id];
  if(!patch)return event;
  const choice=event.choices[patch.index];
