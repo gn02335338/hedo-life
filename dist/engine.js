@@ -15,13 +15,16 @@ import { getBanquet } from './banquet.js';
 import { getRageV16, rageTargetForV16 } from './rage-v16.js';
 import { applyPersonaCopy, displayText } from './persona.js';
 import { applyOnboardingV17 } from './onboarding-v17.js';
+import { normalizeAbilitiesV18, abilityRebalanceV18, moodEnergyPulseV18, getSelfCareV18 } from './resources-v18.js';
+import { scopedBossDeltaV18 } from './relationships-v18.js';
+import { getMoodCollapseV18, getMoodWarningV18 } from './meltdown-v18.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
-export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'老闆心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
+export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'翅膀心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e18-')?18:run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 // Leave three full work scenes for improvement, then review before the finale.
@@ -52,6 +55,7 @@ export function createRun(roleId,seed=Date.now()){
  if(contentRules(run)>=10)run.flags.boss_crisis_armed=1;
  if(contentRules(run)>=11){run.flags.education_risk_due=2+Math.floor(roll(run)*3);run.flags.education_risk_checked=0;run.flags.education_dispute=0;run.flags.education_case_active=0;run.flags.education_outcome=0;}
  if(contentRules(run)>=13){run.rageContext=null;run.banquetReturnEventId=null;}
+ if(contentRules(run)>=18){run.stats=normalizeAbilitiesV18(run.stats);run.meltdownReturnEventId=null;}
  return run;
 }
 function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta={}){
@@ -114,7 +118,8 @@ function rawGetEvent(run){
  c('既然說組織調整，就照資遣名義離場。','未走PIP的資遣結局。','這一局沒有改善期，也沒有準備演出。上一封信還在催進度，下一封已經要你交接。',{},'layoff'),
  {...c('願意做PIP，但目標和期限先寫清楚。','改走有PIP的支線；3回合後評核。','Hope接手主持PIP，交給你一張自評表。現在，工作除了原本的工作，還多了一份證明自己有在工作的工作。',{boss:modern?0:35,mood:-5},'startPip',['evidence']),...(contentRules(run)>=10?{available:canStartPip(run)}:{})}
  ]);
- case 'crisis-mood':return e('crisis-mood','你的心情，已讀不回。','訊息通知再響一次，你開始認真研究窗外的天空。體力還能撐，心情已經把離職信寫到第三版。今天還要不要演「我很好」？','「這點壓力都受不了，以後怎麼跟我敲鐘？」',[
+ case 'mood-collapse':if(contentRules(run)<18||!run.meltdownReturnEventId)throw new Error('Invalid mood collapse');return getMoodCollapseV18(run);
+ case 'crisis-mood':if(contentRules(run)>=18)return getMoodWarningV18(run);return e('crisis-mood','你的心情，已讀不回。','訊息通知再響一次，你開始認真研究窗外的天空。體力還能撐，心情已經把離職信寫到第三版。今天還要不要演「我很好」？','「這點壓力都受不了，以後怎麼跟我敲鐘？」',[
  c('幹，我不幹了。','自己受不了離職，現在就結局。','你第一次沒有替老闆的句子找台階。他的夢想留在群組，你的人生先下線。',{mood:30},'ragequit'),
  {...c('花一點存款，休息到能分清自己和工作。','存款 −12，心情 +38，體力 +20。','你把通知關掉。休息不是他的恩惠，是你替自己留下的操作空間。',{cash:-12,mood:38,energy:20},'resume'),...(modern?{available:s.cash>=12}:{})},
  c('先開省電模式。這個薪水，配這個演技。','練習偷懶，降低投入；仍會惹老闆不爽。','你把「正在處理」設成快捷鍵。不是事情做不完，是情緒不能再免費供應。',{mood:24,slack:15,boss:-5,dream:-12},'resume')
@@ -146,6 +151,7 @@ function rawGetEvent(run){
  return getKindBreak(run);}
  case 'self-care':{
  if(!modern||!run.breakReturnEventId)throw new Error('Invalid break');
+ if(contentRules(run)>=18)return getSelfCareV18(run);
  return {...e('self-care','這筆錢，先花在自己身上。','行事曆的空白總會被公司填滿。你決定先替自己留一格，花的是遊戲存款，買回來的是一點能夠繼續選擇的心情。今天想怎麼對自己好一點？','通知先靜音。這次不用問公司的願景。',[
  {...c('買杯喜歡的飲料，散步到冰塊融化。','小小犒賞。','你走了一段沒有KPI的路。飲料喝完了，至少不是一整天都只有吞下去。',{cash:-6,mood:12,energy:4},'finishBreak'),available:s.cash>6},
  {...c('找朋友吃一頓，講講今天又怎麼了。','花一點錢，跟懂你的人吃飯。','朋友沒有叫你共體時艱，只問你要不要再點一道。這頓飯終於不需要靠願景吃飽。',{cash:-12,mood:23,energy:8,trust:3},'finishBreak'),available:s.cash>12},
@@ -179,6 +185,7 @@ function rawGetEvent(run){
 }
 export function getEvent(run){
  const event=rawGetEvent(run);
+ if(contentRules(run)>=18&&['mood-collapse','crisis-mood','self-care'].includes(event?.id))return event;
  if(contentRules(run)>=17&&(['career-review','rank-exit','career-step-down'].includes(event?.id)||event?.id.startsWith('career-duty-')))return event;
  const edited=event&&contentRules(run)>=5?applyEventCopy(event,run,{jobTitle,educationLabel}):event;
  const wild=edited&&contentRules(run)>=12?applyWildOptions(edited,run):edited;
@@ -200,7 +207,7 @@ function rankCompatibleReturn(run,eventId){
  const event=EVENTS.find(candidate=>candidate.id===eventId);
  return event&&((event.minRank??0)>legacyCareerRank(run)||(event.maxRank??4)<legacyCareerRank(run))?nextNormal(run):eventId;
 }
-function finish(run,family){run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;if(rules2(run))run.breakReturnEventId=null;if(contentRules(run)>=13){run.rageContext=null;run.banquetReturnEventId=null;}return run;}
+function finish(run,family){run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;if(rules2(run))run.breakReturnEventId=null;if(contentRules(run)>=13){run.rageContext=null;run.banquetReturnEventId=null;}if(contentRules(run)>=18)run.meltdownReturnEventId=null;return run;}
 export function endingEligibility(run,target){const s=run.stats;const common=s.energy>=20&&s.cash>=30&&s.skill>=65&&s.trust>=55;
  if(target==='nasdaq')return common&&s.dream>=70;
  if(target==='taiwan')return common&&s.dream>=45;
@@ -210,8 +217,8 @@ export function endingEligibility(run,target){const s=run.stats;const common=s.e
 export function applyChoice(run,index){
  if(run.completed||run.pending)return run;
  const event=getEvent(run),originalChoice=event.choices[index];if(!Number.isInteger(index)||!originalChoice||originalChoice.available===false)throw new Error('Unavailable choice');
- const next=structuredClone(run);const before={...run.stats},modern=rules2(run),breakdown=[];next.lastWeather=null;
- const change=(source,label,delta)=>{const actual={};for(const [key,value]of Object.entries(delta)){const previous=next.stats[key];next.stats[key]=clamp(previous+value);if(next.stats[key]!==previous)actual[key]=next.stats[key]-previous;}if(modern&&Object.keys(actual).length)breakdown.push({source,label,delta:actual});};
+ const next=structuredClone(run);const before={...run.stats},modern=rules2(run),breakdown=[];let spentThisChoice=0;next.lastWeather=null;
+ const change=(source,label,delta)=>{const actual={};for(const [key,value]of Object.entries(delta)){const previous=next.stats[key];next.stats[key]=clamp(previous+value);if(next.stats[key]!==previous)actual[key]=next.stats[key]-previous;if(contentRules(next)>=18&&key==='cash'&&next.stats[key]<previous)spentThisChoice+=previous-next.stats[key];}if(modern&&Object.keys(actual).length)breakdown.push({source,label,delta:actual});};
  next.actions.push({type:'choice',eventId:event.id,index});
  let chanceOutcome=null,choice=originalChoice,eventOutcome=null;
  if(contentRules(run)>=4&&choice.draw){
@@ -220,7 +227,9 @@ export function applyChoice(run,index){
   choice={...choice,...selected};eventOutcome={label:choice.draw.label,result:selected.label};
  }
  if(choice.check){const passed=roll(next)<choice.check.chance;choice={...choice,...choice.check[passed?'success':'failure']};chanceOutcome=passed?'success':'setback';}
- change('choice',eventOutcome?`${eventOutcome.label}：${eventOutcome.result}`:'選擇結果',Object.fromEntries(STAT_KEYS.map(k=>[k,choice.delta[k]||0])));
+ const choiceDelta=Object.fromEntries(STAT_KEYS.map(k=>[k,choice.delta[k]||0]));
+ if(contentRules(next)>=18){choiceDelta.boss=scopedBossDeltaV18(event,choiceDelta.boss,{source:'choice',target:run.rageContext?.target,effect:choice.effect,result:choice.result});if(!['self-care','rage','rage-world'].includes(event.kind)&&!['mood-collapse','crisis-mood'].includes(event.id))for(const key of ['mood','energy'])choiceDelta[key]=Math.round(choiceDelta[key]*1.35);}
+ change('choice',eventOutcome?`${eventOutcome.label}：${eventOutcome.result}`:'選擇結果',choiceDelta);
  for(const name of choice.flags||[])flag(next,name);
  if(contentRules(next)>=13&&event.kind==='rage'&&originalChoice.rageTarget){flag(next,'rage_attempts');flag(next,`rage_target_${originalChoice.rageTarget}`);next.flags.rage_last_turn=next.turn+1;}
  let result=choice.result;let effect=choice.effect;
@@ -230,22 +239,23 @@ export function applyChoice(run,index){
   const luck=roll(next),capability=before[specialty],goodChance=.13+capability*.0014,badChance=.28-before.slack*.0012;
   if(luck<goodChance){
    chanceOutcome='lucky';const bonus=specialty==='lick'?{boss:9,mood:3}:specialty==='slack'?{energy:7,mood:5}:{skill:4,boss:5,mood:3};
-   change('rng','臨場好運',bonus);
+   if(contentRules(next)>=18&&bonus.boss)bonus.boss=scopedBossDeltaV18(event,bonus.boss,{source:'rng',result:choice.result});change('rng','臨場好運',bonus);
    result+=specialty==='lick'?' 恰好，這句話踩中他今天想聽的版本。對方自己替你把後半段補成了優點。':specialty==='slack'?' 剛好有人把會議延後，你安靜回收了一小段人生。今天的省電模式，沒有被發現。':' 剛好有人替你的成果說了一句話。事情本身沒變，待遇突然順了一點。';
   }else if(luck>1-badChance){
    chanceOutcome='setback';const extra=specialty==='lick'?{boss:-10,trust:-4}:specialty==='slack'?{boss:-9,mood:-4}:{energy:-6,mood:-5,boss:-4};
-   change('rng','臨場變數',extra);
+   if(contentRules(next)>=18&&extra.boss)extra.boss=scopedBossDeltaV18(event,extra.boss,{source:'rng',result:choice.result});change('rng','臨場變數',extra);
    result+=specialty==='lick'?' 不巧，他今天把稱讚聽成了敷衍。你說同一句話，得到跟上次相反的表情。':specialty==='slack'?' 不巧，那扇門就在你最不像在忙的時候打開。你和老闆完成了一次不必要的眼神交接。':' 不巧，臨時插進來的交辦把原定節奏打散。沒有人改期限，只有你重新排時間。';
   }else chanceOutcome='ordinary';
-  const weather=WEATHER[Math.floor(roll(next)*WEATHER.length)];change('weather','老闆今日天氣',{boss:weather.delta});next.lastWeather={...weather};
+  const weather=WEATHER[Math.floor(roll(next)*WEATHER.length)];change('weather',contentRules(next)>=18?'翅膀今日天氣':'老闆今日天氣',{boss:weather.delta});next.lastWeather={...weather};
   if(next.roleId==='executive'&&next.turn<=6){change('parachute','空降蜜月退潮',{boss:-12,trust:-3});next.lastWeather.text+=' 空降蜜月退潮，連「新氣象」都開始聽起來像罪名。';next.lastWeather.delta-=12;}
   if(next.assignment==='assistant')change('assignment','職稱落差',{mood:-2});
   if(modern){
-   const drain=4+Math.floor(roll(next)*4);change('workday','又上了一天班',{mood:-drain});
+   const drain=contentRules(next)>=18?3+Math.floor(roll(next)*6):4+Math.floor(roll(next)*4);change('workday','又上了一天班',{mood:-drain});
    if(next.pip?.active)change('pip-pressure','PIP額外壓力',{mood:-3});
    if(next.stats.energy<=25)change('fatigue','疲勞累積',{mood:-2});
    if(next.salaryCut?.status==='accepted')change('pay-cut','降薪後的悶氣',{mood:-2});
   }
+  if(contentRules(next)>=18){const pulse=moodEnergyPulseV18(roll(next));change('volatility',pulse.label,pulse.delta);result+=' '+pulse.text;flag(next,pulse.delta.mood>0?'volatility_recovery':'volatility_shock');}
   if(contentRules(next)>=8&&(contentRules(next)>=17||next.assignment!=='assistant')){const stage=careerStage(next);flag(next,`career_work_${next.rank}`);change('career-pressure',`${stage.label}的${contentRules(next)>=17&&next.rank<4?'專業責任':'管理責任'}`,stage.pressure);}
   if(contentRules(next)>=9)flag(next,'career_service');
   // A continuing low mood is one dispute, not a new PIP every cooldown.
@@ -267,6 +277,7 @@ export function applyChoice(run,index){
   if(effect==='careerRegularize'){next.assignment=next.actualRoleId===next.roleId?'honest':'swapped';next.rank=contentRules(next)>=17?1:0;next.pay=Math.max(next.pay,careerSalary(next,next.rank));}
   else{next.rank=Math.min(careerMaxRank(next),next.rank+1);next.pay=Math.min(500,Math.max(next.pay+8,careerSalary(next)));}
   next.lastPromotion=next.turn;next.flags.career_peak_rank=Math.max(next.flags.career_peak_rank||0,next.rank);flag(next,'promotions');
+  if(contentRules(next)>=18)next.flags.career_promoted_peak=Math.max(next.flags.career_promoted_peak||0,next.rank);
   if(contentRules(next)>=9)next.flags.career_service=0;
   result+=` 職稱變更：${oldTitle} → ${jobTitle(next)}。遊戲月薪 ${oldPay}K → ${next.pay}K。${careerLevels(next)[next.rank].responsibility}`;
  }
@@ -305,6 +316,8 @@ export function applyChoice(run,index){
  if(contentRules(next)>=11&&['startPip','salaryAccept','salaryRescind'].includes(effect))next.flags.education_case_active=0;
  if(effect==='salaryAccept'){next.pay=next.salaryCut.to;next.basePay=Math.round(next.pay/(contentRules(next)>=8?careerLevels(next)[next.rank].payMultiplier:1+next.rank*.15));next.salaryCut.status='accepted';flag(next,'pay_cut');result+=` 遊戲月薪變更為${next.pay}K。`;}
  if(effect==='salaryRescind')next.salaryCut.status='rescinded';
+ if(contentRules(next)>=18&&effect==='moodUnpaidLeave'){const oldPay=next.pay;next.pay=Math.max(1,Math.round(next.pay*.9));next.basePay=Math.max(1,Math.round(next.pay/careerLevels(next)[next.rank].payMultiplier));result+=` 缺勤後的遊戲月薪：${oldPay}K → ${next.pay}K。`;}
+ if(contentRules(next)>=18){const correction=abilityRebalanceV18(before,next.stats);if(Object.values(correction).some(value=>value!==0)){change('ability-tradeoff','時間有限，三種本事互相擠壓',correction);flag(next,'resource_friction_count');}if(spentThisChoice>0)flag(next,'cash_spent_total',spentThisChoice);}
  let family=ENDINGS.some(e=>e.family===effect)?effect:null;
  const rageWorld=contentRules(next)>=14&&(effect==='rageAftermath'||event.kind==='rage-world');
  if(!family&&!rageWorld&&next.stats.cash<=0)family='broke';
@@ -317,10 +330,11 @@ export function applyChoice(run,index){
  next.pending=true;next.pendingEffect=effect;next.pendingFamily=family;return next;
 }
 function rolePay(run){return Math.round(run.basePay*(1+run.rank*.15));}
-export function advance(run){
+function advanceCore(run){
  if(!run.pending||run.completed)return run;
  const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(next.pendingFamily)return finish(next,next.pendingFamily);
+ if(contentRules(next)>=18&&['moodRecover','moodUnpaidLeave'].includes(effect)){next.eventId=next.meltdownReturnEventId;next.meltdownReturnEventId=null;return next;}
  if(contentRules(next)>=14&&effect==='rageReturn'){
   const context=next.rageContext;next.eventId=context.eventId;next.rageContext=null;
   if(context.phase==='result'){
@@ -360,7 +374,7 @@ export function advance(run){
  if(effect==='return')return next;
  if(normal&&!occasionalEducation(next)&&!next.educationReviewed){next.resumeEventId=next.eventId;next.eventId='education-review';return next;}
  if(next.pip?.active&&next.pip.remaining===0){next.resumeEventId=next.eventId;next.eventId='pip-review';return next;}
- if(next.stats.mood<=12&&next.eventId!=='crisis-mood'){next.resumeEventId=next.eventId;next.eventId='crisis-mood';return next;}
+ if(next.stats.mood<=12&&(contentRules(next)<18||next.stats.mood>0)&&next.eventId!=='crisis-mood'){next.resumeEventId=next.eventId;next.eventId='crisis-mood';return next;}
  // One early assessment, never on onboarding or inside a modal/PIP. If the
  // ordinary boss dispute is already imminent, expose its specific cause first.
  if(contentRules(next)>=11&&last.kind==='daily'&&!next.flags.education_risk_checked){
@@ -391,12 +405,18 @@ export function advance(run){
  }
  return next;
 }
+export function advance(run){
+ const next=advanceCore(run);
+ if(contentRules(next)>=18&&run.pending&&!next.pending&&!next.completed&&next.stats.mood===0&&!next.rageContext&&!next.meltdownReturnEventId&&next.eventId!=='mood-collapse'){next.meltdownReturnEventId=next.eventId;next.eventId='mood-collapse';flag(next,'mood_crash_count');}
+ return next;
+}
 export function canRequestBreak(run){return !!(run&&rules2(run)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getEvent(run)?.kind));}
 export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;const invite=contentRules(next)>=6&&!(contentRules(next)>=7&&next.lastKindInviteTurn===next.turn)&&roll(next)<KIND_BREAK_CHANCE;next.eventId=invite?'kind-break':'self-care';if(invite&&contentRules(next)>=7)next.lastKindInviteTurn=next.turn;return next;}
 export function canRequestCareer(run){return !!(run&&contentRules(run)>=10&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getEvent(run)?.kind));}
 export function requestCareer(run){if(!canRequestCareer(run))return run;const next=structuredClone(run);next.actions.push({type:'career'});next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
 export function canRequestRage(run){
  if(!(run&&contentRules(run)>=13&&!run.completed&&!run.rageContext&&!run.pendingFamily))return false;
+ if(contentRules(run)>=18&&run.stats.mood===0)return false;
  if(contentRules(run)>=14)return run.flags.rage_last_turn!==run.turn+1&&!!conversationalTarget(run,getEvent(run));
  return true;
 }
@@ -418,7 +438,7 @@ export function requestRage(run){
  const next=structuredClone(current);next.actions.push({type:'rage'});
  next.rageContext={eventId:next.eventId,speaker:getEvent(next)?.speaker||'wing'};next.eventId='rage-menu';return next;
 }
-export function requestExit(run){if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext))return run;if(['exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestExit(run){if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext))return run;if(['mood-collapse','exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 export function replayRun(roleId,seed,actions){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -454,7 +474,8 @@ export function validRun(run){
   if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='career'&&contentRules(run)>=10)||(a.type==='rage'&&contentRules(run)>=13&&(contentRules(run)<14||(['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&Object.keys(a).every(key=>['type','phase','eventId'].includes(key)))))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
   if(rules2(run)&&(!Number.isInteger(run.lastBreakTurn)||run.lastBreakTurn< -1||run.lastBreakTurn>run.turn||!(run.breakReturnEventId===null||typeof run.breakReturnEventId==='string')))return false;
   if(contentRules(run)>=7&&(!Number.isInteger(run.lastKindInviteTurn)||run.lastKindInviteTurn< -1||run.lastKindInviteTurn>run.turn))return false;
-  const currentEventId=contentRules(run)>=13&&run.rageContext?run.rageContext.eventId:run.eventId;
+  const currentEventId=contentRules(run)>=18&&run.meltdownReturnEventId?run.meltdownReturnEventId:contentRules(run)>=13&&run.rageContext?run.rageContext.eventId:run.eventId;
+  if(contentRules(run)>=18){if(!(run.meltdownReturnEventId===null||typeof run.meltdownReturnEventId==='string'))return false;if((run.eventId==='mood-collapse')!==(typeof run.meltdownReturnEventId==='string'))return false;if(run.meltdownReturnEventId==='mood-collapse')return false;if(run.meltdownReturnEventId&&!getEvent({...run,eventId:run.meltdownReturnEventId,meltdownReturnEventId:null}))return false;const total=run.stats.skill+run.stats.slack+run.stats.lick;if(total>180)return false;}
   if(rules2(run)&&run.breakReturnEventId!==null&&(!['self-care',...(contentRules(run)>=6?['kind-break']:[]),...(contentRules(run)>=7?['kind-workday']:[])].includes(currentEventId)||!['daily','fantasy'].includes(getEvent({...run,eventId:run.breakReturnEventId})?.kind)))return false;
   if(contentRules(run)>=7&&currentEventId==='kind-workday'&&getEvent({...run,eventId:run.breakReturnEventId})?.kind!=='daily')return false;
   if(contentRules(run)>=13){
@@ -478,7 +499,7 @@ export function validRun(run){
   }
   if(run.salaryCut&&(!Number.isInteger(run.salaryCut.from)||!Number.isInteger(run.salaryCut.to)||run.salaryCut.to<1||run.salaryCut.to>run.salaryCut.from||!Number.isInteger(run.salaryCut.percent)||!['pending','accepted','rescinded'].includes(run.salaryCut.status)))return false;
   if(!run.stats||!STAT_KEYS.every(k=>Number.isFinite(run.stats[k])&&run.stats[k]>=0&&run.stats[k]<=100))return false;
-  if(!run.flags||Array.isArray(run.flags)||typeof run.flags!=='object'||!Object.values(run.flags).every(n=>Number.isInteger(n)&&n>=0&&n<=500))return false;
+  if(!run.flags||Array.isArray(run.flags)||typeof run.flags!=='object'||!Object.entries(run.flags).every(([name,n])=>Number.isInteger(n)&&n>=0&&n<=(contentRules(run)>=18&&name==='cash_spent_total'?10000:500)))return false;
   if(contentRules(run)>=8&&(!Number.isInteger(run.flags.career_peak_rank)||run.flags.career_peak_rank<run.rank||run.flags.career_peak_rank>careerMaxRank(run)))return false;
   if(contentRules(run)>=9&&!Number.isInteger(run.flags.career_service))return false;
   if(contentRules(run)>=10&&![0,1].includes(run.flags.boss_crisis_armed))return false;

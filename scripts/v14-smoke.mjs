@@ -107,7 +107,7 @@ for (const phase of ['event', 'result']) for (const mode of ['imagined', 'real']
 const report = JSON.parse(readFileSync(new URL('../research/reachability-v3.json', import.meta.url), 'utf8'));
 assert.equal(report.complete, true);
 for (const family of ['rage_legal', 'rage_defeated', 'rage_coup', 'rage_truce', 'rage_meme', 'rage_walkaway']) {
-  const route = report.routes.find(item => /^e(?:14|15|16|17)-/.test(item.seed) && item.ending.startsWith(`${family}-`));
+  const route = report.routes.find(item => /^e(?:14|15|16|17|18)-/.test(item.seed) && item.ending.startsWith(`${family}-`));
   assert.ok(route, `Missing natural witness for ${family}`);
   const run = replayRun(route.roleId, route.seed, route.actions);
   assert.equal(run.completed, true);

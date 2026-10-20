@@ -1,5 +1,6 @@
 // Shared by the browser and replay verifier. No player-supplied achievement IDs
 // are used as evidence; callers derive these goals from an actual engine run.
+import { EXTRA_ACHIEVEMENTS, deriveExtraAchievements } from './achievements-v18.js';
 const badge=(id,title,description,group)=>Object.freeze({id,title,description,group,image:`./assets/achievements/${id}.svg`});
 export const ACHIEVEMENTS=Object.freeze([
  badge('work-card','報到成功，內容另議。','在報到日做出第一個選擇，領到這段人生的工作證。','office'),
@@ -25,8 +26,8 @@ export const ACHIEVEMENTS=Object.freeze([
  badge('rage-sonny','門禁以外的請求','對 Sonny 暴走一次。工單分類一時找不到這一項。','rage'),
  badge('rage-kind','鋼琴先暫停。','對阿良暴走一次。今晚的節奏，跟他安排的不一樣。','rage'),
  badge('rage-catharsis','整間辦公室都聽見了。','在卡通暴走中得到一次痛快的情緒出口。這回沒有把話吞回去。','rage'),
- badge('rage-absent','人呢？拳頭也在等。','卡通暴走時撲了個空。人沒找到，心裡那齣戲已經演完。','rage'),
- badge('rage-documented','此畫面已被存證。','一次卡通暴走被留下紀錄。你終於也成了附件裡的人。','rage'),
+ badge('rage-absent','人呢？拳頭也在等。','在暴走故事裡撲了個空。人沒找到，心裡那齣戲已經演完。','rage'),
+ badge('rage-documented','此畫面已被存證。','暴走後的經過被留下正式紀錄。你終於也成了附件裡的人。','rage'),
  badge('banquet','今年還在同一桌。','參加移動尾牙，做出你的宴會選擇。菜上桌了，意外也在路上。','banquet'),
  badge('banquet-prize','這次不是願景。','在尾牙抽到大獎。這一次的幸運，終於有實物可以領。','banquet'),
  badge('banquet-stage','麥克風來不及收回。','參與尾牙的上台橋段。你留下的表現，可能比簡報更有人記得。','banquet'),
@@ -40,10 +41,11 @@ export const ACHIEVEMENTS=Object.freeze([
  badge('rage-first-day','你好，我是今天來的。','報到時就對 Wing 暴走。工作證還沒暖，他已經不知道這場新人介紹該怎麼接。','rage'),
  badge('rage-legal','附件裡也有自己。','真正出手後，走完正式處理的分支。對方的話和自己的動作，都不能跳過。','rage'),
  badge('rage-defeated','腦內片尾沒有這段。','真正出手後反而落入下風。原本想像的勝利畫面，現場一格都沒播。','rage'),
- badge('rage-coup','名牌怎麼換成我？','在失控後的荒謬宇宙裡接班。董事會的邏輯比你的報到流程還離奇。','rage')
+ badge('rage-coup','名牌怎麼換成我？','在失控後的荒謬宇宙裡接班。董事會的邏輯比你的報到流程還離奇。','rage'),
+ ...EXTRA_ACHIEVEMENTS
 ]);
 export const ACHIEVEMENT_MAP=Object.freeze(Object.fromEntries(ACHIEVEMENTS.map(item=>[item.id,item])));
-export const ACHIEVEMENT_GROUPS=Object.freeze({office:'上班日常',career:'職涯與離場',rage:'失控世界線',banquet:'尾牙之夜'});
+export const ACHIEVEMENT_GROUPS=Object.freeze({office:'上班日常',career:'職涯與離場',rage:'失控世界線',banquet:'尾牙之夜',wallet:'存款的用處',craft:'本事與代價'});
 
 export function deriveAchievements(run){
  if(!run||typeof run!=='object')return [];
@@ -55,19 +57,21 @@ export function deriveAchievements(run){
  add('assistant',onboard&&flags.assistant>0);
  add('robot',onboard&&run.roleId==='ai'&&run.actualRoleId!=='ai');
  add('promotion',flags.promotions>0);
- add('manager',flags.promotions>0&&flags.career_peak_rank>=(run.seed?.startsWith('e17-')?5:2));
- add('director',flags.promotions>0&&flags.career_peak_rank>=(run.seed?.startsWith('e17-')?6:3));
+ const promotedPeak=run.seed?.startsWith('e18-')?flags.career_promoted_peak:flags.career_peak_rank;
+ add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18)-/.test(run.seed||'')?5:2));
+ add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18)-/.test(run.seed||'')?6:3));
  add('pip',run.pipCount>0);
  add('pip-pass',flags.pip_passed>0);
  add('pay-cut',flags.pay_cut>0);
  add('salary-save',run.salaryCut?.status==='rescinded');
  add('education',flags.education_outcome>0);
- add('self-care',history.filter(item=>item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<3).length>=3);
+ add('self-care',history.filter(item=>item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(run.seed?.startsWith('e18-')?7:3)).length>=3);
  add('kind-decline',flags.kind_declined>0);
  for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack'])add(`rage-${person}`,flags[`rage_target_${person}`]>0);
  add('rage-catharsis',flags.rage_catharsis>0);
- add('rage-absent',flags.rage_absent>0);
- add('rage-documented',flags.rage_documented>0);
+ const current=run.seed?.startsWith('e18-'),resolved=history.filter(item=>Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0);
+ add('rage-absent',flags.rage_absent>0||(current&&resolved.some(item=>item.eventId==='rage-release'&&item.speaker==='kind'&&item.eventOutcome?.result==='腦內劇場')));
+ add('rage-documented',flags.rage_documented>0||(current&&resolved.some(item=>item.eventId==='rage-legal')));
  add('banquet',flags.banquet_attended>0);
  add('banquet-prize',flags.banquet_prize>0);
  add('banquet-stage',flags.banquet_stage>0);
@@ -79,5 +83,6 @@ export function deriveAchievements(run){
  add('rage-real',flags.rage_real>0);
  add('rage-first-day',flags.rage_first_day>0&&flags.rage_target_wing>0);
  for(const family of ['legal','defeated','coup'])add(`rage-${family}`,run.completed===true&&typeof run.endingId==='string'&&run.endingId.startsWith(`rage_${family}-`));
+ for(const id of deriveExtraAchievements(run))ids.add(id);
  return ACHIEVEMENTS.filter(item=>ids.has(item.id)).map(item=>item.id);
 }

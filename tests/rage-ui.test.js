@@ -152,7 +152,7 @@ test('rage from a revealed result keeps that conversation and committed choice',
 test('new browser lives use e17 and the guide describes the current speaker', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e17-[a-f0-9]+$/);
+  assert.match(seed, /^e18-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;

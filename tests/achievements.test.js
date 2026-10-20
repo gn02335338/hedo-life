@@ -7,9 +7,9 @@ import {createRun,getEvent,applyChoice,advance,requestRage,replayRun,validRun} f
 const copy=value=>JSON.parse(JSON.stringify(value));
 const choose=(run,index)=>advance(applyChoice(run,index));
 
-test('39 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
- assert.equal(ACHIEVEMENTS.length,39);
- assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,39);
+test('112 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
+ assert.equal(ACHIEVEMENTS.length,112);
+ assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,112);
  assert.deepEqual(Object.keys(ACHIEVEMENT_MAP),ACHIEVEMENTS.map(item=>item.id));
  const pictures=new Set();
  for(const achievement of ACHIEVEMENTS){
@@ -21,7 +21,12 @@ test('39 distinct illustrated achievements contain complete Traditional Chinese 
   assert.doesNotMatch(svg,/<script\b|\bon\w+=|javascript:|(?:href|src)=["']https?:\/\//i);
   pictures.add(svg);
  }
- assert.ok(pictures.size>=24,'the collection has distinct illustrations, rather than one repeated letter avatar');
+ assert.ok(pictures.size>=100,'the expanded collection has distinct illustrations, rather than repeated letter avatars');
+});
+
+test('the original 39 badges retain their IDs and order before the new collection',()=>{
+ const published=['work-card','switch','assistant','robot','promotion','manager','director','pip','pip-pass','pay-cut','salary-save','education','self-care','kind-decline','rage-wing','rage-spencer','rage-rick','rage-hope','rage-erich','rage-jenjen','rage-sonny','rage-kind','rage-catharsis','rage-absent','rage-documented','banquet','banquet-prize','banquet-stage','banquet-shared','kind-ghost','first-ending','rage-jack','nasdaq','rage-imagined','rage-real','rage-first-day','rage-legal','rage-defeated','rage-coup'];
+ assert.deepEqual(ACHIEVEMENTS.slice(0,39).map(item=>item.id),published);
 });
 
 test('derivation is deterministic and read-only; unopened choices, cancelled rage and supplied IDs earn nothing',()=>{
@@ -80,6 +85,25 @@ test('published complete routes derive real onboarding, PIP, salary and career a
  for(const id of ['assistant','switch','robot','promotion','manager','director','pip','pip-pass','pay-cut','education','kind-decline','nasdaq'])assert.ok(covered.has(id),`natural goal ${id}`);
 });
 
+test('public canonical route fixtures prove all 112 achievements are reachable without injected state',()=>{
+ const routes=JSON.parse(readFileSync(new URL('./fixtures/achievement-routes-v18.json',import.meta.url),'utf8'));
+ const covered=new Set();
+ assert.ok(routes.length>0);
+ for(const route of routes){
+  assert.deepEqual(Object.keys(route).sort(),['actions','expectedAchievements','roleId','seed'],'public proofs contain only replay inputs and earned IDs');
+  assert.match(route.seed,/^e18-/,'all badges are attainable in the current cohort');
+  const run=replayRun(route.roleId,route.seed,route.actions),saved=copy(run);
+  assert.equal(validRun(saved),true,`${route.seed} survives JSON save validation`);
+  assert.deepEqual(deriveAchievements(saved),route.expectedAchievements,`${route.seed} derives its actual earned badges`);
+  assert.deepEqual(replayRun(saved.roleId,saved.seed,saved.actions),saved,`${route.seed} has a deterministic canonical replay`);
+  if(route.expectedAchievements.includes('rage-absent'))assert.ok(saved.history.some(item=>item.eventId==='rage-release'&&item.speaker==='kind'&&item.eventOutcome?.result==='腦內劇場'),'the current absence badge follows the resolved imaginary Kind chase');
+  if(route.expectedAchievements.includes('rage-documented'))assert.ok(saved.history.some(item=>item.eventId==='rage-legal'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0),'the current documentation badge follows an actual formal-record decision');
+  for(const id of route.expectedAchievements)covered.add(id);
+ }
+ assert.equal(covered.size,112);
+ assert.deepEqual(ACHIEVEMENTS.filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.map(item=>item.id));
+});
+
 test('natural banquet choices unlock attendance, sharing and Kind’s ghosting, without guessing a future lottery',()=>{
  const actions=[['onboarding',0],['pm-human-buffer',1],['education-scrutiny',0],['salary-cut',0],['crisis-mood',1],['video-designer-benchmark',1],['copy-master-late',1],['dp-job-three-conditions',2],['rick-architecture-relic',1],['crisis-mood',1],['attendance-accidental-admin',1],['video-message-workout',1],['rick-two-voices',1],['crisis-mood',1],['wing-message-lottery',1]].map(([eventId,index])=>({type:'choice',eventId,index}));
  let run=replayRun('system','e13-natural-party-0',actions);
@@ -92,4 +116,104 @@ test('natural banquet choices unlock attendance, sharing and Kind’s ghosting, 
  assert.equal(run.stats.cash,cash);assert.ok(deriveAchievements(run).includes('kind-ghost'));
  assert.equal(validRun(copy(run)),true);
  assert.deepEqual(deriveAchievements(replayRun(run.roleId,run.seed,run.actions)),deriveAchievements(run));
+});
+
+const workHistory=count=>Array.from({length:count},(_,turn)=>({eventId:`work-${turn}`,kind:'daily',turn,choiceIndex:0,delta:{}}));
+
+test('role and school badges require resolved work; titles and impressive initial stats are insufficient',()=>{
+ const run={seed:'e18-badge-work',actualRoleId:'mis',education:{schoolId:'ntu',degree:'EMBA',sector:'private',field:'business'},stats:{skill:100,slack:100,lick:100,trust:100},rank:7,flags:{career_peak_rank:7},history:[]};
+ assert.deepEqual(deriveAchievements(run),[]);
+ const two={...run,history:workHistory(2)};
+ assert.ok(!deriveAchievements(two).includes('role-mis'));
+ const three={...run,history:workHistory(3)};
+ assert.ok(deriveAchievements(three).includes('role-mis'));
+ assert.ok(!deriveAchievements(three).some(id=>id.startsWith('school-')));
+ const five=deriveAchievements({...run,history:workHistory(5)});
+ for(const id of ['school-private-proof','school-cross-field','school-emba-proof','trust-ninety'])assert.ok(five.includes(id),id);
+ assert.ok(!five.includes('school-ntu-proof'),'EMBA is not treated as the character’s preferred NTU degree');
+ for(const role of ['system','ai','project','product','design','bd','sales','mis','executive'])assert.ok(deriveAchievements({...three,actualRoleId:role}).includes(`role-${role}`));
+ const overseas=deriveAchievements({...run,history:workHistory(5),education:{schoolId:'ucl',sector:'overseas',field:'stem',degree:'學士'}});
+ assert.ok(overseas.includes('school-overseas-proof'));
+ assert.ok(!overseas.includes('school-private-proof'));
+});
+
+test('eight rank badges require work or responsibility at that rank and never confuse legacy rank meanings',()=>{
+ const names=['assistant','staff','senior','principal','deputy','manager','director','chief'];
+ for(const seed of ['e17-rank-badges','e18-rank-badges']){
+  for(const [rank,name]of names.entries()){
+   const base={seed,rank,history:[],flags:{career_peak_rank:rank}};
+   assert.ok(!deriveAchievements(base).includes(`rank-${name}-work`),'starting title alone is not a completed responsibility');
+   const required=rank<=1?3:2;
+   assert.ok(!deriveAchievements({...base,flags:{...base.flags,[`career_work_${rank}`]:required-1}}).includes(`rank-${name}-work`));
+   assert.ok(deriveAchievements({...base,flags:{...base.flags,[`career_work_${rank}`]:required}}).includes(`rank-${name}-work`));
+   if(rank>1)assert.ok(deriveAchievements({...base,flags:{...base.flags,[`career_duty_${rank}`]:1}}).includes(`rank-${name}-work`));
+  }
+ }
+ assert.ok(!deriveAchievements({seed:'e16-old-manager',flags:{career_work_2:20,career_duty_2:1}}).includes('rank-senior-work'));
+ assert.ok(!deriveAchievements({seed:'e18-no-promotion',flags:{career_peak_rank:5}}).includes('manager'));
+ assert.ok(deriveAchievements({seed:'e18-promoted',flags:{promotions:1,career_peak_rank:5,career_promoted_peak:5}}).includes('manager'));
+ assert.ok(!deriveAchievements({seed:'e18-executive-demoted',flags:{promotions:1,career_peak_rank:5,career_promoted_peak:2}}).includes('manager'));
+ assert.ok(!deriveAchievements({seed:'e18-not-director',flags:{promotions:1,career_peak_rank:5}}).includes('director'));
+});
+
+test('new paid choices count as self-care without treating cancellation as spending or revealing a future recovery',()=>{
+ const care=(seed,indices,flags={})=>({seed,flags,history:indices.map(choiceIndex=>({eventId:'self-care',choiceIndex}))});
+ assert.ok(deriveAchievements(care('e18-new-care',[3,5,6])).includes('self-care'));
+ assert.ok(!deriveAchievements(care('e18-cancel-care',[7,7,7])).includes('self-care'));
+ assert.ok(!deriveAchievements(care('e17-old-care',[3,3,3])).includes('self-care'));
+ const flags={spend_mood:1,spend_training:1,spend_evidence:1,cash_spent_total:30};
+ const earned=deriveAchievements({flags});
+ for(const id of ['wallet-mood','wallet-training','wallet-evidence','wallet-thirty'])assert.ok(earned.includes(id),id);
+ assert.ok(!earned.includes('wallet-variety'),'categories without three actual purchases are not different paid arrangements');
+ const paid=[{eventId:'crisis-mood',choiceIndex:1,delta:{cash:-14}},{eventId:'mood-collapse',choiceIndex:0,delta:{cash:-18}}];
+ assert.ok(!deriveAchievements({flags,history:paid}).includes('wallet-variety'));
+ assert.ok(!deriveAchievements({flags,history:[...paid,paid[0]]}).includes('wallet-variety'));
+ assert.ok(deriveAchievements({flags,history:[...paid,{eventId:'self-care',kind:'self-care',choiceIndex:2,delta:{cash:-18}}]}).includes('wallet-variety'));
+ assert.ok(!earned.includes('wallet-energy'));
+ assert.ok(!earned.includes('mood-rebound'),'paying does not prove an unrevealed result exceeded a recovery threshold');
+ assert.ok(!deriveAchievements({flags:{cash_spent_total:29}}).includes('wallet-thirty'));
+ assert.ok(deriveAchievements({flags:{cash_spent_total:10000}}).includes('wallet-thirty'));
+});
+
+test('ability tradeoffs and mood badges depend on actual friction or resolved changes',()=>{
+ for(const skill of ['skill','slack','lick']){
+  const stats=Object.fromEntries(['skill','slack','lick'].map(key=>[key,key===skill?90:60]));
+  assert.ok(!deriveAchievements({stats}).includes(`craft-${skill}`),'a lucky roll is not a trained specialization');
+  assert.ok(deriveAchievements({stats,flags:{resource_friction_count:3}}).includes(`craft-${skill}`));
+ }
+ assert.ok(!deriveAchievements({stats:{skill:100,slack:100,lick:100},flags:{resource_friction_count:8}}).includes('craft-skill'));
+ const history=[{choiceIndex:0,delta:{mood:25,energy:20}},{choiceIndex:0,delta:{mood:-20}}];
+ const earned=deriveAchievements({history,flags:{resource_friction_count:8,mood_crash_count:1}});
+ for(const id of ['craft-tradeoff','mood-rebound','energy-rebound','mood-shock','mood-zero'])assert.ok(earned.includes(id),id);
+ assert.ok(!earned.includes('mood-zero-finish'));
+ assert.ok(deriveAchievements({history,flags:{mood_crash_count:1},completed:true}).includes('mood-zero-finish'));
+ assert.ok(!deriveAchievements({history:[{choiceIndex:-1,delta:{mood:100,energy:100}}]}).includes('mood-rebound'));
+});
+
+test('dream badges match the resolved person and outcome from the same attempt',()=>{
+ const run={flags:{rage_target_wing:1,rage_target_jack:1,rage_imagined:1,rage_real:1},history:[{eventId:'rage-release',speaker:'wing',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'真的失控了'}},{eventId:'rage-release',speaker:'jack',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}]};
+ const earned=deriveAchievements(run);
+ assert.ok(earned.includes('dream-jack'));
+ assert.ok(!earned.includes('dream-wing'),'a real attempt on one person cannot borrow a later imagined attempt on somebody else');
+ assert.ok(!deriveAchievements({...run,history:[]}).some(id=>id.startsWith('dream-')));
+ for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack'])assert.ok(deriveAchievements({history:[{eventId:'rage-release',speaker:person,choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}]}).includes(`dream-${person}`));
+ const natural=advance(requestRage(createRun('system','e18-example-1')));
+ assert.equal(natural.history.at(-1).eventOutcome.result,'腦內劇場');
+ assert.ok(deriveAchievements(natural).includes('dream-wing'));
+ assert.equal(validRun(copy(natural)),true);
+ assert.deepEqual(deriveAchievements(replayRun(natural.roleId,natural.seed,natural.actions)),deriveAchievements(natural));
+});
+
+test('personnel, exploration and banquet combinations use completed decisions rather than menu presence',()=>{
+ const accepted={eventId:'salary-cut',choiceIndex:0,turn:3,kind:'career',speaker:'hope'};
+ assert.ok(!deriveAchievements({flags:{pay_cut:1},history:[...workHistory(2),accepted,...workHistory(1)]}).includes('cut-and-work'));
+ const after=workHistory(2).map((item,index)=>({...item,turn:accepted.turn+index}));
+ assert.ok(deriveAchievements({flags:{pay_cut:1},history:[accepted,...after]}).includes('cut-and-work'));
+ assert.ok(deriveAchievements({history:[{eventId:'salary-final',choiceIndex:1}]}).includes('cut-refusal'));
+ assert.ok(!deriveAchievements({eventId:'salary-final'}).includes('cut-refusal'));
+ const history=workHistory(15).map((item,index)=>({...item,speaker:'hope',chanceOutcome:index<3?'success':index<6?'setback':'ordinary',...(index<5?{eventOutcome:{label:'已經發生'}}:{})}));
+ const earned=deriveAchievements({history,flags:{pip_passed:1,evidence:5,jack_notes:3},pipCount:2,completed:true});
+ for(const id of ['hope-regular','pip-repeat','pip-dossier','pip-finish','luck-streak','setback-streak','rng-five','jack-notes','office-explorer'])assert.ok(earned.includes(id),id);
+ assert.ok(!deriveAchievements({history:[{eventId:'banquet-welcome',choiceIndex:0},{eventId:'banquet-draw',choiceIndex:0}]}).includes('banquet-complete'));
+ assert.ok(deriveAchievements({history:['banquet-welcome','banquet-draw','banquet-afterparty'].map(eventId=>({eventId,choiceIndex:0}))}).includes('banquet-complete'));
 });

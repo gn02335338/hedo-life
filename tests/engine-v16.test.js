@@ -42,7 +42,7 @@ test('new senior executive name and histories use aliases while role IDs and leg
 });
 
 test('six Jack colleague scenes have valid aliases, evidence choices and an eligible nine-character conversation',()=>{
- assert.equal(JACK_EVENTS.length,6);assert.equal(ACHIEVEMENTS.length,39);
+ assert.equal(JACK_EVENTS.length,6);assert.ok(ACHIEVEMENTS.length>=100);
  for(const scene of JACK_EVENTS){
   assert.equal(scene.minRules,16);assert.equal(scene.choices.length,3);assert.deepEqual(scene.sourceIds,['characterFiction']);
   assert.doesNotMatch(JSON.stringify(scene),/notion\.so|notion\.site/);

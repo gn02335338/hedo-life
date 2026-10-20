@@ -72,7 +72,7 @@ function educationCopy(event,run){
 }
 
 export function applyCopyV15(event,run){
- if(!event||!/^e(?:15|16|17)-/.test(run?.seed||''))return event;
+ if(!event||!/^e(?:15|16|17|18)-/.test(run?.seed||''))return event;
  if(event.id==='education-scrutiny')return educationCopy(event,run);
  if(event.id!=='rage-release')return event;
  const context=run.rageContext,target=context?.target;

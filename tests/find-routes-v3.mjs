@@ -19,13 +19,13 @@ export function replayRoute(route, verify = () => {}) {
     else if (action.type === 'career') run = requestCareer(run);
     else if (action.type === 'rage') {
       run=requestRage(run);checkpoint();
-      if(/^e(?:14|15|16|17)-/.test(route.seed))run=advance(run);
+      if(/^e(?:14|15|16|17|18)-/.test(route.seed))run=advance(run);
     }
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
       checkpoint();
-      if(!(/^e(?:14|15|16|17)-/.test(route.seed)&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
+      if(!(/^e(?:14|15|16|17|18)-/.test(route.seed)&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
     }
     checkpoint();
   }
@@ -36,14 +36,15 @@ const safe = (value, minimum) => value < minimum ? (value-minimum)*8 : 0;
 const evChoiceIndex=(event,effect)=>event.choices.findIndex(choice=>choice.effect===effect&&choice.available!==false);
 function utility(run,target) {
   const s=run.stats, f=run.flags;
-  let value=safe(s.energy,18)+safe(s.cash,18)+safe(s.mood,20);
-  if (target!=='burnout') value+=Math.min(s.energy,65)*.4;
-  if (target!=='broke') value+=Math.min(s.cash,55)*.4;
+  let value=safe(s.energy,30)+safe(s.cash,12)+safe(s.mood,35);
+  if (target!=='burnout') value+=Math.min(s.energy,65)*.5;
+  if (target!=='broke') value+=Math.min(s.cash,55)*.35;
+  value+=Math.min(s.mood,60)*.65;
   const combat=['fired_signed','fired_refused','layoff','pip_fail','pip_exit'].includes(target)&&!run.pip&&!f.pip_passed;
   if(combat) value+=(100-s.boss)*2.8;
   else value+=safe(s.boss,28)+Math.min(s.boss,75)*.2;
   if(target==='pip_exit') value+=Math.min(s.skill,70)*2+Math.min(f.evidence||0,2)*18;
-  if(target==='burnout') value=-s.energy*4+safe(s.cash,12)+safe(s.mood,15)+safe(s.boss,20);
+  if(target==='burnout') value=-s.energy*4+safe(s.cash,12)+safe(s.mood,28)+safe(s.boss,20);
   if(target==='broke') value=-s.cash*4-s.mood*.7-run.pay*Math.max(0,24-run.turn)/10+safe(s.energy,18)+safe(s.boss,20);
   if(target==='promotion') value+=Math.min(s.skill,65)*2+Math.min(s.boss,50)*2+(f.promotions||0)*200;
   if(target==='slacker') value+=Math.min(s.slack,65)*4;
@@ -70,7 +71,7 @@ function utility(run,target) {
 }
 
 function simulateRage(roleId,target,attempt) {
-  const seed=`e17-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  const seed=`e18-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let start=advance(requestRage(createRun(roleId,seed)));
   let fallback=start;
   function search(run,depth){
@@ -88,7 +89,7 @@ function simulateRage(roleId,target,attempt) {
 
 export function simulate(roleId,target,attempt) {
   if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt);
-  const seed=`e17-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  const seed=`e18-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[];
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
@@ -99,10 +100,23 @@ export function simulate(roleId,target,attempt) {
   const careerTarget=()=>targetRank>=0?((run.rank===targetRank&&careerEndingAvailable(run))||(run.rank>targetRank&&run.rank>=4&&!run.resumeEventId)):eligibleStoryEndings(run).includes(target)?true:target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1&&(run.flags.promotions||0)>0:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
   const effectIndex=effect=>evChoiceIndex(getEvent(run),effect);
   for(let step=0;step<150&&!run.completed;step++) {
-    if(canRequestBreak(run)&&run.stats.mood<30&&run.stats.cash>35&&!['broke','burnout'].includes(target)){
-      const menu=requestBreak(run),options=getEvent(menu).choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false&&c.effect==='finishBreak');
-      const best=options.map(({i})=>({i,score:utility(applyChoice(menu,i),target)})).sort((a,b)=>b.score-a.score)[0];
-      if(best&&best.score>utility(run,target)){actions.push({type:'break'});run=menu;choose(best.i);continue;}
+    if(canRequestBreak(run)&&(run.stats.mood<45||run.stats.energy<35)&&run.stats.cash>=8&&!['broke','burnout'].includes(target)){
+      const menu=requestBreak(run),plans=[];
+      const inspect=(candidate,prefix=[])=>{
+        for(const [index,choice]of getEvent(candidate).choices.entries()){
+          if(choice.available===false)continue;
+          if(choice.effect==='finishBreak')plans.push({indices:[...prefix,index],score:utility(applyChoice(candidate,index),target)});
+          // An unaffordable or unwanted surprise invitation must not prevent
+          // the finder from using the ordinary self-care choices behind it.
+          if(choice.effect==='kindDecline'&&prefix.length===0){
+            const declined=advance(applyChoice(candidate,index));
+            if(declined.eventId==='self-care')inspect(declined,[index]);
+          }
+        }
+      };
+      inspect(menu);
+      const best=plans.sort((a,b)=>b.score-a.score)[0];
+      if(best&&best.score>utility(run,target)){actions.push({type:'break'});run=menu;for(const index of best.indices)choose(index);continue;}
     }
     if(canRequestCareer(run)&&target!=='assistant'&&targetRank!==0&&(run.rank<desiredRank()||(run.assignment==='assistant'&&desiredRank()>0))){
       const menu=requestCareer(run),review=getEvent(menu);
@@ -157,7 +171,13 @@ export function simulate(roleId,target,attempt) {
     }
     if(run.eventId==='pip-passed') {choose(target==='pip_exit'?0:1);continue;}
     if(run.eventId==='crisis-mood'){
-      choose(ev.choices[1].available!==false&&(target==='broke'||run.stats.energy<25&&run.stats.cash>20)?1:2);continue;
+      const paid=ev.choices[1].available!==false;
+      choose(paid&&(target!=='burnout'||run.stats.energy<15)?1:2);continue;
+    }
+    if(run.eventId==='mood-collapse'){
+      const best=ev.choices.map((choice,index)=>({choice,index})).filter(({choice,index})=>choice.available!==false&&index<2)
+        .map(({index})=>({index,score:utility(applyChoice(run,index),target)})).sort((a,b)=>b.score-a.score)[0];
+      choose(best?.index??2);continue;
     }
     if(run.eventId==='final-shortfall'){choose(0);continue;}
     if(run.eventId==='salary-cut'){choose(target==='broke'?0:applyChoice(run,2).pendingEffect==='salaryRescind'?2:0);continue;}
@@ -217,7 +237,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-stories','events-departures'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };

@@ -92,7 +92,7 @@ test('assistant onboarding negotiations restore a professional rank and preserve
 });
 
 test('current natural witnesses verify all eight career stages and new cohort API envelopes',()=>{
- const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
+ const report={routes:JSON.parse(readFileSync(new URL('./fixtures/legacy-e17-routes.json',import.meta.url))).filter(route=>!route.ending.startsWith('feature-'))};
  assert.equal(report.routes.length,314);
  const ranks=new Set();
  for(const route of report.routes){
