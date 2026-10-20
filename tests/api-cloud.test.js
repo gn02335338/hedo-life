@@ -4,11 +4,12 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { randomUUID, webcrypto } from 'node:crypto';
 import { createRun, applyChoice, advance, validRun } from '../dist/engine.js';
+import { deriveCharacterStats } from '../dist/character-stats.js';
 
 const source = (await readFile(new URL('../dist/cloud.js', import.meta.url), 'utf8')).replace('export const cloud=', 'globalThis.cloud=');
 const item = (id = randomUUID()) => ({ runId: id, roleId: 'ai', seed: 'test', actions: [{ type: 'choice', eventId: 'onboarding', index: 2 }] });
-function client(queue, responder, { storageFails = false } = {}) {
-  const saved = new Map([['hedo-anonymous-v1', '1'.repeat(64)], ['hedo-sync-queue-v3', JSON.stringify(queue)]]);
+function client(queue, responder, { storageFails = false, savedEntries = [] } = {}) {
+  const saved = new Map([['hedo-anonymous-v1', '1'.repeat(64)], ['hedo-sync-queue-v3', JSON.stringify(queue)],...savedEntries]);
   const timers = new Map();
   const requests = [];
   let timerId = 0;
@@ -117,4 +118,84 @@ test('a newer milestone proof arriving during upload is not discarded by the old
   release();await Promise.all([a,b]);
   assert.deepEqual(c.requests.filter(r=>r.path==='/api/achievements').map(r=>r.body.actions.length),[1,2]);
   assert.equal(c.cloud.state.pending,0);
+});
+
+const characterRows=()=>deriveCharacterStats(advance(applyChoice(createRun('system','e20-cloud-characters'),0)));
+const withCharacters=rows=>Response.json({playerId:'test-player',unlocked:[],achievements:[],totalRuns:0,characters:rows,characterTrackingSince:'2026-10-20T00:00:00.000Z'});
+
+test('character and achievement proofs coalesce and an acknowledged prefix is not sent again on Continue',async()=>{
+ const rows=characterRows(),c=client([],path=>path==='/api/player'?withCharacters(rows):withCharacters(rows));
+ await c.cloud.init();const run=item();
+ await Promise.all([c.cloud.characterProgress(run),c.cloud.achievementProgress(run)]);
+ await c.cloud.characterProgress(structuredClone(run));
+ assert.equal(c.requests.filter(row=>row.path==='/api/achievements').length,1);
+ assert.equal(c.cloud.state.pending,0);
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),rows);
+ const changed=c.cloud.state.characters;changed[0].realHits=999;
+ assert.notEqual(c.cloud.state.characters[0].realHits,999);
+});
+
+test('verified character totals survive an offline reload and are bound to the anonymous credential hash',async()=>{
+ const rows=characterRows(),c=client([],()=>withCharacters(rows));await c.cloud.init();
+ const cache=c.saved.get('hedo-character-cache-v1');assert.ok(cache);
+ assert.ok(!cache.includes('1'.repeat(64)),'the new cache does not duplicate the bearer token');
+ const offline=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved]});await offline.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(offline.cloud.state.characters)),rows);
+ assert.ok(Number.isFinite(Date.parse(offline.cloud.state.charactersVerifiedAt)));
+ assert.equal(offline.cloud.state.characterTrackingSince,'2026-10-20T00:00:00.000Z');
+ assert.equal(offline.cloud.state.status,'local');
+ const another=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved,['hedo-anonymous-v1','2'.repeat(64)]]});await another.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(another.cloud.state.characters)),[],'another identity cannot read this cache as its totals');
+});
+
+test('public character statistics cannot overwrite private cumulative counts',async()=>{
+ const personal=characterRows(),global=personal.map(row=>({...row,realHits:400}));
+ const c=client([],path=>path==='/api/characters'?Response.json({version:1,characters:global,trackingSince:'2026-10-20T00:00:00.000Z'}):withCharacters(personal));
+ await c.cloud.init();const data=await c.cloud.characters();assert.equal(data.characters[0].realHits,400);
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),personal);
+});
+
+test('offline character proofs stay in the shared durable queue and later synchronize without a new achievement',async()=>{
+ let online=false;const rows=characterRows();
+ const c=client([],()=>{if(!online)throw new TypeError('offline');return withCharacters(rows);});
+ const run=item();await c.cloud.characterProgress(run);await c.cloud.characterProgress({...run,actions:[...run.actions,{type:'rage'}]});
+ assert.equal(c.cloud.state.pending,1);assert.equal(JSON.parse(c.saved.get('hedo-achievement-queue-v1'))[0].actions.length,2);
+ online=true;await c.cloud.retry();assert.equal(c.cloud.state.pending,0);
+ assert.equal(c.requests.filter(row=>row.path==='/api/achievements').length,1);
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),rows);
+});
+
+test('malformed or future-version character cache is ignored without blocking normal anonymous sync',async()=>{
+ const rows=characterRows(),c=client([],()=>withCharacters(rows));await c.cloud.init();
+ const cached=JSON.parse(c.saved.get('hedo-character-cache-v1'));cached.version=99;
+ const reload=client([],()=>{throw new TypeError('offline');},{savedEntries:[['hedo-character-cache-v1',JSON.stringify(cached)]]});await reload.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(reload.cloud.state.characters)),[]);
+ cached.version=1;cached.characters[0].imaginedHits=-1;
+ const broken=client([],()=>{throw new TypeError('offline');},{savedEntries:[['hedo-character-cache-v1',JSON.stringify(cached)]]});await broken.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(broken.cloud.state.characters)),[]);
+});
+
+test('a delayed registration read cannot roll back a newer verified character proof or its offline cache',async()=>{
+ const latest=characterRows(),old=latest.map(row=>({id:row.id,...Object.fromEntries(Object.keys(row).filter(key=>key!=='id').map(key=>[key,0]))}));
+ let registrations=0,releaseRead,releaseUpload,uploadStarted,readStarted;
+ const uploading=new Promise(resolve=>{uploadStarted=resolve;}),reading=new Promise(resolve=>{readStarted=resolve;});
+ const c=client([],async path=>{
+  if(path==='/api/player'){
+   if(++registrations===1)return withCharacters(old);
+   readStarted();return new Promise(resolve=>{releaseRead=()=>resolve(withCharacters(old));});
+  }
+  uploadStarted();return new Promise(resolve=>{releaseUpload=()=>resolve(withCharacters(latest));});
+ });
+ await c.cloud.init();
+ const upload=c.cloud.characterProgress(item());await uploading;
+ const refresh=c.cloud.init();await reading;
+ releaseUpload();await upload;
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),latest);
+ const verifiedAt=c.cloud.state.charactersVerifiedAt;
+ releaseRead();const result=await refresh;
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),latest);
+ assert.deepEqual(JSON.parse(JSON.stringify(result.characters)),latest);
+ assert.equal(c.cloud.state.charactersVerifiedAt,verifiedAt);
+ assert.deepEqual(JSON.parse(c.saved.get('hedo-character-cache-v1')).characters,latest);
+ assert.equal(c.cloud.state.pending,0);
 });

@@ -1,9 +1,11 @@
-const KEY='hedo-anonymous-v1', QUEUE='hedo-sync-queue-v3', PROGRESS='hedo-achievement-queue-v1', MAX_QUEUE=500;
+const KEY='hedo-anonymous-v1', QUEUE='hedo-sync-queue-v3', PROGRESS='hedo-achievement-queue-v1', CHARACTER_CACHE='hedo-character-cache-v1', MAX_QUEUE=500;
 let token=null,queue=[],progress=[],ready=false,playerId=null,status='connecting',lastError='',storageError='';
-let flushing=null,initializing=null,retryTimer=null,retryDelay=2000,snapshot=null;
+let flushing=null,initializing=null,retryTimer=null,retryDelay=2000,snapshot=null,snapshotRevision=0;
+let characterRows=[],charactersVerifiedAt=null,characterTrackingSince=null,characterCacheLoaded=false;
+const confirmedProgress=new Map();
 const listeners=new Set();
 const pendingCount=()=>queue.length+progress.length;
-const state=()=>({status,playerId,lastError:storageError||lastError,pending:pendingCount(),achievements:snapshot?.achievements||[]});
+const state=()=>({status,playerId,lastError:storageError||lastError,pending:pendingCount(),achievements:snapshot?.achievements||[],characters:structuredClone(characterRows),charactersVerifiedAt,characterTrackingSince});
 function emit(){for(const fn of listeners)fn(state());}
 try{
  token=localStorage.getItem(KEY);
@@ -16,6 +18,35 @@ try{
  const savedProgress=JSON.parse(localStorage.getItem(PROGRESS)||'[]');
  if(Array.isArray(savedProgress))progress=savedProgress;
 }catch{token=null;status='local';storageError='此瀏覽器無法保存匿名同步資料，請保留目前頁面。';}
+const characterIds=['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei'];
+const characterMetrics=['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents'];
+function safeCharacterRows(value){
+ if(!Array.isArray(value)||!value.length)return null;
+ const rows=characterIds.map(id=>value.find(row=>row?.id===id));
+ if(rows.some(row=>!row||!characterMetrics.every(key=>Number.isSafeInteger(row[key])&&row[key]>=0)))return null;
+ return rows.map(row=>({id:row.id,...Object.fromEntries(characterMetrics.map(key=>[key,row[key]]))}));
+}
+async function characterOwnerHash(){
+ const bytes=new Uint8Array(token.match(/../g).map(byte=>parseInt(byte,16)));
+ const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',bytes));
+ return Array.from(digest,byte=>byte.toString(16).padStart(2,'0')).join('');
+}
+async function loadCharacterCache(){
+ if(characterCacheLoaded||!token)return;characterCacheLoaded=true;
+ try{
+  const saved=JSON.parse(localStorage.getItem(CHARACTER_CACHE)||'null');
+  const rows=safeCharacterRows(saved?.characters);
+  if(saved?.version===1&&saved.ownerHash===await characterOwnerHash()&&rows&&Number.isFinite(Date.parse(saved.verifiedAt))){characterRows=rows;charactersVerifiedAt=saved.verifiedAt;characterTrackingSince=typeof saved.trackingSince==='string'?saved.trackingSince:null;emit();}
+ }catch{}
+}
+async function rememberSnapshot(data){
+ snapshot=data;
+ const rows=safeCharacterRows(data?.characters);
+ if(!rows)return;
+ characterRows=rows;charactersVerifiedAt=new Date().toISOString();characterTrackingSince=data.characterTrackingSince||data.trackingSince||characterTrackingSince;
+ try{localStorage.setItem(CHARACTER_CACHE,JSON.stringify({version:1,ownerHash:await characterOwnerHash(),characters:characterRows,verifiedAt:charactersVerifiedAt,trackingSince:characterTrackingSince}));}catch{}
+}
+const proofKey=item=>JSON.stringify([item.roleId,item.seed,item.actions]);
 function persist(){
  try{localStorage.setItem(QUEUE,JSON.stringify(queue));localStorage.setItem(PROGRESS,JSON.stringify(progress));storageError='';}
  catch{storageError='同步紀錄暫時無法存入瀏覽器；請保持此頁開啟並恢復連線。';}
@@ -44,7 +75,7 @@ async function flush(){
    while(pendingCount()){
     const completing=queue.length>0,item=completing?queue[0]:progress[0];
     const remove=()=>completing?removeRun(item?.runId):removeProgress(item);
-    try{snapshot=await api(completing?'/api/complete':'/api/achievements',item);remove();if(completing)removeProgress(item);}
+    try{const received=await api(completing?'/api/complete':'/api/achievements',item);snapshotRevision++;await rememberSnapshot(received);confirmedProgress.set(item.runId,proofKey(item));remove();if(completing)removeProgress(item);}
     catch(error){
      if([400,409,422].includes(error.status)){
       // Invalid old replays cannot be repaired by retrying. Their local ending
@@ -70,8 +101,13 @@ export const cloud={
   if(initializing)return initializing;
   if(!token){status='local';emit();return null;}
   initializing=(async()=>{
+   await loadCharacterCache();
    try{
-    snapshot=await api('/api/player',{token});ready=true;playerId=snapshot.playerId;
+    const revision=snapshotRevision,received=await api('/api/player',{token});
+    // A read started before an in-flight proof may arrive afterwards. It must
+    // not replace the newer verified totals or the cache with its older view.
+    if(revision===snapshotRevision)await rememberSnapshot(received);
+    ready=true;playerId=snapshot.playerId;
     status='online';lastError='';emit();
     await flush();
     if(!pendingCount())clearRetry();
@@ -93,9 +129,12 @@ export const cloud={
   if(!ready){status='pending';emit();await this.init();}else{emit();await flush();}
  },
  async stats(){return api('/api/stats');},
+ async characters(){return api('/api/characters');},
+ async characterProgress(run){return this.achievementProgress(run);},
  async achievementProgress(run){
   if(!run?.runId||!Array.isArray(run.actions)||!run.actions.length)return null;
   const proof={runId:run.runId,roleId:run.roleId,seed:run.seed,actions:structuredClone(run.actions)};
+  if(confirmedProgress.get(proof.runId)===proofKey(proof))return snapshot;
   const existing=progress.findIndex(p=>p.runId===proof.runId);
   if(existing>=0){if(progress[existing].actions.length<=proof.actions.length)progress[existing]=proof;}
   else{

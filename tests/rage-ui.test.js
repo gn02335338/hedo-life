@@ -1,3 +1,4 @@
+import {characterHistoryChanges,characterAffinity} from '../dist/character-stats.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -31,15 +32,16 @@ function appHarness() {
     return nodes.get(selector);
   };
   const context = vm.createContext({
-    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...currentCareer, ...persona, polishDreamText,
+    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...currentCareer, ...persona, polishDreamText, characterHistoryChanges, characterAffinity,
     requestRage(run) { calls.rage++; return engine.requestRage(run); },
     requestRaise(run) { calls.raise++; return engine.requestRaise(run); },
     applyChoice(run, index) { calls.choice++; return engine.applyChoice(run, index); },
     advance(run) { calls.advance++; return engine.advance(run); },
     createFeedbackUI: () => ({ open() {} }),
+    createCharacterBook: () => ({open() {},onSnapshot() {},onRunChanged() {}}),
     cloud: {
       state: { status: 'offline', achievements: [] }, subscribe() {},
-      init: async () => null, achievementProgress: async () => null,
+      init: async () => null, achievementProgress: async () => null, characterProgress: async () => null,
       complete: async () => null,
     },
     localStorage: { getItem: () => null, setItem() { calls.save++; } },
