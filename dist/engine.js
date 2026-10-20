@@ -12,13 +12,15 @@ import { getStoryExit } from './story-career.js';
 import { getRage } from './rage.js';
 import { RAGE_WORLD_EVENTS, getRageV14, rageTargetFor } from './rage-v14.js';
 import { getBanquet } from './banquet.js';
+import { getRageV16, rageTargetForV16 } from './rage-v16.js';
+import { applyPersonaCopy, displayText } from './persona.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
 export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'老闆心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 // Leave three full work scenes for improvement, then review before the finale.
@@ -28,7 +30,8 @@ function roll(run){let x=run.rng;x^=x<<13;x^=x>>>17;x^=x<<5;run.rng=x>>>0||1;ret
 function flag(run,name,n=1){run.flags[name]=(run.flags[name]||0)+n;}
 const c=(text,detail,result,delta={},effect=null,flags=[])=>({text,detail,result,delta,effect,flags});
 const e=(id,title,body,wing,choices,kind='crisis',speaker=null)=>({id,title,body,wing,speaker:speaker||({'crisis-boss':'exit-team',paperwork:'exit-team','pip-review':'hope','pip-passed':'hope','salary-cut':'hope','salary-final':'hope'}[id]||'wing'),choices,kind,era:kind==='onboarding'?'入職報到':kind==='career'?'人事異動':'突發人事事件',sourceIds:[]});
-export function jobTitle(run){if(contentRules(run)>=8)return careerTitle(run);const role=ROLE_MAP[run.actualRoleId];return run.assignment==='assistant'?role.assistantTitle:role.ladder[Math.min(run.rank,role.ladder.length-1)];}
+const conversationalTarget=(run,event)=>contentRules(run)>=16?rageTargetForV16(event):rageTargetFor(event);
+export function jobTitle(run){if(contentRules(run)>=16)return displayText(careerTitle(run));if(contentRules(run)>=8)return careerTitle(run);const role=ROLE_MAP[run.actualRoleId];return run.assignment==='assistant'?role.assistantTitle:role.ladder[Math.min(run.rank,role.ladder.length-1)];}
 export function bossLabel(n){return n<=12?'準備找你談談':n<30?'看誰都不順眼':n<60?'今天還算陰天':n<85?'龍心尚可':'聖眷正濃';}
 export function createRun(roleId,seed=Date.now()){
  const role=ROLE_MAP[roleId];if(!role)throw new Error('Unknown role');
@@ -60,7 +63,7 @@ function rawGetEvent(run){
  if(!run||run.completed)return null;
  const role=ROLE_MAP[run.roleId],actual=ROLE_MAP[run.actualRoleId],s=run.stats,f=run.flags,modern=rules2(run);
  switch(run.eventId){
- case 'rage-release':case 'rage-aftermath':case 'rage-legal':case 'rage-showdown':case 'rage-public':if(contentRules(run)<14||!run.rageContext)throw new Error('Invalid rage world');return getRageV14(run);
+ case 'rage-release':case 'rage-aftermath':case 'rage-legal':case 'rage-showdown':case 'rage-public':if(contentRules(run)<14||!run.rageContext)throw new Error('Invalid rage world');return contentRules(run)>=16?getRageV16(run):getRageV14(run);
  case 'rage-menu':if(contentRules(run)<13||!run.rageContext)throw new Error('Invalid rage scene');return getRage(run);
  case 'banquet-welcome':case 'banquet-draw':case 'banquet-afterparty':if(contentRules(run)<13||!run.banquetReturnEventId)throw new Error('Invalid banquet');return getBanquet(run);
  case 'education-scrutiny':if(contentRules(run)<11||!f.education_case_active)throw new Error('Invalid education dispute');return getEducationScrutiny(run,jobTitle(run));
@@ -176,7 +179,8 @@ export function getEvent(run){
  const event=rawGetEvent(run);
  const edited=event&&contentRules(run)>=5?applyEventCopy(event,run,{jobTitle,educationLabel}):event;
  const wild=edited&&contentRules(run)>=12?applyWildOptions(edited,run):edited;
- return contentRules(run)>=15?applyCopyV15(wild,run):wild;
+ const copied=contentRules(run)>=15?applyCopyV15(wild,run):wild;
+ return contentRules(run)>=16?applyPersonaCopy(copied):copied;
 }
 const WEATHER=[{text:'Wing看完官網英文，決定對全世界不爽。',delta:-9},{text:'他剛開完別人的會，你負責承受餘震。',delta:-7},{text:'今天不知道誰先拍對馬屁，辦公室暫時放晴。',delta:6},{text:'Wing想到掛牌願景，暫時看誰都像未來股東。',delta:7},{text:'公司沒發生什麼事，老闆也先沒有。',delta:0},{text:'一個未回覆的訊息，讓今天變成臨時考核。',delta:-5}];
 function nextNormal(run){
@@ -304,6 +308,7 @@ export function applyChoice(run,index){
  if(!family&&choice.flags?.some(x=>['final_global','final_taiwan','final_acquire'].includes(x))){const goal=choice.flags.includes('final_global')?'nasdaq':choice.flags.includes('final_taiwan')?'taiwan':'acquired';if(endingEligibility(next,goal))family=goal;else effect='shortfall';}
  if(event.id==='onboarding'&&index<2)result+=` 目前實際職稱：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
  if(contentRules(run)>=5){result=polishEngineText(result);if(next.lastWeather)next.lastWeather.text=polishEngineText(next.lastWeather.text);}
+ if(contentRules(run)>=16){result=displayText(result);if(next.lastWeather)next.lastWeather.text=displayText(next.lastWeather.text);}
  next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{})});
  next.pending=true;next.pendingEffect=effect;next.pendingFamily=family;return next;
 }
@@ -388,7 +393,7 @@ export function canRequestCareer(run){return !!(run&&contentRules(run)>=10&&!run
 export function requestCareer(run){if(!canRequestCareer(run))return run;const next=structuredClone(run);next.actions.push({type:'career'});next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
 export function canRequestRage(run){
  if(!(run&&contentRules(run)>=13&&!run.completed&&!run.rageContext&&!run.pendingFamily))return false;
- if(contentRules(run)>=14)return run.flags.rage_last_turn!==run.turn+1&&!!rageTargetFor(getEvent(run));
+ if(contentRules(run)>=14)return run.flags.rage_last_turn!==run.turn+1&&!!conversationalTarget(run,getEvent(run));
  return true;
 }
 export function requestRage(run){
@@ -396,7 +401,7 @@ export function requestRage(run){
  if(contentRules(run)>=14){
   const next=structuredClone(run),event=getEvent(run),phase=run.pending?'result':'event';
   next.actions.push({type:'rage',phase,eventId:event.id});
-  next.rageContext={eventId:event.id,speaker:event.speaker,target:rageTargetFor(event),phase,historyLength:run.history.length,pendingEffect:run.pendingEffect??null,pendingFamily:run.pendingFamily,mode:'unresolved'};
+  next.rageContext={eventId:event.id,speaker:event.speaker,target:conversationalTarget(run,event),phase,historyLength:run.history.length,pendingEffect:run.pendingEffect??null,pendingFamily:run.pendingFamily,mode:'unresolved'};
   next.eventId='rage-release';next.pending=false;next.pendingEffect=null;next.pendingFamily=null;
   const resolved=applyChoice(next,0);
   // The direct button itself commits this result. Its internal choice is not
@@ -453,7 +458,7 @@ export function validRun(run){
      const context=run.rageContext;
      if(!context||typeof context!=='object'||!RAGE_WORLD_EVENTS.includes(run.eventId)||typeof context.eventId!=='string'||RAGE_WORLD_EVENTS.includes(context.eventId)||context.eventId==='rage-menu'||!['event','result'].includes(context.phase)||!['imagined','real'].includes(context.mode)||!Number.isInteger(context.historyLength)||context.historyLength<0||context.historyLength>=run.history.length||!(context.pendingEffect===null||typeof context.pendingEffect==='string')||context.pendingFamily!==null)return false;
      const source=getEvent({...run,eventId:context.eventId});
-     if(!source||source.speaker!==context.speaker||rageTargetFor(source)!==context.target)return false;
+     if(!source||source.speaker!==context.speaker||conversationalTarget(run,source)!==context.target)return false;
      if(context.phase==='result'&&(context.historyLength===0||run.history[context.historyLength-1]?.eventId!==context.eventId))return false;
      if(run.eventId!=='rage-release'&&context.mode!=='real')return false;
     }

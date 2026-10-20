@@ -47,11 +47,11 @@ export function careerReadiness(run){
 // e9 and older never call these new invitation rules.
 export function careerReviewWait(run){return run.turn-run.lastPromotion>=3&&run.turn>=(run.flags.career_defer_until||0);}
 export function careerInvitationEligible(run){
- return /^e(?:10|11|12)-/.test(run.seed)&&run.turn>=3&&run.turn<20&&run.rank<4&&!run.pip?.active&&careerReviewWait(run)&&careerReadiness(run).ready&&getCareerReview(run).choices.slice(0,2).some(choice=>choice.available!==false);
+ return /^e(?:10|11|12|16)-/.test(run.seed)&&run.turn>=3&&run.turn<20&&run.rank<4&&!run.pip?.active&&careerReviewWait(run)&&careerReadiness(run).ready&&getCareerReview(run).choices.slice(0,2).some(choice=>choice.available!==false);
 }
 
 export function getCareerReview(run){
- const assistant=run.assignment==='assistant',target=assistant?0:Math.min(4,run.rank+1),s=run.stats,balanced=/^e(?:9|10|11|12)-/.test(run.seed);
+ const assistant=run.assignment==='assistant',target=assistant?0:Math.min(4,run.rank+1),s=run.stats,balanced=/^e(?:9|10|11|12|16)-/.test(run.seed);
  const title=assistant?CAREER_LADDERS[run.actualRoleId][0]:CAREER_LADDERS[run.actualRoleId][target],merit=MERIT[target],politics=POLITICS[target];
  const healthy=(assistant||run.rank<4)&&!run.pip?.active&&s.energy>10&&s.mood>12&&(!balanced||careerReadiness(run).ready);
  const effect=assistant?'careerRegularize':'careerPromote';
@@ -62,7 +62,7 @@ export function getCareerReview(run){
   c('先補帶人的本事，下次帶著準備再來。','你找同事把交付、溝通和帶人的工作逐項補上。這次沒拿新名片，至少不是空著手等下一次評核。',balanced?{skill:5,lick:2,trust:3,mood:-3,energy:-4}:{skill:8,lick:4,trust:3,mood:-3,energy:-3},'careerTrain'),
   c('這次先不升。我想把現在的生活顧好。','你把這次評核留在這裡。少一張新名片，也少接一輪不是自己排進來的責任。',{mood:10,energy:8,slack:6,boss:-3},'careerDefer')
  ]);
- if(/^e(?:10|11|12)-/.test(run.seed)){
+ if(/^e(?:10|11|12|16)-/.test(run.seed)){
   const previous=run.flags.career_last_review_target===target+1?run.flags.career_last_review_result:0;
   if(!event.choices.slice(0,2).some(choice=>choice.available!==false)){
    event.title='先整理籌碼，不急著換名片。';

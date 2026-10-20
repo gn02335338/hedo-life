@@ -125,12 +125,13 @@ test('replay rejects forged conversation phases, fabricated targets and separate
 test('natural HR, salary, banquet and character conversations target their current speaker with timing-specific results',async()=>{
  const {replayRoute}=await import('./find-routes-v3.mjs');
  const {rageTargetFor,rageTiming}=await import('../dist/rage-v14.js');
+ const {rageTargetForV16}=await import('../dist/rage-v16.js');
  const routes=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url))).routes;
  const people=new Set(),timings=new Set(),phases=new Set();
  for(const route of routes){
   replayRoute(route,run=>{
    if(!canRequestRage(run))return;
-   const event=getEvent(run),person=rageTargetFor(event),timing=rageTiming(event.id),key=`${person}:${timing}:${run.pending}`;
+   const event=getEvent(run),person=/^e16-/.test(run.seed)?rageTargetForV16(event):rageTargetFor(event),timing=rageTiming(event.id),key=`${person}:${timing}:${run.pending}`;
    if(phases.has(key))return;phases.add(key);people.add(person);timings.add(timing);
    const result=requestRage(run);assert.equal(result.rageContext.target,person,key);
    assert.equal(result.rageContext.eventId,event.id,key);assert.equal(result.history.at(-1).speaker,person,key);

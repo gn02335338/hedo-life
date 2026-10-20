@@ -1,0 +1,109 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {PERSONAS,displayName,displayText,applyPersonaCopy} from '../dist/persona.js';
+import {ROLES} from '../dist/roles.js';
+import {ENDINGS} from '../dist/endings.js';
+import {LEGACY_ENDINGS} from '../dist/legacy.js';
+import {ACHIEVEMENTS} from '../dist/achievements.js';
+import {SOURCES} from '../dist/public-sources.js';
+
+test('all named game characters have stable IDs, public aliases and original portrait paths',()=>{
+ const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'Moon Dog',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克'};
+ assert.deepEqual(Object.fromEntries(Object.keys(PERSONAS).map(id=>[id,displayName(id)])),expected);
+ for(const [id,person]of Object.entries(PERSONAS)){
+  assert.equal(person.image,`./assets/${id}.png`);
+  assert.ok(Object.isFrozen(person));assert.ok(person.title.length>0);
+ }
+ assert.equal(PERSONAS.jack.title,'研發部經理');
+ assert.equal(displayName('self'),'self');
+});
+
+test('display aliases handle Chinese-adjacent names and existing nicknames without changing identifiers or URLs',()=>{
+ assert.equal(displayText('Wing問Rick，Hope跟Erich／JenJen／Sonny在旁邊。Spencer叫Jack跟Kind過來。'),'翅膀問老闆乾兒子，希望跟法師／Moon Dog／阿福在旁邊。屎潘蛇叫傑克跟阿良過來。');
+ assert.equal(displayText('阿良（Kind）、Rick（乾兒子）、Jack（傑克）、林澤教授。'),'阿良、老闆乾兒子、傑克、顧問教授。');
+ assert.equal(displayText('SPENCER / WING / RICK / HOPE'),'屎潘蛇 / 翅膀 / 老闆乾兒子 / 希望');
+ const unchanged='kind hopeful Wingman Rickshaw wing rage_wing WingFeature ./assets/Wing.png https://example.test/Wing?Kind=Hope';
+ assert.equal(displayText(unchanged),unchanged);
+ assert.equal(displayText('空降主管／資深空降主管／禾多人生'),'高階主管／資深高階主管／移動人生');
+ assert.equal(displayText('空降事業部經理'),'事業部經理');
+ assert.equal(displayText('https://example.test/Wing。Wing回來了'),'https://example.test/Wing。翅膀回來了');
+});
+
+test('all public collections can be displayed with aliases while original catalog data stays unchanged',()=>{
+ const catalogs=[ROLES,ENDINGS,LEGACY_ENDINGS,ACHIEVEMENTS,SOURCES],before=JSON.stringify(catalogs);
+ let processed=0;
+ function visit(value){
+  if(typeof value==='string'){
+   const result=displayText(value);processed++;
+   assert.equal(displayText(result),result,'display formatting is safe to apply twice');
+   if(!/^(?:https?:\/\/|\.\/)/.test(value)&&!/^[-a-z0-9_/]+$/.test(value)){
+    assert.doesNotMatch(result,/(?<![A-Za-z0-9_])(?:Wing|WING|Spencer|Rick|Hope|Erich|JenJen|Sonny|Kind|Jack)(?![A-Za-z0-9_])|林澤|空降主管/);
+   }
+  }else if(Array.isArray(value))value.forEach(visit);
+  else if(value&&typeof value==='object')Object.values(value).forEach(visit);
+ }
+ catalogs.forEach(visit);
+ assert.ok(processed>2000);assert.equal(JSON.stringify(catalogs),before);
+ assert.equal(displayText(ROLES.find(role=>role.id==='executive').name),'高階主管');
+ assert.equal(SOURCES.officialHome.url,'https://www.avividai.com/');
+});
+
+test('searchable unlocked stories and certificate text use the same public names as the story screen',()=>{
+ const ending=ENDINGS.find(row=>/Rick/.test(row.body));assert.ok(ending);
+ const displayed=displayText([ending.title,ending.body,ending.subtitle].join(' '));
+ assert.ok(displayed.includes('老闆乾兒子'));assert.ok(!displayed.includes('Rick'));
+ assert.equal(displayText('老闆乾兒子'),displayText('Rick'));
+ const certificate=displayText('Wing簽收：資深空降主管。');
+ assert.equal(certificate,'翅膀簽收：資深高階主管。');
+});
+
+function mechanics(event){
+ const fields=(value,keys)=>Object.fromEntries(Object.entries(value).map(([key,item])=>[key,keys.includes(key)&&typeof item==='string'?'[prose]':item]));
+ const next=fields(event,['title','body','wing']);
+ if(Array.isArray(event.choices))next.choices=event.choices.map(choice=>{
+  const item=fields(choice,['text','detail','result']);
+  if(choice.check){
+   item.check={...choice.check};
+   for(const key of ['success','failure'])if(choice.check[key])item.check[key]=fields(choice.check[key],['result']);
+  }
+  if(choice.draw){
+   item.draw=fields(choice.draw,['label']);
+   if(Array.isArray(choice.draw.outcomes))item.draw.outcomes=choice.draw.outcomes.map(outcome=>fields(outcome,['label','result']));
+  }
+  return item;
+ });
+ return next;
+}
+
+test('event copy changes only authored prose, with nested outcomes and undefined fields preserved',()=>{
+ const availability=()=>true;
+ const event={
+  id:'Wing-event',speaker:'wing',sourceIds:['Rick','https://example.test/Wing'],
+  title:'Wing跟空降主管開會',body:'Rick找林澤教授。https://example.test/Wing',wing:'Hope來了',
+  flags:['Spencer'],effect:'Sonny',era:'Wing-era',metadata:{Wing:'Rick'},
+  choices:[{
+   text:'Erich請你坐下',detail:'JenJen放下表格',result:'Sonny關帳號',available:availability,
+   effect:'Hope',flags:['Rick'],delta:{boss:-5},rageTarget:'wing',
+   check:{ability:'skill',base:.4,success:{result:'Wing答應',effect:'Rick',flags:['Hope']},failure:{result:'Hope拒絕',delta:{boss:-5}}},
+   draw:{label:'Spencer抽籤',outcomes:[{weight:.2,label:'Rick中獎',result:'Kind答應',flags:['Wing'],effect:'Hope'},{weight:.8,result:undefined,flags:['Spencer']}]},
+  },{text:'Jack記下來',detail:undefined,result:undefined}],
+ };
+ const original=JSON.stringify(event),result=applyPersonaCopy(event);
+ assert.equal(result.title,'翅膀跟高階主管開會');assert.equal(result.wing,'希望來了');
+ assert.equal(result.body,'老闆乾兒子找顧問教授。https://example.test/Wing');
+ assert.equal(result.choices[0].text,'法師請你坐下');assert.equal(result.choices[0].detail,'Moon Dog放下表格');
+ assert.equal(result.choices[0].result,'阿福關帳號');
+ assert.equal(result.choices[0].check.success.result,'翅膀答應');assert.equal(result.choices[0].check.failure.result,'希望拒絕');
+ assert.equal(result.choices[0].draw.label,'屎潘蛇抽籤');assert.equal(result.choices[0].draw.outcomes[0].label,'老闆乾兒子中獎');
+ assert.equal(result.choices[0].draw.outcomes[0].result,'阿良答應');
+ assert.equal(result.choices[1].text,'傑克記下來');
+ assert.deepEqual(mechanics(result),mechanics(event));assert.equal(JSON.stringify(event),original);
+ assert.equal(result.choices[0].available,availability);
+ assert.deepEqual(Object.keys(result),Object.keys(event));
+ assert.deepEqual(Object.keys(result.choices[1]),Object.keys(event.choices[1]));
+ assert.ok(Object.hasOwn(result.choices[1],'detail'));assert.equal(result.choices[1].detail,undefined);
+ assert.ok(Object.hasOwn(result.choices[0].draw.outcomes[1],'result'));
+ assert.ok(!Object.hasOwn(result.choices[0].draw.outcomes[1],'label'));
+ assert.deepEqual(applyPersonaCopy(result),result);
+ assert.equal(applyPersonaCopy(null),null);
+});

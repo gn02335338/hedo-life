@@ -5,6 +5,7 @@ import { VIDEO_EVENTS } from './events-video.js';
 import { CAREER_DAILY_EVENTS } from './career.js';
 import { DEPARTURE_EVENTS } from './events-departures.js';
 import { ADVISOR_EVENTS } from './events-advisor.js';
+import { JACK_EVENTS } from './events-jack.js';
 const choice = (text, detail, result, delta, flags = []) => ({ text, detail, result, delta, flags });
 
 export const EVENTS = [
@@ -1258,3 +1259,6 @@ EVENTS.push(...DEPARTURE_EVENTS);
 
 // Original advisor branches are excluded from all published e14 and older pools.
 EVENTS.push(...ADVISOR_EVENTS);
+
+// New chronicler scenes never enter published e15 or earlier pools.
+EVENTS.push(...JACK_EVENTS);

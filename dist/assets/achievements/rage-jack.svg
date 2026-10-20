@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-label="筆記本與驚訝的星光">
+<rect width="240" height="200" rx="28" fill="#fff1f7"/><circle cx="120" cy="101" r="73" fill="#f8dce9"/>
+<g stroke="#273144" stroke-width="5" stroke-linejoin="round"><path d="M69 47h91l15 115H79z" fill="#55b4ae"/><path d="M77 55h73l13 97H88z" fill="#fffdf8"/><path d="M85 72h57M88 90h40M90 108h49M93 126h35" fill="none" stroke="#c7ccc9" stroke-width="4"/>
+<path d="m143 159 10-25 39-46 11 11-39 46z" fill="#ffbd60"/><path d="m143 159 21-14-11-11z" fill="#273144"/>
+<path d="m176 23 9 17 19-4-7 18 15 13-20 3-4 20-13-15-18 7 3-20-18-9 19-7z" fill="#ef6c9e"/>
+<path d="M57 132 43 145M55 153l-3 15M177 171l16 5" fill="none" stroke="#d94c8b" stroke-linecap="round"/></g></svg>

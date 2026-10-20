@@ -70,8 +70,8 @@ function release(run){
   ]}
  }]);
 }
-export function getRageV14(run){
- const context=run.rageContext,name=RAGE_NAMES[context?.target];
+export function getRageV14(run,names=RAGE_NAMES){
+ const context=run.rageContext,name=names[context?.target];
  if(!name)throw new Error('Invalid rage target');
  switch(run.eventId){
  case 'rage-release':return release(run);

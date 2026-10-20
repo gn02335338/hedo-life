@@ -33,6 +33,7 @@ export const ACHIEVEMENTS=Object.freeze([
  badge('banquet-shared','同桌的人才是主菜。','尾牙中獎後，照說好的請同桌喝一輪飲料。獎金有人分，甜度自己選。','banquet'),
  badge('kind-ghost','他說好，然後人就沒了。','約阿良去暗黑續攤，收到他的答應，也等到他的消失。','banquet'),
  badge('first-ending','第一張離場證明','完成一段人生。這個結尾已經收好，下一局可以換一種活法。','career'),
+ badge('rage-jack','史官，這筆也要記？','對傑克暴走一次。他拿起筆記本，發現自己也變成了今天的素材。','rage'),
  badge('nasdaq','願景真的敲得響。','走到納斯達克敲鐘的結局。這一次，鐘聲不是會議通知。','career'),
  badge('rage-imagined','腦內有聲，現場靜音。','衝動在腦中演完，手還放在原處。對方不知道自己剛才經歷了什麼。','rage'),
  badge('rage-real','這次沒有醒過來。','一次暴走真的越過了想像，走進必須自己處理後果的世界線。','rage'),
@@ -63,7 +64,7 @@ export function deriveAchievements(run){
  add('education',flags.education_outcome>0);
  add('self-care',history.filter(item=>item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<3).length>=3);
  add('kind-decline',flags.kind_declined>0);
- for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind'])add(`rage-${person}`,flags[`rage_target_${person}`]>0);
+ for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack'])add(`rage-${person}`,flags[`rage_target_${person}`]>0);
  add('rage-catharsis',flags.rage_catharsis>0);
  add('rage-absent',flags.rage_absent>0);
  add('rage-documented',flags.rage_documented>0);

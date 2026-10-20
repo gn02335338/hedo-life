@@ -10,6 +10,7 @@ import * as legacy from '../dist/legacy.js';
 import * as engine from '../dist/engine.js';
 import * as achievements from '../dist/achievements.js';
 import * as career from '../dist/career.js';
+import * as persona from '../dist/persona.js';
 import {polishDreamText} from '../dist/copy-v15.js';
 
 const appSource = (await readFile(new URL('../dist/app.js', import.meta.url), 'utf8'))
@@ -29,7 +30,7 @@ function appHarness() {
     return nodes.get(selector);
   };
   const context = vm.createContext({
-    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, polishDreamText,
+    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...persona, polishDreamText,
     requestRage(run) { calls.rage++; return engine.requestRage(run); },
     applyChoice(run, index) { calls.choice++; return engine.applyChoice(run, index); },
     advance(run) { calls.advance++; return engine.advance(run); },
@@ -107,7 +108,7 @@ test('rage on an already revealed result follows the result and continue control
   assert.ok(!rage.ancestors.some(entry => hasClass(entry, 'choices')));
   assert.ok(html.indexOf('class="consequence"') < rage.index);
   assert.ok(html.indexOf('data-action="next"') < rage.index);
-  assert.ok(html.includes(pending.history.at(-1).result.replaceAll('禾多', '移動')));
+  assert.ok(html.includes(persona.displayText(pending.history.at(-1).result)));
   assert.equal(renderedButtons(html).filter(button => /\bdata-choice=/.test(button.attributes)).length, 0);
 });
 
@@ -147,13 +148,32 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e15 and the guide describes the current speaker', () => {
+test('new browser lives use e16 and the guide describes the current speaker', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e15-[a-f0-9]+$/);
+  assert.match(seed, /^e16-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
   assert.ok(guide.includes('眼前跟你說話的人'));
   assert.ok(!guide.includes('挑選對象'));
+});
+
+test('e16 lives use the current rage label without an upgrade notice, while e13 keeps its original notice', () => {
+  const app = appHarness(), initial = engine.createRun('ai', 'e16-ui-current-cohort');
+  assert.ok(!app.render(initial).includes('class="upgrade-inline"'));
+  assert.ok(!app.html().includes('class="rules-notice"'));
+  let real;
+  for (let index = 0; index < 100; index++) {
+    const result = engine.requestRage(engine.createRun('ai', `e16-ui-rage-tag-${index}`));
+    if (result.rageContext?.mode === 'real') { real = result; break; }
+  }
+  assert.ok(real, 'a natural actual-rage result is available');
+  const current = app.render(real);
+  assert.match(current, /class="tag">當場暴走<\/span>/);
+  assert.ok(!current.includes('class="upgrade-inline"'));
+  assert.ok(!current.includes('卡通暴走'));
+  const legacy = app.render(engine.requestRage(engine.createRun('ai', 'e13-ui-cohort-notice')));
+  assert.ok(legacy.includes('class="upgrade-inline"'));
+  assert.match(legacy, /class="tag">卡通暴走<\/span>/);
 });
