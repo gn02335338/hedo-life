@@ -10,6 +10,7 @@ import * as legacy from '../dist/legacy.js';
 import * as engine from '../dist/engine.js';
 import * as achievements from '../dist/achievements.js';
 import * as career from '../dist/career.js';
+import {polishDreamText} from '../dist/copy-v15.js';
 
 const appSource = (await readFile(new URL('../dist/app.js', import.meta.url), 'utf8'))
   .replace(/^import .*;\n/gm, '');
@@ -28,7 +29,7 @@ function appHarness() {
     return nodes.get(selector);
   };
   const context = vm.createContext({
-    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career,
+    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, polishDreamText,
     requestRage(run) { calls.rage++; return engine.requestRage(run); },
     applyChoice(run, index) { calls.choice++; return engine.applyChoice(run, index); },
     advance(run) { calls.advance++; return engine.advance(run); },
@@ -122,7 +123,7 @@ test('one rage click reveals exactly one outcome and does not auto-advance it', 
   assert.equal(resolved.history.length, run.history.length + 1);
   assert.equal(resolved.actions.filter(action => action.type === 'rage').length, 1);
   assert.equal(resolved.actions.filter(action => action.type === 'choice').length, 0);
-  assert.match(app.html(), /class="consequence"/);
+  assert.match(app.html(), /class="consequence(?:\s|")/);
   assert.ok(!app.html().includes('data-choice="0"'));
   const afterOneClick = JSON.stringify(resolved);
   await app.rage();
@@ -146,10 +147,10 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e14 and the guide describes the current speaker', () => {
+test('new browser lives use e15 and the guide describes the current speaker', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e14-[a-f0-9]+$/);
+  assert.match(seed, /^e15-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;

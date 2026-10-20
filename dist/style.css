@@ -42,3 +42,24 @@
 .rage-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.rage-choices .choice{padding:18px 16px;gap:11px;min-height:89px;position:relative}.rage-choices .choice:not(.rage-target-choice){grid-column:1/-1;min-height:67px}.rage-choice-avatar{height:47px;width:47px;flex-basis:47px;border:1px solid #efc8d8}.rage-choices .rage-target-choice .choice-key{position:absolute;top:8px;right:11px;font-size:8px;color:#be7b95}.rage-choices .choice-text{font-size:12px;line-height:1.9;padding-right:7px}.rage-choices .choice-arrow{margin-left:auto;font-size:17px}.rage-choices .choice.rage-target-choice:hover{background:#fff3f8}
 @media(max-width:560px){.rage-choices{grid-template-columns:1fr;gap:10px}.rage-choices .choice{min-height:77px;padding:15px 13px;gap:13px}.rage-choices .choice-text{font-size:12px}.rage-choice-avatar{width:43px;height:43px;flex-basis:43px}.rage-choices .rage-target-choice .choice-key{font-size:8px;right:12px;top:7px}}
 .upgrade-inline{font-size:10px;line-height:1.9;color:#987c5c;padding:13px 16px;background:#fffbf2;border:1px solid #f3e9d7;border-radius:10px;margin-top:23px}
+/* A dream is only identified after its result has been revealed. */
+.consequence.imagined-consequence{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(135deg,#f8f5ff,#f0efff 62%,#f9f7ff);border:1px solid #d7cef2;box-shadow:0 13px 38px #7663aa0c}
+.imagined-consequence::before,.imagined-consequence::after{content:"";position:absolute;z-index:-1;pointer-events:none;border-radius:50%;background:#fff9;filter:blur(2px)}
+.imagined-consequence::before{width:210px;height:70px;right:-56px;top:25px;box-shadow:-71px 14px 0 5px #ffffff75,-28px -18px 0 -2px #ffffff9c;animation:dream-drift 9s ease-in-out infinite alternate}
+.imagined-consequence::after{width:155px;height:53px;left:-72px;bottom:95px;box-shadow:54px 10px 0 2px #ffffff75;animation:dream-drift 11s ease-in-out infinite alternate-reverse}
+.reality-indicator{display:flex;align-items:center;gap:11px;margin:0 0 22px;padding:12px 15px;border-radius:13px;line-height:1.55}
+.reality-indicator>div{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 11px;min-width:0}
+.reality-indicator b{font-size:13px;letter-spacing:.04em}.reality-indicator>div>span{font-size:11px}
+.reality-symbol{display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;border-radius:50%;font-size:22px;line-height:1;font-weight:700}
+.reality-imagined{color:#56416f;background:#ffffffb8;border:1px solid #d8cfeb}
+.reality-imagined .reality-symbol{background:#e6dcf6;color:#68528f}
+.dream-sleep{margin-left:auto;white-space:nowrap;font-size:13px;letter-spacing:.1em;color:#9681b5;transform:rotate(-9deg);user-select:none}
+.imagined-consequence .eyebrow,.imagined-consequence .ledger-label{color:#746086}.imagined-consequence .outcome-ledger,.imagined-consequence .result-achievements{border-color:#d9d0e8}
+.imagined-consequence .luck-result{background:#e7dff5;color:#65507c}.imagined-consequence .effect-details{color:#78638c}
+.dream-return-note{margin:22px 0 0;padding:16px 0 0;border-top:1px dashed #cabde0;font-size:11px;line-height:1.9;color:#796688}.dream-return-note b{display:block;color:#5c4772;font-size:12px;margin-bottom:3px}
+.imagined-consequence .result-footer>span{color:#796688}.imagined-consequence .result-footer .primary{background:#76608f}.imagined-consequence .result-footer .primary:hover{background:#604a79}
+.reality-real{color:#914b39;background:#fff8ee;border:1px solid #eed9bf}.reality-real .reality-symbol{color:#a15d42;background:#f4e1c9;font-size:18px}
+.journal-list .reality-indicator.compact{margin:14px 0;padding:9px 12px;display:inline-flex;max-width:100%;background:#f6f2fc}.journal-list .reality-real.compact{background:#fff8ee}.reality-indicator.compact .reality-symbol{width:24px;height:24px;flex-basis:24px;font-size:18px}.reality-indicator.compact b{font-size:11px}.reality-indicator.compact>div>span{font-size:10px}.reality-indicator.compact .dream-sleep{display:none}
+@keyframes dream-drift{from{transform:translateX(0)}to{transform:translateX(-13px)}}
+@media(max-width:560px){.reality-indicator{padding:11px 12px;gap:9px;margin-bottom:19px}.reality-indicator>div{display:block}.reality-indicator b{display:block;font-size:12px}.reality-indicator>div>span{font-size:10px}.dream-sleep{font-size:11px}.dream-return-note{font-size:11px}.imagined-consequence .result-footer{gap:12px}.imagined-consequence .result-footer>span{font-size:8px}.imagined-consequence .result-footer .primary{white-space:nowrap;padding:12px 16px}.journal-list .reality-indicator.compact>div{display:flex;gap:4px 9px}}
+@media(prefers-reduced-motion:reduce){.imagined-consequence::before,.imagined-consequence::after{animation:none}}

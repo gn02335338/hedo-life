@@ -34,9 +34,9 @@ function assertWild(event,original){
 }
 
 test('e12 has authored wild options for all 205 daily and four fantasy scenes without changing mechanics',()=>{
- assert.equal(EVENTS.length,205);assert.equal(FANTASY_EVENTS.length,4);
+ const legacyEvents=EVENTS.filter(event=>(event.minRules??0)<=12);assert.equal(legacyEvents.length,205);assert.equal(FANTASY_EVENTS.length,4);
  const run=createRun('system','e12-wild-coverage');
- for(const source of [...EVENTS,...FANTASY_EVENTS]){
+ for(const source of [...legacyEvents,...FANTASY_EVENTS]){
   const original=copy(source),next=applyWildOptions(source,{...run,eventId:source.id});
   assertWild(next,original);assert.deepEqual(source,original,`${source.id}: no shared-catalog mutation`);
  }
