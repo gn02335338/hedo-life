@@ -1,5 +1,6 @@
 // Public names are a presentation concern. Replay IDs, saved history and proof
 // inputs keep their original values so older lives remain verifiable.
+export { displayChronicleEvent, displayChronicleHistory } from './chronicle-scene-copy.js';
 export const PERSONAS = Object.freeze(Object.fromEntries([
  ['wing','翅膀','執行長'],
  ['spencer','屎潘蛇','董事長'],
