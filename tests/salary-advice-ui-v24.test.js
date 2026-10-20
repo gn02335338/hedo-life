@@ -14,6 +14,7 @@ import * as currentCareer from '../dist/career-v17.js';
 import * as persona from '../dist/persona.js';
 import * as characterStats from '../dist/character-stats.js';
 import {polishDreamText} from '../dist/copy-v15.js';
+import {renderEndingReport} from '../dist/ending-report-view.js';
 
 const appSource=(await readFile(new URL('../dist/app.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
 const {routes}=JSON.parse(await readFile(new URL('./fixtures/lowpay-routes-v24.json',import.meta.url),'utf8'));
@@ -38,7 +39,7 @@ async function harness(mobile,initialRun=null){
    showModal(){this.open=true;},close(){this.open=false;},
   });return nodes.get(selector);
  };
- const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,polishDreamText,
+ const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,polishDreamText,renderEndingReport,
   createFeedbackUI:()=>({open(){}}),createCharacterBook:()=>({open(){},onSnapshot(){},onRunChanged(){}}),
   cloud:{state:{status:'offline',achievements:[],characters:[]},subscribe(){},init:async()=>null,
    achievementProgress:async()=>null,characterProgress:async()=>{calls.proof++;return null;},complete:async()=>null},

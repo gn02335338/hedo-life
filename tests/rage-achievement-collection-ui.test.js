@@ -14,6 +14,7 @@ import * as currentCareer from '../dist/career-v17.js';
 import * as persona from '../dist/persona.js';
 import * as characterStats from '../dist/character-stats.js';
 import {polishDreamText} from '../dist/copy-v15.js';
+import {renderEndingReport} from '../dist/ending-report-view.js';
 
 const appSource=(await readFile(new URL('../dist/app.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
 const oldIds=['rage-wing','rage-spencer','rage-rick','rage-hope','rage-erich','rage-jenjen','rage-sonny','rage-kind','rage-jack','rage-meimei','rage-first-day','rage-documented','rage-catharsis','rage-absent'];
@@ -30,7 +31,7 @@ function harness(initial={}){
    showModal(){this.open=true;},close(){this.open=false;},
   });return nodes.get(selector);
  };
- const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,polishDreamText,
+ const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,polishDreamText,renderEndingReport,
   createFeedbackUI:()=>({open(){}}),createCharacterBook:()=>({open(){},onSnapshot(){},onRunChanged(){}}),
   cloud:{state:{status:'local',achievements:[]},subscribe(callback){subscriber=callback;},init:async()=>{calls.cloud++;return null;},achievementProgress:async()=>{calls.proof++;return null;},characterProgress:async()=>null,complete:async()=>null},
   localStorage:{getItem:key=>stored.get(key)||null,setItem(key,value){calls.save++;stored.set(key,value);}},
