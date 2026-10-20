@@ -69,8 +69,12 @@ for (const phase of ['event', 'result']) for (const mode of ['imagined', 'real']
   assert.equal(response.totalRuns, 0);
   assert.deepEqual(badgeIds(response), deriveAchievements(canonical).sort());
   assert.ok(badgeIds(response).includes(`rage-${mode}`));
-  assert.ok(badgeIds(response).includes('rage-wing'));
-  assert.ok(badgeIds(response).includes('rage-first-day'));
+  assert.ok(badgeIds(response).includes(mode === 'real' ? 'real-hit-wing' : 'dream-wing'));
+  assert.ok(!badgeIds(response).includes(mode === 'real' ? 'dream-wing' : 'real-hit-wing'));
+  assert.ok(badgeIds(response).includes(mode === 'real' ? 'real-first-day' : 'dream-first-day'));
+  assert.ok(!badgeIds(response).includes(mode === 'real' ? 'dream-first-day' : 'real-first-day'));
+  assert.ok(!badgeIds(response).includes('rage-wing'));
+  assert.ok(!badgeIds(response).includes('rage-first-day'));
   assert.ok(!badgeIds(response).includes('nasdaq'));
   assert.ok(!badgeIds(response).includes('rage-coup'));
   const retried = expect(await call('/api/achievements', token, payload), 200);
@@ -107,7 +111,7 @@ for (const phase of ['event', 'result']) for (const mode of ['imagined', 'real']
 const report = JSON.parse(readFileSync(new URL('../research/reachability-v3.json', import.meta.url), 'utf8'));
 assert.equal(report.complete, true);
 for (const family of ['rage_legal', 'rage_defeated', 'rage_coup', 'rage_truce', 'rage_meme', 'rage_walkaway']) {
-  const route = report.routes.find(item => /^e(?:14|15|16|17|18|19|20)-/.test(item.seed) && item.ending.startsWith(`${family}-`));
+  const route = report.routes.find(item => /^e(?:14|15|16|17|18|19|20|21)-/.test(item.seed) && item.ending.startsWith(`${family}-`));
   assert.ok(route, `Missing natural witness for ${family}`);
   const run = replayRun(route.roleId, route.seed, route.actions);
   assert.equal(run.completed, true);
