@@ -38,6 +38,7 @@ export const SOURCES = {
   schoolLore: privateChapter('履歷與讀書會'),
   interns: privateChapter('實習履歷盲選'),
   characterFiction: { title: '角色設定與平行職場', url: null, date: null, dateLabel: '原創遊戲設定', summary: '依創作需求設計的角色互動與職場諷刺，並非真實逐字引言、公司制度或法律事實。' },
+  verifiedQuiz: { title: '同事大問答：職場記憶改編', url: null, date: null, dateLabel: '私人題庫改編', summary: '取材自創作者整理的私人題庫；角色使用別稱，對話、選擇與結果為原創遊戲情境，不附原始題庫、答案表或私人資料。' },
   rickLore: privateChapter('乾兒子、技術管理與交接宇宙'),
   resourceLore: privateChapter('硬碟、工具預算與工程雜務'),
   workRules: privateChapter('加班、休假與制度版本'),

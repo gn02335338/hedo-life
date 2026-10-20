@@ -51,7 +51,7 @@ function dynamicCopy(run,{jobTitle,educationLabel}){
   }};
  }
  case 'salary-cut':return {
-  ...(/^e(?:11|12|13|16|17|18|19|20|21|22|23|24|25)-/.test(run.seed)&&run.salaryCut.reason==='education'?{
+  ...(/^e(?:11|12|13|16|17|18|19|20|21|22|23|24|25|26)-/.test(run.seed)&&run.salaryCut.reason==='education'?{
    title:'還沒過試用期，薪水先被重考。',
    body:`Hope約你談薪資，Wing沒有出現。她轉述的原因你已經聽過：${educationReason(run)}原本談好的遊戲月薪是${run.salaryCut.from}K，現在要求改成${run.salaryCut.to}K。前幾天還說公司看重人才，今天先問你能不能便宜一點。`
   }:{
@@ -60,7 +60,7 @@ function dynamicCopy(run,{jobTitle,educationLabel}){
   choices:{1:{result:'你把新薪資單推回去。既然價格談不攏，這份工作就到這裡。'},2:{check:{failure:{result:'Hope轉達：「Wing覺得這就是你的價值。」你交的紀錄還攤在桌上，沒有人接著看。'}}}}
  };
  case 'salary-final':return {
-  ...(/^e(?:11|12|13|16|17|18|19|20|21|22|23|24|25)-/.test(run.seed)&&run.salaryCut.reason==='education'?{
+  ...(/^e(?:11|12|13|16|17|18|19|20|21|22|23|24|25|26)-/.test(run.seed)&&run.salaryCut.reason==='education'?{
    body:`Hope回覆，Wing看過紀錄，仍要把遊戲月薪從${run.salaryCut.from}K改成${run.salaryCut.to}K。你問交付哪裡不符合要求，得到的仍是那句學歷與身價。錄取通知還在信箱裡，現在只等你決定留不留。`
   }:{
   body:`Hope轉達，方案沒有改：遊戲月薪從${run.salaryCut.from}K降成${run.salaryCut.to}K。Wing沒出席，結論倒是早就定好了。現在只等你說留不留。`,
@@ -68,7 +68,7 @@ function dynamicCopy(run,{jobTitle,educationLabel}){
   choices:{1:{result:'對方問你是不是太衝動。你說考慮過了，不接受。談完，收東西。'}}
  };
  case 'crisis-boss':return {
-  ...(/^e(?:11|12|13|16|17|18|19|20|21|22|23|24|25)-/.test(run.seed)&&run.flags.education_case_active?{
+  ...(/^e(?:11|12|13|16|17|18|19|20|21|22|23|24|25|26)-/.test(run.seed)&&run.flags.education_case_active?{
    title:'學歷問完，人事就到了。',
    body:`Wing剛才還在問你哪裡畢業，現在已經不在會議室。Erich、JenJen和Sonny三個人都到了。桌上是自願離職書，轉述的卻是「Wing覺得背景不適合」。你拿的是公司發的錄取通知，現在得替公司的錄取決定簽一張自己的離職書。`
   }:{}),choices:{

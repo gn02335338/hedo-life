@@ -138,7 +138,7 @@ test('natural HR, salary, banquet and character conversations target their curre
  for(const route of routes){
   replayRoute(route,run=>{
    if(!canRequestRage(run))return;
-   const event=getEvent(run),person=/^e(?:23|24|25)-/.test(run.seed)?rageTargetForV23(event):/^e22-/.test(run.seed)?rageTargetForV22(event):/^e(?:20|21)-/.test(run.seed)?rageTargetForV20(event):/^e(?:16|17|18|19)-/.test(run.seed)?rageTargetForV16(event):rageTargetFor(event),timing=rageTiming(event.id),key=`${person}:${timing}:${run.pending}`;
+   const event=getEvent(run),person=/^e(?:23|24|25|26)-/.test(run.seed)?rageTargetForV23(event):/^e22-/.test(run.seed)?rageTargetForV22(event):/^e(?:20|21)-/.test(run.seed)?rageTargetForV20(event):/^e(?:16|17|18|19)-/.test(run.seed)?rageTargetForV16(event):rageTargetFor(event),timing=rageTiming(event.id),key=`${person}:${timing}:${run.pending}`;
    assert.ok(person,`natural current speaker for ${run.seed}/${event.id}`);
    if(phases.has(key))return;phases.add(key);people.add(person);timings.add(timing);
    const result=requestRage(run);assert.equal(result.rageContext.target,person,key);

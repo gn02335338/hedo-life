@@ -9,6 +9,8 @@ import { JACK_EVENTS } from './events-jack.js';
 import { MEIMEI_EVENTS } from './events-meimei-v20.js';
 import { CHRONICLE_EVENTS_V22 } from './events-chronicle-v22.js';
 import { COLLEAGUE_EVENTS_V23 } from './events-colleagues-v23.js';
+import { QUIZ_EVENTS_V26_A } from './events-quiz26-a.js';
+import { QUIZ_EVENTS_V26_B } from './events-quiz26-b.js';
 import { COMMERCIAL_EVENTS_V21 } from './events-commercial-v21.js';
 import { DESIGN_EVENTS_V21 } from './events-design-v21.js';
 import { PROFESSION_EVENTS_V21 } from './events-professions-v21.js';
@@ -1280,3 +1282,6 @@ EVENTS.push(...COMMERCIAL_EVENTS_V21, ...DESIGN_EVENTS_V21, ...PROFESSION_EVENTS
 EVENTS.push(...CHRONICLE_EVENTS_V22);
 // New colleagues enter e23 lives; all published cohorts keep their draw pools.
 EVENTS.push(...COLLEAGUE_EVENTS_V23);
+
+// Verified quiz recollections become original scenes only in e26 and later lives.
+EVENTS.push(...QUIZ_EVENTS_V26_A, ...QUIZ_EVENTS_V26_B);

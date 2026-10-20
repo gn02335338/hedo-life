@@ -10,11 +10,11 @@ const {routes:mealRoutes}=JSON.parse(readFileSync(new URL('./fixtures/mood-meals
 const copy=value=>structuredClone(value);
 const stat=(report,key)=>report.stats.find(item=>item.key===key);
 
-test('all 341 natural e25 endings report the actual initial and committed states, including day-one exits and clamped limits',()=>{
+test('all 341 natural e26 endings report the actual initial and committed states, including day-one exits and clamped limits',()=>{
  assert.equal(routes.length,341);
  let boundaryValues=0,dayOneEndings=0;
  for(const route of routes){
-  assert.match(route.seed,/^e25-/);
+  assert.match(route.seed,/^e26-/);
   const expected=new Map();
   const run=replayRoute(route,state=>expected.set(state.history.length,{...state.stats}));
   const before=JSON.stringify(run),report=buildEndingReport(run),initial=createRun(route.roleId,route.seed);

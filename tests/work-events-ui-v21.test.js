@@ -87,9 +87,9 @@ function raiseReady(){
 }
 const button=(html,action)=>html.match(new RegExp(`<button\\b(?=[^>]*\\bdata-action="${action}")[^>]*>`))?.[0]||'';
 
-test('new UI candidates use e25 and retain the full eight-rank ladder and original portraits',async()=>{
+test('new UI candidates use e26 and retain the full eight-rank ladder and original portraits',async()=>{
  const app=appHarness();await tick();await app.action('roll');
- const candidate=vm.runInContext('candidate',app.context);assert.match(candidate.seed,/^e25-/);
+ const candidate=vm.runInContext('candidate',app.context);assert.match(candidate.seed,/^e26-/);
  await app.action('start');const html=app.html();
  assert.equal(app.state().seed,candidate.seed);assert.equal(career.careerLevels(app.state()).length,8);
  assert.match(html,/aria-label="八階職涯"/);assert.equal([...html.matchAll(/<small>LV\.\d<\/small>/g)].length,8);
@@ -213,5 +213,29 @@ test('e23 character dialogue and both rage modes render on desktop and mobile wi
   assert.equal(app.state().rageContext.mode,mode);assert.equal(app.state().history.at(-1).speaker,person);
   assert.match(app.html(),mode==='imagined'?/腦內夢境|現實沒有動手/:/現實失控|事情真的發生了/);
   assert.match(app.html(),/事件後數值變化/);
+ }
+});
+
+test('every new quiz scene renders its portrait and absurd response on desktop/mobile, then reveals only the committed result',async()=>{
+ const {routes}=JSON.parse(await readFile(new URL('./fixtures/quiz-routes-v26.json',import.meta.url),'utf8'));
+ const scenes=routes.filter(route=>route.index===0&&!route.id.startsWith('role-'));
+ assert.equal(scenes.length,EVENTS.filter(event=>event.minRules===26).length);assert.ok(scenes.length>0);
+ for(const mobile of [false,true]){
+  const app=appHarness({mobile});await tick();
+  for(const fixture of scenes){
+   const run=engine.replayRun(fixture.roleId,fixture.seed,fixture.actions.slice(0,-1));run.runId=webcrypto.randomUUID();
+   const event=engine.getEvent(run),before=JSON.stringify(run),saved=app.calls.save,proofs=app.calls.proof.length,html=app.render(run,true);
+   const buttons=html.slice(html.indexOf('<div class="choices '));
+   assert.equal([...buttons.matchAll(/\bdata-choice="/g)].length,3,fixture.id);
+   for(const choice of event.choices){assert.ok(buttons.includes(display(choice.text)),fixture.id);assert.ok(!html.includes(display(choice.result)),fixture.id);}
+   assert.doesNotMatch(html,/outcome-ledger|delta-chip|luck-result|這局保留原本的玩法/);
+   if(persona.PERSONAS[event.speaker])assert.match(html,new RegExp(`src="\\./assets/${event.speaker}\\.png"`));
+   assert.equal(JSON.stringify(app.state()),before);assert.equal(app.calls.save,saved);assert.equal(app.calls.proof.length,proofs);
+   const index=event.choices.findIndex(choice=>choice.wild);assert.ok(index>=0);await app.choice(index);await tick();
+   const after=app.state(),last=after.history.at(-1);
+   assert.equal(after.pending,true);assert.equal(last.eventId,event.id);assert.equal(last.choiceIndex,index);
+   assert.ok(app.html().includes(display(last.result)),fixture.id);assert.match(app.html(),/事件後數值變化/);
+   assert.equal(app.calls.proof.length,proofs+1,fixture.id);
+  }
  }
 });

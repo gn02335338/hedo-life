@@ -203,7 +203,7 @@ const dinnerDreams=Object.freeze({
 // e25 dinner narration moves from the office into the actual restaurant.
 export function withMealRageCopyV25(event,run){
  const context=run?.rageContext;
- if(!run?.seed?.startsWith('e25-')||event?.id!=='rage-release'||!context?.eventId?.startsWith('meal-with-'))return event;
+ if(!/^e(?:25|26)-/.test(run?.seed||'')||event?.id!=='rage-release'||!context?.eventId?.startsWith('meal-with-'))return event;
  const guest=context.eventId.slice('meal-with-'.length),meal=dinners[guest];
  if(!meal||context.target!==guest)return event;
  const name=PERSONAS[guest].name,paid=context.phase==='result'&&context.pendingEffect==='mealFinish';
