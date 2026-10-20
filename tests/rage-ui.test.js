@@ -33,7 +33,7 @@ function appHarness() {
   };
   const context = vm.createContext({
     ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...currentCareer, ...persona, polishDreamText, characterHistoryChanges, characterAffinity,
-    requestRage(run) { calls.rage++; return engine.requestRage(run); },
+    requestRage(run, target) { calls.rage++; return engine.requestRage(run, target); },
     requestRaise(run) { calls.raise++; return engine.requestRaise(run); },
     applyChoice(run, index) { calls.choice++; return engine.applyChoice(run, index); },
     advance(run) { calls.advance++; return engine.advance(run); },
@@ -153,7 +153,7 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e20 and the guide describes the current speaker', () => {
+test('new browser lives use e20 and the guide explains solo and group targets', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
   assert.match(seed, /^e20-[a-f0-9]+$/);
@@ -161,7 +161,7 @@ test('new browser lives use e20 and the guide describes the current speaker', ()
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
   assert.ok(guide.includes('眼前跟你說話的人'));
-  assert.ok(!guide.includes('挑選對象'));
+  assert.ok(guide.includes('多人同場會先讓你選一位，取消不算出手'));
 });
 
 test('e17 lives use the current rage label without an upgrade notice, while e13 keeps its original notice', () => {

@@ -1,0 +1,1883 @@
+{
+  "method": "Natural createRun prefixes and explicit in-scene rage actions only; no state injection. Every event/result, target and imagined/real branch has a valid replay and ending continuation.",
+  "routes": [
+    {
+      "id": "event-erich-imagined",
+      "roleId": "system",
+      "seed": "e20-system-0-7",
+      "phase": "event",
+      "target": "erich",
+      "mode": "imagined",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "crisis-boss",
+        "turn": 2,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "event-erich-real",
+      "roleId": "project",
+      "seed": "e20-project-0-0",
+      "phase": "event",
+      "target": "erich",
+      "mode": "real",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "turn": 3,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "event-jenjen-imagined",
+      "roleId": "system",
+      "seed": "e20-system-0-7",
+      "phase": "event",
+      "target": "jenjen",
+      "mode": "imagined",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "crisis-boss",
+        "turn": 2,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "event-jenjen-real",
+      "roleId": "project",
+      "seed": "e20-project-0-0",
+      "phase": "event",
+      "target": "jenjen",
+      "mode": "real",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "turn": 3,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "event-sonny-imagined",
+      "roleId": "system",
+      "seed": "e20-system-0-7",
+      "phase": "event",
+      "target": "sonny",
+      "mode": "imagined",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "sonny"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "sonny"
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "crisis-boss",
+        "turn": 2,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "event-sonny-real",
+      "roleId": "project",
+      "seed": "e20-project-0-0",
+      "phase": "event",
+      "target": "sonny",
+      "mode": "real",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "sonny"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "sonny"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "turn": 3,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "result-erich-imagined",
+      "roleId": "system",
+      "seed": "e20-system-1-0",
+      "phase": "result",
+      "target": "erich",
+      "mode": "imagined",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "paperwork",
+        "turn": 7,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "result-erich-real",
+      "roleId": "project",
+      "seed": "e20-project-1-0",
+      "phase": "result",
+      "target": "erich",
+      "mode": "real",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "turn": 6,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "result-jenjen-imagined",
+      "roleId": "system",
+      "seed": "e20-system-1-0",
+      "phase": "result",
+      "target": "jenjen",
+      "mode": "imagined",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "paperwork",
+        "turn": 7,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "result-jenjen-real",
+      "roleId": "project",
+      "seed": "e20-project-1-0",
+      "phase": "result",
+      "target": "jenjen",
+      "mode": "real",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "turn": 6,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "result-sonny-imagined",
+      "roleId": "system",
+      "seed": "e20-system-1-0",
+      "phase": "result",
+      "target": "sonny",
+      "mode": "imagined",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "sonny"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "statistics-eighty-percent",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "budget-free-tools",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-breakfast-news",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-kpi-patch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "sonny"
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "paperwork",
+        "turn": 7,
+        "endingId": null,
+        "completed": false
+      }
+    },
+    {
+      "id": "result-sonny-real",
+      "roleId": "project",
+      "seed": "e20-project-1-0",
+      "phase": "result",
+      "target": "sonny",
+      "mode": "real",
+      "baseActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "sonny"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-prize-last-day",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "spencer-menu-freedom",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-auto-disappear",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "crisis-boss",
+          "target": "sonny"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "turn": 6,
+        "endingId": null,
+        "completed": false
+      }
+    }
+  ]
+}

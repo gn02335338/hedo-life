@@ -21,6 +21,7 @@ import { getMoodCollapseV18, getMoodWarningV18 } from './meltdown-v18.js';
 import { RAISE_EVENTS, raiseAvailability, getRaiseEvent, workCount, raisePayCeiling } from './salary-raise-v19.js';
 import { PERSONNEL_SCENES, WATCH_DAILY_IDS, personnelSafe, personnelDecision, freshPersonnelProvocation, watchNextEvent, getPersonnelEvent } from './personnel-v20.js';
 import { getRageV20, rageTargetForV20 } from './rage-v20.js';
+import { rageParticipantsFor } from './rage-participants.js';
 export {raiseAvailability} from './salary-raise-v19.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
@@ -483,12 +484,19 @@ export function canRequestRage(run){
  if(contentRules(run)>=14)return run.flags.rage_last_turn!==run.turn+1&&!!conversationalTarget(run,getEvent(run));
  return true;
 }
-export function requestRage(run){
+export function getRageTargets(run){
+ if(!canRequestRage(run)||contentRules(run)<14)return [];
+ const event=getEvent(run);return rageParticipantsFor(event,conversationalTarget(run,event));
+}
+export function requestRage(run,target){
  if(!canRequestRage(run))return run;
+ // Omitting a target preserves the exact published action and RNG path. An
+ // explicit target is available only when more than one person is present.
+ if(target!==undefined){const targets=getRageTargets(run);if(targets.length<2||!targets.includes(target))return run;}
  if(contentRules(run)>=14){
   const next=structuredClone(run),event=getEvent(run),phase=run.pending?'result':'event';
-  next.actions.push({type:'rage',phase,eventId:event.id});
-  next.rageContext={eventId:event.id,speaker:event.speaker,target:conversationalTarget(run,event),phase,historyLength:run.history.length,pendingEffect:run.pendingEffect??null,pendingFamily:run.pendingFamily,mode:'unresolved'};
+  const action={type:'rage',phase,eventId:event.id};if(target!==undefined)action.target=target;next.actions.push(action);
+  next.rageContext={eventId:event.id,speaker:event.speaker,target:target??conversationalTarget(run,event),phase,historyLength:run.history.length,pendingEffect:run.pendingEffect??null,pendingFamily:run.pendingFamily,mode:'unresolved'};
   next.eventId='rage-release';next.pending=false;next.pendingEffect=null;next.pendingFamily=null;
   const resolved=applyChoice(next,0);
   // The direct button itself commits this result. Its internal choice is not
@@ -513,8 +521,10 @@ export function replayRun(roleId,seed,actions){
   else if(action.type==='career'){const next=requestCareer(run);if(next===run)throw new Error('Unavailable career review');run=next;}
   else if(action.type==='raise'){if(Object.keys(action).some(key=>key!=='type'))throw new Error('Invalid raise action');const next=requestRaise(run);if(next===run)throw new Error('Unavailable raise');run=next;}
   else if(action.type==='rage'){
-   if(contentRules(run)>=14&&(action.phase!==(run.pending?'result':'event')||action.eventId!==run.eventId||Object.keys(action).some(key=>!['type','phase','eventId'].includes(key))))throw new Error('Rage conversation mismatch');
-   const next=requestRage(run);if(next===run)throw new Error('Unavailable rage');run=contentRules(run)>=14?advance(next):next;
+   const selected=Object.hasOwn(action,'target');
+   if(contentRules(run)>=14&&(action.phase!==(run.pending?'result':'event')||action.eventId!==run.eventId||Object.keys(action).some(key=>!['type','phase','eventId','target'].includes(key))||(selected&&typeof action.target!=='string')))throw new Error('Rage conversation mismatch');
+   if(contentRules(run)<14&&selected)throw new Error('Unavailable rage target');
+   const next=selected?requestRage(run,action.target):requestRage(run);if(next===run)throw new Error('Unavailable rage');run=contentRules(run)>=14?advance(next):next;
   }
   else if(action.type==='choice'){
    if(action.eventId!==run.eventId||!Number.isInteger(action.index))throw new Error('Replay event mismatch');
@@ -535,7 +545,7 @@ export function validRun(run){
   if(!run.education||typeof run.education.school!=='string'||typeof run.education.department!=='string'||!['學士','碩士','EMBA'].includes(run.education.degree)||!['public','private','overseas'].includes(run.education.sector)||!Number.isInteger(run.education.wingBias))return false;
   if(!run.abilityDice||!['skill','slack','lick'].every(k=>Array.isArray(run.abilityDice[k])&&run.abilityDice[k].length===3&&run.abilityDice[k].every(n=>Number.isInteger(n)&&n>=1&&n<=6)))return false;
   if(typeof run.educationReviewed!=='boolean'||typeof run.salaryCutOffered!=='boolean'||!Array.isArray(run.actions)||run.actions.length>300)return false;
-  if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='career'&&contentRules(run)>=10)||(a.type==='raise'&&contentRules(run)>=19&&Object.keys(a).every(key=>key==='type'))||(a.type==='rage'&&contentRules(run)>=13&&(contentRules(run)<14||(['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&Object.keys(a).every(key=>['type','phase','eventId'].includes(key)))))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
+  if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='career'&&contentRules(run)>=10)||(a.type==='raise'&&contentRules(run)>=19&&Object.keys(a).every(key=>key==='type'))||(a.type==='rage'&&contentRules(run)>=13&&(contentRules(run)<14?!Object.hasOwn(a,'target'):(['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||(typeof a.target==='string'&&a.target.length<=100))&&Object.keys(a).every(key=>['type','phase','eventId','target'].includes(key)))))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
   if(rules2(run)&&(!Number.isInteger(run.lastBreakTurn)||run.lastBreakTurn< -1||run.lastBreakTurn>run.turn||!(run.breakReturnEventId===null||typeof run.breakReturnEventId==='string')))return false;
   if(contentRules(run)>=7&&(!Number.isInteger(run.lastKindInviteTurn)||run.lastKindInviteTurn< -1||run.lastKindInviteTurn>run.turn))return false;
   const currentEventId=contentRules(run)>=18&&run.meltdownReturnEventId?run.meltdownReturnEventId:contentRules(run)>=13&&run.rageContext?run.rageContext.eventId:run.eventId;
@@ -571,7 +581,11 @@ export function validRun(run){
      const context=run.rageContext;
      if(!context||typeof context!=='object'||!RAGE_WORLD_EVENTS.includes(run.eventId)||typeof context.eventId!=='string'||RAGE_WORLD_EVENTS.includes(context.eventId)||context.eventId==='rage-menu'||!['event','result'].includes(context.phase)||!['imagined','real'].includes(context.mode)||!Number.isInteger(context.historyLength)||context.historyLength<0||context.historyLength>=run.history.length||!(context.pendingEffect===null||typeof context.pendingEffect==='string')||context.pendingFamily!==null)return false;
      const source=getEvent({...run,eventId:context.eventId});
-     if(!source||source.speaker!==context.speaker||conversationalTarget(run,source)!==context.target)return false;
+     if(!source||source.speaker!==context.speaker)return false;
+     const action=run.actions.findLast(a=>a.type==='rage'),selected=action&&Object.hasOwn(action,'target');
+     if(!action||action.eventId!==context.eventId||action.phase!==context.phase)return false;
+     const defaultTarget=conversationalTarget(run,source),targets=rageParticipantsFor(source,defaultTarget);
+     if(selected?(targets.length<2||!targets.includes(action.target)||context.target!==action.target):context.target!==defaultTarget)return false;
      if(context.phase==='result'&&(context.historyLength===0||run.history[context.historyLength-1]?.eventId!==context.eventId))return false;
      if(run.eventId!=='rage-release'&&context.mode!=='real')return false;
     }

@@ -1,5 +1,6 @@
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
+const RAGE_TARGET_IDS=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei']);
 
 export class ApiError extends Error {
   constructor(status, code, message) {
@@ -109,7 +110,14 @@ export function validateCompletion(body, roleMap) {
     if (!action || typeof action !== 'object' || Array.isArray(action)) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
-    if ((action.type === 'raise' && /^e(?:19|20)-/.test(body.seed) && Object.keys(action).every(key => key === 'type')) || action.type === 'exit' || (action.type === 'break' && /^e(?:[2-9]|10|11|12|13|14|15|16|17|18|19|20)-/.test(body.seed)) || (action.type === 'career' && /^e(?:10|11|12|13|14|15|16|17|18|19|20)-/.test(body.seed)) || (action.type === 'rage' && (body.seed.startsWith('e13-') || (/^e(?:14|15|16|17|18|19|20)-/.test(body.seed) && ['event','result'].includes(action.phase) && typeof action.eventId === 'string' && action.eventId.length > 0 && action.eventId.length <= 100)))) continue;
+    if (action.type === 'rage') {
+      const keys=Object.keys(action);
+      if (body.seed.startsWith('e13-') && keys.every(key=>key==='type')) continue;
+      const targetValid=!Object.hasOwn(action,'target') || RAGE_TARGET_IDS.has(action.target);
+      if (/^e(?:14|15|16|17|18|19|20)-/.test(body.seed) && ['event','result'].includes(action.phase) && typeof action.eventId==='string' && action.eventId.length>0 && action.eventId.length<=100 && targetValid && keys.every(key=>['type','phase','eventId','target'].includes(key))) continue;
+      throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
+    }
+    if ((action.type === 'raise' && /^e(?:19|20)-/.test(body.seed) && Object.keys(action).every(key => key === 'type')) || action.type === 'exit' || (action.type === 'break' && /^e(?:[2-9]|10|11|12|13|14|15|16|17|18|19|20)-/.test(body.seed)) || (action.type === 'career' && /^e(?:10|11|12|13|14|15|16|17|18|19|20)-/.test(body.seed))) continue;
     if (action.type !== 'choice' || typeof action.eventId !== 'string' || action.eventId.length > 100 ||
         !Number.isInteger(action.index) || action.index < 0 || action.index > 12) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
