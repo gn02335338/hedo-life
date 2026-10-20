@@ -61,7 +61,10 @@ export const ACHIEVEMENTS=Object.freeze([
  ...EXTRA_ACHIEVEMENTS,
  realBadge('meimei','這筆不在報價裡。','真的對水蛇動手一次。客戶資料夾還在現場，今天發生的事已經超出原訂議程。'),
  modeBadge('dream-meimei','這一下要開需求單嗎？','在腦內對水蛇揮拳，聽完她的離譜報價才回過神。現場的客戶資料夾沒有動過。','imagined'),
- modeBadge('dream-first-day','人還沒報到，腦內先下班。','報到對話中，在腦內扁了翅膀。你回過神來，他還在介紹座位，工作證也還沒拿好。','imagined','rage-first-day')
+ modeBadge('dream-first-day','人還沒報到，腦內先下班。','報到對話中，在腦內扁了翅膀。你回過神來，他還在介紹座位，工作證也還沒拿好。','imagined','rage-first-day'),
+ badge('banquet-first-love','First Love 搶麥決鬥','替傑克和水蛇的 First Love 決鬥舉牌計分。就算翅膀拿願景插播，這場搶麥也已經開打。','banquet'),
+ badge('sonny-press-conference','阿福的理由伯記者會','腕力賽後，用披薩盒替阿福開記者會。抽筋、拉到、吃太飽，聲明比比賽還長。','office'),
+ badge('sonny-unplayed-champion','尚未出賽世界冠軍','先收桌不比，把披薩盒冠軍盃頒給阿福。人還沒上桌，勝利聲明已經講到第四點。','office')
 ]);
 export const ACHIEVEMENT_MAP=Object.freeze(Object.fromEntries(ACHIEVEMENTS.map(item=>[item.id,item])));
 export const ACHIEVEMENT_RECORD_MAP=Object.freeze({...LEGACY_RAGE_ACHIEVEMENT_MAP,...ACHIEVEMENT_MAP});
@@ -104,6 +107,13 @@ export function deriveAchievements(run){
  add('rage-real',real.length>0);
  add('real-first-day',real.some(item=>item.person==='wing'&&item.origin==='onboarding'));
  add('dream-first-day',imagined.some(item=>item.person==='wing'&&item.origin==='onboarding'));
+ // Read committed canonical choices, not the corrected display copy or broad
+ // banquet/rage flags. Both resolved song draws participated in the duel.
+ const resolved=history.filter(item=>Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0&&typeof item.result==='string'&&item.result.trim());
+ add('banquet-first-love',resolved.some(item=>item.eventId==='banquet-welcome'&&item.kind==='banquet'&&item.speaker==='rick'&&item.choiceIndex===1&&item.eventOutcome?.label==='尾牙點歌台'&&['成功搶麥','被夢想插播'].includes(item.eventOutcome.result)));
+ const arm=resolved.filter(item=>item.eventId==='video-pizza-overtime'&&item.kind==='daily'&&item.speaker==='sonny');
+ add('sonny-press-conference',arm.some(item=>item.choiceIndex===1));
+ add('sonny-unplayed-champion',arm.some(item=>item.choiceIndex===2));
  for(const family of ['legal','defeated','coup'])add(`rage-${family}`,real.length>0&&run.completed===true&&typeof run.endingId==='string'&&run.endingId.startsWith(`rage_${family}-`));
  for(const id of deriveExtraAchievements(run))ids.add(id);
  return ACHIEVEMENTS.filter(item=>ids.has(item.id)).map(item=>item.id);

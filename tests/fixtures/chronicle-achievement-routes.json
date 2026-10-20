@@ -1,0 +1,232 @@
+{
+  "method": "Natural e21 games from existing canonical reachability witnesses. Each prefix is replayed to the event, then one available choice resolves; no game state, flags, text or RNG state is injected.",
+  "routes": [
+    {
+      "id": "sonny-press",
+      "roleId": "sales",
+      "seed": "e21-sales-a-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-pizza-overtime",
+          "index": 1
+        }
+      ],
+      "eventId": "video-pizza-overtime",
+      "choiceIndex": 1,
+      "achievementId": "sonny-press-conference"
+    },
+    {
+      "id": "sonny-champion",
+      "roleId": "sales",
+      "seed": "e21-sales-a-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-pizza-overtime",
+          "index": 2
+        }
+      ],
+      "eventId": "video-pizza-overtime",
+      "choiceIndex": 2,
+      "achievementId": "sonny-unplayed-champion"
+    },
+    {
+      "id": "first-love-mic",
+      "roleId": "bd",
+      "seed": "e21-bd-n-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-resource-barter",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd-assistant",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "video-designer-benchmark",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bird-reminder-loop",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-data-handshake",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "tissue-real-name",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-partner-certification",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-volume-relay",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 1
+        }
+      ],
+      "eventId": "banquet-welcome",
+      "choiceIndex": 1,
+      "achievementId": "banquet-first-love",
+      "outcome": "成功搶麥"
+    },
+    {
+      "id": "first-love-vision",
+      "roleId": "ai",
+      "seed": "e21-ai-7-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-toggle",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-name-version",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blame-debate",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-weather",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-common-fund",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 1
+        }
+      ],
+      "eventId": "banquet-welcome",
+      "choiceIndex": 1,
+      "achievementId": "banquet-first-love",
+      "outcome": "被夢想插播"
+    }
+  ]
+}
