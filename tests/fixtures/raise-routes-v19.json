@@ -1,0 +1,2048 @@
+{
+  "method": "Natural createRun seeds and canonical game actions only; no state injection. Each action is checked before and after JSON save and replayed in engine-v19.test.js.",
+  "routes": [
+    {
+      "id": "cancel",
+      "roleId": "system",
+      "seed": "e19-system-f-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdp-single-truth",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "deadline-yesterday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 3
+        }
+      ],
+      "expected": {
+        "eventId": "system-weekend",
+        "completed": false,
+        "pay": 50,
+        "basePay": 50,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 0
+      }
+    },
+    {
+      "id": "initial-promise",
+      "roleId": "system",
+      "seed": "e19-system-f-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdp-single-truth",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "deadline-yesterday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "raise-response",
+        "completed": false,
+        "pay": 50,
+        "basePay": 50,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "promise-to-fury-confirmation",
+      "roleId": "system",
+      "seed": "e19-system-f-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdp-single-truth",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "deadline-yesterday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "raise-confirmation",
+        "completed": false,
+        "pay": 50,
+        "basePay": 50,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "promise-remains-promise",
+      "roleId": "system",
+      "seed": "e19-system-f-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdp-single-truth",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "deadline-yesterday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "system-weekend",
+        "completed": false,
+        "pay": 50,
+        "basePay": 50,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "rage-event-imagined",
+      "roleId": "system",
+      "seed": "e19-system-f-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdp-single-truth",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "deadline-yesterday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "raise-request"
+        }
+      ],
+      "expected": {
+        "eventId": "raise-request",
+        "completed": false,
+        "pay": 50,
+        "basePay": 50,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 0
+      }
+    },
+    {
+      "id": "rage-result-imagined",
+      "roleId": "system",
+      "seed": "e19-system-f-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdp-single-truth",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "deadline-yesterday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "raise-request"
+        }
+      ],
+      "expected": {
+        "eventId": "raise-response",
+        "completed": false,
+        "pay": 50,
+        "basePay": 50,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "initial-offer",
+      "roleId": "system",
+      "seed": "e19-system-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "raise-response",
+        "completed": false,
+        "pay": 37,
+        "basePay": 47,
+        "rank": 0,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "actual-raise",
+      "roleId": "system",
+      "seed": "e19-system-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rick-common-fund",
+        "completed": false,
+        "pay": 38,
+        "basePay": 48,
+        "rank": 0,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "role-system",
+      "roleId": "system",
+      "seed": "e19-system-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rick-common-fund",
+        "completed": false,
+        "pay": 38,
+        "basePay": 48,
+        "rank": 0,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "raised-pay-persists-to-income",
+      "roleId": "system",
+      "seed": "e19-system-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-common-fund",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "dp-handover-every-line",
+        "completed": false,
+        "pay": 38,
+        "basePay": 48,
+        "rank": 0,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "offset-refused",
+      "roleId": "system",
+      "seed": "e19-system-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rick-common-fund",
+        "completed": false,
+        "pay": 37,
+        "basePay": 47,
+        "rank": 0,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "offset-accepted",
+      "roleId": "system",
+      "seed": "e19-system-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "rick-common-fund",
+        "completed": false,
+        "pay": 38,
+        "basePay": 48,
+        "rank": 0,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "written-confirmation",
+      "roleId": "system",
+      "seed": "e19-system-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "raise-confirmation",
+        "completed": false,
+        "pay": 37,
+        "basePay": 47,
+        "rank": 0,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "promise-written-confirmation",
+      "roleId": "system",
+      "seed": "e19-system-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-meeting-ticket",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "rick-common-fund",
+        "completed": false,
+        "pay": 40,
+        "basePay": 50,
+        "rank": 0,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "rage-result-real",
+      "roleId": "system",
+      "seed": "e19-system-f-4",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "private-coffee",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "monitor-chain",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "raise-request"
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "completed": false,
+        "pay": 77,
+        "basePay": 77,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "initial-fury",
+      "roleId": "system",
+      "seed": "e19-system-f-6",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sea-deck-tonight",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "raise-response",
+        "completed": false,
+        "pay": 67,
+        "basePay": 67,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "fury-to-hr",
+      "roleId": "system",
+      "seed": "e19-system-f-6",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sea-deck-tonight",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "crisis-boss",
+        "completed": false,
+        "pay": 67,
+        "basePay": 67,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "second-formal-after-cooldown",
+      "roleId": "system",
+      "seed": "e19-system-f-d",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "monitor-chain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-third-party-server",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mode-migration",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-five-day-handover",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "telepathy-spec",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-paid-study-hall",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "ok-means-received",
+        "completed": false,
+        "pay": 58,
+        "basePay": 58,
+        "rank": 1,
+        "raises": 1,
+        "attempts": 2
+      }
+    },
+    {
+      "id": "meltdown-in-negotiation",
+      "roleId": "system",
+      "seed": "e19-system-f-e",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blame-debate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "attendance-accidental-admin",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-paid-study-hall",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "mood-collapse",
+        "completed": false,
+        "pay": 46,
+        "basePay": 46,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "rage-event-real",
+      "roleId": "system",
+      "seed": "e19-system-f-e",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blame-debate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "attendance-accidental-admin",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-paid-study-hall",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "raise-request"
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "completed": false,
+        "pay": 46,
+        "basePay": 46,
+        "rank": 1,
+        "raises": 0,
+        "attempts": 0
+      }
+    },
+    {
+      "id": "max-three-formal",
+      "roleId": "system",
+      "seed": "e19-system-f-1i",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "aircon-career",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "chips-linear-algebra",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "attendance-accidental-admin",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-resurrected-instance",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-two-company-badge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-referral-loop",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-four-word-review",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-handover-every-line",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-architecture-relic",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-mascot-permission",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "dragon-office-quiz",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "pm-human-buffer",
+        "completed": false,
+        "pay": 74,
+        "basePay": 74,
+        "rank": 1,
+        "raises": 2,
+        "attempts": 3
+      }
+    },
+    {
+      "id": "role-ai",
+      "roleId": "ai",
+      "seed": "e19-ai-f-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-phone-wakeup",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "chips-linear-algebra",
+        "completed": false,
+        "pay": 43,
+        "basePay": 43,
+        "rank": 1,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "role-project",
+      "roleId": "project",
+      "seed": "e19-project-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "askonly-unasked",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wireframe-revival",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-loop",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "dp-temporary-mis",
+        "completed": false,
+        "pay": 79,
+        "basePay": 79,
+        "rank": 1,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "role-product",
+      "roleId": "product",
+      "seed": "e19-product-f-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-chair-host",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "pm-human-buffer",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "transcript-speaker",
+          "index": 0
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "dp-prize-last-day",
+        "completed": false,
+        "pay": 52,
+        "basePay": 52,
+        "rank": 1,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "role-design",
+      "roleId": "design",
+      "seed": "e19-design-f-4",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "private-coffee",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "travel-staff-prize",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "ceo-tea-drop",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "dp-paid-study-hall",
+        "completed": false,
+        "pay": 40,
+        "basePay": 40,
+        "rank": 1,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "role-bd",
+      "roleId": "bd",
+      "seed": "e19-bd-f-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "private-coffee",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-four-word-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "reply-weekend",
+        "completed": false,
+        "pay": 53,
+        "basePay": 53,
+        "rank": 1,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "role-sales",
+      "roleId": "sales",
+      "seed": "e19-sales-f-5",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "ceo-tea-drop",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-bot-acknowledgment",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "meeting-chair-host",
+        "completed": false,
+        "pay": 39,
+        "basePay": 49,
+        "rank": 0,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "role-mis",
+      "roleId": "mis",
+      "seed": "e19-mis-f-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "overtime-version-history",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "pm-human-buffer",
+        "completed": false,
+        "pay": 32,
+        "basePay": 40,
+        "rank": 0,
+        "raises": 1,
+        "attempts": 1
+      }
+    },
+    {
+      "id": "role-executive",
+      "roleId": "executive",
+      "seed": "e19-executive-f-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "private-coffee",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-resignation-race",
+          "index": 1
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "jack-api-budget",
+        "completed": false,
+        "pay": 137,
+        "basePay": 81,
+        "rank": 5,
+        "raises": 1,
+        "attempts": 1
+      }
+    }
+  ]
+}

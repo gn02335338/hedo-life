@@ -20,7 +20,7 @@ const appSource = (await readFile(new URL('../dist/app.js', import.meta.url), 'u
 // Execute the actual app and click handler; only browser surfaces and network are
 // replaced. This catches placement and double-resolution regressions together.
 function appHarness() {
-  const nodes = new Map(), listeners = new Map(), calls = { rage: 0, choice: 0, advance: 0 };
+  const nodes = new Map(), listeners = new Map(), calls = { rage: 0, raise: 0, choice: 0, advance: 0, save: 0 };
   const node = selector => {
     if (!nodes.has(selector)) nodes.set(selector, {
       innerHTML: '', textContent: '', title: '', open: false,
@@ -33,6 +33,7 @@ function appHarness() {
   const context = vm.createContext({
     ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...currentCareer, ...persona, polishDreamText,
     requestRage(run) { calls.rage++; return engine.requestRage(run); },
+    requestRaise(run) { calls.raise++; return engine.requestRaise(run); },
     applyChoice(run, index) { calls.choice++; return engine.applyChoice(run, index); },
     advance(run) { calls.advance++; return engine.advance(run); },
     createFeedbackUI: () => ({ open() {} }),
@@ -41,7 +42,7 @@ function appHarness() {
       init: async () => null, achievementProgress: async () => null,
       complete: async () => null,
     },
-    localStorage: { getItem: () => null, setItem() {} },
+    localStorage: { getItem: () => null, setItem() { calls.save++; } },
     document: {
       querySelector: node,
       addEventListener(type, callback) {
@@ -59,10 +60,11 @@ function appHarness() {
     render(run) { context.testRun = run; vm.runInContext('run=testRun;game(false)', context); return node('#main').innerHTML; },
     state: () => vm.runInContext('run', context),
     html: () => node('#main').innerHTML,
-    async rage() {
-      const event = { target: { closest: selector => selector === '[data-action]' ? { dataset: { action: 'rage' } } : null } };
+    async action(action) {
+      const event = { target: { closest: selector => selector === '[data-action]' ? { dataset: { action } } : null } };
       for (const listener of listeners.get('click') || []) await listener(event);
     },
+    async rage() { return this.action('rage'); },
   };
 }
 
@@ -149,10 +151,10 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e17 and the guide describes the current speaker', () => {
+test('new browser lives use e19 and the guide describes the current speaker', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e18-[a-f0-9]+$/);
+  assert.match(seed, /^e19-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
@@ -233,4 +235,80 @@ test('career statistics retain old family meanings beside the new assistant and 
   assert.match(html, /八階職涯結算 · 3局/);
   assert.match(html, /助理：1局/);assert.match(html, /專業員工：2局/);
   assert.equal([...html.matchAll(/class="bar-row"/g)].length, 8);
+});
+
+
+// Reach the real talk-pay entry point through normal play; no salary or cooldown
+// fields are injected to make the work-card button appear available.
+function readyRaiseRun() {
+  for (let seed = 0; seed < 30; seed++) {
+    let run = engine.createRun('system', `e19-ui-raise-${seed}`);
+    for (let step = 0; step < 80 && !run.completed; step++) {
+      if (engine.canRequestRaise(run)) return run;
+      if (run.pending) { run = engine.advance(run); continue; }
+      const event = engine.getEvent(run), candidates = event.choices
+        .map((choice, index) => choice.available === false ? null : engine.applyChoice(run, index))
+        .filter(Boolean);
+      const score = candidate => (candidate.completed || candidate.pendingFamily ? -10000 : 0)
+        + candidate.stats.boss * 2 + candidate.stats.mood + candidate.stats.energy
+        + candidate.stats.cash * .3 + candidate.stats.trust * .2;
+      candidates.sort((left, right) => score(right) - score(left));
+      run = candidates[0];
+    }
+  }
+  throw new Error('A natural talk-pay entry is required for UI coverage');
+}
+
+test('the raise control is separate from promotion and explains unavailable entry without spoilers', () => {
+  const app = appHarness(), initial = engine.createRun('system', 'e19-ui-raise-entry');
+  const html = app.render(initial), buttons = renderedButtons(html);
+  const button = buttons.find(entry => /\bdata-action="raise"/.test(entry.attributes));
+  assert.ok(button);assert.match(button.attributes, /\bdisabled\b/);
+  assert.ok(button.ancestors.some(entry => hasClass(entry, 'sidebar-controls')));
+  assert.ok(!button.ancestors.some(entry => hasClass(entry, 'choices')));
+  assert.ok(button.attributes.includes(engine.raiseAvailability(initial).reason));
+  assert.ok(html.indexOf('data-action="career"') < button.index);
+  assert.match(html, /我要談加薪 ↗/);
+  assert.doesNotMatch(button.attributes, /機率|百分|成功率|氣炸|加薪\s*\+/);
+  for (const cohort of ['e16', 'e17', 'e18']) {
+    assert.doesNotMatch(app.render(engine.createRun('system', `${cohort}-ui-no-raise`)), /data-action="raise"/);
+  }
+});
+
+test('one available raise click opens its scene, persists once, and cannot enter again from that scene', async () => {
+  const app = appHarness(), initial = readyRaiseRun(), html = app.render(initial), savedBefore = app.calls.save;
+  const button = renderedButtons(html).find(entry => /\bdata-action="raise"/.test(entry.attributes));
+  assert.ok(button);assert.doesNotMatch(button.attributes, /\bdisabled\b/);
+  app.nodes.get('#dialog').open = true;
+  await app.action('raise');
+  assert.equal(app.calls.raise, 0);assert.equal(app.state(), initial);assert.equal(app.calls.save, savedBefore);
+  app.nodes.get('#dialog').open = false;
+  await app.action('raise');
+  const opened = app.state();
+  assert.equal(opened.eventId, 'raise-request');assert.equal(opened.pending, false);
+  assert.equal(opened.turn, initial.turn);assert.equal(opened.history.length, initial.history.length);
+  assert.equal(opened.actions.length, initial.actions.length + 1);
+  assert.equal(opened.actions.at(-1).type, 'raise');assert.equal(app.calls.save, savedBefore + 1);
+  assert.equal(app.calls.choice, 0);assert.equal(app.calls.advance, 0);
+  assert.match(app.html(), /class="tag">職涯選擇<\/span>/);
+  const blocked = renderedButtons(app.html()).find(entry => /\bdata-action="raise"/.test(entry.attributes));
+  assert.match(blocked.attributes, /\bdisabled\b/);
+  const exit = renderedButtons(app.html()).find(entry => /\bdata-action="exit"/.test(entry.attributes));
+  assert.match(exit.attributes, /\bdisabled\b/);
+  const after = JSON.stringify(opened);
+  await app.action('raise');
+  assert.equal(JSON.stringify(app.state()), after);assert.equal(app.calls.save, savedBefore + 1);
+});
+
+test('the guide explains independent talk-pay limits only for new lives', () => {
+  const app = appHarness();
+  app.render(engine.createRun('system', 'e19-ui-raise-guide'));
+  vm.runInContext('statGuide()', app.context);
+  const guide = app.nodes.get('#dialog-content').innerHTML;
+  assert.match(guide, /完成三個工作回合/);assert.match(guide, /五個工作回合/);
+  assert.match(guide, /每局最多三次/);assert.match(guide, /正式開口前取消不算/);
+  assert.match(guide, /不占升遷評核/);assert.doesNotMatch(guide, /成功率|翅膀.*氣炸/);
+  app.render(engine.createRun('system', 'e18-ui-existing-guide'));
+  vm.runInContext('statGuide()', app.context);
+  assert.doesNotMatch(app.nodes.get('#dialog-content').innerHTML, /\$ \/ 談薪|每局最多三次/);
 });

@@ -28,6 +28,25 @@ test('all 314 e17 endings and direct rage modes retain 13197 direct and JSON che
  assert.equal(count,13197);
 });
 
+test('all 314 e18 endings and direct rage modes retain 14261 direct and JSON checkpoints',()=>{
+ const fixtures=JSON.parse(readFileSync(new URL('./fixtures/legacy-e18-routes.json',import.meta.url)));assert.equal(fixtures.length,318);let count=0;
+ for(const route of fixtures)for(const saved of [false,true]){
+  let run=createRun(route.roleId,route.seed),hashes=[];
+  const check=()=>{if(saved)run=copy(run);assert.equal(validRun(run),true,route.seed+'/'+run.eventId);hashes.push(hash(run));};check();
+  for(let index=0;index<route.actions.length;index++){
+   const action=route.actions[index];
+   if(action.type==='exit')run=requestExit(run);else if(action.type==='break')run=requestBreak(run);else if(action.type==='career')run=requestCareer(run);
+   else if(action.type==='rage'){run=requestRage(run);check();run=advance(run);}
+   else{run=applyChoice(run,action.index);check();if(!(route.actions[index+1]?.type==='rage'&&route.actions[index+1].phase==='result'))run=advance(run);}
+   check();
+  }
+  assert.deepEqual(hashes,saved?route.savedCheckpoints:route.directCheckpoints,route.ending);
+  assert.equal(hash(run),saved?route.savedStateSha256:route.stateSha256,route.ending);
+  assert.deepEqual(replayRun(route.roleId,route.seed,route.actions),run);if(!saved)count+=hashes.length;
+ }
+ assert.equal(count,14261);
+});
+
 test('new ability rolls and resolved gains obey the shared budget and record real tradeoffs',()=>{
  for(const role of ROLES)for(let index=0;index<80;index++){
   const run=createRun(role.id,`e18-triad-${index}`);assert.ok(sum(run.stats)<=180);assert.equal(validRun(copy(run)),true);
@@ -68,6 +87,6 @@ test('seven cash uses have different real effects, reject unaffordable choices a
 });
 
 test('all current natural witnesses remain authoritative, bounded, and compatible with the expanded collection',()=>{
- assert.equal(ACHIEVEMENTS.length,112);const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));assert.equal(report.routes.length,314);
+ assert.equal(ACHIEVEMENTS.length,112);const report={routes:JSON.parse(readFileSync(new URL('./fixtures/legacy-e18-routes.json',import.meta.url))).filter(route=>!route.ending.startsWith('feature-'))};assert.equal(report.routes.length,314);
  for(const route of report.routes){assert.ok(route.seed.startsWith('e18-'));const run=replayRun(route.roleId,route.seed,route.actions);assert.equal(run.endingId,route.ending);assert.equal(validRun(copy(run)),true);assert.ok(sum(run.stats)<=180);assert.ok(deriveAchievements(run).every(id=>ACHIEVEMENTS.some(item=>item.id===id)));}
 });

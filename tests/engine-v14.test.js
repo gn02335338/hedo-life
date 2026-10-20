@@ -131,7 +131,7 @@ test('natural HR, salary, banquet and character conversations target their curre
  for(const route of routes){
   replayRoute(route,run=>{
    if(!canRequestRage(run))return;
-   const event=getEvent(run),person=/^e(?:16|17|18)-/.test(run.seed)?rageTargetForV16(event):rageTargetFor(event),timing=rageTiming(event.id),key=`${person}:${timing}:${run.pending}`;
+   const event=getEvent(run),person=/^e(?:16|17|18|19)-/.test(run.seed)?rageTargetForV16(event):rageTargetFor(event),timing=rageTiming(event.id),key=`${person}:${timing}:${run.pending}`;
    if(phases.has(key))return;phases.add(key);people.add(person);timings.add(timing);
    const result=requestRage(run);assert.equal(result.rageContext.target,person,key);
    assert.equal(result.rageContext.eventId,event.id,key);assert.equal(result.history.at(-1).speaker,person,key);

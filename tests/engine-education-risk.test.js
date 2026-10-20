@@ -147,7 +147,7 @@ test('natural e12 routes prove education salary and dismissal branches survive J
   if(next==='salary-cut')examples.salary??=route;if(next==='crisis-boss')examples.dismissal??=route;
  }
  for(const [branch,route]of Object.entries(examples)){
-  assert.ok(route,`natural ${branch} education witness`);assert.ok(route.seed.startsWith('e18-'));
+  assert.ok(route,`natural ${branch} education witness`);assert.ok(route.seed.startsWith('e19-'));
   const finished=replayRoute(route,state=>assert.equal(validRun(copy(state)),true));assert.equal(finished.endingId,route.ending);assert.deepEqual(finished,replayRun(route.roleId,route.seed,route.actions));
   assert.equal(finished.history.filter(row=>row.eventId==='education-scrutiny').length,1);
   const forged=copy(route.actions),at=forged.findIndex(action=>action.eventId==='education-scrutiny');forged[at].eventId='education-review';assert.throws(()=>replayRun(route.roleId,route.seed,forged),/Replay event mismatch/);
