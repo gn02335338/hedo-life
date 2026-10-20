@@ -58,7 +58,7 @@ export function replayText(value=''){return proseText(value,renameCopy);}
 // Skip URLs, asset paths and identifiers while rendering both saved aliases
 // and original names with the current public name.
 export function displayText(value=''){
- return proseText(value,part=>renameCopy(part).replace(/(?<![A-Za-z0-9_])Moon\s+Dog(?![A-Za-z0-9_])/g,'真真').replace(displayNamePattern,name=>displayNames[name]).replaceAll('蘇菲','紅茶'));
+ return proseText(value,part=>renameCopy(part).replace(/(?<![A-Za-z0-9_])Moon\s+Dog(?![A-Za-z0-9_])/g,'真真').replace(displayNamePattern,name=>displayNames[name]).replaceAll('蘇菲','紅茶').replaceAll('顧問教授','林澤教授').replaceAll('遊戲月薪','月薪'));
 }
 
 function copyFields(value,keys){

@@ -28,7 +28,7 @@ function inspect(run) {
 const expected = 20 + 10 + 6;
 for (let attempt = 0; attempt < 2000 && found.size < expected; attempt++) {
   for (const role of ROLES) {
-    const { route } = simulate(role.id, targets[attempt % targets.length], attempt);
+    const { route } = simulate(role.id, targets[attempt % targets.length], attempt, {seedPrefix:'e23'});
     replayRoute(route, inspect);
   }
 }

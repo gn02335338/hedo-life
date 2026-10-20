@@ -41,7 +41,7 @@ test('the five new character identities use supplied titles and display-only ali
 
 test('display aliases handle Chinese-adjacent names and existing nicknames without changing identifiers or URLs',()=>{
  assert.equal(displayText('Wing問Rick，Hope跟Erich／JenJen／Sonny在旁邊。Spencer叫Jack跟Kind過來。'),'翅膀問老闆乾兒子，希望跟法師／真真／阿福在旁邊。屎潘蛇叫傑克跟阿良過來。');
- assert.equal(displayText('阿良（Kind）、Rick（乾兒子）、Jack（傑克）、林澤教授。'),'阿良、老闆乾兒子、傑克、顧問教授。');
+ assert.equal(displayText('阿良（Kind）、Rick（乾兒子）、Jack（傑克）、林澤教授。'),'阿良、老闆乾兒子、傑克、林澤教授。');
  assert.equal(displayText('SPENCER / WING / RICK / HOPE'),'屎潘蛇 / 翅膀 / 老闆乾兒子 / 希望');
  const unchanged='kind hopeful Wingman Rickshaw wing rage_wing WingFeature ./assets/Wing.png https://example.test/Wing?Kind=Hope';
  assert.equal(displayText(unchanged),unchanged);
@@ -66,6 +66,27 @@ test('Zhen Zhen is a display rename while canonical replay prose and identifiers
  assert.equal(displayText(canonical.body),'真真與真真都是這份舊紀錄裡的名字。');
  assert.equal(canonical.speaker,'jenjen');assert.deepEqual(canonical.choices[0].delta,{trust:4});
  assert.equal(JSON.stringify(event),before);
+});
+
+test('Professor Lin and monthly pay render current wording without changing canonical or saved history',()=>{
+ const original='林澤教授與林澤來了，顧問教授留下建議。原本遊戲月薪35K，新的月薪28K。';
+ const canonical='顧問教授與顧問教授來了，顧問教授留下建議。原本遊戲月薪35K，新的月薪28K。';
+ const shown='林澤教授與林澤教授來了，林澤教授留下建議。原本月薪35K，新的月薪28K。';
+ assert.equal(replayText(original),canonical,'frozen replay prose retains its published names and salary label');
+ assert.equal(displayText(original),shown);
+ assert.equal(displayText(canonical),shown,'saved history with the former alias renders the requested name');
+ assert.equal(displayText(shown),shown,'displaying the restored name repeatedly does not duplicate 教授');
+ const event={id:'advisor-test',speaker:'wing',body:original,choices:[{text:'請顧問教授看薪資單',result:'遊戲月薪28K；林澤教授建議保留紀錄。',delta:{trust:3}}]};
+ const before=JSON.stringify(event),next=applyPersonaCopy(event);
+ assert.equal(next.body,canonical);
+ assert.equal(next.choices[0].text,'請顧問教授看薪資單');
+ assert.equal(next.choices[0].result,'遊戲月薪28K；顧問教授建議保留紀錄。');
+ assert.equal(displayText(next.choices[0].text),'請林澤教授看薪資單');
+ assert.equal(displayText(next.choices[0].result),'月薪28K；林澤教授建議保留紀錄。');
+ assert.equal(next.id,event.id);assert.equal(next.speaker,event.speaker);assert.deepEqual(next.choices[0].delta,event.choices[0].delta);
+ assert.equal(JSON.stringify(event),before,'current display wording never mutates history or proof inputs');
+ const protectedText='advisor-ties advisor_school ./assets/顧問教授.png ../archive/林澤教授-遊戲月薪.json https://example.test/顧問教授?salary=遊戲月薪#林澤';
+ assert.equal(displayText(protectedText),protectedText,'source links, relative assets and stable identifiers are preserved');
 });
 
 test('Water Snake is a conversational rage target while published character releases stay identical',()=>{
@@ -107,7 +128,7 @@ test('all public collections can be displayed with aliases while original catalo
    const result=displayText(value);processed++;
    assert.equal(displayText(result),result,'display formatting is safe to apply twice');
    if(!/^(?:https?:\/\/|\.\/)/.test(value)&&!/^[-a-z0-9_/]+$/.test(value)){
-    assert.doesNotMatch(result,/(?<![A-Za-z0-9_])(?:Wing|WING|Spencer|Rick|Hope|Erich|JenJen|Sonny|Kind|Jack)(?![A-Za-z0-9_])|林澤|空降主管/);
+    assert.doesNotMatch(result,/(?<![A-Za-z0-9_])(?:Wing|WING|Spencer|Rick|Hope|Erich|JenJen|Sonny|Kind|Jack)(?![A-Za-z0-9_])|顧問教授|遊戲月薪|空降主管/);
    }
   }else if(Array.isArray(value))value.forEach(visit);
   else if(value&&typeof value==='object')Object.values(value).forEach(visit);

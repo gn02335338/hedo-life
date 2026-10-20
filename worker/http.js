@@ -102,7 +102,7 @@ export function validateCompletion(body, roleMap) {
   if (typeof body.seed !== 'string' || body.seed.length < 1 || body.seed.length > 32) {
     throw new ApiError(400, 'invalid_seed', '遊戲種子無效。');
   }
-  const actionLimit = /^e(?:13|14|15|16|17|18|19|20|21|22|23)-/.test(body.seed) ? 300 : MAX_ACTIONS;
+  const actionLimit = /^e(?:13|14|15|16|17|18|19|20|21|22|23|24)-/.test(body.seed) ? 300 : MAX_ACTIONS;
   if (!Array.isArray(body.actions) || body.actions.length < 1 || body.actions.length > actionLimit) {
     throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
   }
@@ -114,10 +114,10 @@ export function validateCompletion(body, roleMap) {
       const keys=Object.keys(action);
       if (body.seed.startsWith('e13-') && keys.every(key=>key==='type')) continue;
       const targetValid=!Object.hasOwn(action,'target') || RAGE_TARGET_IDS.has(action.target);
-      if (/^e(?:14|15|16|17|18|19|20|21|22|23)-/.test(body.seed) && ['event','result'].includes(action.phase) && typeof action.eventId==='string' && action.eventId.length>0 && action.eventId.length<=100 && targetValid && keys.every(key=>['type','phase','eventId','target'].includes(key))) continue;
+      if (/^e(?:14|15|16|17|18|19|20|21|22|23|24)-/.test(body.seed) && ['event','result'].includes(action.phase) && typeof action.eventId==='string' && action.eventId.length>0 && action.eventId.length<=100 && targetValid && keys.every(key=>['type','phase','eventId','target'].includes(key))) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
-    if ((action.type === 'raise' && /^e(?:19|20|21|22|23)-/.test(body.seed) && Object.keys(action).every(key => key === 'type')) || action.type === 'exit' || (action.type === 'break' && /^e(?:[2-9]|10|11|12|13|14|15|16|17|18|19|20|21|22|23)-/.test(body.seed)) || (action.type === 'career' && /^e(?:10|11|12|13|14|15|16|17|18|19|20|21|22|23)-/.test(body.seed))) continue;
+    if ((action.type === 'raise' && /^e(?:19|20|21|22|23|24)-/.test(body.seed) && Object.keys(action).every(key => key === 'type')) || action.type === 'exit' || (action.type === 'break' && /^e(?:[2-9]|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24)-/.test(body.seed)) || (action.type === 'career' && /^e(?:10|11|12|13|14|15|16|17|18|19|20|21|22|23|24)-/.test(body.seed))) continue;
     if (action.type !== 'choice' || typeof action.eventId !== 'string' || action.eventId.length > 100 ||
         !Number.isInteger(action.index) || action.index < 0 || action.index > 12) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');

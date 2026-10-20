@@ -37,7 +37,14 @@ test('new senior executive name and histories use aliases while role IDs and leg
  assert.equal(jobTitle(modern),'事業部經理');assert.equal(jobTitle(legacy),'空降事業部經理');
  assert.equal(displayText(jobTitle(legacy)),'事業部經理');
  const event=getEvent(modern);assert.doesNotMatch(event.body,/Wing|空降主管/);
- const pending=applyChoice(modern,0);for(const field of ['title','body','choiceText','result','jobTitle'])assert.equal(displayText(pending.history[0][field]),pending.history[0][field],field);
+ const pending=applyChoice(modern,0),canonical=copy(pending.history[0]);
+ for(const field of ['title','body','choiceText','result','jobTitle']){
+  const stored=pending.history[0][field],shown=displayText(stored);
+  assert.equal(replayText(stored),stored,`canonical ${field}`);
+  assert.doesNotMatch(shown,/Wing|空降主管|Moon Dog|顧問教授|遊戲月薪/,`display ${field}`);
+ }
+ assert.match(canonical.result,/遊戲月薪/);assert.match(displayText(canonical.result),/月薪/);
+ assert.deepEqual(pending.history[0],canonical,'rendering must not rewrite canonical saved history');
  assert.equal(validRun(copy(pending)),true);assert.deepEqual(replayRun(modern.roleId,modern.seed,pending.actions),advance(pending));
 });
 
@@ -75,8 +82,10 @@ test('published e16 histories retain canonical aliases while the current display
   for(const h of run.history)for(const field of ['title','body','choiceText','result','jobTitle']){
    assert.equal(replayText(h[field]),h[field],route.ending+'/'+field);
    const shown=displayText(h[field]);
-   assert.doesNotMatch(shown,/Moon Dog/);
+   assert.doesNotMatch(shown,/Moon Dog|顧問教授|遊戲月薪/);
    if(h[field].includes('Moon Dog'))assert.ok(shown.includes('真真'));
+   if(h[field].includes('顧問教授'))assert.ok(shown.includes('林澤教授'));
+   if(h[field].includes('遊戲月薪'))assert.ok(shown.includes('月薪'));
   }
  }
 });

@@ -1,0 +1,1599 @@
+{
+  "method": "Natural e24 createRun seeds, normal game choices and canonical replay only; no event, role, stat, flag, history, salary or RNG state injection. Actual accepted cuts, pending offers, the 30K boundary, unpaid leave, mood deferral, all advice choices and both rage modes have replay witnesses.",
+  "routes": [
+    {
+      "id": "proposal-below-30",
+      "roleId": "design",
+      "seed": "e24-design-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "salary-cut",
+        "pay": 37,
+        "turn": 6,
+        "completed": false,
+        "salaryAdvice": null
+      }
+    },
+    {
+      "id": "cut-result-dream-opens-tip",
+      "roleId": "design",
+      "seed": "e24-design-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "salary-cut"
+        }
+      ],
+      "expected": {
+        "eventId": "low-pay-tip",
+        "pay": 24,
+        "turn": 6,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 37,
+          "to": 24,
+          "historyIndex": 8,
+          "returnEventId": "wing-three-status-channels",
+          "status": "open"
+        }
+      }
+    },
+    {
+      "id": "accepted-cut",
+      "roleId": "design",
+      "seed": "e24-design-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "low-pay-tip",
+        "pay": 24,
+        "turn": 6,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 37,
+          "to": 24,
+          "historyIndex": 8,
+          "returnEventId": "wing-three-status-channels",
+          "status": "open"
+        }
+      }
+    },
+    {
+      "id": "tip-choice-0",
+      "roleId": "design",
+      "seed": "e24-design-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "wing-three-status-channels",
+        "pay": 24,
+        "turn": 6,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 37,
+          "to": 24,
+          "historyIndex": 8,
+          "returnEventId": null,
+          "status": "done"
+        }
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "tip-choice-1",
+      "roleId": "design",
+      "seed": "e24-design-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "wing-three-status-channels",
+        "pay": 24,
+        "turn": 6,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 37,
+          "to": 24,
+          "historyIndex": 8,
+          "returnEventId": null,
+          "status": "done"
+        }
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "tip-choice-2",
+      "roleId": "design",
+      "seed": "e24-design-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "wing-three-status-channels",
+        "pay": 24,
+        "turn": 6,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 37,
+          "to": 24,
+          "historyIndex": 8,
+          "returnEventId": null,
+          "status": "done"
+        }
+      },
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 2
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "tip-event-rage-imagined",
+      "roleId": "design",
+      "seed": "e24-design-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "low-pay-tip"
+        }
+      ],
+      "expected": {
+        "eventId": "low-pay-tip",
+        "pay": 24,
+        "turn": 6,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 37,
+          "to": 24,
+          "historyIndex": 8,
+          "returnEventId": "wing-three-status-channels",
+          "status": "open"
+        }
+      },
+      "phase": "event",
+      "mode": "imagined",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "low-pay-tip"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "tip-result-rage-imagined",
+      "roleId": "design",
+      "seed": "e24-design-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "low-pay-tip"
+        }
+      ],
+      "expected": {
+        "eventId": "wing-three-status-channels",
+        "pay": 24,
+        "turn": 6,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 37,
+          "to": 24,
+          "historyIndex": 8,
+          "returnEventId": null,
+          "status": "done"
+        }
+      },
+      "phase": "result",
+      "mode": "imagined",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "low-pay-tip"
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "unpaid-leave-cut",
+      "roleId": "sales",
+      "seed": "e24-sales-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-promise",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-roas-window",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-formula-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-commission",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-assistant",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-hello-integration",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "kind-workday",
+        "pay": 29,
+        "turn": 9,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 32,
+          "to": 29,
+          "historyIndex": 16,
+          "returnEventId": null,
+          "status": "queued"
+        }
+      }
+    },
+    {
+      "id": "tip-event-rage-real",
+      "roleId": "sales",
+      "seed": "e24-sales-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-promise",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-roas-window",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-formula-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-commission",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-assistant",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-hello-integration",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "low-pay-tip"
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "pay": 29,
+        "turn": 9,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 32,
+          "to": 29,
+          "historyIndex": 16,
+          "returnEventId": "rick-traffic-diet",
+          "status": "open"
+        }
+      },
+      "phase": "event",
+      "mode": "real",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-promise",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-roas-window",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-formula-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-commission",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-assistant",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-hello-integration",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "low-pay-tip"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "tip-result-rage-real",
+      "roleId": "sales",
+      "seed": "e24-sales-7-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-promise",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-roas-window",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-formula-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-commission",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-assistant",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-hello-integration",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "low-pay-tip"
+        }
+      ],
+      "expected": {
+        "eventId": "rage-aftermath",
+        "pay": 29,
+        "turn": 9,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 32,
+          "to": 29,
+          "historyIndex": 16,
+          "returnEventId": "rick-traffic-diet",
+          "status": "open"
+        }
+      },
+      "phase": "result",
+      "mode": "real",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-promise",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "license-group-size",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-roas-window",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-formula-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-commission",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-assistant",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-hello-integration",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "low-pay-tip"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "deferred-mood",
+      "roleId": "sales",
+      "seed": "e24-sales-z-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales-assistant",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-roas-window",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-forecast-zoo",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-handover-promise-version",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-hello-integration",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "floor-notice",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "mood-collapse",
+        "pay": 24,
+        "turn": 9,
+        "completed": false,
+        "salaryAdvice": {
+          "from": 34,
+          "to": 24,
+          "historyIndex": 17,
+          "returnEventId": null,
+          "status": "queued"
+        }
+      }
+    },
+    {
+      "id": "cut-to-30",
+      "roleId": "mis",
+      "seed": "e24-mis-c-m",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mis-access-approval",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mis-printer-is-ai",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-asset-ghost",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "travel-staff-prize",
+        "pay": 30,
+        "turn": 4,
+        "completed": false,
+        "salaryAdvice": null
+      }
+    }
+  ]
+}
