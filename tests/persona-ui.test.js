@@ -10,7 +10,7 @@ import {getRageV20,rageTargetForV20} from '../dist/rage-v20.js';
 import {getRageV16} from '../dist/rage-v16.js';
 
 test('all named game characters have stable IDs, public aliases and original portrait paths',()=>{
- const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友'};
+ const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友',sophie:'紅茶',jonathan:'強哥',owen:'歐文',sam:'山姆',cindy:'辛蒂'};
  assert.deepEqual(Object.fromEntries(Object.keys(PERSONAS).map(id=>[id,displayName(id)])),expected);
  for(const [id,person]of Object.entries(PERSONAS)){
   assert.equal(person.image,`./assets/${id}.png`);
@@ -20,6 +20,23 @@ test('all named game characters have stable IDs, public aliases and original por
  assert.equal(PERSONAS.meimei.title,'業務經理');
  assert.equal(PERSONAS.meimei.portrait,true);
  assert.equal(displayName('self'),'self');
+});
+
+test('the five new character identities use supplied titles and display-only aliases without rewriting replay prose',()=>{
+ const expected={sophie:'稽核主管',jonathan:'助理工程師',owen:'商務開發總監',sam:'資深資料探勘工程師',cindy:'資深專案管理師'};
+ for(const [id,title]of Object.entries(expected)){assert.equal(PERSONAS[id].title,title);assert.equal(PERSONAS[id].portrait,true);assert.ok(PERSONAS[id].about);}
+ assert.match(PERSONAS.sophie.about,/不是綠茶/);assert.match(PERSONAS.sophie.about,/戲稱為夫妻.*沒人能確認/);
+ assert.match(PERSONAS.jonathan.about,/台大資工/);assert.match(PERSONAS.jonathan.about,/助理工程師能決定/);
+ for(const trait of ['墨鏡','金項鏈','特斯拉','約跑'])assert.ok(PERSONAS.owen.about.includes(trait));
+ for(const trait of ['成大學士加碩士','傑克的前主管','Netflix','午睡'])assert.ok(PERSONAS.sam.about.includes(trait));
+ assert.match(PERSONAS.cindy.about,/曾經喜愛.*看不順眼/);
+ const text='Sophie／蘇菲和Jonathan找Owen，Sam跟Cindy在旁邊。';
+ assert.equal(displayText(text),'紅茶／紅茶和強哥找歐文，山姆跟辛蒂在旁邊。');
+ assert.equal(replayText(text),text,'new names remain presentation-only for historical proof text');
+ const protectedText='Samantha Sampler sam rage_sam ./assets/Sophie.png https://example.test/Jonathan?Sam=Cindy';
+ assert.equal(displayText(protectedText),protectedText);
+ const event={speaker:'sophie',body:text,choices:[{text:'問Jonathan',result:'Cindy記下來'}]};
+ assert.deepEqual(applyPersonaCopy(event),event,'the new public names never rewrite committed engine prose');
 });
 
 test('display aliases handle Chinese-adjacent names and existing nicknames without changing identifiers or URLs',()=>{

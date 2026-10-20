@@ -87,9 +87,9 @@ function raiseReady(){
 }
 const button=(html,action)=>html.match(new RegExp(`<button\\b(?=[^>]*\\bdata-action="${action}")[^>]*>`))?.[0]||'';
 
-test('new UI candidates use e22 and retain the full eight-rank ladder and original portraits',async()=>{
+test('new UI candidates use e23 and retain the full eight-rank ladder and original portraits',async()=>{
  const app=appHarness();await tick();await app.action('roll');
- const candidate=vm.runInContext('candidate',app.context);assert.match(candidate.seed,/^e22-/);
+ const candidate=vm.runInContext('candidate',app.context);assert.match(candidate.seed,/^e23-/);
  await app.action('start');const html=app.html();
  assert.equal(app.state().seed,candidate.seed);assert.equal(career.careerLevels(app.state()).length,8);
  assert.match(html,/aria-label="八階職涯"/);assert.equal([...html.matchAll(/<small>LV\.\d<\/small>/g)].length,8);
@@ -189,4 +189,29 @@ test('e21 guides retain modern resource and group-rage rules without publishing 
  assert.match(html,/三頭馬車/);assert.match(html,/備份紀錄|租練團室/);assert.match(html,/我要談加薪/);assert.match(html,/多人同場會先讓你選一位/);
  assert.doesNotMatch(html,/你目前這局沿用原規則|\d+(?:\.\d+)?\s*[%％]|專屬.{0,8}[57]0|共通.{0,8}[23]0/);
  assert.doesNotMatch(html,/sales21-|bd21-|design-v21-/);
+});
+
+test('e23 character dialogue and both rage modes render on desktop and mobile without early outcomes',async()=>{
+ const {routes}=JSON.parse(await readFile(new URL('./fixtures/chronicle-routes-v23.json',import.meta.url),'utf8'));
+ for(const mobile of [false,true])for(const person of ['sophie','jonathan','owen','sam','cindy'])for(const mode of ['imagined','real']){
+  const fixture=routes.find(route=>route.id===`${person}-${mode}`);assert.ok(fixture);
+  const app=appHarness({mobile});await tick();
+  const run=engine.replayRun(fixture.roleId,fixture.seed,fixture.actions.slice(0,-1));run.runId=webcrypto.randomUUID();
+  const event=engine.getEvent(run),before=JSON.stringify(run),html=app.render(run,true);
+  assert.match(html,new RegExp(`src="\\./assets/${person}\\.png"`));assert.ok(html.includes(display(persona.PERSONAS[person].name)));
+  assert.ok(html.includes(display(persona.PERSONAS[person].title)));assert.match(html,/data-character-id=/);
+  assert.doesNotMatch(html,/這局保留原本的玩法|新的當場暴走與失控後續，從新人生開始/);
+  assert.equal(JSON.stringify(app.state()),before);assert.equal(app.calls.proof.length,0);
+  for(const choice of event.choices)assert.ok(!html.includes(display(choice.result)));
+  const buttons=html.slice(html.indexOf('<div class="choices '));assert.ok(buttons.indexOf('data-action="rage"')>buttons.lastIndexOf('data-choice='));
+  await app.action('rage');
+  if(engine.getRageTargets(run).length>1){
+   assert.equal(app.calls.rage.length,0);assert.match(app.dialogHTML(),new RegExp(`data-rage-target="${person}"`));
+   await app.action('rage-target',{rageTarget:person});
+  }
+  assert.equal(app.calls.rage.length,1);assert.equal(app.calls.proof.length,1);assert.equal(app.state().pending,true);
+  assert.equal(app.state().rageContext.mode,mode);assert.equal(app.state().history.at(-1).speaker,person);
+  assert.match(app.html(),mode==='imagined'?/腦內夢境|現實沒有動手/:/現實失控|事情真的發生了/);
+  assert.match(app.html(),/事件後數值變化/);
+ }
 });

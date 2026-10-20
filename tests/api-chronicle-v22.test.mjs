@@ -73,7 +73,7 @@ test('natural e22 Helen prefixes verify both rage modes once without creating co
     assert.deepEqual(initial.body.characters, deriveCharacterStats(beforeRun), 'client-supplied counters and history are not evidence');
     const earned = await h.call('/api/characters', { method: 'POST', token: player.token, body: proof(fixture, runId) });
     assert.equal(earned.status, 200, fixture.id); assert.equal(earned.body.verified, true);
-    assert.equal(earned.body.characters.length, 11);
+    assert.equal(earned.body.characters.length, CHARACTER_IDS.length);
     assert.deepEqual(earned.body.characters, deriveCharacterStats(resolved));
     const a = rowFor(initial.body.characters), b = rowFor(earned.body.characters);
     assert.equal(b.encounters - a.encounters, 1);
@@ -101,7 +101,7 @@ test('natural e22 Helen prefixes verify both rage modes once without creating co
   const stats = await h.call('/api/stats');
   assert.equal(stats.status, 200); assert.equal(stats.body.totalRuns, 0); assert.equal(stats.body.uniqueEndings, 0);
   const global = await h.call('/api/characters');
-  assert.equal(global.status, 200); assert.equal(global.body.characters.length, 11);
+  assert.equal(global.status, 200); assert.equal(global.body.characters.length, CHARACTER_IDS.length);
   const expectedHelen = rageRoutes.map(fixture => rowFor(deriveCharacterStats(replayRun(fixture.roleId, fixture.seed, fixture.actions))));
   for (const key of CHARACTER_METRICS) {
     assert.equal(rowFor(global.body.characters)[key], expectedHelen.reduce((sum, row) => sum + row[key], 0));

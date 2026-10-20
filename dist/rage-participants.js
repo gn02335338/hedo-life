@@ -6,6 +6,9 @@ const GROUPS = Object.freeze({
   'banquet-welcome': Object.freeze(['rick', 'wing']),
   'dp-kpi-patch': Object.freeze(['jenjen', 'erich']),
   'dp-retention-bonus': Object.freeze(['rick', 'hope']),
+  'sophie-printer-undead': Object.freeze(['sophie', 'sonny']),
+  'jonathan-spare-time-qa': Object.freeze(['jonathan', 'rick']),
+  'sam-chip-study': Object.freeze(['sam', 'jack']),
 });
 const EXIT_TEAM = Object.freeze(['erich', 'jenjen', 'sonny']);
 

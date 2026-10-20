@@ -5,16 +5,17 @@ const PUBLIC_CACHE = 'hedo-character-public-v1';
 const escapeHTML = (value = '') => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const number = value => Number.isSafeInteger(value) && value >= 0 ? value.toLocaleString('zh-TW') : '—';
 const METRIC_LABELS = { encounters: '完成互動', imaginedHits: '幻想扁人', realHits: '真的被扁', affinityGained: '好感增加點數', affinityLost: '好感減少點數', affinityUpEvents: '好感增加次數', affinityDownEvents: '好感減少次數' };
+const ORIGINAL_CHARACTER_IDS = ['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei'];
 const rowsById = rows => new Map((Array.isArray(rows) ? rows : []).filter(row =>
   row && CHARACTER_IDS.includes(row.id) && CHARACTER_METRICS.every(key => Number.isSafeInteger(row[key]) && row[key] >= 0)
 ).map(row => [row.id, row]));
 function supportedCharacterSnapshot(rows) {
   if (!Array.isArray(rows)) return false;
   const known = rowsById(rows);
-  // Old verified public caches have ten people. Keep those totals; Helen is
-  // unknown until supplied, and an explicitly invalid row is not an old cache.
-  if (rows.some(row => row?.id === 'helen' && !CHARACTER_METRICS.every(key => Number.isSafeInteger(row[key]) && row[key] >= 0))) return false;
-  return CHARACTER_IDS.every(id => known.has(id) || id === 'helen' && !rows.some(row => row?.id === id));
+  // Keep verified ten- and eleven-person snapshots as they were. Every new
+  // character stays unknown until supplied; malformed supplied rows are errors.
+  if (rows.some(row => CHARACTER_IDS.includes(row?.id) && !CHARACTER_METRICS.every(key => Number.isSafeInteger(row[key]) && row[key] >= 0))) return false;
+  return ORIGINAL_CHARACTER_IDS.every(id => known.has(id));
 }
 const dateLabel = value => Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString('zh-TW', { hour12: false }) : '';
 const countCell = (row, key) => row ? `${number(row[key])}<small>次</small>` : '—';

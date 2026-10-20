@@ -201,7 +201,7 @@ test('a delayed registration read cannot roll back a newer verified character pr
 });
 
 test('a ten-character verified cache survives offline with its original totals, dates and owner hash',async()=>{
- const rows=characterRows().filter(row=>row.id!=='helen').map((row,index)=>({...row,encounters:index+4,affinityGained:index+2,affinityUpEvents:1}));
+ const rows=characterRows().slice(0,10).map((row,index)=>({...row,encounters:index+4,affinityGained:index+2,affinityUpEvents:1}));
  const original=client([],()=>withCharacters(rows));await original.cloud.init();
  const cached=JSON.parse(original.saved.get('hedo-character-cache-v1'));
  cached.verifiedAt='2026-09-30T12:34:56.000Z';cached.trackingSince='2026-09-01T00:00:00.000Z';
@@ -218,7 +218,7 @@ test('a ten-character verified cache survives offline with its original totals, 
 });
 
 test('a verified eleven-character response adds Helen to a legacy cache and ignores unknown IDs',async()=>{
- const all=characterRows().map(row=>row.id==='helen'?{...row,encounters:7,imaginedHits:2,realHits:1,affinityLost:25,affinityDownEvents:1}:row);
+ const all=characterRows().slice(0,11).map(row=>row.id==='helen'?{...row,encounters:7,imaginedHits:2,realHits:1,affinityLost:25,affinityDownEvents:1}:row);
  const legacy=all.filter(row=>row.id!=='helen'),original=client([],()=>withCharacters(legacy));await original.cloud.init();
  const ownerHash=JSON.parse(original.saved.get('hedo-character-cache-v1')).ownerHash;
  let online=false;
@@ -255,5 +255,41 @@ test('invalid supplied Helen rows cannot replace verified totals or be accepted 
   await offline.cloud.init();
   assert.deepEqual(JSON.parse(JSON.stringify(offline.cloud.state.characters)),[],'an explicitly malformed Helen row invalidates the supplied character snapshot');
   assert.equal(offline.saved.get('hedo-anonymous-v1'),'1'.repeat(64));
+ }
+});
+
+test('an eleven-character verified cache survives offline until all five new counters are actually supplied',async()=>{
+ const legacy=characterRows().slice(0,11),original=client([],()=>withCharacters(legacy));await original.cloud.init();
+ const saved=original.saved.get('hedo-character-cache-v1'),ownerHash=JSON.parse(saved).ownerHash;
+ let online=false;
+ const fresh=characterRows().map((row,index)=>index<11?row:{...row,encounters:index,imaginedHits:1,realHits:2,affinityLost:25,affinityDownEvents:1});
+ const c=client([],()=>{if(!online)throw new TypeError('offline');return withCharacters([...fresh,{id:'unregistered',realHits:-999}]);},{savedEntries:[...original.saved]});
+ await c.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),legacy);
+ assert.equal(c.saved.get('hedo-character-cache-v1'),saved,'offline loading preserves the actual old snapshot');
+ for(const id of ['sophie','jonathan','owen','sam','cindy'])assert.ok(!c.cloud.state.characters.some(row=>row.id===id),'missing counters are unknown, not zero');
+ online=true;await c.cloud.retry();
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),fresh);
+ const verified=JSON.parse(c.saved.get('hedo-character-cache-v1'));assert.equal(verified.characters.length,16);assert.equal(verified.ownerHash,ownerHash);
+ const reloaded=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved]});await reloaded.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(reloaded.cloud.state.characters)),fresh);
+ assert.equal(reloaded.cloud.state.charactersVerifiedAt,verified.verifiedAt);
+ assert.equal(reloaded.saved.get('hedo-anonymous-v1'),original.saved.get('hedo-anonymous-v1'));
+});
+
+test('an explicitly malformed new character never masquerades as an older missing row',async()=>{
+ const good=characterRows(),c=client([],()=>withCharacters(good));await c.cloud.init();
+ const saved=c.saved.get('hedo-character-cache-v1'),verifiedAt=c.cloud.state.charactersVerifiedAt;
+ for(const id of ['sophie','jonathan','owen','sam','cindy']){
+  const row=good.find(row=>row.id===id),missing={...row};delete missing.affinityUpEvents;
+  for(const bad of [{...row,realHits:-1},{...row,encounters:1.5},missing]){
+   const invalid=good.map(item=>item.id===id?bad:item),cached={...JSON.parse(saved),characters:invalid};
+   const offline=client([],()=>{throw new TypeError('offline');},{savedEntries:[['hedo-character-cache-v1',JSON.stringify(cached)]]});await offline.cloud.init();
+   assert.deepEqual(JSON.parse(JSON.stringify(offline.cloud.state.characters)),[],`${id} invalidates the malformed cache`);
+   const prior=client([],()=>withCharacters(invalid),{savedEntries:[...c.saved]});await prior.cloud.init();
+   assert.deepEqual(JSON.parse(JSON.stringify(prior.cloud.state.characters)),good);
+   assert.equal(prior.saved.get('hedo-character-cache-v1'),saved);
+   assert.equal(prior.cloud.state.charactersVerifiedAt,verifiedAt);
+  }
  }
 });

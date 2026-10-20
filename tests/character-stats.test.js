@@ -30,11 +30,11 @@ function directPlay(roleId,seed,actions,saved=false){
  return run;
 }
 
-test('character projection always returns the eleven public IDs and bounded integer metrics without accepting supplied totals',()=>{
- assert.deepEqual(CHARACTER_IDS,Object.keys(PERSONAS));assert.equal(CHARACTER_IDS.length,11);
+test('character projection always returns the sixteen public IDs and bounded integer metrics without accepting supplied totals',()=>{
+ assert.deepEqual(CHARACTER_IDS,Object.keys(PERSONAS));assert.equal(CHARACTER_IDS.length,16);
  assert.deepEqual(CHARACTER_METRICS,['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents']);
  for(const value of [null,undefined,{},[],{history:null},{characters:[{id:'wing',realHits:999}],flags:{rage_real:999,rage_target_wing:999}}]){
-  const result=deriveCharacterStats(value);assert.equal(result.length,11);
+  const result=deriveCharacterStats(value);assert.equal(result.length,16);
   for(const row of result){assert.deepEqual(Object.keys(row),['id',...CHARACTER_METRICS]);for(const key of CHARACTER_METRICS)assert.equal(row[key],0);}
   assert.deepEqual(characterHistoryChanges(value),[]);
  }
@@ -43,6 +43,26 @@ test('character projection always returns the eleven public IDs and bounded inte
  assert.deepEqual(characterAffinity(run,'wing'),{score:50,start:50,gained:0,lost:0});
  assert.deepEqual(characterAffinity(run,'unknown'),{score:50,start:50,gained:0,lost:0});
  assert.deepEqual(run,before);
+});
+
+test('the five added characters keep resolved conversations, dreams and real hits separate without changing historical rows',()=>{
+ const ids=['sophie','jonathan','owen','sam','cindy'];
+ const old={history:[history('wing',{boss:7}),history('helen',{trust:-4})]},oldBefore=copy(old);
+ const base=rows(old);
+ for(const id of ids){
+  assert.deepEqual(base[id],{id,encounters:0,imaginedHits:0,realHits:0,affinityGained:0,affinityLost:0,affinityUpEvents:0,affinityDownEvents:0});
+  const run={...old,history:[...old.history,
+   history(id,{trust:5,boss:90}),
+   history(id,{trust:-20,boss:-90},{eventId:'rage-release',kind:'rage',eventOutcome:{result:'腦內劇場'}}),
+   history(id,{}, {eventId:'rage-release',kind:'rage',eventOutcome:{result:'真的失控了'}}),
+   history(id,{trust:-20},{eventId:'rage-aftermath',kind:'rage-world'}),
+  ]},before=copy(run),actual=rows(run);
+  assert.deepEqual(actual[id],{id,encounters:4,imaginedHits:1,realHits:1,affinityGained:5,affinityLost:25,affinityUpEvents:1,affinityDownEvents:1});
+  assert.deepEqual(characterAffinity(run,id),{score:30,start:50,gained:5,lost:25});
+  for(const other of CHARACTER_IDS)if(other!==id)assert.deepEqual(actual[other],base[other],`${id} does not change ${other}'s counters`);
+  assert.deepEqual(run,before,'the additive projection never edits a saved history');
+ }
+ assert.deepEqual(old,oldBefore);
 });
 
 test('affinity uses only resolved choice ledgers, keeps team trust distinct, and ignores weather and follow-up fiction',()=>{

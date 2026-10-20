@@ -145,12 +145,12 @@ for (const mobile of [false, true]) {
   });
 }
 
-test('the eleven-character archive preserves old IDs and presents Helen and Sonny context without ending spoilers', () => {
+test('the expanded archive preserves the eleven published IDs and presents Helen and Sonny context without ending spoilers', () => {
   const oldIds = ['wing', 'spencer', 'erich', 'sonny', 'jenjen', 'rick', 'kind', 'hope', 'jack', 'meimei'];
-  assert.deepEqual(characters.CHARACTER_IDS, [...oldIds, 'helen']);
+  assert.deepEqual(characters.CHARACTER_IDS.slice(0, 11), [...oldIds, 'helen']);
   const html = characterBookHTML();
-  assert.equal([...html.matchAll(/class="character-card"/g)].length, 11);
-  assert.match(html, /11<small>位遊戲角色/);
+  assert.equal([...html.matchAll(/class="character-card"/g)].length, 16);
+  assert.match(html, /16<small>位遊戲角色/);
   for (const id of characters.CHARACTER_IDS) {
     assert.ok(html.includes(`id="character-card-${id}"`));
     assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));

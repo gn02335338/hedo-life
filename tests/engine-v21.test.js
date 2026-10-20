@@ -89,6 +89,6 @@ test('natural e21 first work scenes belong to the current job, while every saved
 test('the latest complete report uses e22 and retains every profession and every ending',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
  assert.equal(report.complete,true);assert.equal(report.found,341);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>route.seed.startsWith('e22-')));
+ assert.ok(report.routes.every(route=>route.seed.startsWith('e23-')));
  for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id&&route.actions.some(action=>newEvents().some(event=>event.id===action.eventId))),role.id);
 });

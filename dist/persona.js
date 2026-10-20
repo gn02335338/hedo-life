@@ -13,6 +13,11 @@ export const PERSONAS = Object.freeze(Object.fromEntries([
  ['jack','傑克','研發部經理'],
  ['meimei','水蛇','業務經理'],
  ['helen','前女友','產品開發總監','海倫的辦公室綽號。離場後仍在延長的交接與特權，被同事比喻成一段分不乾淨的關係；不代表實際交往紀錄。'],
+ ['sophie','紅茶','稽核主管','自稱紅茶，理由是「我又不是綠茶」。同事把她和阿福戲稱為夫妻；究竟是真是假，辦公室沒人能確認。稽核有紀錄，茶水間的傳聞沒有。'],
+ ['jonathan','強哥','助理工程師','台大資工畢業，職稱是助理工程師。工程排程、測試工時一有爭議，他就把職稱拿出來：「這是助理工程師能決定的嗎？」'],
+ ['owen','歐文','商務開發總監','墨鏡、金項鏈，開特斯拉。談完合作還能約跑；離職倒數講了幾回，下一場會議又看見他。'],
+ ['sam','山姆','資深資料探勘工程師','成大學士加碩士，傑克的前主管。光頭醒目，對學歷很有自信，對同事卻沒多少耐性。Netflix 和午睡，輪流占據他的工作時段。'],
+ ['cindy','辛蒂','資深專案管理師','翅膀曾經喜愛，後來又看不順眼。主管一任換一任，同事總把離場名單跟她連在一起；究竟誰趕走誰，會議紀錄沒有答案。'],
 ].map(([id,name,title,about])=>[id,Object.freeze({name,title,image:`./assets/${id}.png`,portrait:!['wing','spencer'].includes(id),...(about?{about}:{})})])));
 
 const names = Object.freeze({
@@ -24,6 +29,8 @@ const names = Object.freeze({
  Helen:'前女友',HELEN:'前女友',
 });
 const namePattern = new RegExp(`(?<![A-Za-z0-9_])(?:${Object.keys(names).join('|')})(?![A-Za-z0-9_])`,'g');
+const displayNames = Object.freeze({Sophie:'紅茶',SOPHIE:'紅茶',Jonathan:'強哥',JONATHAN:'強哥',Owen:'歐文',OWEN:'歐文',Sam:'山姆',SAM:'山姆',Cindy:'辛蒂',CINDY:'辛蒂'});
+const displayNamePattern = new RegExp(`(?<![A-Za-z0-9_])(?:${Object.keys(displayNames).join('|')})(?![A-Za-z0-9_])`,'g');
 
 export function displayName(id){return Object.hasOwn(PERSONAS,id)?PERSONAS[id].name:id;}
 
@@ -51,7 +58,7 @@ export function replayText(value=''){return proseText(value,renameCopy);}
 // Skip URLs, asset paths and identifiers while rendering both saved aliases
 // and original names with the current public name.
 export function displayText(value=''){
- return proseText(value,part=>renameCopy(part).replace(/(?<![A-Za-z0-9_])Moon\s+Dog(?![A-Za-z0-9_])/g,'真真'));
+ return proseText(value,part=>renameCopy(part).replace(/(?<![A-Za-z0-9_])Moon\s+Dog(?![A-Za-z0-9_])/g,'真真').replace(displayNamePattern,name=>displayNames[name]).replaceAll('蘇菲','紅茶'));
 }
 
 function copyFields(value,keys){

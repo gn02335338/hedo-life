@@ -1,0 +1,3271 @@
+{
+  "method": "Natural e23 canonical replay prefixes: twenty resolved scenes, both rage modes per new speaker, and each explicitly co-present group target. No event, flag, stat, history or RNG state is injected.",
+  "routes": [
+    {
+      "id": "sophie-red-tea-label",
+      "roleId": "system",
+      "seed": "e23-system-9-0",
+      "eventId": "sophie-red-tea-label",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "legal-title-sync",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-one-year-lecture",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-red-tea-label",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sophie-imagined",
+      "roleId": "system",
+      "seed": "e23-system-9-0",
+      "eventId": "sophie-red-tea-label",
+      "mode": "imagined",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "legal-title-sync",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-one-year-lecture",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "sophie-red-tea-label"
+        }
+      ]
+    },
+    {
+      "id": "jonathan-today-release",
+      "roleId": "system",
+      "seed": "e23-system-9-0",
+      "eventId": "jonathan-today-release",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "legal-title-sync",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-one-year-lecture",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-red-tea-label",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "jonathan-imagined",
+      "roleId": "system",
+      "seed": "e23-system-9-0",
+      "eventId": "jonathan-today-release",
+      "mode": "imagined",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "legal-title-sync",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-one-year-lecture",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-red-tea-label",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "jonathan-today-release"
+        }
+      ]
+    },
+    {
+      "id": "jonathan-real",
+      "roleId": "ai",
+      "seed": "e23-ai-9-0",
+      "eventId": "jonathan-today-release",
+      "mode": "real",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "jonathan-today-release"
+        }
+      ]
+    },
+    {
+      "id": "jonathan-assistant-shield",
+      "roleId": "ai",
+      "seed": "e23-ai-9-0",
+      "eventId": "jonathan-assistant-shield",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-weather",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-phone-wakeup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-assistant-shield",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sophie-source-file",
+      "roleId": "design",
+      "seed": "e23-design-9-0",
+      "eventId": "sophie-source-file",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-empty-marketing",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-source-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-typhoon-reply",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-wing-replay",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-invisible-button",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-microanimation",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-source-file",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sophie-real",
+      "roleId": "design",
+      "seed": "e23-design-9-0",
+      "eventId": "sophie-source-file",
+      "mode": "real",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-empty-marketing",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-source-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-typhoon-reply",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-wing-replay",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-invisible-button",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-microanimation",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "sophie-source-file"
+        }
+      ]
+    },
+    {
+      "id": "cindy-launch-owner",
+      "roleId": "design",
+      "seed": "e23-design-9-0",
+      "eventId": "cindy-launch-owner",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-empty-marketing",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-source-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-typhoon-reply",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-wing-replay",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-invisible-button",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-microanimation",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-source-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-departure-draft",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-wireframe-switch",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "efficiency-network-block",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-four-word-review",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-png-source",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-launch-owner",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "cindy-imagined",
+      "roleId": "design",
+      "seed": "e23-design-9-0",
+      "eventId": "cindy-launch-owner",
+      "mode": "imagined",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-empty-marketing",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-source-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-typhoon-reply",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-wing-replay",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-invisible-button",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-microanimation",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-source-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-departure-draft",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-wireframe-switch",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "efficiency-network-block",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-four-word-review",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-png-source",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "cindy-launch-owner"
+        }
+      ]
+    },
+    {
+      "id": "owen-calendar-chat",
+      "roleId": "bd",
+      "seed": "e23-bd-9-0",
+      "eventId": "owen-calendar-chat",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-channel-map",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-calendar-chat",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "owen-real",
+      "roleId": "bd",
+      "seed": "e23-bd-9-0",
+      "eventId": "owen-calendar-chat",
+      "mode": "real",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-channel-map",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "owen-calendar-chat"
+        }
+      ]
+    },
+    {
+      "id": "owen-triple-followup",
+      "roleId": "bd",
+      "seed": "e23-bd-9-0",
+      "eventId": "owen-triple-followup",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-channel-map",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-calendar-chat",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-crossborder-routing",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-referee-committee",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-triple-followup",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "owen-imagined",
+      "roleId": "bd",
+      "seed": "e23-bd-9-0",
+      "eventId": "owen-triple-followup",
+      "mode": "imagined",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-channel-map",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-calendar-chat",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-crossborder-routing",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-referee-committee",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "owen-triple-followup"
+        }
+      ]
+    },
+    {
+      "id": "sam-pureblood-degree",
+      "roleId": "ai",
+      "seed": "e23-ai-a-1",
+      "eventId": "sam-pureblood-degree",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sam-real",
+      "roleId": "ai",
+      "seed": "e23-ai-a-1",
+      "eventId": "sam-pureblood-degree",
+      "mode": "real",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "sam-pureblood-degree"
+        }
+      ]
+    },
+    {
+      "id": "sam-imagined",
+      "roleId": "ai",
+      "seed": "e23-ai-a-1",
+      "eventId": "sam-pureblood-degree",
+      "mode": "imagined",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "disk-suitcase-cloud",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "sam-pureblood-degree"
+        }
+      ]
+    },
+    {
+      "id": "owen-tesla-run",
+      "roleId": "bd",
+      "seed": "e23-bd-a-1",
+      "eventId": "owen-tesla-run",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-calendar-chat",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-triple-followup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-growth-empty-seats",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "farewell-perfect-attendance",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-resource-barter",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-conference-lunch-map",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-partner-certification",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-partner-sunset",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd-mou",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd-network",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-ghost-product-owner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-data-handshake",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-channel-map",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-three-status-channels",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "aircon-brand-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "cindy-real",
+      "roleId": "sales",
+      "seed": "e23-sales-a-1",
+      "eventId": "cindy-launch-owner",
+      "mode": "real",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd-network",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "cindy-launch-owner"
+        }
+      ]
+    },
+    {
+      "id": "jonathan-title-budget",
+      "roleId": "executive",
+      "seed": "e23-executive-a-1",
+      "eventId": "jonathan-title-budget",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cloud-attachment",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-pizza-overtime",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patent-php-hybrid",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-title-budget",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "cindy-not-every-departure",
+      "roleId": "ai",
+      "seed": "e23-ai-b-2",
+      "eventId": "cindy-not-every-departure",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-demo-human",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "sonny-phishing-curtain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mode-migration",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-human-fallback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "jonathan-spare-time-qa",
+      "roleId": "ai",
+      "seed": "e23-ai-b-2",
+      "eventId": "jonathan-spare-time-qa",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-demo-human",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "sonny-phishing-curtain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mode-migration",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-human-fallback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-token-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-spare-time-qa",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "group-jonathan-spare-time-qa-jonathan",
+      "roleId": "ai",
+      "seed": "e23-ai-b-2",
+      "eventId": "jonathan-spare-time-qa",
+      "target": "jonathan",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-demo-human",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "sonny-phishing-curtain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mode-migration",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-human-fallback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-token-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "jonathan-spare-time-qa",
+          "target": "jonathan"
+        }
+      ]
+    },
+    {
+      "id": "group-jonathan-spare-time-qa-rick",
+      "roleId": "ai",
+      "seed": "e23-ai-b-2",
+      "eventId": "jonathan-spare-time-qa",
+      "target": "rick",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-demo-human",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "sonny-phishing-curtain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mode-migration",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-human-fallback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-token-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "jonathan-spare-time-qa",
+          "target": "rick"
+        }
+      ]
+    },
+    {
+      "id": "sam-farewell-not-served",
+      "roleId": "ai",
+      "seed": "e23-ai-b-2",
+      "eventId": "sam-farewell-not-served",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-demo-human",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "sonny-phishing-curtain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mode-migration",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-human-fallback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-token-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-spare-time-qa",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-farewell-not-served",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sam-streaming-pause",
+      "roleId": "ai",
+      "seed": "e23-ai-b-2",
+      "eventId": "sam-streaming-pause",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-demo-human",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "sonny-phishing-curtain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "boss-mode-migration",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-human-fallback",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-token-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-spare-time-qa",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-farewell-not-served",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-streaming-pause",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "cindy-favor-temperature",
+      "roleId": "project",
+      "seed": "e23-project-b-2",
+      "eventId": "cindy-favor-temperature",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-overbooked",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-favor-temperature",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "cindy-manager-warranty",
+      "roleId": "project",
+      "seed": "e23-project-b-2",
+      "eventId": "cindy-manager-warranty",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-overbooked",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-favor-temperature",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-toggle",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "copy-master-late",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-hello-integration",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "platform-link-willpower",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "profit-credit-arena",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-chair-host",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-manager-warranty",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "owen-resignation-countdown",
+      "roleId": "sales",
+      "seed": "e23-sales-b-2",
+      "eventId": "owen-resignation-countdown",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-rfp-free-consultant",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-intern-vacation",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-roas-window",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-resignation-countdown",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sophie-one-minute-exit",
+      "roleId": "product",
+      "seed": "e23-product-l-5",
+      "eventId": "sophie-one-minute-exit",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "product-roadmap",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-price-ladder",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-metric-weather",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "product-metrics",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-application-progress",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "video-no-strength",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "product-boss-user",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-phone-wakeup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-one-minute-exit",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sam-chip-study",
+      "roleId": "system",
+      "seed": "e23-system-f-7",
+      "eventId": "sam-chip-study",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-chip-study",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "group-sam-chip-study-sam",
+      "roleId": "system",
+      "seed": "e23-system-f-7",
+      "eventId": "sam-chip-study",
+      "target": "sam",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "sam-chip-study",
+          "target": "sam"
+        }
+      ]
+    },
+    {
+      "id": "group-sam-chip-study-jack",
+      "roleId": "system",
+      "seed": "e23-system-f-7",
+      "eventId": "sam-chip-study",
+      "target": "jack",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "sam-chip-study",
+          "target": "jack"
+        }
+      ]
+    },
+    {
+      "id": "sophie-printer-undead",
+      "roleId": "ai",
+      "seed": "e23-ai-9-8",
+      "eventId": "sophie-printer-undead",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-two-voices",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-application-progress",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-printer-undead",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "group-sophie-printer-undead-sophie",
+      "roleId": "ai",
+      "seed": "e23-ai-9-8",
+      "eventId": "sophie-printer-undead",
+      "target": "sophie",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-two-voices",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-application-progress",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "sophie-printer-undead",
+          "target": "sophie"
+        }
+      ]
+    },
+    {
+      "id": "group-sophie-printer-undead-sonny",
+      "roleId": "ai",
+      "seed": "e23-ai-9-8",
+      "eventId": "sophie-printer-undead",
+      "target": "sonny",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-author-name",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-two-voices",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-application-progress",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "sophie-printer-undead",
+          "target": "sonny"
+        }
+      ]
+    }
+  ]
+}

@@ -33,7 +33,7 @@ test('nine careers retain the published 144 endings and expand to a 341-card cat
  assert.equal(FAMILIES.slice(0,16).length,16);assert.equal(ENDINGS.slice(0,144).length,144);
  assert.equal(FAMILIES.length,38);assert.equal(ENDINGS.length,341);
  for(const list of [ROLES,EVENTS,FANTASY_EVENTS,ENDINGS])assert.equal(new Set(list.map(x=>x.id)).size,list.length);
- assert.equal(EVENTS.length,303);assert.equal(FANTASY_EVENTS.length,4);
+ assert.equal(EVENTS.length,323);assert.equal(FANTASY_EVENTS.length,4);
  for(const role of ROLES){
   assert.deepEqual(Object.keys(role.stats).sort(),[...STAT_KEYS].sort());
   assert.equal(role.ladder.length,5);assert.ok(role.assistantTitle);

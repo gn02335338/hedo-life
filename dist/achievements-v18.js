@@ -104,7 +104,7 @@ export function deriveExtraAchievements(run){
  add('school-cross-field',educated&&['humanities','business'].includes(education.field)&&['system','ai','mis'].includes(run.actualRoleId));
  add('school-ntu-proof',educated&&education.schoolId==='ntu'&&education.degree!=='EMBA');
  add('school-emba-proof',educated&&education.degree==='EMBA');
- if(/^e(?:17|18|19|20|21|22)-/.test(run.seed||''))rankGoals.forEach(([id],rank)=>add(`rank-${id}`,(flags[`career_work_${rank}`]||0)>=(rank<=1?3:2)||(rank>1&&(flags[`career_duty_${rank}`]||0)>0)));
+ if(/^e(?:17|18|19|20|21|22|23)-/.test(run.seed||''))rankGoals.forEach(([id],rank)=>add(`rank-${id}`,(flags[`career_work_${rank}`]||0)>=(rank<=1?3:2)||(rank>1&&(flags[`career_duty_${rank}`]||0)>0)));
  const spend=['mood','energy','training','evidence','network','sabbatical'];
  for(const kind of spend)add(`wallet-${kind}`,(flags[`spend_${kind}`]||0)>0);
  add('wallet-thirty',(flags.cash_spent_total||0)>=30);

@@ -118,12 +118,39 @@ test('restarts preserve totals and tracking date while storage retains no seed o
  h.db.close();
 });
 
+test('existing eleven-person character tables extend additively without losing totals or changing the tracking date',async()=>{
+ const h=harness(),legacyIds=CHARACTER_IDS.slice(0,11),newIds=['sophie','jonathan','owen','sam','cindy'];
+ const trackingSince=h.store.global().trackingSince;
+ const legacy=legacyIds.map((id,index)=>({id,...Object.fromEntries(CHARACTER_METRICS.map(key=>[key,index+1]))}));
+ const columns=CHARACTER_METRICS.join(','),placeholders=CHARACTER_METRICS.map(()=>'?').join(',');
+ for(const row of legacy){
+  const values=CHARACTER_METRICS.map(key=>row[key]);
+  h.sql.exec(`INSERT INTO player_characters (player_id,character_id,${columns}) VALUES (?,?,${placeholders})`,'owner',row.id,...values);
+  h.sql.exec(`INSERT INTO global_characters (character_id,${columns}) VALUES (?,${placeholders})`,row.id,...values);
+ }
+ const reopened=h.reopen(),personal=cleanRows(reopened.snapshot('owner')),publicBefore=reopened.global();
+ assert.deepEqual(personal.slice(0,11),legacy);assert.deepEqual(cleanRows(publicBefore.characters).slice(0,11),legacy);
+ for(const id of newIds){
+  const expected={id,...Object.fromEntries(CHARACTER_METRICS.map(key=>[key,0]))};
+  assert.deepEqual(personal.find(row=>row.id===id),expected);
+  assert.deepEqual({...publicBefore.characters.find(row=>row.id===id)},expected);
+ }
+ assert.equal(publicBefore.trackingSince,trackingSince);
+ assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM player_characters').one().n,11,'reading new zero counters does not rewrite old database rows');
+ const run=entered('e22-old-table-extension');await reopened.record('owner',randomUUID(),run);
+ assert.deepEqual(cleanRows(reopened.snapshot('owner')),addRows(legacy,deriveCharacterStats(run)));
+ assert.deepEqual(cleanRows(reopened.global().characters),addRows(legacy,deriveCharacterStats(run)));
+ assert.equal(reopened.global().trackingSince,trackingSince);assert.equal(reopened.snapshot('other').length,16);
+ assert.ok(reopened.snapshot('other').every(row=>CHARACTER_METRICS.every(key=>row[key]===0)));
+ h.db.close();
+});
+
 test('HTTP progress ignores client stats and keeps anonymous players isolated',async()=>{
  const h=harness(),a=await h.register(),b=await h.register('b'.repeat(64)),run=entered(),payload=proof(run);
  const response=await h.call('/api/characters',{method:'POST',token:a.token,body:{...payload,characters:[{id:'wing',realHits:9999}],stats:{realHits:9999},history:[{speaker:'wing'}]}});
  assert.equal(response.status,200);assert.equal(response.body.verified,true);assert.equal(response.body.totalRuns,0);
  assert.deepEqual(response.body.characters,deriveCharacterStats(run));
- const other=await h.call('/api/me',{token:b.token});assert.equal(other.body.characters.length,11);assert.ok(other.body.characters.every(row=>CHARACTER_METRICS.every(key=>row[key]===0)));
+ const other=await h.call('/api/me',{token:b.token});assert.equal(other.body.characters.length,16);assert.ok(other.body.characters.every(row=>CHARACTER_METRICS.every(key=>row[key]===0)));
  assert.equal((await h.call('/api/characters',{method:'POST',token:b.token,body:payload})).status,409);
  const publicStats=await h.call('/api/characters');assert.equal(publicStats.status,200);assert.deepEqual(Object.keys(publicStats.body).sort(),['characters','trackingSince','version']);
  assert.equal(publicStats.body.version,1);assert.deepEqual(publicStats.body.characters,deriveCharacterStats(run));
