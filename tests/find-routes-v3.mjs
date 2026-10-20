@@ -3,7 +3,8 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { ROLES } from '../dist/roles.js';
 import { FAMILIES, ENDINGS } from '../dist/endings.js';
-import { CAREER_FAMILIES, careerEndingAvailable, careerReadiness } from '../dist/career.js';
+import { careerEndingAvailable, careerReadiness } from '../dist/career-api.js';
+import { CAREER_FAMILIES_V17 } from '../dist/career-v17.js';
 import { eligibleStoryEndings } from '../dist/story-career.js';
 import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, requestRage, validRun } from '../dist/engine.js';
 
@@ -18,13 +19,13 @@ export function replayRoute(route, verify = () => {}) {
     else if (action.type === 'career') run = requestCareer(run);
     else if (action.type === 'rage') {
       run=requestRage(run);checkpoint();
-      if(/^e(?:14|15|16)-/.test(route.seed))run=advance(run);
+      if(/^e(?:14|15|16|17)-/.test(route.seed))run=advance(run);
     }
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
       checkpoint();
-      if(!(/^e(?:14|15|16)-/.test(route.seed)&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
+      if(!(/^e(?:14|15|16|17)-/.test(route.seed)&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
     }
     checkpoint();
   }
@@ -49,11 +50,11 @@ function utility(run,target) {
   if(target==='sycophant') value+=Math.min(s.lick,75)*3+Math.min(s.boss,68)*3;
   if(target==='assistant'&&run.roleId==='executive')value+=Math.max(0,65-s.boss)*2+safe(s.boss,16);
   if(target==='historian') value+=Math.min(f.archive||0,4)*45;
-  const careerRank=CAREER_FAMILIES.indexOf(target);
+  const careerRank=CAREER_FAMILIES_V17.indexOf(target);
   if(careerRank>=0||target==='consultant'){
-    const rank=careerRank>=0?careerRank:2;
+    const rank=careerRank>=0?careerRank:5;
     value+=Math.min(run.rank,rank)*180+Math.min(s.skill,90)*1.8+Math.min(s.trust,75)*1.2+Math.min(s.boss,82)*1.6+safe(s.boss,42);
-    if(run.assignment==='assistant')value-=200;
+    if(run.assignment==='assistant')value+=rank===0?200:-200;
     if(run.rank===rank&&careerEndingAvailable(run))value+=150;
   }
   if(target==='second_offer')value+=Math.min(f.offer_checked||0,2)*100+Math.min(f.alumni_links||0,2)*95+Math.min(s.skill,60);
@@ -69,7 +70,7 @@ function utility(run,target) {
 }
 
 function simulateRage(roleId,target,attempt) {
-  const seed=`e16-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  const seed=`e17-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let start=advance(requestRage(createRun(roleId,seed)));
   let fallback=start;
   function search(run,depth){
@@ -87,15 +88,15 @@ function simulateRage(roleId,target,attempt) {
 
 export function simulate(roleId,target,attempt) {
   if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt);
-  const seed=`e16-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  const seed=`e17-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[];
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
   const choose=index=>{actions.push({type:'choice',eventId:run.eventId,index});run=advance(applyChoice(run,index));};
   const leave=()=>{actions.push({type:'exit'});run=requestExit(run);};
-  const targetRank=CAREER_FAMILIES.indexOf(target);
-  const desiredRank=()=>targetRank>=0?targetRank:target==='consultant'?2:target==='promotion'?Math.max(1,run.rank+((run.flags.promotions||0)>0?0:1)):0;
-  const careerTarget=()=>targetRank>=0?(run.assignment!=='assistant'&&((run.rank===targetRank&&careerEndingAvailable(run))||(run.rank>targetRank&&!run.resumeEventId))):eligibleStoryEndings(run).includes(target)?true:target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1&&(run.flags.promotions||0)>0:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
+  const targetRank=CAREER_FAMILIES_V17.indexOf(target);
+  const desiredRank=()=>targetRank>=0?targetRank:target==='consultant'?5:target==='promotion'?Math.max(1,run.rank+((run.flags.promotions||0)>0?0:1)):0;
+  const careerTarget=()=>targetRank>=0?((run.rank===targetRank&&careerEndingAvailable(run))||(run.rank>targetRank&&run.rank>=4&&!run.resumeEventId)):eligibleStoryEndings(run).includes(target)?true:target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1&&(run.flags.promotions||0)>0:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
   const effectIndex=effect=>evChoiceIndex(getEvent(run),effect);
   for(let step=0;step<150&&!run.completed;step++) {
     if(canRequestBreak(run)&&run.stats.mood<30&&run.stats.cash>35&&!['broke','burnout'].includes(target)){
@@ -103,10 +104,14 @@ export function simulate(roleId,target,attempt) {
       const best=options.map(({i})=>({i,score:utility(applyChoice(menu,i),target)})).sort((a,b)=>b.score-a.score)[0];
       if(best&&best.score>utility(run,target)){actions.push({type:'break'});run=menu;choose(best.i);continue;}
     }
-    if(canRequestCareer(run)&&target!=='assistant'&&(run.rank<desiredRank()||(run.assignment==='assistant'&&desiredRank()>0))){
-      const targetLevel=run.assignment==='assistant'?0:run.rank+1;
-      const skillNeed=[50,55,65,75,82][targetLevel],bossNeed=[35,40,45,50,60][targetLevel],trustNeed=[30,35,45,50,60][targetLevel];
-      if(careerReadiness(run).ready||run.stats.skill<skillNeed||run.stats.trust<trustNeed||run.stats.boss<bossNeed){actions.push({type:'career'});run=requestCareer(run);continue;}
+    if(canRequestCareer(run)&&target!=='assistant'&&targetRank!==0&&(run.rank<desiredRank()||(run.assignment==='assistant'&&desiredRank()>0))){
+      const menu=requestCareer(run),review=getEvent(menu);
+      // Read eligibility from the real review rather than maintaining another
+      // set of rank-specific merit / politics thresholds in this finder.
+      const canApply=review.choices.some(choice=>choice.check&&choice.available!==false);
+      const training=evChoiceIndex(review,'careerTrain');
+      const usefulTraining=training>=0&&utility(applyChoice(menu,training),target)>utility(run,target);
+      if(careerReadiness(run).ready||canApply||usefulTraining){actions.push({type:'career'});run=menu;continue;}
     }
     const ev=getEvent(run);
     if(target==='ragequit'&&run.eventId==='onboarding'){choose(2);continue;}
@@ -126,7 +131,7 @@ export function simulate(roleId,target,attempt) {
       choose(effectIndex(eligibleStoryEndings(run).includes(target)?'storyCareer':'legacyCareer'));continue;
     }
     if(run.eventId==='career-step-down'){
-      choose(effectIndex(targetRank===1?'careerDemoteDeputy':'careerDemoteStaff'));continue;
+      choose(effectIndex(targetRank===4?'careerDemoteDeputy':'careerDemoteStaff'));continue;
     }
     if(run.eventId==='story-exit'){
       const direct=effectIndex(target);choose(direct>=0?direct:effectIndex('rankHub'));continue;
@@ -164,7 +169,7 @@ export function simulate(roleId,target,attempt) {
     }
     if(run.eventId==='career-review'){
       const desired=desiredRank();
-      const needsPromotion=target!=='assistant'&&(run.assignment==='assistant'?desired>0:run.rank<desired);
+      const needsPromotion=target!=='assistant'&&targetRank!==0&&(run.assignment==='assistant'?desired>0:run.rank<desired);
       const pass=ev.choices.findIndex((c,i)=>c.available!==false&&c.check&&['careerPromote','careerRegularize'].includes(applyChoice(run,i).pendingEffect));
       if(needsPromotion&&pass>=0){choose(pass);continue;}
       const candidates=needsPromotion?[2,3]:[3,2];
@@ -194,6 +199,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   const found=new Map();const attempts=[];
   for(const role of ROLES) for(const family of FAMILIES){
     const desired=`${family.id}-${role.id}`;
+    if(!ENDINGS.some(ending=>ending.id===desired))continue;
     if(found.has(desired))continue;
     let attempt=0;
     for(;attempt<maxAttempts&&!found.has(desired);attempt++){
@@ -211,7 +217,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-stories','events-departures'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };

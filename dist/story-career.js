@@ -9,7 +9,7 @@ const STORY_RULES=[
  {family:'alumni_network',eligible:r=>(r.flags.alumni_links||0)>=3&&r.stats.trust>=60,
   text:'離職後的第一頓飯，約那些還會互相幫忙的人。',
   result:'你在前同事群組問誰晚上有空，沒有人請你先開會議。幾個工作機會和一份菜單同時傳來，你先回覆今晚想吃什麼。'},
- {family:'consultant',eligible:r=>r.assignment!=='assistant'&&r.rank>=2&&(r.flags.consultant_offer||0)>=1,
+ {family:'consultant',eligible:r=>r.assignment!=='assistant'&&r.rank>=(r.seed?.startsWith('e17-')?5:2)&&(r.flags.consultant_offer||0)>=1,
   text:'顧問可以談，先把範圍與時數寫進合約。',
   result:'你把顧問安排逐項寫清楚，包含交付、時數與另外計費的項目。對方說這樣好像很見外，你說這樣才能合作久一點。'},
  {family:'merged_out',eligible:r=>(r.flags.merge_notice||0)>=1,

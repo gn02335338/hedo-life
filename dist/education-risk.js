@@ -1,5 +1,5 @@
 import { ROLE_MAP } from './roles.js';
-import { CAREER_LEVELS } from './career.js';
+import { careerLevels, fullCareer } from './career-api.js';
 import { educationLabel } from './education.js';
 
 // These are the fictional boss's prejudices, not school rankings or hiring advice.
@@ -12,8 +12,8 @@ export function educationRisk(run){
  const subjectDisliked=ed.degree==='EMBA'||['humanities','business'].includes(ed.field);
  const mismatch=ENGINEERING_ROLES.includes(run.actualRoleId)&&!TECHNICAL_SUBJECTS.includes(ed.department);
  const favorite=ed.schoolId==='ntu'&&ed.degree!=='EMBA';
- const rankFactor=CAREER_LEVELS[run.rank].payMultiplier/(run.actualRoleId==='executive'?CAREER_LEVELS[2].payMultiplier:1);
- const assignmentFactor=run.assignment==='assistant'?.78:1;
+ const levels=careerLevels(run),rankFactor=levels[run.rank].payMultiplier/(run.actualRoleId==='executive'?levels[fullCareer(run)?5:2].payMultiplier:1);
+ const assignmentFactor=run.assignment==='assistant'?.78/(fullCareer(run)?levels[0].payMultiplier:1):1;
  const [low,high]=role.payRange.map(pay=>pay*rankFactor*assignmentFactor);
  const payPosition=(run.pay-low)/(high-low),highPay=payPosition>=.7;
  const eligible=schoolDisliked||subjectDisliked||mismatch;

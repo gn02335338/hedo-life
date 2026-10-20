@@ -9,7 +9,8 @@ import * as endings from '../dist/endings.js';
 import * as legacy from '../dist/legacy.js';
 import * as engine from '../dist/engine.js';
 import * as achievements from '../dist/achievements.js';
-import * as career from '../dist/career.js';
+import * as career from '../dist/career-api.js';
+import * as currentCareer from '../dist/career-v17.js';
 import * as persona from '../dist/persona.js';
 import {polishDreamText} from '../dist/copy-v15.js';
 
@@ -30,7 +31,7 @@ function appHarness() {
     return nodes.get(selector);
   };
   const context = vm.createContext({
-    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...persona, polishDreamText,
+    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...currentCareer, ...persona, polishDreamText,
     requestRage(run) { calls.rage++; return engine.requestRage(run); },
     applyChoice(run, index) { calls.choice++; return engine.applyChoice(run, index); },
     advance(run) { calls.advance++; return engine.advance(run); },
@@ -148,10 +149,10 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e16 and the guide describes the current speaker', () => {
+test('new browser lives use e17 and the guide describes the current speaker', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e16-[a-f0-9]+$/);
+  assert.match(seed, /^e17-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
@@ -159,13 +160,13 @@ test('new browser lives use e16 and the guide describes the current speaker', ()
   assert.ok(!guide.includes('挑選對象'));
 });
 
-test('e16 lives use the current rage label without an upgrade notice, while e13 keeps its original notice', () => {
-  const app = appHarness(), initial = engine.createRun('ai', 'e16-ui-current-cohort');
+test('e17 lives use the current rage label without an upgrade notice, while e13 keeps its original notice', () => {
+  const app = appHarness(), initial = engine.createRun('ai', 'e17-ui-current-cohort');
   assert.ok(!app.render(initial).includes('class="upgrade-inline"'));
   assert.ok(!app.html().includes('class="rules-notice"'));
   let real;
   for (let index = 0; index < 100; index++) {
-    const result = engine.requestRage(engine.createRun('ai', `e16-ui-rage-tag-${index}`));
+    const result = engine.requestRage(engine.createRun('ai', `e17-ui-rage-tag-${index}`));
     if (result.rageContext?.mode === 'real') { real = result; break; }
   }
   assert.ok(real, 'a natural actual-rage result is available');
@@ -176,4 +177,60 @@ test('e16 lives use the current rage label without an upgrade notice, while e13 
   const legacy = app.render(engine.requestRage(engine.createRun('ai', 'e13-ui-cohort-notice')));
   assert.ok(legacy.includes('class="upgrade-inline"'));
   assert.match(legacy, /class="tag">卡通暴走<\/span>/);
+});
+
+function initialAssistant(cohort) {
+  for (let index = 0; index < 100; index++) {
+    const run = engine.createRun('system', `${cohort}-ui-assistant-${index}`);
+    if (run.assignment === 'assistant') return run;
+  }
+  throw new Error('Missing natural assistant assignment');
+}
+
+test('new work cards show all eight real titles and select the assistant stage', () => {
+  const app = appHarness(), html = app.render(initialAssistant('e17'));
+  const track = html.match(/<div class="career-track full-career">[\s\S]*?<\/ol>/)?.[0];
+  assert.ok(track);assert.match(track, /aria-label="八階職涯"/);
+  assert.equal([...track.matchAll(/<li /g)].length, 8);
+  assert.equal([...track.matchAll(/aria-current="step"/g)].length, 1);
+  assert.match(track, /<li class="current"[^>]*aria-current="step"[^>]*>[\s\S]*?LV\.0<\/small>助理工程師/);
+  for (const title of currentCareer.CAREER_LADDERS_V17.system) assert.ok(track.includes(title), title);
+  vm.runInContext('careerGuide()', app.context);
+  const guide = app.nodes.get('#dialog-content').innerHTML;
+  assert.equal([...guide.matchAll(/<li /g)].length, 8);
+  assert.match(guide, /資深、主任仍以專業交付為主/);
+});
+
+test('published five-stage assistant work cards remain unranked', () => {
+  const app = appHarness(), html = app.render(initialAssistant('e16'));
+  const track = html.match(/<div class="career-track">[\s\S]*?<\/ol>/)?.[0];
+  assert.ok(track);assert.match(track, /aria-label="五階職涯"/);assert.match(track, /待轉正/);
+  assert.equal([...track.matchAll(/<li /g)].length, 5);
+  assert.doesNotMatch(track, /aria-current="step"|LV\.7|主任工程師/);
+});
+
+test('career preparation respects each cohort maximum instead of stopping new lives at deputy rank', () => {
+  const app = appHarness();
+  function control(seed, rank) {
+    app.context.testRun = { ...engine.createRun('system', seed), assignment: 'honest', actualRoleId: 'system', turn: 20, rank };
+    return vm.runInContext('run=testRun;careerControl()', app.context);
+  }
+  for (const rank of [4, 5, 6]) {
+    const html = control('e17-ui-senior', rank);
+    assert.match(html, /準備升遷/);assert.doesNotMatch(html, /本局的升遷評核已結束/);
+  }
+  assert.equal(control('e17-ui-chief', 7), '');
+  assert.equal(control('e16-ui-chief', 4), '');
+});
+
+test('career statistics retain old family meanings beside the new assistant and professional stages', () => {
+  const assistant = endings.ENDINGS.find(ending => ending.family === 'career_assistant');
+  const staff = endings.ENDINGS.find(ending => ending.family === 'career_staff');
+  assert.ok(assistant);assert.ok(staff);
+  const app = appHarness();
+  app.context.testData = { endings: [{ id: assistant.id, count: 1 }, { id: staff.id, count: 2 }] };
+  const html = vm.runInContext('careerStatsHTML(testData)', app.context);
+  assert.match(html, /八階職涯結算 · 3局/);
+  assert.match(html, /助理：1局/);assert.match(html, /專業員工：2局/);
+  assert.equal([...html.matchAll(/class="bar-row"/g)].length, 8);
 });

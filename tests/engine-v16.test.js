@@ -63,7 +63,7 @@ test('six Jack colleague scenes have valid aliases, evidence choices and an elig
 });
 
 test('new natural route histories contain only public aliases and original controls stay replayable',()=>{
- const routes=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url))).routes;
+ const routes=JSON.parse(readFileSync(new URL('./fixtures/legacy-e16-routes.json',import.meta.url))).filter(route=>!route.ending.startsWith('feature-'));
  for(const route of routes){
   assert.ok(route.seed.startsWith('e16-'));
   const run=replayRun(route.roleId,route.seed,route.actions);assert.equal(run.completed,true);

@@ -44,7 +44,7 @@ function checkpoints(route){
  }
  return hashes;
 }
-function report(){return JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8'));}
+function report(){return {routes:JSON.parse(readFileSync(new URL('./fixtures/legacy-e16-routes.json',import.meta.url),'utf8'))};}
 function routeFor(ending){const route=report().routes.find(r=>r.ending===ending);assert.ok(route,`natural witness ${ending}`);assert.ok(route.seed.startsWith('e16-'));return route;}
 
 test('e8 nine-role career ladders have five distinct stages while published role titles remain intact',()=>{

@@ -55,8 +55,8 @@ export function deriveAchievements(run){
  add('assistant',onboard&&flags.assistant>0);
  add('robot',onboard&&run.roleId==='ai'&&run.actualRoleId!=='ai');
  add('promotion',flags.promotions>0);
- add('manager',flags.promotions>0&&flags.career_peak_rank>=2);
- add('director',flags.promotions>0&&flags.career_peak_rank>=3);
+ add('manager',flags.promotions>0&&flags.career_peak_rank>=(run.seed?.startsWith('e17-')?5:2));
+ add('director',flags.promotions>0&&flags.career_peak_rank>=(run.seed?.startsWith('e17-')?6:3));
  add('pip',run.pipCount>0);
  add('pip-pass',flags.pip_passed>0);
  add('pay-cut',flags.pay_cut>0);

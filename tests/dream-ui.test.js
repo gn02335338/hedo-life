@@ -9,7 +9,8 @@ import * as endings from '../dist/endings.js';
 import * as legacy from '../dist/legacy.js';
 import * as engine from '../dist/engine.js';
 import * as achievements from '../dist/achievements.js';
-import * as career from '../dist/career.js';
+import * as career from '../dist/career-api.js';
+import * as currentCareer from '../dist/career-v17.js';
 import * as persona from '../dist/persona.js';
 import { polishDreamText } from '../dist/copy-v15.js';
 
@@ -26,7 +27,7 @@ function appHarness() {
     return nodes.get(selector);
   };
   const context = vm.createContext({
-    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...persona, polishDreamText,
+    ...roles, ...sources, ...endings, ...legacy, ...engine, ...achievements, ...career, ...currentCareer, ...persona, polishDreamText,
     createFeedbackUI: () => ({ open() {} }),
     cloud: { state: { status: 'offline', achievements: [] }, subscribe() {}, init: async () => null, achievementProgress: async () => null, complete: async () => null },
     localStorage: { getItem: () => null, setItem() {} },
