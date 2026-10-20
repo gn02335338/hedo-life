@@ -7,6 +7,9 @@ import { DEPARTURE_EVENTS } from './events-departures.js';
 import { ADVISOR_EVENTS } from './events-advisor.js';
 import { JACK_EVENTS } from './events-jack.js';
 import { MEIMEI_EVENTS } from './events-meimei-v20.js';
+import { COMMERCIAL_EVENTS_V21 } from './events-commercial-v21.js';
+import { DESIGN_EVENTS_V21 } from './events-design-v21.js';
+import { PROFESSION_EVENTS_V21 } from './events-professions-v21.js';
 const choice = (text, detail, result, delta, flags = []) => ({ text, detail, result, delta, flags });
 
 export const EVENTS = [
@@ -1266,3 +1269,7 @@ EVENTS.push(...JACK_EVENTS);
 
 // e20 adds original sales-manager scenes without changing earlier draw pools.
 EVENTS.push(...MEIMEI_EVENTS);
+
+// New job-specific work belongs only to new e21 lives. Earlier cohorts keep
+// their published event order, eligibility and replay results.
+EVENTS.push(...COMMERCIAL_EVENTS_V21, ...DESIGN_EVENTS_V21, ...PROFESSION_EVENTS_V21);

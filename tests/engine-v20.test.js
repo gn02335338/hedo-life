@@ -236,11 +236,10 @@ test('saved personnel state rejects malformed queues, impossible floor flags and
  assert.equal(validRun({...copy(source),eventId:'watch-empty-corridor',flags:{...source.flags,floor_watch:0}}),false);
 });
 
-test('current e20 reachability includes every personnel family for every profession',()=>{
- const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
- assert.equal(report.complete,true);assert.equal(report.found,341);assert.equal(report.expected,341);
+test('published e20 routes retain every personnel family for every profession',()=>{
+ const routes=fixtures('legacy-e20-routes');
  for(const family of ['cold_storage','mediation_settled','mediation_pending'])for(const role of ROLES){
-  const route=report.routes.find(item=>item.ending===`${family}-${role.id}`);assert.ok(route,`${family}-${role.id}`);
+  const route=routes.find(item=>item.ending===`${family}-${role.id}`);assert.ok(route,`${family}-${role.id}`);
   assert.match(route.seed,/^e20-/);assert.equal(replayRun(route.roleId,route.seed,route.actions).endingId,route.ending);
  }
 });

@@ -153,10 +153,10 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e20 and the guide explains solo and group targets', () => {
+test('new browser lives use e21 and the guide explains solo and group targets', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e20-[a-f0-9]+$/);
+  assert.match(seed, /^e21-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
