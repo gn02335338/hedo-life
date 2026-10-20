@@ -13,6 +13,7 @@ function sampleLabel(row) {
  if (id === 'mood-self-destruct') return '自爆';
  if (id === 'mood-collapse') return '崩潰';
  if (id.startsWith('meal-')) return '飯局';
+ if (id.startsWith('wealth-')) return '離職後規劃';
  if (id.startsWith('pip-')) return 'PIP';
  if (row?.kind === 'self-care' || ['kind-break','kind-workday'].includes(id)) return '休整';
  if (row?.kind === 'banquet') return '尾牙';

@@ -55,7 +55,7 @@ test('all 347 e19 routes retain 14511 exact direct and JSON checkpoints, includi
 
 test('the three personnel endings exist for all nine professions without replacing their career titles',()=>{
  for(const role of ROLES)for(const family of ['cold_storage','mediation_settled','mediation_pending'])assert.ok(ENDINGS.some(ending=>ending.id===`${family}-${role.id}`));
- assert.equal(ENDINGS.length,341);
+ assert.equal(ENDINGS.filter(ending=>!ending.minRules||ending.minRules<=20).length,341);
 });
 
 test('personnel decisions keep ordinary PIP possible and only rarely offer a second improvement period',()=>{

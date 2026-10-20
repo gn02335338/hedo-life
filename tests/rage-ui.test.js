@@ -153,15 +153,19 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e26 and the guide explains solo and group targets', () => {
+test('new browser lives use e27 and the guide explains solo and group targets', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e26-[a-f0-9]+$/);
+  assert.match(seed, /^e27-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
   assert.ok(guide.includes('眼前跟你說話的人'));
   assert.ok(guide.includes('多人同場會先讓你選一位，取消不算出手'));
+  assert.ok(guide.includes('存款達 75、完成 6 次工作後'));
+  assert.ok(guide.includes('存款達 90、完成 10 次工作後'));
+  assert.ok(guide.includes('選定方向後才揭曉後續'));
+  assert.doesNotMatch(guide,/venture_independent|venture_restart|retired_free|retired_flexible/);
 });
 
 test('e17 lives use the current rage label without an upgrade notice, while e13 keeps its original notice', () => {

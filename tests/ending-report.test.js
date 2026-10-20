@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {ENDINGS} from '../dist/endings.js';
 import {buildEndingReport} from '../dist/ending-report.js';
 import {createRun,replayRun,STAT_KEYS} from '../dist/engine.js';
 import {replayRoute} from './find-routes-v3.mjs';
@@ -10,11 +11,11 @@ const {routes:mealRoutes}=JSON.parse(readFileSync(new URL('./fixtures/mood-meals
 const copy=value=>structuredClone(value);
 const stat=(report,key)=>report.stats.find(item=>item.key===key);
 
-test('all 341 natural e26 endings report the actual initial and committed states, including day-one exits and clamped limits',()=>{
- assert.equal(routes.length,341);
+test('all natural e27 endings report the actual initial and committed states, including day-one exits and clamped limits',()=>{
+ assert.equal(routes.length,ENDINGS.length);
  let boundaryValues=0,dayOneEndings=0;
  for(const route of routes){
-  assert.match(route.seed,/^e26-/);
+  assert.match(route.seed,/^e27-/);
   const expected=new Map();
   const run=replayRoute(route,state=>expected.set(state.history.length,{...state.stats}));
   const before=JSON.stringify(run),report=buildEndingReport(run),initial=createRun(route.roleId,route.seed);
@@ -27,6 +28,7 @@ test('all 341 natural e26 endings report the actual initial and committed states
   assert.deepEqual(report.samples.at(-1).stats,run.stats);
   for(const sample of report.samples){
    assert.deepEqual(sample.stats,expected.get(sample.decisionIndex),`${route.ending}/${sample.decisionIndex}`);
+   if(sample.eventId?.startsWith('wealth-'))assert.equal(sample.label,'離職後規劃');
    if(sample.decisionIndex)assert.equal(sample.turn,run.history[sample.decisionIndex-1].turn);
    boundaryValues+=Object.values(sample.stats).filter(value=>value===0||value===100).length;
   }

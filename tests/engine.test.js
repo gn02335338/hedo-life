@@ -28,10 +28,10 @@ const checkOutcome=(eventId,index,extras={},wanted='promote')=>{
  throw new Error(`No ${wanted} check result`);
 };
 
-test('nine careers retain the published 144 endings and expand to a 341-card catalog with eight career stages',()=>{
+test('nine careers retain the published 144 endings and expand to a 377-card catalog with eight career stages',()=>{
  assert.equal(VERSION,3);assert.equal(ROLES.length,9);assert.equal(STAT_KEYS.length,9);
  assert.equal(FAMILIES.slice(0,16).length,16);assert.equal(ENDINGS.slice(0,144).length,144);
- assert.equal(FAMILIES.length,38);assert.equal(ENDINGS.length,341);
+ assert.equal(FAMILIES.length,42);assert.equal(ENDINGS.length,377);
  for(const list of [ROLES,EVENTS,FANTASY_EVENTS,ENDINGS])assert.equal(new Set(list.map(x=>x.id)).size,list.length);
  assert.equal(EVENTS.filter(event=>(event.minRules||1)<26).length,323);assert.equal(EVENTS.length,323+EVENTS.filter(event=>event.minRules===26).length);assert.equal(FANTASY_EVENTS.length,4);
  for(const role of ROLES){
@@ -39,7 +39,7 @@ test('nine careers retain the published 144 endings and expand to a 341-card cat
   assert.equal(role.ladder.length,5);assert.ok(role.assistantTitle);
   assert.ok(role.payRange[1]>role.payRange[0]);
   assert.equal(ENDINGS.slice(0,144).filter(e=>e.roleId===role.id).length,16);
-  assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,role.id==='executive'?37:38);
+  assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,role.id==='executive'?41:42);
  }
  assert.equal(new Set(ENDINGS.map(e=>e.title)).size,ENDINGS.length);
  assert.equal(new Set(ENDINGS.map(e=>e.body)).size,ENDINGS.length);
@@ -266,8 +266,8 @@ test('save validation rejects malformed dice, school, actions, salary and lifecy
 
 test('every ending has a natural replayable witness using only ordinary actions',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8'));
- assert.equal(report.complete,true);assert.equal(report.found,341);assert.deepEqual(report.missing,[]);
- for(const name of ['events-quiz26-a','events-quiz26-b','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','rage-participants','personnel-v20','endings-personnel-v20','events-meimei-v20','rage-v20','salary-raise-v19','resources-v18','relationships-v18','meltdown-v18','achievements-v18','career-api','career-v17','onboarding-v17','endings-career-v17','engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','banquet','endings-rage','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures']){
+ assert.equal(report.complete,true);assert.equal(report.found,ENDINGS.length);assert.deepEqual(report.missing,[]);
+ for(const name of ['wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','rage-participants','personnel-v20','endings-personnel-v20','events-meimei-v20','rage-v20','salary-raise-v19','resources-v18','relationships-v18','meltdown-v18','achievements-v18','career-api','career-v17','onboarding-v17','endings-career-v17','engine','persona','rage-v16','events-jack','copy-v15','events-advisor','rage','rage-v14','banquet','endings-rage','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','story-career','endings','endings-career','endings-stories','events-departures']){
   const hash=createHash('sha256').update(readFileSync(new URL(`../dist/${name}.js`,import.meta.url))).digest('hex');assert.equal(report.sourceSha256[name],hash,`${name} changed after witnesses`);
  }
  assert.deepEqual(report.routes.map(r=>r.ending).sort(),ENDINGS.map(e=>e.id).sort());

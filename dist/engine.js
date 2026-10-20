@@ -28,6 +28,7 @@ import { selectWorkEventV21 } from './work-events-v21.js';
 import { getSalaryAdviceV24 } from './salary-advice-v24.js';
 import { getMoodCollapseV25, getMoodSelfDestructV25, moodCollapseProfileV25 } from './meltdown-v25.js';
 import { MEAL_GUEST_IDS_V25, MEAL_EVENTS_V25, withMealEntryV25, getMealV25, withMealRageCopyV25 } from './meals-v25.js';
+import { WEALTH_EVENTS_V27, wealthEligibilityV27, getWealthEventV27, withWealthEntryV27 } from './wealth-exit-v27.js';
 export {raiseAvailability} from './salary-raise-v19.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
@@ -35,7 +36,7 @@ export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e26-')?26:run.seed.startsWith('e25-')?25:run.seed.startsWith('e24-')?24:run.seed.startsWith('e23-')?23:run.seed.startsWith('e22-')?22:run.seed.startsWith('e21-')?21:run.seed.startsWith('e20-')?20:run.seed.startsWith('e19-')?19:run.seed.startsWith('e18-')?18:run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e27-')?27:run.seed.startsWith('e26-')?26:run.seed.startsWith('e25-')?25:run.seed.startsWith('e24-')?24:run.seed.startsWith('e23-')?23:run.seed.startsWith('e22-')?22:run.seed.startsWith('e21-')?21:run.seed.startsWith('e20-')?20:run.seed.startsWith('e19-')?19:run.seed.startsWith('e18-')?18:run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 // Leave three full work scenes for improvement, then review before the finale.
@@ -72,6 +73,7 @@ export function createRun(roleId,seed=Date.now()){
  if(contentRules(run)>=20)run.personnelPending=null;
  if(contentRules(run)>=24)run.salaryAdvice=null;
  if(contentRules(run)>=25)run.mealContext=null;
+ if(contentRules(run)>=27)run.wealthReturnEventId=null;
  return run;
 }
 function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta={}){
@@ -82,6 +84,10 @@ function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta
 }
 function rawGetEvent(run){
  if(!run||run.completed)return null;
+ if(WEALTH_EVENTS_V27.includes(run.eventId)){
+  if(contentRules(run)<27||!run.wealthReturnEventId)throw new Error('Invalid wealth departure');
+  return getWealthEventV27(run);
+ }
  if(contentRules(run)>=20&&(PERSONNEL_SCENES.includes(run.eventId)||WATCH_DAILY_IDS.includes(run.eventId)||run.eventId==='pip-passed')){
   if((WATCH_DAILY_IDS.includes(run.eventId)||['watch-review','watch-future'].includes(run.eventId))&&!run.flags.floor_watch&&run.eventId!=='watch-review')throw new Error('Invalid floor assignment');
   return getPersonnelEvent(run);
@@ -214,17 +220,19 @@ function rawGetEvent(run){
 }
 export function getEvent(run){
  const event=rawGetEvent(run);
+ if(contentRules(run)>=27&&WEALTH_EVENTS_V27.includes(event?.id))return event;
  if(contentRules(run)>=25&&(MEAL_EVENTS_V25.includes(event?.id)||event?.id==='mood-self-destruct'))return event;
  if(contentRules(run)>=24&&event?.id==='low-pay-tip')return event;
  if(contentRules(run)>=20&&(PERSONNEL_SCENES.includes(event?.id)||WATCH_DAILY_IDS.includes(event?.id)||event?.id==='pip-passed'))return event;
  if(contentRules(run)>=19&&RAISE_EVENTS.includes(event?.id))return event;
  if(contentRules(run)>=18&&['mood-collapse','crisis-mood','self-care'].includes(event?.id))return event;
- if(contentRules(run)>=17&&(['career-review','rank-exit','career-step-down'].includes(event?.id)||event?.id.startsWith('career-duty-')))return event;
+ if(contentRules(run)>=17&&(['career-review','rank-exit','career-step-down'].includes(event?.id)||event?.id.startsWith('career-duty-')))return contentRules(run)>=27?withWealthEntryV27(event,run):event;
  const edited=event&&contentRules(run)>=5?applyEventCopy(event,run,{jobTitle,educationLabel}):event;
  const wild=edited&&contentRules(run)>=12?applyWildOptions(edited,run):edited;
  const copied=contentRules(run)>=15?applyCopyV15(wild,run):wild;
  const named=contentRules(run)>=16?applyPersonaCopy(copied):copied;
- return contentRules(run)>=17?applyOnboardingV17(named,run,{jobTitle,educationLabel}):named;
+ const finalEvent=contentRules(run)>=17?applyOnboardingV17(named,run,{jobTitle,educationLabel}):named;
+ return contentRules(run)>=27?withWealthEntryV27(finalEvent,run):finalEvent;
 }
 const WEATHER=[{text:'Wing看完官網英文，決定對全世界不爽。',delta:-9},{text:'他剛開完別人的會，你負責承受餘震。',delta:-7},{text:'今天不知道誰先拍對馬屁，辦公室暫時放晴。',delta:6},{text:'Wing想到掛牌願景，暫時看誰都像未來股東。',delta:7},{text:'公司沒發生什麼事，老闆也先沒有。',delta:0},{text:'一個未回覆的訊息，讓今天變成臨時考核。',delta:-5}];
 function nextNormal(run){
@@ -243,7 +251,7 @@ function rankCompatibleReturn(run,eventId){
  const event=EVENTS.find(candidate=>candidate.id===eventId);
  return event&&((event.minRank??0)>legacyCareerRank(run)||(event.maxRank??4)<legacyCareerRank(run))?nextNormal(run):eventId;
 }
-function finish(run,family){run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;if(rules2(run))run.breakReturnEventId=null;if(contentRules(run)>=13){run.rageContext=null;run.banquetReturnEventId=null;}if(contentRules(run)>=18)run.meltdownReturnEventId=null;if(contentRules(run)>=19)run.raiseContext=null;if(contentRules(run)>=20)run.personnelPending=null;if(contentRules(run)>=24)run.salaryAdvice=null;if(contentRules(run)>=25)run.mealContext=null;return run;}
+function finish(run,family){run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;if(rules2(run))run.breakReturnEventId=null;if(contentRules(run)>=13){run.rageContext=null;run.banquetReturnEventId=null;}if(contentRules(run)>=18)run.meltdownReturnEventId=null;if(contentRules(run)>=19)run.raiseContext=null;if(contentRules(run)>=20)run.personnelPending=null;if(contentRules(run)>=24)run.salaryAdvice=null;if(contentRules(run)>=25)run.mealContext=null;if(contentRules(run)>=27)run.wealthReturnEventId=null;return run;}
 export function endingEligibility(run,target){const s=run.stats;const common=s.energy>=20&&s.cash>=30&&s.skill>=65&&s.trust>=55;
  if(target==='nasdaq')return common&&s.dream>=70;
  if(target==='taiwan')return common&&s.dream>=45;
@@ -392,6 +400,29 @@ function advanceCore(run){
  if(!run.pending||run.completed)return run;
  const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(next.pendingFamily)return finish(next,next.pendingFamily);
+ if(contentRules(next)>=27&&['wealthPlan','wealthStart','wealthRetire','wealthBack','wealthReturn'].includes(effect)){
+  if(effect==='wealthPlan'){
+   const eligibility=wealthEligibilityV27(next);
+   if(next.wealthReturnEventId||!['exit-menu','rank-exit','career-exit'].includes(last.eventId)||!eligibility.eligible)throw new Error('Invalid wealth entry');
+   next.wealthReturnEventId=last.eventId;next.eventId='wealth-plan';
+   if(eligibility.startup)next.flags.wealth_startup_notice=1;
+   if(eligibility.retirement)next.flags.wealth_retire_notice=1;
+   return next;
+  }
+  if(!next.wealthReturnEventId||!WEALTH_EVENTS_V27.includes(last.eventId))throw new Error('Missing wealth return');
+  if(effect==='wealthReturn'){
+   if(last.eventId!=='wealth-plan')throw new Error('Invalid wealth return');
+   next.eventId=next.wealthReturnEventId;next.wealthReturnEventId=null;return next;
+  }
+  if(effect==='wealthBack'){
+   if(!['wealth-startup','wealth-retire'].includes(last.eventId))throw new Error('Invalid wealth back');
+   next.eventId='wealth-plan';return next;
+  }
+  const eligibility=wealthEligibilityV27(next);
+  if(last.eventId!=='wealth-plan'||!(effect==='wealthStart'?eligibility.startup:eligibility.retirement))throw new Error('Unavailable wealth plan');
+  next.eventId=effect==='wealthStart'?'wealth-startup':'wealth-retire';return next;
+ }
+
  if(contentRules(next)>=25){
   if(effect==='moodSelfDestruct'){next.eventId='mood-self-destruct';return next;}
   if(effect==='mealOpen'){
@@ -521,6 +552,14 @@ export function advance(run){
   if(next.pay>=30)next.salaryAdvice=null;
   else{next.salaryAdvice.returnEventId=next.eventId;next.salaryAdvice.status='open';next.eventId='low-pay-tip';}
  }
+ if(run.pending&&contentRules(next)>=27&&!next.completed&&!next.pending&&!next.wealthReturnEventId&&!next.pip?.active&&next.stats.mood>12&&next.stats.energy>15&&['daily','fantasy'].includes(run.history.at(-1)?.kind)&&personnelSafe(next,getEvent(next))){
+  const eligibility=wealthEligibilityV27(next);
+  if((eligibility.startup&&!next.flags.wealth_startup_notice)||(eligibility.retirement&&!next.flags.wealth_retire_notice)){
+   next.wealthReturnEventId=next.eventId;next.eventId='wealth-plan';
+   if(eligibility.startup)next.flags.wealth_startup_notice=1;
+   if(eligibility.retirement)next.flags.wealth_retire_notice=1;
+  }
+ }
  return next;
 }
 export function canRequestBreak(run){return !!(run&&rules2(run)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getEvent(run)?.kind));}
@@ -560,7 +599,7 @@ export function requestRage(run,target){
  const next=structuredClone(current);next.actions.push({type:'rage'});
  next.rageContext={eventId:next.eventId,speaker:getEvent(next)?.speaker||'wing'};next.eventId='rage-menu';return next;
 }
-export function requestExit(run){if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=25?['mood-self-destruct',...MEAL_EVENTS_V25]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestExit(run){if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...MEAL_EVENTS_V25]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 export function replayRun(roleId,seed,actions){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -639,6 +678,16 @@ export function validRun(run){
     if(currentEventId!=='raise-request'&&context.view===null)return false;
    }else if(RAISE_EVENTS.includes(currentEventId))return false;
    if((run.flags.raise_attempts??0)>3||(run.flags.raise_last_work??0)>workCount(run))return false;
+  }
+  if(contentRules(run)>=27){
+   const returnId=run.wealthReturnEventId;
+   if(!(returnId===null||typeof returnId==='string'))return false;
+   if(returnId!==null){
+    if(WEALTH_EVENTS_V27.includes(returnId)||!WEALTH_EVENTS_V27.includes(currentEventId))return false;
+    const source=getEvent({...run,eventId:returnId,wealthReturnEventId:null});
+    if(!source||!(['exit-menu','rank-exit','career-exit'].includes(returnId)||['daily','fantasy'].includes(source.kind)))return false;
+   }else if(WEALTH_EVENTS_V27.includes(currentEventId))return false;
+   for(const key of ['wealth_startup_notice','wealth_retire_notice'])if(run.flags[key]!==undefined&&![0,1].includes(run.flags[key]))return false;
   }
   if(contentRules(run)>=25){
    const context=run.mealContext;

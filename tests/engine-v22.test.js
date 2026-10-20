@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {ENDINGS} from '../dist/endings.js';
 import {ROLES,ROLE_MAP} from '../dist/roles.js';
 import {EVENTS} from '../dist/events.js';
 import {SOURCES} from '../dist/public-sources.js';
@@ -132,10 +133,10 @@ test('only committed Helen dialogue records an encounter; ordinary work is neith
  const recorded=structuredClone(pending);deriveCharacterStats(pending);characterAffinity(pending,'helen');assert.deepEqual(pending,recorded);
 });
 
-test('the current e26 ending report remains complete across all occupations',()=>{
+test('the current e27 ending report remains complete across all occupations',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
- assert.equal(report.complete,true);assert.equal(report.found,341);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>route.seed.startsWith('e26-')));
+ assert.equal(report.complete,true);assert.equal(report.found,ENDINGS.length);assert.deepEqual(report.missing,[]);
+ assert.ok(report.routes.every(route=>route.seed.startsWith('e27-')));
  for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id),role.id);
 });
 

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {ENDINGS} from '../dist/endings.js';
 import {ROLES,ROLE_MAP} from '../dist/roles.js';
 import {EVENTS} from '../dist/events.js';
 import {SOURCES} from '../dist/public-sources.js';
@@ -86,9 +87,9 @@ test('natural e21 first work scenes belong to the current job, while every saved
  }
 });
 
-test('the latest complete report uses e26 and retains every profession and every ending',()=>{
+test('the latest complete report uses e27 and retains every profession and every ending',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
- assert.equal(report.complete,true);assert.equal(report.found,341);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>route.seed.startsWith('e26-')));
+ assert.equal(report.complete,true);assert.equal(report.found,ENDINGS.length);assert.deepEqual(report.missing,[]);
+ assert.ok(report.routes.every(route=>route.seed.startsWith('e27-')));
  for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id&&route.actions.some(action=>newEvents().some(event=>event.id===action.eventId))),role.id);
 });

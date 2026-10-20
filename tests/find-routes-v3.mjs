@@ -6,7 +6,11 @@ import { FAMILIES, ENDINGS } from '../dist/endings.js';
 import { careerEndingAvailable, careerReadiness } from '../dist/career-api.js';
 import { CAREER_FAMILIES_V17 } from '../dist/career-v17.js';
 import { eligibleStoryEndings } from '../dist/story-career.js';
+import { wealthEligibilityV27 } from '../dist/wealth-exit-v27.js';
+
 import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, requestRaise, canRequestRaise, requestRage, canRequestRage, getRageTargets, validRun } from '../dist/engine.js';
+
+const WEALTH_GOALS=new Set(['venture_independent','venture_restart','retired_free','retired_flexible']);
 
 export function replayRoute(route, verify = () => {}) {
   let run = createRun(route.roleId, route.seed);
@@ -20,13 +24,13 @@ export function replayRoute(route, verify = () => {}) {
     else if (action.type === 'raise') run = requestRaise(run);
     else if (action.type === 'rage') {
       run=Object.hasOwn(action,'target')?requestRage(run,action.target):requestRage(run);checkpoint();
-      if(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26)-/.test(route.seed))run=advance(run);
+      if(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27)-/.test(route.seed))run=advance(run);
     }
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
       checkpoint();
-      if(!(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26)-/.test(route.seed)&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
+      if(!(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27)-/.test(route.seed)&&route.actions[position+1]?.type==='rage'&&route.actions[position+1].phase==='result'))run = advance(run);
     }
     checkpoint();
   }
@@ -68,6 +72,10 @@ function utility(run,target) {
   if(target==='alumni_network')value+=Math.min(f.alumni_links||0,3)*120+Math.min(s.trust,70)*2;
   if(target==='consultant')value+=Math.min(f.consultant_offer||0,1)*180;
   if(target==='merged_out')value+=Math.min(f.merge_notice||0,1)*220;
+  if(WEALTH_GOALS.has(target)){
+    const threshold=target.startsWith('venture_')?75:90;
+    value+=safe(s.cash,threshold)+Math.min(s.cash,threshold)*3+Math.min(s.energy,65)*.6+Math.min(s.mood,60)*.7+Math.min(s.boss,55)*.6;
+  }
   if(['nasdaq','taiwan','acquired'].includes(target)) {
     value+=safe(s.energy,26)+safe(s.cash,38)+safe(s.trust,60)+safe(s.skill,target==='acquired'?76:70)+safe(s.dream,target==='nasdaq'?76:target==='taiwan'?50:0);
     value+=Math.min(s.energy,70)+Math.min(s.cash,65)+Math.min(s.trust,80)+Math.min(s.skill,85)+(target!=='acquired'?Math.min(s.dream,90):0);
@@ -75,7 +83,7 @@ function utility(run,target) {
   return value;
 }
 
-function simulateRage(roleId,target,attempt,seedPrefix='e26') {
+function simulateRage(roleId,target,attempt,seedPrefix='e27') {
   const seed=`${seedPrefix}-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let start=advance(requestRage(createRun(roleId,seed)));
   let fallback=start;
@@ -92,7 +100,7 @@ function simulateRage(roleId,target,attempt,seedPrefix='e26') {
   return {run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}};
 }
 
-export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e26'}={}) {
+export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e27'}={}) {
   if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt,seedPrefix);
   const seed=`${seedPrefix}-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[],openedRaise=false;
@@ -163,6 +171,22 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e26'}={}
     if(run.eventId==='watch-future'){
       choose(target==='cold_storage'?0:['mediation_settled','mediation_pending'].includes(target)?3:1);continue;
     }
+    if(run.eventId==='wealth-plan'){
+      const effect=target.startsWith('venture_')?'wealthStart':target.startsWith('retired_')?'wealthRetire':'wealthReturn',index=effectIndex(effect);
+      choose(index>=0?index:effectIndex('wealthReturn'));continue;
+    }
+    if(['wealth-startup','wealth-retire'].includes(run.eventId)){
+      const direct=ev.choices.findIndex((choice,index)=>choice.available!==false&&applyChoice(run,index).pendingFamily===target);
+      if(direct>=0){choose(direct);continue;}
+      const back=effectIndex('wealthBack');
+      if(back>=0){choose(back);continue;}
+    }
+    const wealthGoal=WEALTH_GOALS.has(target);
+    if(wealthGoal&&['exit-menu','rank-exit','career-exit'].includes(run.eventId)){
+      const entry=effectIndex('wealthPlan');if(entry>=0){choose(entry);continue;}
+    }
+    const wealthReady=wealthGoal?wealthEligibilityV27(run):null;
+    if(wealthReady&&(target.startsWith('venture_')?wealthReady.startup:wealthReady.retirement)&&['daily','fantasy'].includes(ev.kind)){leave();continue;}
     if(run.eventId==='rank-exit'){
       const direct=effectIndex(target);
       if(direct>=0){choose(direct);continue;}
@@ -266,7 +290,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };
