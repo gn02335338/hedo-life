@@ -1,6 +1,7 @@
 // Extra goals use resolved engine facts only. No client-supplied badge IDs,
 // unrevealed choice results or external research are accepted as evidence.
-const badge=(id,title,description,group)=>Object.freeze({id,title,description,group,image:`./assets/achievements/${id}.svg`});
+import { resolvedRageAttempts } from './rage-achievements.js';
+const badge=(id,title,description,group)=>Object.freeze({id,title,description,group,image:`./assets/achievements/${id}.svg`,...(id.startsWith('dream-')?{mode:'imagined'}:{})});
 const roleGoals=[
  ['system','系統還活著，你也是。','以系統工程職務完成三個工作回合。維運清單上，記得也放一個自己。'],
  ['ai','今天真的有碰到 AI 嗎？','以 AI 工程職務完成三個工作回合。名片上的兩個字，終於有了工作經歷。'],
@@ -133,7 +134,8 @@ export function deriveExtraAchievements(run){
  add('office-explorer',new Set(work.map(item=>item.eventId)).size>=15);
  // The outcome is stored on the actual release history entry. Combining the
  // global target and imagination flags would wrongly mix two separate attempts.
- for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack'])add(`dream-${person}`,resolved.some(item=>item.eventId==='rage-release'&&item.speaker===person&&item.eventOutcome?.result==='腦內劇場'));
+ const imagined=resolvedRageAttempts(run).filter(item=>item.mode==='imagined');
+ for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack'])add(`dream-${person}`,imagined.some(item=>item.person===person));
  for(const [id,flag]of [['banquet-gift','banquet_gift'],['banquet-dress','banquet_dress'],['banquet-speech','banquet_speech'],['banquet-staff','banquet_staff'],['banquet-supper','banquet_selfcare'],['banquet-home','banquet_home']])add(id,(flags[flag]||0)>0);
  add('banquet-complete',['banquet-welcome','banquet-draw','banquet-afterparty'].every(id=>resolved.some(item=>item.eventId===id)));
  return EXTRA_ACHIEVEMENTS.filter(item=>ids.has(item.id)).map(item=>item.id);

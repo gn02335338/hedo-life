@@ -85,11 +85,15 @@ test('a group hit changes only the selected participant, preserving other charac
  for(const route of routes()){
   const {trace}=play(route),step=trace.findLast(row=>row.action.type==='rage'&&Object.hasOwn(row.action,'target'));
   const before=deriveCharacterStats(step.before),after=deriveCharacterStats(step.pending);
+  const previousBadges=deriveAchievements(step.before),badges=deriveAchievements(step.pending);
+  assert.equal(badges.includes('rage-real'),route.mode==='real');
+  assert.equal(badges.includes('rage-imagined'),route.mode==='imagined');
   for(const id of CHARACTER_IDS){
    const a=before.find(row=>row.id===id),b=after.find(row=>row.id===id);
-   if(id!==route.target){assert.deepEqual(b,a,`${route.id}/${id}`);assert.equal(step.pending.flags[`rage_target_${id}`]||0,step.before.flags[`rage_target_${id}`]||0);continue;}
+   assert.ok(!badges.includes(`rage-${id}`));
+   if(id!==route.target){assert.deepEqual(b,a,`${route.id}/${id}`);assert.equal(step.pending.flags[`rage_target_${id}`]||0,step.before.flags[`rage_target_${id}`]||0);assert.equal(badges.includes(`real-hit-${id}`),previousBadges.includes(`real-hit-${id}`),`${route.id}/${id} cannot borrow the selected target's hit`);continue;}
    assert.equal(b.encounters,a.encounters+1);assert.equal(b.imaginedHits,a.imaginedHits+Number(route.mode==='imagined'));assert.equal(b.realHits,a.realHits+Number(route.mode==='real'));
-   assert.equal(step.pending.flags[`rage_target_${id}`],(step.before.flags[`rage_target_${id}`]||0)+1);assert.ok(deriveAchievements(step.pending).includes(`rage-${id}`));
+   assert.equal(step.pending.flags[`rage_target_${id}`],(step.before.flags[`rage_target_${id}`]||0)+1);assert.equal(badges.includes(`real-hit-${id}`),route.mode==='real');
    for(const metric of CHARACTER_METRICS)assert.ok(b[metric]>=a[metric]);
   }
  }

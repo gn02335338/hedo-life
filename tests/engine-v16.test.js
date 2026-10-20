@@ -52,7 +52,12 @@ test('six Jack colleague scenes have valid aliases, evidence choices and an elig
   assert.equal(validRun(copy(run)),true);assert.equal(canRequestRage(run),true);
   const release=requestRage(run);assert.equal(release.rageContext.target,scene.speaker);
   assert.equal(validRun(copy(release)),true);assert.equal(validRun(copy(advance(release))),true);
-  if(scene.speaker==='jack')assert.ok(deriveAchievements(release).includes('rage-jack'));
+  if(scene.speaker==='jack'){
+   const real=release.history.at(-1).eventOutcome.result==='真的失控了',achievements=deriveAchievements(release);
+   assert.equal(achievements.includes('real-hit-jack'),real);
+   assert.equal(achievements.includes('rage-imagined'),!real);
+   assert.ok(!achievements.includes('rage-jack'));
+  }
   for(let index=0;index<3;index++){
    const pending=applyChoice(run,index),next=advance(pending);assert.equal(validRun(copy(pending)),true);assert.equal(validRun(copy(next)),true);
    assert.equal(next.turn,run.turn+1,scene.id);

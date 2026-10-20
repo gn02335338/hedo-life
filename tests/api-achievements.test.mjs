@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { randomUUID } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { AchievementStore } from '../worker/achievements.js';
 import { validateCompletion } from '../worker/http.js';
-import { createRun, applyChoice, advance, requestRage, replayRun } from '../dist/engine.js';
+import { createRun, applyChoice, advance, replayRun } from '../dist/engine.js';
 import { deriveAchievements } from '../dist/achievements.js';
 
 function harness() {
@@ -66,13 +67,15 @@ test('achievement proofs bind each run to its owner, role and seed without accep
 });
 
 test('concurrent milestone retries are idempotent and later valid choices add new badges', async () => {
-  const h=harness(),run=entered(),id=randomUUID();
+  const route=JSON.parse(readFileSync(new URL('./fixtures/rage-achievement-routes.json',import.meta.url))).routes.find(item=>item.id==='erich-real');
+  const h=harness(),run=replayRun(route.roleId,route.seed,route.actions.slice(0,-1)),id=randomUUID();
   const added=await Promise.all(Array.from({length:8},()=>h.reopen().record('owner',id,run)));
   assert.equal(added.flat().length,deriveAchievements(run).length);
-  const rage=advance(applyChoice(requestRage(run),0));
-  assert.ok(deriveAchievements(rage).includes('rage-wing'));
+  const rage=replayRun(route.roleId,route.seed,route.actions);
+  assert.ok(deriveAchievements(rage).includes('real-hit-erich'));
   const delta=await h.store.record('owner',id,rage);
-  assert.ok(delta.includes('rage-wing'));
+  assert.ok(delta.includes('real-hit-erich'));
+  assert.ok(!delta.includes('rage-erich'));
   assert.deepEqual(await h.store.record('owner',id,rage),[]);
   h.db.close();
 });

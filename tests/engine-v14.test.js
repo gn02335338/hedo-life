@@ -65,7 +65,11 @@ test('one direct click targets onboarding Wing, resolves once and reveals a comp
  assert.deepEqual(requestRage(source),result);assert.strictEqual(requestRage(result),result);
  const settled=advance(result);assert.deepEqual(replayRun(source.roleId,source.seed,result.actions),settled);
  assert.equal(validRun(copy(settled)),true);
- assert.ok(deriveAchievements(result).includes('rage-wing'));
+ const real=result.history[0].eventOutcome.result==='真的失控了',achievements=deriveAchievements(result);
+ assert.equal(achievements.includes('real-hit-wing'),real);
+ assert.equal(achievements.includes('dream-first-day'),!real);
+ assert.equal(achievements.includes('real-first-day'),real);
+ assert.ok(!achievements.includes('rage-wing'));
 });
 
 test('imagination returns to the interrupted conversation while actual loss of control opens a separate world',()=>{

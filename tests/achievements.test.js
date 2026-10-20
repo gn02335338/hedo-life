@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {ACHIEVEMENTS,ACHIEVEMENT_MAP,ACHIEVEMENT_GROUPS,deriveAchievements} from '../dist/achievements.js';
+import {ACHIEVEMENTS,ACHIEVEMENT_MAP,ACHIEVEMENT_GROUPS,LEGACY_RAGE_ACHIEVEMENT_MAP,deriveAchievements} from '../dist/achievements.js';
 import {createRun,getEvent,applyChoice,advance,requestRage,replayRun,validRun} from '../dist/engine.js';
 
 const copy=value=>JSON.parse(JSON.stringify(value));
 const choose=(run,index)=>advance(applyChoice(run,index));
 
-test('114 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
- assert.equal(ACHIEVEMENTS.length,114);
- assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,114);
+test('115 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
+ assert.equal(ACHIEVEMENTS.length,115);
+ assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,115);
  assert.deepEqual(Object.keys(ACHIEVEMENT_MAP),ACHIEVEMENTS.map(item=>item.id));
  const pictures=new Set();
  for(const achievement of ACHIEVEMENTS){
@@ -24,9 +24,11 @@ test('114 distinct illustrated achievements contain complete Traditional Chinese
  assert.ok(pictures.size>=100,'the expanded collection has distinct illustrations, rather than repeated letter avatars');
 });
 
-test('the original 39 badges retain their IDs and order before the new collection',()=>{
+test('unambiguous original badges retain their IDs while mixed rage badges are archived',()=>{
  const published=['work-card','switch','assistant','robot','promotion','manager','director','pip','pip-pass','pay-cut','salary-save','education','self-care','kind-decline','rage-wing','rage-spencer','rage-rick','rage-hope','rage-erich','rage-jenjen','rage-sonny','rage-kind','rage-catharsis','rage-absent','rage-documented','banquet','banquet-prize','banquet-stage','banquet-shared','kind-ghost','first-ending','rage-jack','nasdaq','rage-imagined','rage-real','rage-first-day','rage-legal','rage-defeated','rage-coup'];
- assert.deepEqual(ACHIEVEMENTS.slice(0,39).map(item=>item.id),published);
+ for(const id of published)assert.ok(ACHIEVEMENT_MAP[id]||LEGACY_RAGE_ACHIEVEMENT_MAP[id],id);
+ const replacements={'rage-catharsis':'dream-catharsis','rage-absent':'dream-absent','rage-documented':'real-documented','rage-first-day':'real-first-day'};
+ assert.deepEqual(ACHIEVEMENTS.slice(0,39).map(item=>item.id),published.map(id=>replacements[id]||(LEGACY_RAGE_ACHIEVEMENT_MAP[id]?id.replace('rage-','real-hit-'):id)));
 });
 
 test('derivation is deterministic and read-only; unopened choices, cancelled rage and supplied IDs earn nothing',()=>{
@@ -42,15 +44,15 @@ test('derivation is deterministic and read-only; unopened choices, cancelled rag
  assert.equal(new Set(earned).size,earned.length);
 });
 
-test('each rage target has a distinct badge, earned only by a committed natural attempt',()=>{
+test('older cartoon attempts remain valid replays without proving a modern real or dreamed hit',()=>{
  const people=['wing','spencer','rick','hope','erich','jenjen','sonny','kind'];
  for(const [index,person]of people.entries()){
   const run=createRun('system',`e13-badge-${person}`),menu=requestRage(run);
   assert.ok(!deriveAchievements(menu).includes(`rage-${person}`));
   const pending=applyChoice(menu,index),resolved=advance(pending),before=copy(pending);
   const earned=deriveAchievements(pending);
-  assert.ok(earned.includes(`rage-${person}`),person);
-  assert.equal(earned.filter(id=>people.some(other=>id===`rage-${other}`)).length,1);
+  assert.ok(!earned.some(id=>id.startsWith('real-hit-')||id.startsWith('dream-')||id==='rage-real'),person);
+  assert.equal(pending.flags[`rage_target_${person}`],1);
   assert.deepEqual(deriveAchievements(copy(pending)),earned);assert.deepEqual(pending,before);
   assert.equal(validRun(copy(pending)),true);
   assert.deepEqual(replayRun(resolved.roleId,resolved.seed,resolved.actions),resolved);
@@ -85,7 +87,7 @@ test('published complete routes derive real onboarding, PIP, salary and career a
  for(const id of ['assistant','switch','robot','promotion','manager','director','pip','pip-pass','pay-cut','education','kind-decline','nasdaq'])assert.ok(covered.has(id),`natural goal ${id}`);
 });
 
-test('published e18 routes still prove their original 112 achievements without injected state',()=>{
+test('published e18 and strict-rage routes prove all current achievements without injected state',()=>{
  const routes=JSON.parse(readFileSync(new URL('./fixtures/achievement-routes-v18.json',import.meta.url),'utf8'));
  const covered=new Set();
  assert.ok(routes.length>0);
@@ -96,13 +98,14 @@ test('published e18 routes still prove their original 112 achievements without i
   assert.equal(validRun(saved),true,`${route.seed} survives JSON save validation`);
   assert.deepEqual(deriveAchievements(saved),route.expectedAchievements,`${route.seed} derives its actual earned badges`);
   assert.deepEqual(replayRun(saved.roleId,saved.seed,saved.actions),saved,`${route.seed} has a deterministic canonical replay`);
-  if(route.expectedAchievements.includes('rage-absent'))assert.ok(saved.history.some(item=>item.eventId==='rage-release'&&item.speaker==='kind'&&item.eventOutcome?.result==='腦內劇場'),'the current absence badge follows the resolved imaginary Kind chase');
-  if(route.expectedAchievements.includes('rage-documented'))assert.ok(saved.history.some(item=>item.eventId==='rage-legal'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0),'the current documentation badge follows an actual formal-record decision');
+  if(route.expectedAchievements.includes('dream-absent'))assert.ok(saved.history.some(item=>item.eventId==='rage-release'&&item.speaker==='kind'&&item.eventOutcome?.result==='腦內劇場'),'the current absence badge follows the resolved imaginary Kind chase');
+  if(route.expectedAchievements.includes('real-documented'))assert.ok(saved.history.some(item=>item.eventId==='rage-legal'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0),'the current documentation badge follows an actual formal-record decision');
   for(const id of route.expectedAchievements)covered.add(id);
  }
- assert.equal(covered.size,112);
- assert.deepEqual(ACHIEVEMENTS.filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.slice(0,112).map(item=>item.id));
- assert.deepEqual(ACHIEVEMENTS.slice(112).map(item=>item.id),['rage-meimei','dream-meimei']);
+ const rageRoutes=JSON.parse(readFileSync(new URL('./fixtures/rage-achievement-routes.json',import.meta.url),'utf8')).routes;
+ for(const route of rageRoutes)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
+ assert.equal(covered.size,115);
+ assert.deepEqual(ACHIEVEMENTS.filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.map(item=>item.id));
 });
 
 test('natural banquet choices unlock attendance, sharing and Kind’s ghosting, without guessing a future lottery',()=>{
@@ -192,12 +195,12 @@ test('ability tradeoffs and mood badges depend on actual friction or resolved ch
 });
 
 test('dream badges match the resolved person and outcome from the same attempt',()=>{
- const run={flags:{rage_target_wing:1,rage_target_jack:1,rage_imagined:1,rage_real:1},history:[{eventId:'rage-release',speaker:'wing',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'真的失控了'}},{eventId:'rage-release',speaker:'jack',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}]};
+ const run={flags:{rage_target_wing:1,rage_target_jack:1,rage_imagined:1,rage_real:1},history:[{eventId:'rage-release',kind:'rage',speaker:'wing',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'真的失控了'}},{eventId:'rage-release',kind:'rage',speaker:'jack',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}]};
  const earned=deriveAchievements(run);
  assert.ok(earned.includes('dream-jack'));
  assert.ok(!earned.includes('dream-wing'),'a real attempt on one person cannot borrow a later imagined attempt on somebody else');
  assert.ok(!deriveAchievements({...run,history:[]}).some(id=>id.startsWith('dream-')));
- for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack'])assert.ok(deriveAchievements({history:[{eventId:'rage-release',speaker:person,choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}]}).includes(`dream-${person}`));
+ for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack'])assert.ok(deriveAchievements({history:[{eventId:'rage-release',kind:'rage',speaker:person,choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}]}).includes(`dream-${person}`));
  const natural=advance(requestRage(createRun('system','e18-example-1')));
  assert.equal(natural.history.at(-1).eventOutcome.result,'腦內劇場');
  assert.ok(deriveAchievements(natural).includes('dream-wing'));
@@ -208,19 +211,20 @@ test('dream badges match the resolved person and outcome from the same attempt',
 test('Water Snake achievements follow a committed target and the same resolved imagined attempt',()=>{
  const newIds=run=>deriveAchievements(run).filter(id=>id.endsWith('-meimei'));
  assert.deepEqual(newIds({achievements:['rage-meimei','dream-meimei'],eventId:'rage-release',rageContext:{target:'meimei'},history:[],flags:{}}),[]);
- assert.deepEqual(newIds({flags:{rage_target_meimei:1}}),['rage-meimei']);
+ assert.deepEqual(newIds({flags:{rage_target_meimei:1}}),[]);
  const history=[
-  {eventId:'rage-release',speaker:'meimei',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'真的失控了'}},
-  {eventId:'rage-release',speaker:'jack',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}
+  {eventId:'rage-release',kind:'rage',speaker:'meimei',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'真的失控了'}},
+  {eventId:'rage-release',kind:'rage',speaker:'jack',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}}
  ];
- assert.deepEqual(newIds({flags:{rage_target_meimei:1,rage_real:1,rage_imagined:1},history}),['rage-meimei']);
- const imagined={eventId:'rage-release',speaker:'meimei',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}};
+ assert.deepEqual(newIds({flags:{rage_target_meimei:1,rage_real:1,rage_imagined:1},history}),['real-hit-meimei']);
+ const imagined={eventId:'rage-release',kind:'rage',speaker:'meimei',choiceIndex:0,eventOutcome:{label:'剛才發生了什麼',result:'腦內劇場'}};
  assert.deepEqual(newIds({history:[imagined]}),['dream-meimei']);
- assert.deepEqual(newIds({flags:{rage_target_meimei:1},history:[imagined]}),['rage-meimei','dream-meimei']);
+ assert.deepEqual(newIds({flags:{rage_target_meimei:1},history:[imagined]}),['dream-meimei']);
+ assert.deepEqual(newIds({history:[{...imagined,eventOutcome:{label:'腦內劇場',result:'真的失控了'}}]}),['real-hit-meimei'],'the committed result, rather than the label or flags, determines the mode');
  for(const invalid of [
   {...imagined,choiceIndex:-1},
   {...imagined,eventId:'meimei-workday'},
-  {...imagined,eventOutcome:{label:'腦內劇場',result:'真的失控了'}},
+  {...imagined,kind:'daily'},
   {...imagined,eventOutcome:{label:'腦內劇場'}}
  ])assert.deepEqual(newIds({history:[invalid]}),[],'unresolved or unrelated records do not earn the dream badge');
 });

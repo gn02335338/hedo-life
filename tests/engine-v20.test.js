@@ -223,8 +223,9 @@ test('natural conversations with the sales manager reach both new illustrated ac
  for(const mode of ['imagined','real']){
   const {run,trace}=traceRoute(personnelRoute(`meimei-rage-${mode}`),{saved:true}),rage=trace.findLast(item=>item.action.type==='rage');assert.ok(rage);
   assert.equal(rage.pending.rageContext.target,'meimei');assert.equal(rage.pending.rageContext.mode,mode);
-  assert.ok(deriveAchievements(run).includes('rage-meimei'));
+  assert.equal(deriveAchievements(run).includes('real-hit-meimei'),mode==='real');
   assert.equal(deriveAchievements(run).includes('dream-meimei'),mode==='imagined');
+  assert.ok(!deriveAchievements(run).includes('rage-meimei'));
  }
 });
 

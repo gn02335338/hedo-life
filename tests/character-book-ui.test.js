@@ -164,6 +164,6 @@ test('rage resolution syncs a new proof and character entries open a selected al
 test('the global navigation and metadata advertise the actual current catalogs',async()=>{
  const html=await readFile(new URL('../dist/index.html',import.meta.url),'utf8');
  assert.match(html,/<nav[^>]*>[\s\S]*?data-action="characters">角色圖鑑/);
- assert.match(html,/0 \/ 341/);assert.match(html,/0 \/ 114/);assert.match(html,/八階職涯/);
+ assert.match(html,/0 \/ 341/);assert.match(html,/0 \/ 115/);assert.match(html,/八階職涯/);
  assert.doesNotMatch(html,/234張|五階職涯|0 \/ 32/);
 });

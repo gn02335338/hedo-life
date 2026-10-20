@@ -1,0 +1,662 @@
+{
+  "method": "Natural e21 createRun games and canonical conversation choices only. Each witness is replayed without state injection; no raw story text is stored.",
+  "routes": [
+    {
+      "id": "erich-imagined",
+      "roleId": "bd",
+      "seed": "e21-bd-0-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-mou-annex",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "bd21-channel-map"
+        }
+      ],
+      "target": "erich",
+      "mode": "imagined",
+      "origin": "bd21-channel-map"
+    },
+    {
+      "id": "erich-real",
+      "roleId": "product",
+      "seed": "e21-product-0-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "product-boss-user",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-ranked-architecture",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "erich"
+        }
+      ],
+      "target": "erich",
+      "mode": "real",
+      "origin": "crisis-boss"
+    },
+    {
+      "id": "first-day-imagined",
+      "roleId": "system",
+      "seed": "e21-achievement-reality-1",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        }
+      ],
+      "target": "wing",
+      "mode": "imagined",
+      "origin": "onboarding"
+    },
+    {
+      "id": "first-day-real",
+      "roleId": "system",
+      "seed": "e21-achievement-reality-0",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        }
+      ],
+      "target": "wing",
+      "mode": "real",
+      "origin": "onboarding"
+    },
+    {
+      "id": "hope-imagined",
+      "roleId": "executive",
+      "seed": "e21-executive-0-5",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "career-duty-5"
+        }
+      ],
+      "target": "hope",
+      "mode": "imagined",
+      "origin": "career-duty-5"
+    },
+    {
+      "id": "hope-real",
+      "roleId": "design",
+      "seed": "e21-design-0-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "salary-cut"
+        }
+      ],
+      "target": "hope",
+      "mode": "real",
+      "origin": "salary-cut"
+    },
+    {
+      "id": "jack-imagined",
+      "roleId": "ai",
+      "seed": "e21-ai-0-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "job-ai-label-convention"
+        }
+      ],
+      "target": "jack",
+      "mode": "imagined",
+      "origin": "job-ai-label-convention"
+    },
+    {
+      "id": "jack-real",
+      "roleId": "project",
+      "seed": "e21-project-1-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "jack-notebook"
+        }
+      ],
+      "target": "jack",
+      "mode": "real",
+      "origin": "jack-notebook"
+    },
+    {
+      "id": "jenjen-imagined",
+      "roleId": "mis",
+      "seed": "e21-mis-1-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "mis-access-approval"
+        }
+      ],
+      "target": "jenjen",
+      "mode": "imagined",
+      "origin": "mis-access-approval"
+    },
+    {
+      "id": "jenjen-real",
+      "roleId": "product",
+      "seed": "e21-product-0-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "product-boss-user",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-ranked-architecture",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "target": "jenjen"
+        }
+      ],
+      "target": "jenjen",
+      "mode": "real",
+      "origin": "crisis-boss"
+    },
+    {
+      "id": "kind-imagined",
+      "roleId": "bd",
+      "seed": "e21-bd-0-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-mou-annex",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "kind-workday"
+        }
+      ],
+      "target": "kind",
+      "mode": "imagined",
+      "origin": "kind-workday"
+    },
+    {
+      "id": "kind-real",
+      "roleId": "system",
+      "seed": "e21-system-3-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "reading-list-rush",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-api-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rmn-summit-adapter",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "video-message-workout",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "kind-workday"
+        }
+      ],
+      "target": "kind",
+      "mode": "real",
+      "origin": "kind-workday"
+    },
+    {
+      "id": "meimei-imagined",
+      "roleId": "design",
+      "seed": "e21-design-0-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "design-v21-responsive-banner"
+        }
+      ],
+      "target": "meimei",
+      "mode": "imagined",
+      "origin": "design-v21-responsive-banner"
+    },
+    {
+      "id": "meimei-real",
+      "roleId": "design",
+      "seed": "e21-design-0-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "design-v21-responsive-banner"
+        }
+      ],
+      "target": "meimei",
+      "mode": "real",
+      "origin": "design-v21-responsive-banner"
+    },
+    {
+      "id": "rage_coup",
+      "roleId": "system",
+      "seed": "e21-achievement-reality-34",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-showdown",
+          "index": 1
+        }
+      ],
+      "endingId": "rage_coup-system"
+    },
+    {
+      "id": "rage_defeated",
+      "roleId": "system",
+      "seed": "e21-achievement-reality-0",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-showdown",
+          "index": 1
+        }
+      ],
+      "endingId": "rage_defeated-system"
+    },
+    {
+      "id": "rage_legal",
+      "roleId": "system",
+      "seed": "e21-achievement-reality-0",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ],
+      "endingId": "rage_legal-system"
+    },
+    {
+      "id": "real-documented",
+      "roleId": "system",
+      "seed": "e21-achievement-reality-0",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "rick-imagined",
+      "roleId": "system",
+      "seed": "e21-system-0-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "job-system-phone-monitor"
+        }
+      ],
+      "target": "rick",
+      "mode": "imagined",
+      "origin": "job-system-phone-monitor"
+    },
+    {
+      "id": "rick-real",
+      "roleId": "project",
+      "seed": "e21-project-1-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "job-system-phone-monitor"
+        }
+      ],
+      "target": "rick",
+      "mode": "real",
+      "origin": "job-system-phone-monitor"
+    },
+    {
+      "id": "sonny-imagined",
+      "roleId": "mis",
+      "seed": "e21-mis-0-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "job-mis-permission-clock"
+        }
+      ],
+      "target": "sonny",
+      "mode": "imagined",
+      "origin": "job-mis-permission-clock"
+    },
+    {
+      "id": "sonny-real",
+      "roleId": "mis",
+      "seed": "e21-mis-1-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-permission-clock",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "job-mis-permission-clock"
+        }
+      ],
+      "target": "sonny",
+      "mode": "real",
+      "origin": "job-mis-permission-clock"
+    },
+    {
+      "id": "spencer-imagined",
+      "roleId": "bd",
+      "seed": "e21-bd-0-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-mou-annex",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "bd21-mou-annex"
+        }
+      ],
+      "target": "spencer",
+      "mode": "imagined",
+      "origin": "bd21-mou-annex"
+    },
+    {
+      "id": "spencer-real",
+      "roleId": "bd",
+      "seed": "e21-bd-0-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "bd21-mou-annex"
+        }
+      ],
+      "target": "spencer",
+      "mode": "real",
+      "origin": "bd21-mou-annex"
+    },
+    {
+      "id": "wing-imagined",
+      "roleId": "system",
+      "seed": "e21-achievement-reality-1",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        }
+      ],
+      "target": "wing",
+      "mode": "imagined",
+      "origin": "onboarding"
+    },
+    {
+      "id": "wing-real",
+      "roleId": "system",
+      "seed": "e21-achievement-reality-0",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        }
+      ],
+      "target": "wing",
+      "mode": "real",
+      "origin": "onboarding"
+    }
+  ]
+}

@@ -63,19 +63,16 @@
       "work-card",
       "pip",
       "education",
-      "rage-wing",
-      "rage-spencer",
-      "rage-sonny",
-      "rage-catharsis",
+      "dream-catharsis",
       "rage-imagined",
-      "rage-first-day",
       "role-system",
       "rank-staff-work",
       "craft-skill",
       "rng-five",
       "dream-wing",
       "dream-spencer",
-      "dream-sonny"
+      "dream-sonny",
+      "dream-first-day"
     ]
   },
   {
@@ -637,8 +634,7 @@
       "assistant",
       "salary-save",
       "education",
-      "rage-rick",
-      "rage-catharsis",
+      "dream-catharsis",
       "banquet",
       "banquet-prize",
       "rage-imagined",
@@ -683,9 +679,8 @@
     "expectedAchievements": [
       "work-card",
       "assistant",
-      "rage-kind",
-      "rage-catharsis",
-      "rage-absent",
+      "dream-catharsis",
+      "dream-absent",
       "rage-imagined",
       "dream-kind"
     ]
@@ -711,11 +706,11 @@
       }
     ],
     "expectedAchievements": [
-      "rage-wing",
-      "rage-documented",
+      "real-hit-wing",
+      "real-documented",
       "first-ending",
       "rage-real",
-      "rage-first-day",
+      "real-first-day",
       "rage-legal"
     ]
   },
@@ -847,8 +842,7 @@
       "pay-cut",
       "education",
       "self-care",
-      "rage-erich",
-      "rage-catharsis",
+      "dream-catharsis",
       "rage-imagined",
       "role-sales",
       "school-private-proof",
@@ -1227,9 +1221,8 @@
       "pay-cut",
       "self-care",
       "kind-decline",
-      "rage-catharsis",
+      "dream-catharsis",
       "banquet",
-      "rage-jack",
       "rage-imagined",
       "role-ai",
       "school-ntu-proof",
@@ -1301,8 +1294,7 @@
     "expectedAchievements": [
       "work-card",
       "switch",
-      "rage-hope",
-      "rage-catharsis",
+      "dream-catharsis",
       "rage-imagined",
       "role-ai",
       "rank-staff-work",
@@ -1377,8 +1369,7 @@
     "expectedAchievements": [
       "work-card",
       "salary-save",
-      "rage-jenjen",
-      "rage-catharsis",
+      "dream-catharsis",
       "rage-imagined",
       "role-system",
       "school-overseas-proof",
@@ -1945,10 +1936,10 @@
       }
     ],
     "expectedAchievements": [
-      "rage-wing",
+      "real-hit-wing",
       "first-ending",
       "rage-real",
-      "rage-first-day",
+      "real-first-day",
       "rage-defeated"
     ]
   },
@@ -1973,10 +1964,10 @@
       }
     ],
     "expectedAchievements": [
-      "rage-wing",
+      "real-hit-wing",
       "first-ending",
       "rage-real",
-      "rage-first-day",
+      "real-first-day",
       "rage-coup"
     ]
   },
@@ -2089,16 +2080,15 @@
     "expectedAchievements": [
       "work-card",
       "switch",
-      "rage-wing",
-      "rage-catharsis",
+      "dream-catharsis",
       "rage-imagined",
-      "rage-first-day",
       "role-project",
       "school-overseas-proof",
       "rank-staff-work",
       "mood-shock",
       "mood-zero",
-      "dream-wing"
+      "dream-wing",
+      "dream-first-day"
     ]
   },
   {
