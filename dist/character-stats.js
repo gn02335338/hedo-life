@@ -22,11 +22,11 @@ export function characterHistoryChanges(run){
   let mode=null,verbal=null;
   if(row.verbalOutcome?.version===2){
    const evidence=row.verbalOutcome;
-   if(!/^e(?:30|31|32)-/.test(run.seed||'')||evidence.origin!==row.eventId||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||!['event','result'].includes(evidence.phase)||!['daily','fantasy','onboarding','verbal'].includes(row.kind)||evidence.phase==='result'&&row.kind!=='verbal')continue;
+   if(!/^e(?:30|31|32|33)-/.test(run.seed||'')||evidence.origin!==row.eventId||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||!['event','result'].includes(evidence.phase)||!['daily','fantasy','onboarding','verbal'].includes(row.kind)||evidence.phase==='result'&&row.kind!=='verbal')continue;
    verbal=evidence;
   }else if(row.eventId==='verbal-release'){
    const evidence=row.verbalOutcome;
-   if(!/^e(?:30|31|32)-/.test(run.seed||'')||row.kind!=='verbal'||row.choiceIndex!==0||!evidence||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||typeof evidence.origin!=='string'||!['event','result'].includes(evidence.phase))continue;
+   if(!/^e(?:30|31|32|33)-/.test(run.seed||'')||row.kind!=='verbal'||row.choiceIndex!==0||!evidence||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||typeof evidence.origin!=='string'||!['event','result'].includes(evidence.phase))continue;
    verbal=evidence;
   }
   if(row.eventId==='rage-release'){

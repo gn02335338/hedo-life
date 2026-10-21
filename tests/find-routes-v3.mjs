@@ -32,13 +32,13 @@ export function replayRoute(route, verify = () => {}) {
     }
     else if (action.type === 'rage') {
       run=Object.hasOwn(action,'target')?requestRage(run,action.target):requestRage(run);checkpoint();
-      if(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(route.seed))run=advance(run);
+      if(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33)-/.test(route.seed))run=advance(run);
     }
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
       checkpoint();
-      if(!(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(route.seed)&&['rage','verbal'].includes(route.actions[position+1]?.type)&&route.actions[position+1].phase==='result'))run = advance(run);
+      if(!(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33)-/.test(route.seed)&&['rage','verbal'].includes(route.actions[position+1]?.type)&&route.actions[position+1].phase==='result'))run = advance(run);
     }
     checkpoint();
   }
@@ -109,8 +109,8 @@ function simulateRage(roleId,target,attempt,seedPrefix='e31') {
   return {run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}};
 }
 
-function simulateVerbalV32(roleId,target,attempt){
- const seed=`e32-${roleId}-v${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+function simulateVerbalV32(roleId,target,attempt,seedPrefix='e33'){
+ const seed=`${seedPrefix}-${roleId}-v${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
  let run=createRun(roleId,seed);
  const packageRun=()=>({run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}});
  const choose=index=>{run=advance(applyChoice(run,index));};
@@ -136,8 +136,8 @@ function simulateVerbalV32(roleId,target,attempt){
 }
 
 export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}) {
-  if(VERBAL_ENDING_IDS_V32.includes(target))return simulateVerbalV32(roleId,target,attempt);
-  if(COMPANY_ENDING_IDS_V32.includes(target)&&!['nasdaq','taiwan'].includes(target))seedPrefix='e32';
+  if(VERBAL_ENDING_IDS_V32.includes(target))return simulateVerbalV32(roleId,target,attempt,['e32','e33'].includes(seedPrefix)?seedPrefix:'e33');
+  if(COMPANY_ENDING_IDS_V32.includes(target)&&!['nasdaq','taiwan'].includes(target)&&!['e32','e33'].includes(seedPrefix))seedPrefix='e33';
   if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt,seedPrefix);
   const seed=`${seedPrefix}-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[],openedRaise=false;
@@ -337,27 +337,27 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['achievements-v32','company-v32','verbal-outcomes-v32','endings-company-v32','endings-verbal-v32','verbal-scenario-v2','verbal-scene-copy','events-ai-v31','verbal-v30','verbal-copy-v30','character-stats','patronage-v29','events-gender-v29','events-backoffice-v28','roles-v28','endings-backoffice-v28','wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['verbal-outcomes-v33','achievements-v32','company-v32','verbal-outcomes-v32','endings-company-v32','endings-verbal-v32','verbal-scenario-v2','verbal-scene-copy','events-ai-v31','verbal-v30','verbal-copy-v30','character-stats','patronage-v29','events-gender-v29','events-backoffice-v28','roles-v28','endings-backoffice-v28','wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };
 }
 
-export function collectV32Routes(report,{maxAttempts=5000}={}){
- const routes=report.routes.filter(route=>route.seed.startsWith('e32-'));
+export function collectCohortRoutes(report,{maxAttempts=5000,cohort='e33'}={}){
+ const routes=report.routes.filter(route=>route.seed.startsWith(`${cohort}-`));
  // The catalog keeps old success cards; prove their new ten-way company
  // resolver as well rather than relying on the legacy e31 success witnesses.
  for(const role of ROLES)for(const target of ['nasdaq','taiwan']){
   let found=null;
   for(let attempt=0;attempt<maxAttempts&&!found;attempt++){
-   const candidate=simulate(role.id,target,attempt,{seedPrefix:'e32'});
+   const candidate=simulate(role.id,target,attempt,{seedPrefix:cohort});
    if(candidate.run.endingId===`${target}-${role.id}`)found=candidate.route;
   }
-  if(!found)throw new Error(`No e32 company success ${target}-${role.id}`);
-  replayRoute(found,state=>{if(!validRun(state))throw new Error(`Invalid e32 company success ${target}-${role.id} ${state.eventId}`);});
+  if(!found)throw new Error(`No current company success ${target}-${role.id}`);
+  replayRoute(found,state=>{if(!validRun(state))throw new Error(`Invalid current company success ${target}-${role.id} ${state.eventId}`);});
   routes.push(found);
  }
- return {method:'Natural e32 createRun seeds and canonical actions only. All 260 new ending cards plus 26 current-cohort NASDAQ/Taiwan success resolutions; old-cohort witnesses remain separate.',routes};
+ return {method:`Natural ${cohort} createRun seeds and canonical actions only. All 260 expanded ending cards plus 26 current-cohort NASDAQ/Taiwan success resolutions; published older-cohort witnesses remain separate.`,routes};
 }
 
 export function collectPersonnelWitnesses(report,{maxExtraAttempts=250}={}){
@@ -474,7 +474,7 @@ export function collectRageGroupWitnesses(report){
 if(process.argv[1]===fileURLToPath(import.meta.url)){
   const report=findRoutes({maxAttempts:Number(process.argv[2])||3000,onProgress:p=>{if(!p.found||p.family==='historian')console.log(JSON.stringify(p));}});
   writeFileSync(new URL('../research/reachability-v3.json',import.meta.url),JSON.stringify(report,null,2)+'\n');
-  if(report.complete)writeFileSync(new URL('./fixtures/v32-routes.json',import.meta.url),JSON.stringify(collectV32Routes(report,{maxAttempts:Number(process.argv[2])||3000}),null,2)+'\n');
+  if(report.complete)writeFileSync(new URL('./fixtures/v33-routes.json',import.meta.url),JSON.stringify(collectCohortRoutes(report,{maxAttempts:Number(process.argv[2])||3000}),null,2)+'\n');
   if(report.complete&&process.argv.includes('--personnel')){
     const witnesses=collectPersonnelWitnesses(report);
     writeFileSync(new URL('./fixtures/personnel-routes-v20.json',import.meta.url),JSON.stringify(witnesses,null,2)+'\n');

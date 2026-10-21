@@ -3,7 +3,7 @@ import * as legacy from './career.js';
 import * as current from './career-v17.js';
 import {patronageTitleV29} from './patronage-v29.js';
 export const {CAREER_LEVELS,CAREER_LADDERS,CAREER_FAMILIES}=legacy;
-export const fullCareer=run=>/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(run?.seed||'');
+export const fullCareer=run=>/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33)-/.test(run?.seed||'');
 export const careerLevels=run=>fullCareer(run)?current.CAREER_LEVELS_V17:legacy.CAREER_LEVELS;
 export const careerLadder=run=>(fullCareer(run)?current.CAREER_LADDERS_V17:legacy.CAREER_LADDERS)[run.actualRoleId];
 export const careerFamilies=run=>fullCareer(run)?current.CAREER_FAMILIES_V17:legacy.CAREER_FAMILIES;

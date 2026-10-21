@@ -85,15 +85,15 @@ export function deriveAchievements(run){
  add('assistant',onboard&&flags.assistant>0);
  add('robot',onboard&&run.roleId==='ai'&&run.actualRoleId!=='ai');
  add('promotion',flags.promotions>0);
- const promotedPeak=/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(run.seed||'')?flags.career_promoted_peak:flags.career_peak_rank;
- add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(run.seed||'')?5:2));
- add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(run.seed||'')?6:3));
+ const promotedPeak=/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33)-/.test(run.seed||'')?flags.career_promoted_peak:flags.career_peak_rank;
+ add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33)-/.test(run.seed||'')?5:2));
+ add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33)-/.test(run.seed||'')?6:3));
  add('pip',run.pipCount>0);
  add('pip-pass',flags.pip_passed>0);
  add('pay-cut',flags.pay_cut>0);
  add('salary-save',run.salaryCut?.status==='rescinded');
  add('education',flags.education_outcome>0);
- add('self-care',history.filter(item=>/^e(?:25|26|27|28|29|30|31|32)-/.test(run.seed||'')&&item?.eventId?.startsWith('meal-with-')?(item.delta?.cash||0)<0:item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(run.seed||'')?7:3)&&(!/^e(?:25|26|27|28|29|30|31|32)-/.test(run.seed||'')||item.choiceIndex!==4)).length>=3);
+ add('self-care',history.filter(item=>/^e(?:25|26|27|28|29|30|31|32|33)-/.test(run.seed||'')&&item?.eventId?.startsWith('meal-with-')?(item.delta?.cash||0)<0:item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33)-/.test(run.seed||'')?7:3)&&(!/^e(?:25|26|27|28|29|30|31|32|33)-/.test(run.seed||'')||item.choiceIndex!==4)).length>=3);
  add('kind-decline',flags.kind_declined>0);
  const attempts=resolvedRageAttempts(run),real=attempts.filter(item=>item.mode==='real'),imagined=attempts.filter(item=>item.mode==='imagined');
  for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei'])add(`real-hit-${person}`,real.some(item=>item.person===person));
@@ -107,7 +107,7 @@ export function deriveAchievements(run){
  add('banquet-shared',flags.banquet_shared>0);
  add('kind-ghost',flags.kind_afterparty_ghost>0);
  add('first-ending',run.completed===true);
- add('nasdaq',/^e32-/.test(run.seed||'')?hasCompanyFinaleV32(run,'nasdaq'):run.completed===true&&typeof run.endingId==='string'&&run.endingId.startsWith('nasdaq-'));
+ add('nasdaq',/^e(?:32|33)-/.test(run.seed||'')?hasCompanyFinaleV32(run,'nasdaq'):run.completed===true&&typeof run.endingId==='string'&&run.endingId.startsWith('nasdaq-'));
  add('rage-imagined',imagined.length>0);
  add('rage-real',real.length>0);
  add('real-first-day',real.some(item=>item.person==='wing'&&item.origin==='onboarding'));
@@ -115,7 +115,7 @@ export function deriveAchievements(run){
  // Read committed canonical choices, not the corrected display copy or broad
  // banquet/rage flags. Both resolved song draws participated in the duel.
  const resolved=history.filter(item=>Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0&&typeof item.result==='string'&&item.result.trim());
- add('ai-auto-increment',/^e(?:31|32)-/.test(run.seed||'')&&run.actualRoleId==='ai'&&resolved.some(item=>item.eventId==='ai31-auto-increment'&&item.kind==='daily'&&item.speaker==='rick'&&item.choiceIndex<=2));
+ add('ai-auto-increment',/^e(?:31|32|33)-/.test(run.seed||'')&&run.actualRoleId==='ai'&&resolved.some(item=>item.eventId==='ai31-auto-increment'&&item.kind==='daily'&&item.speaker==='rick'&&item.choiceIndex<=2));
  add('banquet-first-love',resolved.some(item=>item.eventId==='banquet-welcome'&&item.kind==='banquet'&&item.speaker==='rick'&&item.choiceIndex===1&&item.eventOutcome?.label==='尾牙點歌台'&&['成功搶麥','被夢想插播'].includes(item.eventOutcome.result)));
  const arm=resolved.filter(item=>item.eventId==='video-pizza-overtime'&&item.kind==='daily'&&item.speaker==='sonny');
  add('sonny-press-conference',arm.some(item=>item.choiceIndex===1));
