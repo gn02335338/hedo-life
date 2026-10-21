@@ -136,7 +136,7 @@ test('only committed Helen dialogue records an encounter; ordinary work is neith
 test('the current ending report remains complete across all occupations',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
  assert.equal(report.complete,true);assert.equal(report.found,ENDINGS.length);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>/^e(?:31|32|33|34|35|36)-/.test(route.seed)));
+ assert.ok(report.routes.every(route=>/^e(?:31|32|33|34|35|36|37)-/.test(route.seed)));
  for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id),role.id);
 });
 

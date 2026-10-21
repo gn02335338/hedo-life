@@ -1,3 +1,4 @@
+import {professorVerbalVoiceV37} from './verbal-professor-v37.js';
 // Original fictional dialogue. These are spoken office insults and responses,
 // not physical attacks, historical quotations or findings about real people.
 const VOICES = {
@@ -210,7 +211,8 @@ function timing(origin, phase) {
   };
 }
 
-export function verbalVoiceV30(target, origin, phase) {
+export function verbalVoiceV30(target, origin, phase, run) {
+  if(target==='professor'&&/^e37-/.test(run?.seed||''))return professorVerbalVoiceV37(origin,phase);
   const voice = VOICES[Object.hasOwn(VOICES, target) ? target : 'self'];
   const context = timing(origin, phase);
   return { ...voice, line: `${context.line}${voice.line}`, ignored: `${voice.ignored}${context.after}` };

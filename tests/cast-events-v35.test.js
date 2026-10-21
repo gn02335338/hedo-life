@@ -15,8 +15,8 @@ const rawNames=/\b(?:Wing|Spencer|Rick|Sonny|Hope|Kind|JenJen|Erich|Jack|Jonatha
 
 test('218 original scenes bring every underrepresented main speaker to thirty, preserving the entire published daily catalogue',()=>{
  assert.equal(CAST_EVENTS_V35_A.length,101);assert.equal(CAST_EVENTS_V35_B.length,117);
- assert.equal(EVENTS.length,681);assert.equal(EVENTS.filter(event=>(event.minRules||1)<35).length,463);
- assert.equal(new Set(EVENTS.map(event=>event.id)).size,681);
+ assert.equal(EVENTS.length,711);assert.equal(EVENTS.filter(event=>(event.minRules||1)<35).length,463);
+ assert.equal(new Set(EVENTS.map(event=>event.id)).size,711);
  for(const [id,amount]of Object.entries(deficits))assert.equal(added.filter(event=>event.speaker===id).length,amount,id);
  for(const id of Object.keys(PERSONAS)){
   const total=EVENTS.filter(event=>(event.speaker||'wing')===id).length;

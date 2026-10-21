@@ -36,7 +36,7 @@ function bookHarness(cloud,cache=null){
 
 test('the cast archive contains sixteen alias-only portraits and never lists locked endings',()=>{
  const html=characterBookHTML();
- assert.equal([...html.matchAll(/class="character-card"/g)].length,16);
+ assert.equal([...html.matchAll(/class="character-card"/g)].length,17);
  for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));assert.ok(html.includes(persona.PERSONAS[id].name));}
  assert.doesNotMatch(html,/Wing|Spencer|Erich|Sonny|JenJen|Rick|Hope|Kind|Jack|美美/);
  assert.doesNotMatch(html,/納斯達克幻想|自願離職陷阱|勉強通關|成功率/);

@@ -1,3 +1,4 @@
+import {professorVerbalLineV37} from './verbal-professor-v37.js';
 import {ROLE_MAP} from './roles.js';
 import {PERSONAS,displayText} from './persona.js';
 
@@ -348,6 +349,10 @@ export const VERBAL_SCENE_IDS=Object.freeze([...new Set([...Object.keys(sceneRow
 export function verbalSceneLine({event,target,run,phase='event'}={}){
  const source=event||{id:run?.verbalContext?.eventId||run?.eventId||'unknown',title:'眼前這件事'};
  const person=target||source.speaker||'self';
+ if(person==='professor'&&/^e37-/.test(run?.seed||''))return professorVerbalLineV37({event:source,phase});
+ if(source.id==='meal-guests-c'&&/^e37-/.test(run?.seed||''))return phase==='result'
+  ?'剛才問到了，現在換我說：幹，我只是想找人吃飯，怎麼連今晚有人陪都要等通知？不約了也行，至少便當不會叫我明天再追。'
+  :'幹，我只是想吃頓飯，不是替公司再約一輪顧問會議。教授沒空就沒空，空氣你至少先陪我把便當吃完。';
  const group=groupRows[source.id];if(group?.[person])return pick(group[person],phase);
  const dynamic=contextual(source,person,run,phase);if(dynamic)return dynamic;
  if(person==='self'&&['watch-empty-corridor','watch-exam-room','watch-future'].includes(source.id))return pick(sceneRows[source.id],phase);

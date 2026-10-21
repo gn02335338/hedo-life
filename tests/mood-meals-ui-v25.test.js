@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {MEAL_GUEST_IDS_V25} from '../dist/meals-v25.js';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {webcrypto} from 'node:crypto';
@@ -202,6 +203,7 @@ test('meal grid and meltdown UI keep shrinkable columns and single-column mobile
 
 const {routes:naturalRoutes}=JSON.parse(await readFile(new URL('./fixtures/mood-meals-routes-v25.json',import.meta.url),'utf8'));
 function naturalRun(id){const route=naturalRoutes.find(row=>row.id===id);assert.ok(route,id);return engine.replayRun(route.roleId,route.seed,route.actions);}
+const professorRoutes=JSON.parse(await readFile(new URL('./fixtures/professor-v37.json',import.meta.url),'utf8'));
 for(const mobile of [false,true]){
  const device=mobile?'mobile':'desktop';
  test(`${device}: naturally replayed collapses use the visible self-destruct choice and preserve canonical transitions`,async()=>{
@@ -215,13 +217,41 @@ for(const mobile of [false,true]){
   }
  });
  test(`${device}: all sixteen naturally replayed dinner scenes show their own portrait and reveal only the chosen reply`,async()=>{
-  for(const guest of Object.keys(persona.PERSONAS)){
+  for(const guest of MEAL_GUEST_IDS_V25){
    const app=await harness(mobile),run=naturalRun(`meal-with-${guest}`),event=engine.getEvent(run),html=app.render(run);
    assert.equal(engine.validRun(run),true);assert.equal(event.speaker,guest);assert.ok(html.includes(`src="${persona.PERSONAS[guest].image}"`));hiddenOutcomes(html,event);
    const expected=engine.applyChoice(run,1);await app.doubleChoice(1);
    assert.deepEqual(plain(app.state()),plain(expected));assert.ok(app.html().includes(esc(app.state().history.at(-1).result)));
    await app.action('next');const returned=app.state();assert.equal(engine.validRun(returned),true);assert.equal(returned.mealContext,null);
    assert.deepEqual(plain(engine.replayRun(run.roleId,run.seed,returned.actions)),plain(returned));
+  }
+ });
+}
+
+for(const mobile of [false,true]){
+ const device=mobile?'mobile':'desktop';
+ test(`${device}: all thirty natural professor scenes show the professor and hide outcomes until an actual reply`,async()=>{
+  for(const route of professorRoutes.scenes){
+   const app=await harness(mobile),run=engine.replayRun(route.roleId,route.seed,route.beforeActions),event=engine.getEvent(run),html=app.render(run);
+   assert.equal(event.speaker,'professor');assert.equal(engine.validRun(run),true);assert.ok(html.includes('林澤教授'));
+   assert.ok(html.includes(`src="${persona.PERSONAS.professor.image}"`));hiddenOutcomes(html,event);
+   const expected=engine.applyChoice(run,0);await app.doubleChoice(0);
+   assert.deepEqual(plain(app.state()),plain(expected));assert.ok(app.html().includes(esc(expected.history.at(-1).result)));
+   assert.match(app.html(),/outcome-ledger|這次實際變化/);await app.action('next');
+   assert.deepEqual(plain(app.state()),plain(engine.replayRun(route.roleId,route.seed,route.actions)),route.id);
+  }
+ });
+ test(`${device}: all six natural professor dinner reactions reveal after payment and double clicks cannot charge twice`,async()=>{
+  for(const route of professorRoutes.meals){
+   const app=await harness(mobile),run=engine.replayRun(route.roleId,route.seed,route.beforeActions),event=engine.getEvent(run),html=app.render(run);
+   assert.equal(event.id,'meal-with-professor');assert.ok(html.includes('林澤教授'));assert.ok(html.includes(`src="${persona.PERSONAS.professor.image}"`));hiddenOutcomes(html,event);
+   for(const choice of event.choices)for(const outcome of choice.draw?.outcomes||[])assert.ok(!html.includes(esc(outcome.result)),'no table reaction is visible before a choice');
+   const expected=engine.applyChoice(run,route.replyIndex);await app.doubleChoice(route.replyIndex);
+   assert.deepEqual(plain(app.state()),plain(expected));assert.equal(app.state().stats.cash,run.stats.cash-18);
+   assert.ok(app.html().includes(esc(expected.history.at(-1).result)));assert.ok(app.html().includes(esc(expected.history.at(-1).eventOutcome.result)));
+   assert.match(app.html(),/這次角色互動/);assert.equal(app.state().history.at(-1).mealOutcome.reaction,route.reaction);
+   await app.action('next');assert.equal(app.state().mealContext,null);assert.equal(app.state().stats.cash,expected.stats.cash);
+   assert.deepEqual(plain(app.state()),plain(engine.replayRun(route.roleId,route.seed,route.actions)),route.id);
   }
  });
 }

@@ -65,7 +65,7 @@ export function careerReadinessV17(run){
 }
 export function careerReviewWaitV17(run){return run.turn-run.lastPromotion>=(run.rank<=3?2:3)&&run.turn>=(run.flags.career_defer_until||0);}
 export function careerInvitationEligibleV17(run){
- return /^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36)-/.test(run.seed)&&run.turn>=3&&run.turn<24&&run.rank<CAREER_MAX_RANK_V17&&!run.pip?.active&&careerReviewWaitV17(run)&&careerReadinessV17(run).ready&&getCareerReviewV17(run).choices.slice(0,2).some(choice=>choice.available!==false);
+ return /^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37)-/.test(run.seed)&&run.turn>=3&&run.turn<24&&run.rank<CAREER_MAX_RANK_V17&&!run.pip?.active&&careerReviewWaitV17(run)&&careerReadinessV17(run).ready&&getCareerReviewV17(run).choices.slice(0,2).some(choice=>choice.available!==false);
 }
 
 export function getCareerReviewV17(run){

@@ -151,9 +151,9 @@ export function getMealV25(run){
    body:`${context.origin==='crisis-mood'?'你先把工作通知靜音，想找個人陪自己喘口氣。':'你打開聯絡名單，想找個人一起吃晚餐。'}邀約名單不收錢；選好人、決定正式用餐時才會扣餐費。每桌聊的事不同，吃完再決定值不值得。`,
    wing:`邀約名單 ${menu+1} / 2 · 目前存款 ${run.stats.cash}`,
    choices:[
-    ...guests.map(id=>emptyChoice(`約${(id==='rick'&&!/^e(?:29|30|31|32|33|34|35|36)-/.test(run.seed)?'老闆乾兒子':PERSONAS[id].name)}吃飯（花費 ${dinners[id].cost} 存款）`,'mealPick',{
+    ...guests.map(id=>emptyChoice(`約${(id==='rick'&&!/^e(?:29|30|31|32|33|34|35|36|37)-/.test(run.seed)?'老闆乾兒子':PERSONAS[id].name)}吃飯（花費 ${dinners[id].cost} 存款）`,'mealPick',{
      mealTarget:id,mealCost:dinners[id].cost,available:run.stats.cash>=dinners[id].cost,
-     result:`你傳了訊息，和${(id==='rick'&&!/^e(?:29|30|31|32|33|34|35|36)-/.test(run.seed)?'老闆乾兒子':PERSONAS[id].name)}約在附近吃飯。餐費還沒付，坐下後再決定要聊什麼。`
+     result:`你傳了訊息，和${(id==='rick'&&!/^e(?:29|30|31|32|33|34|35|36|37)-/.test(run.seed)?'老闆乾兒子':PERSONAS[id].name)}約在附近吃飯。餐費還沒付，坐下後再決定要聊什麼。`
     })),
     emptyChoice(menu===0?'翻到下一頁，看看其他人。':'回到上一頁。','mealPage',{
      mealPage:menu===0?1:0,result:'你換了一頁名單，還沒有付錢，也還沒跟誰開聊。'
@@ -203,10 +203,10 @@ const dinnerDreams=Object.freeze({
 // e25 dinner narration moves from the office into the actual restaurant.
 export function withMealRageCopyV25(event,run){
  const context=run?.rageContext;
- if(!/^e(?:25|26|27|28|29|30|31|32|33|34|35|36)-/.test(run?.seed||'')||event?.id!=='rage-release'||!context?.eventId?.startsWith('meal-with-'))return event;
+ if(!/^e(?:25|26|27|28|29|30|31|32|33|34|35|36|37)-/.test(run?.seed||'')||event?.id!=='rage-release'||!context?.eventId?.startsWith('meal-with-'))return event;
  const guest=context.eventId.slice('meal-with-'.length),meal=dinners[guest];
  if(!meal||context.target!==guest)return event;
- const name=guest==='rick'&&!/^e(?:29|30|31|32|33|34|35|36)-/.test(run.seed)?'老闆乾兒子':PERSONAS[guest].name,paid=context.phase==='result'&&context.pendingEffect==='mealFinish';
+ const name=guest==='rick'&&!/^e(?:29|30|31|32|33|34|35|36|37)-/.test(run.seed)?'老闆乾兒子':PERSONAS[guest].name,paid=context.phase==='result'&&context.pendingEffect==='mealFinish';
  const phase=paid?'這頓飯的餐費已經付過，剛才那句回應卻還卡在你心裡。':context.phase==='result'?'你剛說今天先不吃，正準備改天再約，火氣卻又湧了上來。':'這頓飯還沒正式開始，你已經聽得有點火大。';
  const imaginary=`你在腦內把餐桌變成擂台，帳單跳出來當裁判。${dinnerDreams[guest]} ${paid?'帳單舉著「已結清」提醒大家，不准再收一次餐費。':'裁判說歸說，現實裡並沒有因此加點或付錢。'}你眨了一下眼，雙手仍放在自己膝上。餐廳裡沒有人挨打，${name}還坐在對面；剛才整段只有你看見。`;
  const real=`你真的伸手朝${name}揮了過去，椅子向後擦出聲音。店員立刻過來，把你們隔到餐桌兩側，請其他客人先讓開。你等了一秒，卻沒有醒來。${paid?'剛才付過的餐費沒有重算，動手的事卻得另外說清楚。':'你還沒付餐費，現場已經得先處理剛才的衝突。'}對方的話和你動手的經過，都不能從後續紀錄裡刪掉。`;

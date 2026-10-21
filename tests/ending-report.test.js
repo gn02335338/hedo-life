@@ -15,7 +15,7 @@ test('all natural legacy and current endings report the actual initial and commi
  assert.equal(routes.length,ENDINGS.length);
  let boundaryValues=0,dayOneEndings=0;
  for(const route of routes){
-  assert.match(route.seed,/^e(?:31|32|33|34|35|36)-/);
+  assert.match(route.seed,/^e(?:31|32|33|34|35|36|37)-/);
   const expected=new Map();
   const run=replayRoute(route,state=>expected.set(state.history.length,{...state.stats}));
   const before=JSON.stringify(run),report=buildEndingReport(run),initial=createRun(route.roleId,route.seed);

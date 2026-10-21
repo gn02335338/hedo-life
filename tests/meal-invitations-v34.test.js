@@ -11,7 +11,9 @@ const menu=(run=base())=>withMealInvitationsV34(getMealV25(run),run);
 
 test('invitation access distinguishes all sixteen guests, unfamiliar colleagues and high-ranking managers',()=>{
  const run=base(),profiles=Object.fromEntries(MEAL_GUEST_IDS_V25.map(id=>[id,invitationProfileV34(run,id)]));
- assert.deepEqual(Object.keys(profiles),Object.keys(PERSONAS));
+ assert.deepEqual(Object.keys(profiles),Object.keys(PERSONAS).filter(id=>id!=='professor'));
+ assert.equal(profiles.professor,undefined,'the seventeenth guest uses only the new e37 invitation rules');
+ assert.throws(()=>invitationProfileV34(run,'professor'),/Unknown meal guest/u);
  assert.equal(profiles.wing.acceptChance,.08);assert.equal(profiles.spencer.acceptChance,.06);
  for(const id of ['sonny','jonathan','sam','cindy'])assert.ok(profiles[id].acceptChance>=.40&&profiles[id].acceptChance<=.50,id);
  for(const id of ['erich','jenjen','rick','kind','hope','jack','meimei','sophie','owen'])assert.ok(profiles[id].acceptChance>=.12&&profiles[id].acceptChance<=.25,id);
@@ -128,7 +130,7 @@ test('the solo fallback is guaranteed, affordable and distinct from a shared din
 });
 
 test('legacy menus and every non-menu event retain their exact object and RNG-free behavior',()=>{
- for(const seed of ['e25-frozen','e29-frozen','e33-frozen','e37-future','legacy']){
+ for(const seed of ['e25-frozen','e29-frozen','e33-frozen','e38-future','legacy']){
   const run=base({seed}),source=getMealV25(run),before=structuredClone(source);
   assert.equal(withMealInvitationsV34(source,run),source);assert.deepEqual(source,before);assert.ok(source.choices.every(choice=>choice.draw===undefined));
  }

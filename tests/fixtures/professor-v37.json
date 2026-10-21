@@ -1,0 +1,4909 @@
+{
+  "version": 37,
+  "method": "Ordinary seeded onboarding/work choices and first-workday invitations; outcomes are inspected only after committing actions, without editing state.",
+  "attemptedSeeds": 1900,
+  "scenes": [
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 0
+        }
+      ],
+      "stateHash": "b931bb56134f7e0c16dddb9aaed37c48b04b27a3dc91308866cd852d6212e419",
+      "id": "professor37-hypothesis-acceptance",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "product",
+      "seed": "e37-prof-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-followup",
+          "index": 0
+        }
+      ],
+      "stateHash": "3c0e379020f6be5c1e1543287840e329d0e51c02072265838bd36eeea5b8c486",
+      "id": "professor37-consulting-followup",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "bd",
+      "seed": "e37-prof-proof-5",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-partner-data-question",
+          "index": 0
+        }
+      ],
+      "stateHash": "2d35856f147c0c691f2ed04f5ec40b60df91f9e2757813e13377df5234d8819d",
+      "id": "professor37-partner-data-question",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-permission-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-cache-purge",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-asset-ghost",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-rights-after-manager",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-print-page-trace",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdn-teacher-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-spring-dinner-seats",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-3",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-guest-network-window",
+          "index": 0
+        }
+      ],
+      "stateHash": "aa406ab0bee266b0c0fa56b15e3314126dd1c876ab6e828dd10e54995fde00f0",
+      "id": "professor37-guest-network-window",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-permission-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-cache-purge",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-asset-ghost",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-rights-after-manager",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-print-page-trace",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdn-teacher-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-spring-dinner-seats",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-3",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "finance",
+      "seed": "e37-prof-proof-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 0
+        }
+      ],
+      "stateHash": "66ff0a9302ed43126d3425ec15dfaa4984e1e0b6a2c73208478803890e5e733e",
+      "id": "professor37-consulting-fee-scope",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-industry-accounting-docs",
+          "index": 0
+        }
+      ],
+      "stateHash": "2b23d8b3e2941ffdd1c5f9df691badc2ce2c635b6dc26ce0832bb5b8522ed366",
+      "id": "professor37-industry-accounting-docs",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "hr",
+      "seed": "e37-prof-proof-b",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-onboarding-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-attendance-access",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-student-work-role",
+          "index": 0
+        }
+      ],
+      "stateHash": "eaa178b575f1d0c74db90ae8d95e8abc2f7ea676ca5a0a1f96ff5e0fd4420121",
+      "id": "professor37-student-work-role",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-onboarding-notice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-attendance-access",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-d",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-big-pm-font",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-streaming-pause",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-labor-representative",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-code-replacement",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 0
+        }
+      ],
+      "stateHash": "19ec703917fe579caa62b8c6704b8c69283d991499e5f33e6c2dbf80f404aeb7",
+      "id": "professor37-research-service-shift",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-big-pm-font",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-streaming-pause",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-labor-representative",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-code-replacement",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "product",
+      "seed": "e37-prof-proof-g",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-feature-off-switch",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-score-user-value",
+          "index": 0
+        }
+      ],
+      "stateHash": "648137f08a56e0ff24221289380deae0adb124562666ca0c0ee9b8081827a249",
+      "id": "professor37-score-user-value",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-feature-off-switch",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "design",
+      "seed": "e37-prof-proof-h",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 0
+        }
+      ],
+      "stateHash": "2ad648d7556194b48a96d5484cbaba991f77f63e9e70d4c431803fa808d8bd7e",
+      "id": "professor37-paper-figure-ui",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "sales",
+      "seed": "e37-prof-proof-j",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-industry-mou-delivery",
+          "index": 0
+        }
+      ],
+      "stateHash": "b2a38cf7d9a95c613829d902d5ecc847ef91ddf51befd145049556fcf3cd6876",
+      "id": "professor37-industry-mou-delivery",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "admin",
+      "seed": "e37-prof-proof-p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-izakaya-stock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ceo-tea-drop",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-recruiting-hat",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-venue-link",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-dragon-quiz-producer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-four-am-delivery",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-seat-key",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-visit-room-reservation",
+          "index": 0
+        }
+      ],
+      "stateHash": "5736758d886e4174b581b39fbbfb10e75e8e255e8f80aeefcc598ca457d80b4b",
+      "id": "professor37-visit-room-reservation",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-izakaya-stock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ceo-tea-drop",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-recruiting-hat",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-venue-link",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-dragon-quiz-producer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-four-am-delivery",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-seat-key",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "ai",
+      "seed": "e37-prof-proof-r",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-data-contract-shape",
+          "index": 0
+        }
+      ],
+      "stateHash": "2efaade4600afb26906017e431d268b478df13e40bf4005d7da980621bb5a2e4",
+      "id": "professor37-data-contract-shape",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "design",
+      "seed": "e37-prof-proof-u",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-source-file",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-referral-actual-email",
+          "index": 0
+        }
+      ],
+      "stateHash": "962f9daae4dddc7e7f557f7cac4bb880bcda3543ddfbd70df60d218e77f8deab",
+      "id": "professor37-referral-actual-email",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-source-file",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "sales",
+      "seed": "e37-prof-proof-w",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-sales-professor-question",
+          "index": 0
+        }
+      ],
+      "stateHash": "dbed8553f3b15c3f88961ce4cebe816b650caa73817da27cbdfae6467d020e73",
+      "id": "professor37-sales-professor-question",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "finance",
+      "seed": "e37-prof-proof-z",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-shares-invitation",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-invoice-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-final-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-grant-milestone-calendar",
+          "index": 0
+        }
+      ],
+      "stateHash": "fc3c999cd2689165eeea3c6e56d1b1b4ae6f12396d971c4b7c8612739c2132f5",
+      "id": "professor37-grant-milestone-calendar",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-shares-invitation",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-invoice-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-final-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-13",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-cdp-ticket-king",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-meeting-recording",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-big-pm-font",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        }
+      ],
+      "stateHash": "b2aa5a6cfeff2bf3245ec1f84ad9a390d084eeeb54e07b0158465f011b8c6215",
+      "id": "professor37-notebook-server",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-cdp-ticket-king",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-meeting-recording",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-big-pm-font",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-1a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-print-page-trace",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-shared-link-expiry",
+          "index": 0
+        }
+      ],
+      "stateHash": "db180407a7b87a0df4c82d63d90d253a9bdb70e7f60c7b4650f824a62c2ccdf4",
+      "id": "professor37-shared-link-expiry",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-print-page-trace",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "design",
+      "seed": "e37-prof-proof-1k",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-advisor-calendar-gap",
+          "index": 0
+        }
+      ],
+      "stateHash": "c35a8d5fa6dcf862b9065dfcdd4644abdc069eaee6a9393dbbf1388297f81a22",
+      "id": "professor37-advisor-calendar-gap",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "executive",
+      "seed": "e37-prof-proof-1o",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-semester-exchange-rate",
+          "index": 0
+        }
+      ],
+      "stateHash": "5844f9414f5c140f7fda56b364c373eb1492f4f493d6e1e5591e8b038da48331",
+      "id": "professor37-semester-exchange-rate",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-1t",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-dual-calendar",
+          "index": 0
+        }
+      ],
+      "stateHash": "adb7f5a096fb3eaba5f471023b232ab098e1b5970f9462f4951f0884af89e830",
+      "id": "professor37-dual-calendar",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "product",
+      "seed": "e37-prof-proof-1w",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-two-slots-one-test",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "product-roadmap",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-cup-labels",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-credit-scope",
+          "index": 0
+        }
+      ],
+      "stateHash": "2573e5cb1a06be83bdfa3ac8cc777dc7c75f94055323ffa1fe6b73b15bfc34cd",
+      "id": "professor37-research-credit-scope",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-two-slots-one-test",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "product-roadmap",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jack-notebook",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-cup-labels",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "design",
+      "seed": "e37-prof-proof-2n",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-university-brand-frame",
+          "index": 0
+        }
+      ],
+      "stateHash": "a91d61031e449ddef1219e7c9140c44bd1fb1cf7372a4294749811008bc9b090",
+      "id": "professor37-university-brand-frame",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "bd",
+      "seed": "e37-prof-proof-3r",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-contact-triage",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jenjen-kpi-retroactive",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-student-identity-badge",
+          "index": 0
+        }
+      ],
+      "stateHash": "7c40f91c6f0effa31f09da9a04cbd149403bdb0bcfb733ec723564b45b79e64d",
+      "id": "professor37-student-identity-badge",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-contact-triage",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jenjen-kpi-retroactive",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "ai",
+      "seed": "e37-prof-proof-53",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "aircon-career",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-two-company-badge",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-last-minute-question",
+          "index": 0
+        }
+      ],
+      "stateHash": "882c6b30949db6154e37ca09ce15577644754c3a202b8382950c51749e453fe9",
+      "id": "professor37-last-minute-question",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "aircon-career",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-two-company-badge",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "admin",
+      "seed": "e37-prof-proof-8a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-izakaya-stock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-banquet-absence",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-coffee-round",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-event-attendance",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-half-day-queue",
+          "index": 0
+        }
+      ],
+      "stateHash": "1119adf1db4b2e16e3259409a0f0de1f21a5608eaaa5f869622f7cca0d3c399f",
+      "id": "professor37-half-day-queue",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-izakaya-stock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-banquet-absence",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-coffee-round",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-event-attendance",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-8o",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-name-card-experiment",
+          "index": 0
+        }
+      ],
+      "stateHash": "d7fa66e6beab30dcc35745eb1baada8065a0c7acd481c02d15099c3171cd7799",
+      "id": "professor37-name-card-experiment",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "ai",
+      "seed": "e37-prof-proof-a5",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-seed-ablation",
+          "index": 0
+        }
+      ],
+      "stateHash": "8b3052da88a18db6917bb68cffea36bed1ad29a5f46941c66243f102756d4745",
+      "id": "professor37-seed-ablation",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "ai",
+      "seed": "e37-prof-proof-e4",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-remote-control-title",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-cup-and-exit",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-baseline-first",
+          "index": 0
+        }
+      ],
+      "stateHash": "20bef3aa04b8ea3aeb82f018b73c0e5be35330e7d2050804e28d6aef48d6ddb2",
+      "id": "professor37-baseline-first",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-label-convention",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-remote-control-title",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-cup-and-exit",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "ai",
+      "seed": "e37-prof-proof-1gr",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai31-auto-increment",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-training-test-calendar",
+          "index": 0
+        }
+      ],
+      "stateHash": "a6888d33869970525353e089e8c37954dc5943f7da60d6475d87af05b034062f",
+      "id": "professor37-training-test-calendar",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-training-data",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ai31-auto-increment",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        }
+      ]
+    }
+  ],
+  "meals": [
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-10",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        }
+      ],
+      "stateHash": "29cfe67d37d5c1f107b715dbe2ab0659541d8feab4f05e5f3aa44da8ffe29a89",
+      "id": "0/mine",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-10",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 1
+        }
+      ],
+      "stateHash": "14b1be4443dd49610a7dbc948f7269de4af91fa69a1ad4a8f24af01dc8b84d1d",
+      "id": "1/mine",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-1a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        }
+      ],
+      "stateHash": "70c7d04267b4f4f44625f7285a5368940fc9772c95970321e7f022f5d6d7f1ad",
+      "id": "0/neutral",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-1a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 1
+        }
+      ],
+      "stateHash": "d2029998a1d20e7b6ff6a6641f53c76830fc3a5ac53e63820d5304b8678e4dbc",
+      "id": "1/neutral",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-26",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        }
+      ],
+      "stateHash": "e3629b51f5ef51e5421433fe2721bd20e0967463788937c7e0ce72bdad132daa",
+      "id": "0/warm",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-26",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 1
+        }
+      ],
+      "stateHash": "ab61318ed0a7f6bd01905ba5effb1b303374e5cf17fc14c6a474e728005ded1a",
+      "id": "1/warm",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    }
+  ],
+  "rages": [
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "professor37-hypothesis-acceptance"
+        }
+      ],
+      "stateHash": "513186226253fb72cd4191b6284b927500a08612b05281971f4b7c261fe1e3f5",
+      "id": "daily/event/imagined",
+      "origin": "daily",
+      "phase": "event",
+      "mode": "imagined",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "professor37-hypothesis-acceptance"
+        }
+      ],
+      "stateHash": "1cb9d71e448ce76c39b8ccd9162273bd3e9e03df2a9e35531d3e1306576e831d",
+      "id": "daily/result/imagined",
+      "origin": "daily",
+      "phase": "result",
+      "mode": "imagined",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "product",
+      "seed": "e37-prof-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "professor37-consulting-followup"
+        }
+      ],
+      "stateHash": "180480ad796d2edc5af8aa2e527753013244454cfe1773dbc6c1aa6b15e97276",
+      "id": "daily/event/real",
+      "origin": "daily",
+      "phase": "event",
+      "mode": "real",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-d",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-big-pm-font",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-streaming-pause",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-labor-representative",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-code-replacement",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "professor37-research-service-shift"
+        }
+      ],
+      "stateHash": "b2d7e4741d139b6582b78b4cb3df0f4a3981607fb37cdf058406ad6dd01c80a7",
+      "id": "daily/result/real",
+      "origin": "daily",
+      "phase": "result",
+      "mode": "real",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-big-pm-font",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-streaming-pause",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-labor-representative",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-code-replacement",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-10",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "meal-with-professor"
+        }
+      ],
+      "stateHash": "1e01267c09c80987156aeb0828363e87f17770a7e7766137e1a8fb6e779ee61e",
+      "id": "meal/event/real",
+      "origin": "meal",
+      "phase": "event",
+      "mode": "real",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-10",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "meal-with-professor"
+        }
+      ],
+      "stateHash": "ae9b590e19f3d6f61a9d1fa117b7f96932cdd250507af0663f70d13947c8f59c",
+      "id": "meal/result/imagined",
+      "origin": "meal",
+      "phase": "result",
+      "mode": "imagined",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-1a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "meal-with-professor"
+        }
+      ],
+      "stateHash": "83ae17970e9d8cddc6a0c922fa69511781c3dd0a9892e4b90a745b7351744f96",
+      "id": "meal/event/imagined",
+      "origin": "meal",
+      "phase": "event",
+      "mode": "imagined",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-1a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "result",
+          "eventId": "meal-with-professor"
+        }
+      ],
+      "stateHash": "da180f8d3eddeabe3c7d450a7db1b57fc385d02b27e8b26b554089deb357466c",
+      "id": "meal/result/real",
+      "origin": "meal",
+      "phase": "result",
+      "mode": "real",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    }
+  ],
+  "verbals": [
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-hypothesis-acceptance",
+          "version": 2
+        }
+      ],
+      "stateHash": "5a9b59c5de1592d43ac6feb1c1ba096219a27ab83ba5db71a8de7e25b0f49a6e",
+      "id": "daily/event/ignored",
+      "origin": "daily",
+      "phase": "event",
+      "outcome": "ignored",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "professor37-hypothesis-acceptance",
+          "version": 2
+        }
+      ],
+      "stateHash": "77036785616700a869537db19c5561c93c73c72058f17bfa9f854f9e3a2ff38e",
+      "id": "daily/result/retort",
+      "origin": "daily",
+      "phase": "result",
+      "outcome": "retort",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "product",
+      "seed": "e37-prof-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-consulting-followup",
+          "version": 2
+        }
+      ],
+      "stateHash": "3bdfc79a2fdd20e6b90a90cd8ba9cba5ad75b9eb40202630889446d2ac6cc68a",
+      "id": "daily/event/personnel",
+      "origin": "daily",
+      "phase": "event",
+      "outcome": "personnel",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "bd",
+      "seed": "e37-prof-proof-5",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-partner-data-question",
+          "version": 2
+        }
+      ],
+      "stateHash": "d94e23ac878040ddb7bb0b376e5b1a77a6b2e32a9b5e6bdb897ad059cee3630b",
+      "id": "daily/event/retort",
+      "origin": "daily",
+      "phase": "event",
+      "outcome": "retort",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "bd",
+      "seed": "e37-prof-proof-5",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-partner-data-question",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "professor37-partner-data-question",
+          "version": 2
+        }
+      ],
+      "stateHash": "9e66ad43e0157dbe482e5262fc23fed6e07836bdceb794d4ae76c924df0312d7",
+      "id": "daily/result/ignored",
+      "origin": "daily",
+      "phase": "result",
+      "outcome": "ignored",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-permission-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-cache-purge",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-asset-ghost",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-rights-after-manager",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-print-page-trace",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdn-teacher-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-spring-dinner-seats",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-3",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-guest-network-window",
+          "version": 2
+        }
+      ],
+      "stateHash": "d1747d609d49a54decdc75330f961d761aad91c7a3cadbab261bf57ec2f6ceac",
+      "id": "daily/event/relationship",
+      "origin": "daily",
+      "phase": "event",
+      "outcome": "relationship",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-permission-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-cache-purge",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-asset-ghost",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-rights-after-manager",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-print-page-trace",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cdn-teacher-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-spring-dinner-seats",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-3",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-industry-accounting-docs",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "professor37-industry-accounting-docs",
+          "version": 2
+        }
+      ],
+      "stateHash": "745ece6e13a1719b4352cbd55047a507cbcf450ce8420496ccad2ccbe7f93169",
+      "id": "daily/result/relationship",
+      "origin": "daily",
+      "phase": "result",
+      "outcome": "relationship",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-d",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-big-pm-font",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-streaming-pause",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-labor-representative",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-code-replacement",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "professor37-research-service-shift",
+          "version": 2
+        }
+      ],
+      "stateHash": "80ad952b3be13f14564f09a0c329f1ad65c462177bf1ee445a492385717f32d2",
+      "id": "daily/result/personnel",
+      "origin": "daily",
+      "phase": "result",
+      "outcome": "personnel",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-big-pm-font",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-streaming-pause",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-labor-representative",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-code-replacement",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "product",
+      "seed": "e37-prof-proof-g",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-feature-off-switch",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-score-user-value",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "professor37-score-user-value",
+          "version": 2
+        }
+      ],
+      "stateHash": "0618d3b34d043ed2d19e5b00a514e7014b226d9868b0a20c6d772f203137a1a4",
+      "id": "daily/result/legal",
+      "origin": "daily",
+      "phase": "result",
+      "outcome": "legal",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-feature-off-switch",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-k",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-guest-network-window",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "professor37-guest-network-window",
+          "version": 2
+        }
+      ],
+      "stateHash": "db7a8723a3ea5a1c3d849997386166134446fb2d9c141bbf109e936c60697712",
+      "id": "daily/result/support",
+      "origin": "daily",
+      "phase": "result",
+      "outcome": "support",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "ai",
+      "seed": "e37-prof-proof-r",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-data-contract-shape",
+          "version": 2
+        }
+      ],
+      "stateHash": "b9e6398118f19206208d42e672fa982f173f226f5f6bde9685bd13ce47f514cf",
+      "id": "daily/event/legal",
+      "origin": "daily",
+      "phase": "event",
+      "outcome": "legal",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "sales",
+      "seed": "e37-prof-proof-w",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-sales-professor-question",
+          "version": 2
+        }
+      ],
+      "stateHash": "03dd8f69995a5826ecc68d5e5f5059d09881ed71b4055fb3f26306c129b91fbf",
+      "id": "daily/event/support",
+      "origin": "daily",
+      "phase": "event",
+      "outcome": "support",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-10",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "63c3f1a3be169b058460806588c43ca10d8827640bc419c4e028811b819ceb2c",
+      "id": "meal/event/legal",
+      "origin": "meal",
+      "phase": "event",
+      "outcome": "legal",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-10",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "fb52a83b3737ef46cd7c344cbf0bffc045527f285fe31cf3624971c20f544bca",
+      "id": "meal/result/relationship",
+      "origin": "meal",
+      "phase": "result",
+      "outcome": "relationship",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-1a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "737c48546f202383fb26ced808bb1cffb3245fe0313ee59c2e2303ea60538b73",
+      "id": "meal/event/retort",
+      "origin": "meal",
+      "phase": "event",
+      "outcome": "retort",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-1a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "cf866a60138bb890b2343ea7d16721595c7682f30903665597966f0acde945db",
+      "id": "meal/result/legal",
+      "origin": "meal",
+      "phase": "result",
+      "outcome": "legal",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "system",
+      "seed": "e37-prof-proof-26",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "60b69cd53c3d1c56bd961045e873cc401d15d3aaa7eaf4cef23d48b48314c453",
+      "id": "meal/event/relationship",
+      "origin": "meal",
+      "phase": "event",
+      "outcome": "relationship",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-2t",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "903c8edb9ad6ea6a94b28e367c4a25201b9ec9630b4cd7ff6af2a2ae6f39b334",
+      "id": "meal/event/personnel",
+      "origin": "meal",
+      "phase": "event",
+      "outcome": "personnel",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "accounting",
+      "seed": "e37-prof-proof-2t",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "6e0a4a08e5dd4b64dcd43cd4aa086ed8a5537c0b768208267dcd2e48461409b6",
+      "id": "meal/result/ignored",
+      "origin": "meal",
+      "phase": "result",
+      "outcome": "ignored",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "ai",
+      "seed": "e37-prof-proof-2x",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "0d15484b8fdff6af653f70119c446d9f74e3eef0d1544a707713755e6fef63bc",
+      "id": "meal/result/support",
+      "origin": "meal",
+      "phase": "result",
+      "outcome": "support",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "mis",
+      "seed": "e37-prof-proof-33",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "2c579ba124ee3fbffc1222210acf70e1d4531f1f7f44eb53575b8ac9d98eaff3",
+      "id": "meal/result/retort",
+      "origin": "meal",
+      "phase": "result",
+      "outcome": "retort",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "hr",
+      "seed": "e37-prof-proof-37",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "b2a577e996a66fd9c5544cc1a1c3d8b80e93d9a7775432df46aa7a532684943f",
+      "id": "meal/event/ignored",
+      "origin": "meal",
+      "phase": "event",
+      "outcome": "ignored",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "design",
+      "seed": "e37-prof-proof-3q",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-professor",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "4711b5159862eb16b54464d6b1be4615486fdcf50c2de0c7a4d4f9be4b57fc7d",
+      "id": "meal/result/personnel",
+      "origin": "meal",
+      "phase": "result",
+      "outcome": "personnel",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "project",
+      "seed": "e37-prof-proof-41",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "meal-with-professor",
+          "version": 2
+        }
+      ],
+      "stateHash": "e2a2cd652c00cf692271374e92c4cb0c2727b41ec892bb6d0dc5024bcebc2745",
+      "id": "meal/event/support",
+      "origin": "meal",
+      "phase": "event",
+      "outcome": "support",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-c",
+          "index": 0
+        }
+      ]
+    }
+  ],
+  "accepted": {
+    "roleId": "accounting",
+    "seed": "e37-prof-proof-10",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 4
+      },
+      {
+        "type": "choice",
+        "eventId": "meal-guests-a",
+        "index": 8
+      },
+      {
+        "type": "choice",
+        "eventId": "meal-guests-b",
+        "index": 8
+      },
+      {
+        "type": "choice",
+        "eventId": "meal-guests-c",
+        "index": 0
+      }
+    ],
+    "stateHash": "0be3fb57181297870e1d4eaca56dd0447aeedf5f67000cbd37e25306c52eb0b7",
+    "id": "professor-invitation-accepted"
+  },
+  "declined": {
+    "roleId": "system",
+    "seed": "e37-prof-proof-0",
+    "actions": [
+      {
+        "type": "choice",
+        "eventId": "onboarding",
+        "index": 0
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "choice",
+        "eventId": "self-care",
+        "index": 4
+      },
+      {
+        "type": "choice",
+        "eventId": "meal-guests-a",
+        "index": 8
+      },
+      {
+        "type": "choice",
+        "eventId": "meal-guests-b",
+        "index": 8
+      },
+      {
+        "type": "choice",
+        "eventId": "meal-guests-c",
+        "index": 0
+      }
+    ],
+    "stateHash": "6e78611f361d664ab09e9a6156432f225358c0eda5ac26fee801fcdd0b42a33e",
+    "id": "professor-invitation-declined"
+  }
+}

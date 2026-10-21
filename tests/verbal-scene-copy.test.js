@@ -21,8 +21,8 @@ const validLine=(line,id)=>{
  assert.doesNotMatch(line,/undefined|null|NaN|https?:\/\/|\/Users\/|\/private\//,id);
 };
 
-test('all 681 daily and four fantasy scenes have distinct, deterministic speech in both phases',()=>{
- assert.equal(EVENTS.length,681);assert.equal(FANTASY_EVENTS.length,4);
+test('all 711 daily and four fantasy scenes have distinct, deterministic speech in both phases',()=>{
+ assert.equal(EVENTS.length,711);assert.equal(FANTASY_EVENTS.length,4);
  const events=[...EVENTS,...FANTASY_EVENTS].map(rendered),targets=new Set();
  for(const phase of phases){
   const lines=[];
@@ -129,7 +129,7 @@ test('First Love remains Jack versus Meimei, armwrestling remains Sonny’s excu
 
 test('all sixteen meal guests get individual, meal-specific replies in both phases',()=>{
  const lines=[];
- for(const target of Object.keys(PERSONAS)){
+ for(const target of Object.keys(PERSONAS).filter(id=>id!=='professor')){
   const [event,result]=both(`meal-with-${target}`,target);validLine(event,target);validLine(result,target);
   assert.match(`${event} ${result}`,/飯|餐|湯|麵|菜|筷|吃|點|鍋|甜點|砂鍋|結帳|收銀|便當/);assert.notEqual(event,result,target);lines.push(event,result);
  }

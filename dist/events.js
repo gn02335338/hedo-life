@@ -19,6 +19,7 @@ import { GENDER_EVENTS_V29 } from './events-gender-v29.js';
 import { AI_EVENTS_V31 } from './events-ai-v31.js';
 import { CAST_EVENTS_V35_A } from './events-cast-v35-a.js';
 import { CAST_EVENTS_V35_B } from './events-cast-v35-b.js';
+import { PROFESSOR_EVENTS_V37 } from './events-professor-v37.js';
 const choice = (text, detail, result, delta, flags = []) => ({ text, detail, result, delta, flags });
 
 export const EVENTS = [
@@ -1302,3 +1303,6 @@ EVENTS.push(...AI_EVENTS_V31);
 
 // New character stories only enter e35 lives; published cohorts keep their pool.
 EVENTS.push(...CAST_EVENTS_V35_A, ...CAST_EVENTS_V35_B);
+
+// The advisor becomes an encountered character only in new e37 lives.
+EVENTS.push(...PROFESSOR_EVENTS_V37);

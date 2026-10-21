@@ -15,6 +15,7 @@ import {ROLE_MAP} from '../dist/roles.js';
 import {ENDINGS} from '../dist/endings.js';
 import {CHARACTER_IDS,CHARACTER_METRICS,deriveCharacterStats} from '../dist/character-stats.js';
 import {deriveAchievements} from '../dist/achievements.js';
+import {MEAL_GUEST_IDS_V25} from '../dist/meals-v25.js';
 
 const source=readFileSync(new URL('../worker/index.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export class HedoArchive','globalThis.HedoArchive=class HedoArchive').replace('export default','globalThis.worker=');
 const {routes,refusals}=JSON.parse(readFileSync(new URL('./fixtures/meal-reactions-v36.json',import.meta.url),'utf8'));
@@ -94,7 +95,7 @@ test('refusals and cancelled accepted dinners do not become paid meal relationsh
     assertProjection(await h.post(player,route,runId,{actions:cancelled.actions}),cancelled);
     assert.deepEqual(deriveCharacterStats(cancelled),deriveCharacterStats(before));
   }
-  for(const guest of CHARACTER_IDS){
+  for(const guest of MEAL_GUEST_IDS_V25){
     const route=routes.find(row=>row.guest===guest),before=engine.replayRun(route.roleId,route.seed,route.actions.slice(0,-1));
     const cancelled=engine.advance(engine.applyChoice(before,2)),player=await h.register(),runId=randomUUID();
     assertProjection(await h.post(player,route,runId,{actions:cancelled.actions}),cancelled);
@@ -104,7 +105,7 @@ test('refusals and cancelled accepted dinners do not become paid meal relationsh
 
 test('every reaction type completes with canonical badges and observations, while duplicate completion remains idempotent',async t=>{
   const h=harness(t);let completedCount=0;
-  for(const guest of CHARACTER_IDS)for(const reaction of ['warm','neutral','mine']){
+  for(const guest of MEAL_GUEST_IDS_V25)for(const reaction of ['warm','neutral','mine']){
     const route=routes.find(row=>row.guest===guest&&row.reaction===reaction),player=await h.register(),runId=randomUUID();
     const progress=engine.replayRun(route.roleId,route.seed,route.actions),ended=engine.replayRun(route.roleId,route.seed,route.completionActions);
     assert.equal(ended.completed,true);assert.equal(engine.validRun(ended),true);assertProjection(await h.post(player,route,runId),progress);

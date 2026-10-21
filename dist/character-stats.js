@@ -15,9 +15,9 @@ const choiceDelta=row=>{
 
 export function isMealOutcomeV36(run,row){
  const evidence=row?.mealOutcome,labels={warm:'聊得很開',neutral:'平常吃飯',mine:'不小心踩雷'};
- return /^e36-/.test(run?.seed||'')&&Boolean(evidence)&&typeof evidence==='object'&&!Array.isArray(evidence)
+ return /^e(?:36|37)-/.test(run?.seed||'')&&Boolean(evidence)&&typeof evidence==='object'&&!Array.isArray(evidence)
   &&Object.keys(evidence).sort().join(',')==='affinityDelta,reaction,replyIndex,target,version'
-  &&evidence.version===1&&known(evidence.target)&&row.speaker===evidence.target
+  &&evidence.version===1&&known(evidence.target)&&(evidence.target!=='professor'||/^e37-/.test(run?.seed||''))&&row.speaker===evidence.target
   &&row.kind==='self-care'&&row.eventId===`meal-with-${evidence.target}`&&!row.verbalOutcome
   &&[0,1].includes(row.choiceIndex)&&evidence.replyIndex===row.choiceIndex
   &&Object.hasOwn(labels,evidence.reaction)&&row.eventOutcome?.label==='餐桌氣氛'&&row.eventOutcome.result===labels[evidence.reaction]
@@ -35,14 +35,14 @@ export function characterHistoryChanges(run){
   if(row.mealOutcome!==undefined){
    if(!isMealOutcomeV36(run,row))continue;
    meal=row.mealOutcome;
-  }else if(/^e36-/.test(run.seed||'')&&row.kind==='self-care'&&row.eventId===`meal-with-${row.speaker}`&&!row.verbalOutcome)continue;
+  }else if(/^e(?:36|37)-/.test(run.seed||'')&&row.kind==='self-care'&&row.eventId===`meal-with-${row.speaker}`&&!row.verbalOutcome)continue;
   if(row.verbalOutcome?.version===2){
    const evidence=row.verbalOutcome;
-   if(!/^e(?:30|31|32|33|34|35|36)-/.test(run.seed||'')||evidence.origin!==row.eventId||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||!['event','result'].includes(evidence.phase)||!['daily','fantasy','onboarding','verbal'].includes(row.kind)||evidence.phase==='result'&&row.kind!=='verbal')continue;
+   if(!/^e(?:30|31|32|33|34|35|36|37)-/.test(run.seed||'')||evidence.origin!==row.eventId||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||!['event','result'].includes(evidence.phase)||!['daily','fantasy','onboarding','verbal'].includes(row.kind)||evidence.phase==='result'&&row.kind!=='verbal')continue;
    verbal=evidence;
   }else if(row.eventId==='verbal-release'){
    const evidence=row.verbalOutcome;
-   if(!/^e(?:30|31|32|33|34|35|36)-/.test(run.seed||'')||row.kind!=='verbal'||row.choiceIndex!==0||!evidence||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||typeof evidence.origin!=='string'||!['event','result'].includes(evidence.phase))continue;
+   if(!/^e(?:30|31|32|33|34|35|36|37)-/.test(run.seed||'')||row.kind!=='verbal'||row.choiceIndex!==0||!evidence||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||typeof evidence.origin!=='string'||!['event','result'].includes(evidence.phase))continue;
    verbal=evidence;
   }
   if(row.eventId==='rage-release'){

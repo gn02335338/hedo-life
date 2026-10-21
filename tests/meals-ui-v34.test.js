@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {MEAL_GUEST_IDS_V25} from '../dist/meals-v25.js';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {webcrypto} from 'node:crypto';
@@ -72,7 +73,7 @@ function secretOutcomesStayHidden(html,event){
 for(const mobile of [false,true]){
  const device=mobile?'mobile':'desktop';
  test(`${device}: all sixteen e34 invitation outcomes wait for the revealed result and never charge before a meal`,async()=>{
-  for(const guest of Object.keys(persona.PERSONAS))for(const outcome of ['accepted','declined']){
+  for(const guest of MEAL_GUEST_IDS_V25)for(const outcome of ['accepted','declined']){
    const route=routes.find(row=>row.guest===guest&&row.outcome===outcome);assert.ok(route,`${guest}/${outcome}`);
    const app=await harness(mobile),{run,index,choice}=invitation(route),event=engine.getEvent(run);
    assert.equal(engine.validRun(run),true);assert.equal(choice.available!==false,true);

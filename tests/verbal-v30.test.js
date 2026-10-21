@@ -29,12 +29,12 @@ test('verbal actions belong only to e30 lives and do not introduce another chara
   const old=createRun('sales',seed);assert.equal(Object.hasOwn(old,'verbalContext'),false);assert.equal(Object.hasOwn(old,'lastVerbalTurn'),false);
   assert.equal(canRequestVerbal(old),false);assert.deepEqual(getVerbalTargets(old),[]);assert.equal(requestVerbal(old),old);
  }
- assert.equal(CHARACTER_IDS.length,16);
+ assert.equal(CHARACTER_IDS.length,17);
 });
 
 test('natural verbal witnesses cover every NPC and self in both phases, every outcome and every legal response/result',()=>{
  const targets=routes.filter(route=>route.kind==='target');assert.equal(targets.length,34);
- assert.deepEqual(targets.map(route=>route.id).sort(),['event','result'].flatMap(phase=>[...CHARACTER_IDS,'self'].map(id=>`target-${phase}-${id}`)).sort());
+ assert.deepEqual(targets.map(route=>route.id).sort(),['event','result'].flatMap(phase=>[...CHARACTER_IDS.filter(id=>id!=='professor'),'self'].map(id=>`target-${phase}-${id}`)).sort());
  assert.deepEqual(routes.filter(route=>route.kind==='outcome').map(route=>route.branch).sort(),[...VERBAL_KINDS_V30].sort());
  assert.deepEqual(routes.filter(route=>route.kind==='legal').map(route=>route.id).sort(),[0,1,2].flatMap(index=>['withdrawn','settled','pending'].map(result=>`legal-${index}-${result}`)).sort());
  let checkpoints=0;

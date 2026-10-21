@@ -6,6 +6,7 @@ import {replayRoute} from './find-routes-v3.mjs';
 import {validRun,replayRun} from '../dist/engine.js';
 import {deriveAchievements} from '../dist/achievements.js';
 import {deriveCharacterStats} from '../dist/character-stats.js';
+import {assertFrozenCharacterStats} from './character-compat.mjs';
 
 const hash=state=>createHash('sha256').update(JSON.stringify(state)).digest('hex');
 
@@ -31,7 +32,7 @@ test('published e32 company and spoken lives preserve all 12992 JSON boundaries,
   assert.equal(run.completed,route.completed,route.id);
   assert.equal(run.endingId,route.ending,route.id);
   assert.deepEqual(deriveAchievements(run),route.achievements,route.id);
-  assert.deepEqual(deriveCharacterStats(run),route.characterStats,route.id);
+  assertFrozenCharacterStats(deriveCharacterStats(run),route.characterStats,route.id);
   assert.deepEqual(replayRun(route.roleId,route.seed,route.actions),run,route.id);
   count+=checkpoints.length;
  }

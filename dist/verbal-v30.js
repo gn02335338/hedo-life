@@ -20,7 +20,7 @@ const boundedLoss=(value,amount)=>Math.max(1-value,amount);
 const safeDelta=(run,delta)=>Object.fromEntries(Object.entries(delta).map(([key,value])=>[key,['mood','energy'].includes(key)&&value<0?boundedLoss(run.stats[key],value):value]));
 
 function release(run){
- const context=run.verbalContext,{target,eventId:origin,phase}=context,voice=verbalVoiceV30(target,origin,phase),s=run.stats;
+ const context=run.verbalContext,{target,eventId:origin,phase}=context,voice=verbalVoiceV30(target,origin,phase,run),s=run.stats;
  const self=target==='self',hot=s.mood<=25,angry=target==='wing'&&s.boss<=18,post=!!run.flags.post_pip_tolerance;
  const weights=self?[50,0,25,25,0,0]:[22,24,20,18,10,6];
  if(!self){
@@ -50,7 +50,7 @@ const legalText={
  pending:'雙方目前沒有談攏，這份往來先留下待處理。故事沒有替任何現實程序預告結果，你也沒有因為回去上班，就答應對方的全部說法。'
 };
 function legal(run){
- const target=run.verbalContext.target,name=verbalVoiceV30(target,run.verbalContext.eventId,run.verbalContext.phase).name;
+ const target=run.verbalContext.target,name=verbalVoiceV30(target,run.verbalContext.eventId,run.verbalContext.phase,run).name;
  const proposal=(text,weights,paid=false)=>c(text,'',{},'verbalLegalResult',{
   available:!paid||(run.stats.cash>VERBAL_LEGAL_COST_V30&&run.stats.energy>2&&run.stats.mood>0),
   draw:{label:'這輪回覆之後',outcomes:VERBAL_LEGAL_RESULTS_V30.map((outcome,index)=>({weight:weights[index],label:{withdrawn:'本輪要求撤回',settled:'這次說明成文',pending:'爭議仍待處理'}[outcome],result:legalText[outcome],
@@ -63,8 +63,8 @@ function legal(run){
  ]);
 }
 export function getVerbalEventV30(run){
- if(!/^e(?:30|31|32|33|34|35|36)-/.test(run?.seed||'')||!run.verbalContext||!VERBAL_EVENTS_V30.includes(run.eventId))throw new Error('Invalid verbal scene');
- const context=run.verbalContext,voice=verbalVoiceV30(context.target,context.eventId,context.phase);
+ if(!/^e(?:30|31|32|33|34|35|36|37)-/.test(run?.seed||'')||!run.verbalContext||!VERBAL_EVENTS_V30.includes(run.eventId))throw new Error('Invalid verbal scene');
+ const context=run.verbalContext,voice=verbalVoiceV30(context.target,context.eventId,context.phase,run);
  if(run.eventId==='verbal-release')return release(run);
  if(run.eventId==='verbal-warning')return scene('verbal-warning','回嘴的事，被做成一份書面提醒。',`${voice.name}把剛才的對話交給希望。希望請你確認收到提醒，不是讓你承認上面的每一句話，也沒有因此開始另一輪PIP。原本的工作還停在剛才那一幕。`,'hope',[
   c('記下收到的內容與自己的異議，回去處理原本的事。','你把不同意的地方另寫一份，沒有替空白結論補上自己的簽名。這一輪先停在提醒，原本的選擇還在。',safeDelta(run,{mood:-3}), 'verbalReturn'),

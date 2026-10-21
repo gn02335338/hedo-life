@@ -18,6 +18,7 @@ export const PERSONAS = Object.freeze(Object.fromEntries([
  ['owen','歐文','商務開發總監','墨鏡、金項鏈，開特斯拉。談完合作還能約跑；離職倒數講了幾回，下一場會議又看見他。'],
  ['sam','山姆','資深資料探勘工程師','成大學士加碩士，傑克的前主管。光頭醒目，對學歷很有自信，對同事卻沒多少耐性。Netflix 和午睡，輪流占據他的工作時段。'],
  ['cindy','辛蒂','資深專案管理師','翅膀曾經喜愛，後來又看不順眼。主管一任換一任，同事總把離場名單跟她連在一起；究竟誰趕走誰，會議紀錄沒有答案。'],
+ ['professor','林澤教授','台大電機教授／產學顧問','遊戲裡每週來半天的產學顧問。研究生想問畢業，公司想問上線，顧問時段還沒結束，大家已經帶著不同的截止日期離開。角色故事結合史冊片段與玩家回憶，對白及後續為虛構改編。'],
 ].map(([id,name,title,about])=>[id,Object.freeze({name,title,image:`./assets/${id}.png`,portrait:!['wing','spencer'].includes(id),...(about?{about}:{})})])));
 
 const names = Object.freeze({

@@ -7,8 +7,8 @@ export const workCount=run=>(run?.history||[]).filter(item=>['daily','fantasy'].
 export const raisePayCeiling=run=>Math.min(500,Math.floor(300*careerLevels(run)[run.rank].payMultiplier));
 export function raiseAvailability(run){
  const no=reason=>({allowed:false,reason});
- if(run&&/^e(?:20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36)-/.test(run.seed||'')&&run.flags.floor_watch)return no('三樓待命期間，先處理調動安排。');
- if(!run||!/^e(?:19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36)-/.test(run.seed||''))return no('談加薪從新人生開啟，這局保留原本規則。');
+ if(run&&/^e(?:20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37)-/.test(run.seed||'')&&run.flags.floor_watch)return no('三樓待命期間，先處理調動安排。');
+ if(!run||!/^e(?:19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37)-/.test(run.seed||''))return no('談加薪從新人生開啟，這局保留原本規則。');
  if(run.completed)return no('這段人生已結束，薪水留給下一間公司談。');
  if(run.pending)return no('先看完眼前的結果，再開下一場談話。');
  if(run.raiseContext)return no('先把這次薪資談判談完。');

@@ -17,6 +17,7 @@ import {CHARACTER_IDS,CHARACTER_METRICS,deriveCharacterStats} from '../dist/char
 import {deriveAchievements} from '../dist/achievements.js';
 import {ACHIEVEMENTS_V32} from '../dist/achievements-v32.js';
 import {DEPARTURE_WAYS,departureWays} from '../worker/departures.js';
+import {assertFrozenCharacterStats} from './character-compat.mjs';
 
 const source=readFileSync(new URL('../worker/index.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export class HedoArchive','globalThis.HedoArchive=class HedoArchive').replace('export default','globalThis.worker=');
 const proof=(route,runId=randomUUID(),actions=route.actions)=>({runId,roleId:route.roleId,seed:route.seed,actions});
@@ -116,7 +117,7 @@ test('the e33 API still honors frozen e32 endings and rejects future, supplied a
  const h=harness(t),player=await h.register(),old=archived.find(route=>route.ending==='verbal_onboarding-system');assert.ok(old);
  const existing=await h.post(player,old,randomUUID(),old.actions,'/api/complete');
  assert.equal(existing.status,200);assert.equal(existing.body.endingId,old.ending);assert.equal(existing.body.totalRuns,1);
- assert.deepEqual(badgeIds(existing),[...old.achievements].sort());assert.deepEqual(existing.body.characters,old.characterStats);
+ assert.deepEqual(badgeIds(existing),[...old.achievements].sort());assertFrozenCharacterStats(existing.body.characters,old.characterStats,old.ending);
  const fresh=await h.register(),{continued}=naturalContinuation('sales'),route=asRoute(continued);
  for(const actions of [
   [{type:'choice',eventId:'verbal-v32-aftermath',index:0}],
@@ -126,7 +127,7 @@ test('the e33 API still honors frozen e32 endings and rejects future, supplied a
  ]){
   const invalid=await h.post(fresh,route,randomUUID(),actions);assert.equal(invalid.status,400);assert.ok(['invalid_actions','invalid_replay'].includes(invalid.body.error));
  }
- const future=await h.call('/api/achievements',{method:'POST',token:fresh.token,body:{runId:randomUUID(),roleId:'sales',seed:'e37-still-unsupported',actions:[{type:'verbal',phase:'event',eventId:'onboarding',version:2}]}});
+ const future=await h.call('/api/achievements',{method:'POST',token:fresh.token,body:{runId:randomUUID(),roleId:'sales',seed:'e38-still-unsupported',actions:[{type:'verbal',phase:'event',eventId:'onboarding',version:2}]}});
  assert.equal(future.status,400);assert.equal(future.body.error,'invalid_actions');
  assert.equal((await h.call('/api/me',{token:fresh.token})).body.totalRuns,0);
 });

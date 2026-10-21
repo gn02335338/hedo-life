@@ -15,6 +15,7 @@ import {ROLE_MAP} from '../dist/roles.js';
 import {ENDINGS} from '../dist/endings.js';
 import {CHARACTER_IDS,CHARACTER_METRICS,deriveCharacterStats} from '../dist/character-stats.js';
 import {deriveAchievements} from '../dist/achievements.js';
+import {MEAL_GUEST_IDS_V25} from '../dist/meals-v25.js';
 
 const source=readFileSync(new URL('../worker/index.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export class HedoArchive','globalThis.HedoArchive=class HedoArchive').replace('export default','globalThis.worker=');
 const {routes}=JSON.parse(readFileSync(new URL('./fixtures/meal-invitations-v34.json',import.meta.url),'utf8'));
@@ -50,7 +51,7 @@ function assertProjection(response,run,badges=false){
 
 test('all sixteen e34 meal acceptance/refusal replies verify anonymously without charging or creating physical encounters',async t=>{
  const h=harness(t),covered=new Set();
- for(const guest of CHARACTER_IDS)for(const outcome of ['accepted','declined']){
+ for(const guest of MEAL_GUEST_IDS_V25)for(const outcome of ['accepted','declined']){
   const route=routes.find(row=>row.guest===guest&&row.outcome===outcome);assert.ok(route,`${guest}/${outcome}`);covered.add(`${guest}/${outcome}`);
   const before=beforeInvitation(route),run=engine.replayRun(route.roleId,route.seed,route.actions);
   assert.equal(engine.validRun(run),true);assert.equal(run.stats.cash,before.stats.cash);assert.equal(run.turn,before.turn);

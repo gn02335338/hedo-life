@@ -270,7 +270,7 @@ test('an eleven-character verified cache survives offline until all five new cou
  for(const id of ['sophie','jonathan','owen','sam','cindy'])assert.ok(!c.cloud.state.characters.some(row=>row.id===id),'missing counters are unknown, not zero');
  online=true;await c.cloud.retry();
  assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),fresh);
- const verified=JSON.parse(c.saved.get('hedo-character-cache-v1'));assert.equal(verified.characters.length,16);assert.equal(verified.ownerHash,ownerHash);
+ const verified=JSON.parse(c.saved.get('hedo-character-cache-v1'));assert.equal(verified.characters.length,17);assert.equal(verified.ownerHash,ownerHash);
  const reloaded=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved]});await reloaded.cloud.init();
  assert.deepEqual(JSON.parse(JSON.stringify(reloaded.cloud.state.characters)),fresh);
  assert.equal(reloaded.cloud.state.charactersVerifiedAt,verified.verifiedAt);
@@ -280,7 +280,7 @@ test('an eleven-character verified cache survives offline until all five new cou
 test('an explicitly malformed new character never masquerades as an older missing row',async()=>{
  const good=characterRows(),c=client([],()=>withCharacters(good));await c.cloud.init();
  const saved=c.saved.get('hedo-character-cache-v1'),verifiedAt=c.cloud.state.charactersVerifiedAt;
- for(const id of ['sophie','jonathan','owen','sam','cindy']){
+ for(const id of ['sophie','jonathan','owen','sam','cindy','professor']){
   const row=good.find(row=>row.id===id),missing={...row};delete missing.affinityUpEvents;
   for(const bad of [{...row,realHits:-1},{...row,encounters:1.5},missing]){
    const invalid=good.map(item=>item.id===id?bad:item),cached={...JSON.parse(saved),characters:invalid};
@@ -292,4 +292,25 @@ test('an explicitly malformed new character never masquerades as an older missin
    assert.equal(prior.cloud.state.charactersVerifiedAt,verifiedAt);
   }
  }
+});
+
+
+test('a sixteen-character verified cache stays intact offline and gains real professor counters only from the authenticated snapshot',async()=>{
+ const legacy=characterRows().filter(row=>row.id!=='professor');
+ const original=client([],()=>withCharacters(legacy));await original.cloud.init();
+ const saved=original.saved.get('hedo-character-cache-v1');
+ const oldOwner=JSON.parse(saved).ownerHash;let online=false;
+ const professor={...characterRows().find(row=>row.id==='professor'),encounters:3,affinityGained:9,affinityUpEvents:1};
+ const fresh=[...legacy,professor];
+ const c=client([],()=>{if(!online)throw new TypeError('offline');return withCharacters(fresh);},{savedEntries:[...original.saved]});
+ await c.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),legacy);
+ assert.equal(c.saved.get('hedo-character-cache-v1'),saved);
+ assert.ok(!c.cloud.state.characters.some(row=>row.id==='professor'),'missing verified rows remain unknown');
+ online=true;await c.cloud.retry();
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),fresh);
+ assert.equal(JSON.parse(c.saved.get('hedo-character-cache-v1')).ownerHash,oldOwner);
+ const reloaded=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved]});await reloaded.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(reloaded.cloud.state.characters)),fresh);
+ assert.equal(reloaded.saved.get('hedo-anonymous-v1'),original.saved.get('hedo-anonymous-v1'));
 });

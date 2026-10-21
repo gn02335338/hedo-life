@@ -45,7 +45,7 @@ test('e25 two guest pages expose all sixteen portraits without a charge or RNG a
   assert.equal(event.choices[9].effect,'mealCancel');
  }
  assert.deepEqual(listed,MEAL_GUEST_IDS_V25);assert.equal(new Set(listed).size,16);
- assert.deepEqual([...listed].sort(),Object.keys(PERSONAS).sort());
+ assert.deepEqual([...listed].sort(),Object.keys(PERSONAS).filter(id=>MEAL_GUEST_IDS_V25.includes(id)).sort());
  assert.equal(new Set(MEAL_EVENTS_V25).size,18);
 });
 

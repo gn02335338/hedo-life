@@ -16,6 +16,7 @@ import {ENDINGS} from '../dist/endings.js';
 import {EVENTS} from '../dist/events.js';
 import {CHARACTER_IDS,CHARACTER_METRICS,deriveCharacterStats} from '../dist/character-stats.js';
 import {deriveAchievements} from '../dist/achievements.js';
+import {assertFrozenCharacterStats} from './character-compat.mjs';
 
 const source=readFileSync(new URL('../worker/index.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export class HedoArchive','globalThis.HedoArchive=class HedoArchive').replace('export default','globalThis.worker=');
 const fixture=JSON.parse(readFileSync(new URL('./fixtures/cast-player-routes-v35.json',import.meta.url),'utf8'));
@@ -51,7 +52,7 @@ test('natural e35 cast lives cover every offered occupation and server-verified 
   assert.match(route.seed,/^e35-/);roles.add(route.roleId);
   const run=engine.replayRun(route.roleId,route.seed,route.actions);
   assert.equal(engine.validRun(run),true);assert.equal(run.completed,true);assert.equal(run.endingId,route.ending);assert.equal(run.turn,route.turns);
-  assert.deepEqual(deriveCharacterStats(run),route.expectedCharacterStats);assert.deepEqual(deriveAchievements(run),route.expectedAchievements);
+  assertFrozenCharacterStats(deriveCharacterStats(run),route.expectedCharacterStats,route.seed);assert.deepEqual(deriveAchievements(run),route.expectedAchievements);
   for(const id of route.newScenes)encountered.add(id);
   const player=await h.register(),runId=randomUUID();
   const next=route.actions.findIndex(action=>action.type==='choice'&&coverage.has(action.eventId));assert.ok(next>=0,'each representative meets the expanded cast');

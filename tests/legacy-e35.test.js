@@ -6,6 +6,7 @@ import {replayRoute} from './find-routes-v3.mjs';
 import {validRun} from '../dist/engine.js';
 import {deriveAchievements} from '../dist/achievements.js';
 import {deriveCharacterStats} from '../dist/character-stats.js';
+import {assertFrozenCharacterStats} from './character-compat.mjs';
 const hash=state=>createHash('sha256').update(JSON.stringify(state)).digest('hex');
 
 test('published e35 dinner, character, company and spoken lives preserve all 23671 JSON boundaries, badges and character counters',()=>{
@@ -22,7 +23,7 @@ test('published e35 dinner, character, company and spoken lives preserve all 236
   });
   assert.deepEqual(checkpoints,route.checkpoints,route.id);assert.equal(hash(run),route.stateSha256,route.id);
   assert.equal(run.completed,route.completed,route.id);assert.equal(run.endingId,route.ending,route.id);
-  assert.deepEqual(deriveAchievements(run),route.achievements,route.id);assert.deepEqual(deriveCharacterStats(run),route.characterStats,route.id);
+  assert.deepEqual(deriveAchievements(run),route.achievements,route.id);assertFrozenCharacterStats(deriveCharacterStats(run),route.characterStats,route.id);
   // Every original pending/resolved boundary above remains frozen exactly.
   // Canonical second replays are covered by the ending/cast/meal API suites.
   count+=checkpoints.length;
