@@ -1,0 +1,1061 @@
+{
+  "version": 38,
+  "description": "130 independently generated illustrations; ending exports compose narrative masters with illustrated profession-specific props. Original photographs and local generation paths are not published.",
+  "records": [
+    {
+      "id": "cindy",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/cindy.png",
+      "prompt": "Use case: illustration-story. Asset type: transparent character portrait for an adult office-satire videogame. Input image is only a subject reference for the adult woman centered at top: warm light brown dark-blonde hair loosely swept up into a bun with loose side strands, elongated face, soft straight eyebrows, understated reserved smile, dark round-neck top. Ignore and remove the other people, background and cropped phone-photo composition. Reimagine her as a clearly fictional mature hand-drawn 2D animated senior project manager. Bold clean black ink outlines, polished cel shading, deliberately exaggerated cartoon facial shape/head proportions, confident wry expression and slightly raised eyebrow, NOT photorealistic. Single adult woman centered waist-up with all hair, shoulders, elbows and both hands fully visible and generous transparent padding. Dark olive-charcoal modest office shirt, understated pink cardigan worn open, small plain stud earrings. Hold a large calendar clipboard featuring an empty grid with a few colored pink squares, no letters or numbers; other hand holds a plain pen. Professional practical adult appearance, no sexualization. Crisp clean silhouette readable at 56px. Genuinely transparent background, no environment, no additional people, no words, no letters, no watermark, no logos or photographic textures.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "erich",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/erich.png",
+      "prompt": "Use case: stylized-concept. Create a production transparent PNG original fictional adult character portrait for a Taiwanese mature 2D animated office satire. Input image 1 loosely guides only the man's high broad forehead, neatly side-parted short black hair, small round dark eyeglasses, slender oval face and smiling eyes. Image 2 supplies the existing game's bold hand-drawn cartoon language, not its subject. Character Erich the legal officer: an adult East Asian man with a tall forehead and receding hair corners, neat black hair, round black spectacles and a charming composed closed-mouth smile, slender neck and elongated face. Distinct from the square-jawed reference cartoon. Wear a plain dark navy jacket, muted lavender shirt and understated slim mauve tie. Hold a closed burgundy legal folder against his chest, other hand gently raised with a single explanatory finger. Mature hand-drawn 2D animation caricature with bold clean dark navy ink, deliberately exaggerated simplified facial proportions, flat cel-shaded warm skin and angular shadows. Clearly cartoon, not photorealistic or traced photography. Centered waist-up single adult, entire hair, shoulders and hands contained with comfortable padding; clean silhouette legible at 56px. Genuine transparent background. Colors compatible with pink-and-white office game. No text, letters, writing, logos, watermark or extra characters; no photographic textures.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "helen",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/helen.png",
+      "prompt": "Use case: illustration-story. Asset type: transparent character portrait for an adult office-satire videogame. Use the supplied photo ONLY as a subject reference for this adult woman: straight long dark hair with side part, rectangular dark glasses, pink face mask, hot pink polo over a white long-sleeve shirt. Reimagine her as an unmistakably fictional mature hand-drawn 2D animated product-development director, NOT a photo and NOT photorealistic. Bold clean black ink outlines, polished cel shading, deliberately exaggerated angular cartoon head/face proportions and expressive raised eyebrow; charming dry office-comedy mood. Single adult woman centered waist-up with all hair, shoulders, elbows and hands fully visible and generous transparent padding, holding a blank product folder and gesturing thoughtfully with the other hand. Keep the reference mask and glasses but remove lanyard printing and all brand marks. Muted pink and white palette with slate folder. Clear silhouette and recognizable details even at 56px. Completely transparent background. No environment, no words, no letters, no watermark, no logos, no photoreal skin, no extra characters. Professional respectful pose and proportions, no sexualization.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "hope",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/hope.png",
+      "prompt": "Use case: stylized-concept. Create a production transparent PNG original fictional adult woman character for a Taiwanese mature 2D animated office satire. Input image 1 loosely guides only shoulder-length dark brown softly curved bob hair, rounded black eyeglasses, oval face, cobalt blue blazer and red lip accent. Image 2 is the existing game's bold ink and cel-shaded cartoon style guide; do NOT copy its male subject. Character Hope, the poised HR director: adult East Asian woman, shoulder-length side-parted dark brown hair with gently curled ends, round dark thin-frame glasses, long oval cartoon face, precise brows and an extremely composed polite office smile. Plain cobalt blue blazer over a black blouse, simple small earrings, no brands. Hold an unmarked lavender clipboard to her chest with one hand and a simple pen lightly poised in the other. Mature hand-drawn 2D animation caricature, bold clean dark navy linework, flat cel-shaded warm skin, simplified expressive shapes, deliberately exaggerated cartoon face and large-head proportions. Not photorealistic, no realistic skin texture. Centered waist-up single adult with all hair, shoulders and hands inside frame and generous transparent padding, readable at 56px. Genuine transparent background. Colors harmonize with pink-and-white office game. No text, numbers, logos, watermarks, extra people or photographic textures.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "jack",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/jack.png",
+      "prompt": "Use case: stylized-concept. Create one production transparent PNG original fictional character portrait for a Taiwanese mature 2D animated office satire. Input image 1 loosely guides the adult man's short neatly cropped black hair, broad cheekbones, square jaw and bright smile only. Input image 2 is the existing game's cartoon style reference. Character Jack, the notebook-carrying R&D manager: adult East Asian man with short tidy black hair, broad friendly square cartoon face, expressive eyebrows, cheerful but slightly tired grin, NO glasses. Wear a plain warm cream rolled-sleeve button-down with a dusty teal sleeveless office vest; no company branding. Hold a dark teal notebook under one arm and a simple pencil in the other hand, like he is recording workplace absurdities. Mature hand-drawn 2D animation caricature, bold clean dark navy outlines, flat cel-shaded warm skin and crisp angular shadow shapes, deliberately exaggerated face and large-head proportions. Clearly stylized cartoon, never photorealistic. Centered waist-up single adult, entire hair, shoulders and hands contained with comfortable padding; readable at 56px. Genuine transparent background. Pink/white compatible warm palette. No text, no writing, no company logos, no watermark, no extra people, no photographic textures.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "jenjen",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/jenjen.png",
+      "prompt": "Use case: illustration-story. Asset type: transparent character portrait for an adult office-satire videogame. Use the provided photo only as a subject reference for the adult East Asian woman: straight shoulder-length black hair with deep side part, slender oval face and small understated mouth, charcoal-gray long draped cardigan over a plain modest black office dress, simple silver watch. Ignore all shop shelves, snack bags, boxes and background. Reimagine her as an unmistakably fictional mature hand-drawn 2D animated administrative director, bold clean ink outlines, polished cel shading, deliberately exaggerated cartoon head and face proportions, professional deadpan expression with a slightly raised eyebrow, NOT photorealistic. Single adult woman centered waist-up with all hair, both shoulders, elbows and both hands fully visible and generous transparent space around silhouette. She holds a small ring of office keys in one hand and neatly clipped blank office forms in the other, simple slate folder with restrained pink accent. Respectful practical adult pose, modest clothing, no sexualization. Crisp readable at 56px. Genuine transparent background, no environment, no extra people, no letters, no text, no logos, no watermark, no photographic textures.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "jonathan",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/jonathan.png",
+      "prompt": "Create a new mature hand-drawn 2D animated office-satire caricature portrait inspired by the reference photo. Use photo ONLY for recognizable hair, glasses, facial silhouette and clothing clues; exaggerate cartoon face shape and head proportions, clearly an animated fictional game adaptation, NOT a realistic likeness or photo filter. Bold clean ink outlines, polished cel shading, warm skin, muted professional clothing compatible with a pink-and-white game. Single centered adult waist-up, entire hair/shoulders/hands inside frame with transparent padding, highly readable at56px. Transparent background, no words/text, no logos/watermarks. Depict the man with short black hair, thin rectangular glasses and plain black T-shirt, alert skeptical glance to side. One hand taps a blank clipped work ID hanging at chest, other hand open in a plausible-deniability shrug. No copyrighted T-shirt figures or lettering.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "kind",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/kind.png",
+      "prompt": "Use case: stylized-concept. Create one production transparent PNG character portrait for a Taiwanese mature 2D animated office satire. Input image 1 is only a loose reference for the adult man's short black center-separated hair, fine silver rectangular glasses, broad rounded facial silhouette and warm smile. Input image 2 is the existing game's cartoon style guide. New original fictional character Kind, the friendly technical manager who brings mysterious invitations: adult East Asian man, round soft face, short black hair, fine silver glasses, cheerful knowing half-smile, raised eyebrow. Wear a plain muted plum short-sleeved button shirt, no logos. Hold a small unmarked midnight-purple invitation card with a gold star symbol between fingers; other hand casual open-palmed invitation gesture. Mature hand-drawn 2D animation caricature, bold clean dark navy ink, expressive simplified shapes, flat cel-shaded warm skin, deliberately exaggerated cartoon face and head-to-body proportions. Clearly cartoon, never photorealistic. Centered waist-up single adult, entire hair, shoulders and hands contained with generous padding; clear readable silhouette at 56px. Truly transparent backdrop. Restrained pink, plum and warm cream palette. No text or writing, no watermark, no logos, no extra people, no sexual content, no photographic textures.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "meimei",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/meimei.png",
+      "prompt": "Use case: illustration-story. Asset type: transparent character portrait for an adult office-satire videogame. Input photo is solely a subject reference for the adult woman: shoulder-length dark brown straight hair with side-swept bangs, broad friendly smile, gentle rounded face, white blouse with modest semi-sheer floral sleeves. Ignore any other people, curtain, event table and photo background. Reimagine her as an unmistakably fictional mature hand-drawn 2D animated sales manager at an office year-end party. Bold clean black ink outlines, polished cel shading, deliberately exaggerated expressive cartoon facial shape/head proportions, bright mischievous smile and one raised eyebrow; NOT photorealistic. Single adult woman centered waist-up, all hair, shoulders, elbows and hands fully visible with generous transparent margin. Modest white office blouse, lightly pink-gray patterned sleeves without excessive detail. Hold a plain handheld microphone in one hand and a hot-pink sales folder under the other arm. Use a calm stable professional pose, no sexualization or emphasis on waist/body. Crisp silhouette readable at 56px. Genuine transparent background, no stage, no room, no other characters, no text, no words, no logo, no watermark, no photographic texture.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "owen",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/owen.png",
+      "prompt": "Create a new mature hand-drawn 2D animated office-satire caricature portrait inspired by the reference photo. Use photo ONLY for recognizable hair, glasses, facial silhouette and clothing clues; exaggerate cartoon face shape and head proportions, clearly an animated fictional game adaptation, NOT a realistic likeness or photo filter. Bold clean ink outlines, polished cel shading, warm skin, muted professional clothing compatible with a pink-and-white game. Single centered adult waist-up, entire hair/shoulders/hands inside frame with transparent padding, highly readable at56px. Transparent background, no words/text, no logos/watermarks. Depict the man with swept-back neat short black hair, large clear rectangular glasses, white open-neck shirt. Confident animated expression, subtle gold chain. Small sunglasses perched on head, one hand holding a simple electric-car key fob, the other a rolled partnership proposal with no writing. Only one person.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "professor",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/professor.png",
+      "prompt": "Create a new mature hand-drawn 2D animated office-satire caricature portrait inspired by the reference photo. Use photo ONLY for recognizable hair, glasses, facial silhouette and clothing clues; exaggerate cartoon face shape and head proportions, clearly an animated fictional game adaptation, NOT a realistic likeness or photo filter. Bold clean ink outlines, polished cel shading, warm skin, muted professional clothing compatible with a pink-and-white game. Single centered adult waist-up, entire hair/shoulders/hands inside frame with transparent padding, highly readable at56px. Transparent background, no words/text, no logos/watermarks. Depict the adult professor with high receding/thinning crown and short dark hair at sides, thin rimless rectangular glasses, white polo with tiny burgundy accent and blue watch. Engaged yet distracted academic expression, one hand holding a little half-empty hourglass, other hand holding a plain folder with circuit lines. Do not retain projected slide, logos or text.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "rick",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/rick.png",
+      "prompt": "Use case: stylized-concept. Create one production PNG character portrait for a Taiwanese 2D animated office satire game. Image 1 is a loose visual reference for hairstyle, thick rectangular glasses, facial silhouette and pink polo only. Image 2 is the existing game cartoon style reference. New original fictional character Rick: adult East Asian man, short straight dark-brown hair with soft fringe, rectangular glasses, long angular cartoon face, relaxed self-satisfied small smile, pink plain polo without logos. He holds a smartphone at chest level and has a tiny playful golden crown accessory. Mature hand-drawn 2D animation caricature, bold clean dark navy ink, expressive simplified shapes, flat cel-shaded warm skin, deliberate exaggerated face and large-head proportions; clearly cartoon, not photorealistic and not a realistic portrait. Centered waist-up single adult, entire hair, shoulders and hands contained with generous padding; crisp silhouette readable at 56px. Plain genuinely transparent background. Colors fit a pink and white office game. No text, no lettering, no company logos, no watermark, no other people, no photographic textures.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "sam",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/sam.png",
+      "prompt": "Create a new mature hand-drawn 2D animated office-satire caricature portrait inspired by the reference photo. Use photo ONLY for recognizable hair, glasses, facial silhouette and clothing clues; exaggerate cartoon face shape and head proportions, clearly an animated fictional game adaptation, NOT a realistic likeness or photo filter. Bold clean ink outlines, polished cel shading, warm skin, muted professional clothing compatible with a pink-and-white game. Single centered adult waist-up, entire hair/shoulders/hands inside frame with transparent padding, highly readable at56px. Transparent background, no words/text, no logos/watermarks. Depict the man with a broad rounded face, thinning/receding short dark hair, thin rectangular glasses and dark casual jacket over gray tee. Slightly smug sleepy half-lidded expression, one hand holding a blank black tablet with a simple purple play triangle, the other a small potato-chip bag. Friendly satirical expression; no body shaming.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "sonny",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/sonny.png",
+      "prompt": "Create a new mature hand-drawn 2D animated office-satire caricature portrait inspired by the reference photo. Use photo ONLY for recognizable hair, glasses, facial silhouette and clothing clues; exaggerate cartoon face shape and head proportions, clearly an animated fictional game adaptation, NOT a realistic likeness or photo filter. Bold clean ink outlines, polished cel shading, warm skin, muted professional clothing compatible with a pink-and-white game. Single centered adult waist-up, entire hair/shoulders/hands inside frame with transparent padding, highly readable at56px. Transparent background, no words/text, no logos/watermarks. Depict the man with straight slightly tousled black fringe, broad black rectangular glasses, warm tan plain T-shirt. Wry smiling animated expression, one hand holding a plain turquoise cup of noodles and chopsticks, the other a tiny generic office printer with a single paper sheet. No injury, no text or shirt graphics.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "sophie",
+      "type": "portrait",
+      "method": "built-in image_gen",
+      "path": "./assets/sophie.png",
+      "prompt": "Use case: illustration-story. Asset type: transparent character portrait for an adult office-satire videogame. Input image is ONLY a subject reference: use the adult woman's long wavy dark hair with near-center part, face silhouette, smiling mouth and beige elegant office outfit; ignore the screenshot border, social-media interface, text, gift sign, couch and location. Reimagine her as a clearly fictional mature hand-drawn 2D animated audit manager. Bold clean black ink outlines, polished cel shading, deliberately exaggerated cartoon facial shape/head proportions, expressive lifted eyebrow and knowing professional smile, NOT photorealistic. Single adult woman centered waist-up with complete hair, shoulders, elbows and hands visible, generous transparent padding. She wears a modest beige blouse and matching light jacket, holds one plain cup of reddish black tea and a slate audit checklist clipboard with only simple empty checkboxes and lines, no readable writing. Muted beige/pink/white palette. Clean clear silhouette suitable for 56px avatar, full adult respectful office pose, no sexualization. Genuine transparent background, no environment, no other person, no words, no watermark, no logos, no photo texture.",
+      "reference": "User-supplied photograph kept outside the public repository",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "acquired",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/acquired.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Two office buildings connect through a warm glass bridge; employee receives a sane new desk with a clock showing home time while old paperwork stays across the bridge. Key visual motif: glass bridge between offices. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "alumni_network",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/alumni_network.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: Former coworkers gather around a welcoming after-work table, thin warm threads join their phones and shared notebooks; office building small and distant outside.. Distinct story motif: warm phone threads joining ex-colleagues. Medium: mature hand-drawn 2D animated office satire; bold clean dark ink outlines, confident cel shading, expressive exaggerated but respectful adult faces and anatomy, rich environmental detail, restrained pink/white/slate office palette with atmospheric lighting. Central story action in middle 70% of frame, important faces/props fully visible; reserve lower 15% as simple tabletop/floor foreground space for later game props. Fully illustrated opaque environment, no UI, no text or letters or numerals, no logos, no watermarks, no achievement badges. If papers/screens appear use blank shapes and abstract pictograms only. No gore, no impact scene, no sexualization, no photographic or 3D rendering. Compose like a polished single animation-film still, emotionally clear at small mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "assistant",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/assistant.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: A promised grand professional chair is replaced by a small rolling stool; employee carries a towering stack of miscellaneous office errands and a visibly longer blank job badge. Key visual motif: tiny stool and abnormally long blank badge. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: CEO: angular square-jawed man in bright pink polo. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "broke",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/broke.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Empty wallet beside a tiny lunch box and large unpaid blank envelopes; a fantastically huge cardboard pancake outside the office window provides no actual food. Key visual motif: empty wallet against giant cardboard pancake. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "burnout",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/burnout.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: A drained employee slumps gently at an endless desk, loose task sheets form a grey paper blizzard, battery-shaped window nearly dark; exhaustion, no death or self-harm. Key visual motif: paper snowstorm and depleted battery window. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "buyer_board",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/buyer_board.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: An ordinary practical buyer renovates the office, pink executive remains in one clearly bounded board seat while employee reads a new written work agreement. Distinct visual motif: ordinary buyer and pink executive bounded board seat. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "buyer_ousted",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/buyer_ousted.webp",
+      "prompt": "Create ONE complete widescreen16:9 illustration for a fictional office-satire videogame. Mature hand-drawn2D animated style, chunky clean ink contours, exaggerated expressive adult cartoon faces, polished cel shading, warm pink/cream/teal palette, cinematic lighting. Rich believable environment, exactly two arms per adult and natural connected hands. Main narrative upper80%, lower15% quiet floor/tabletop foreground. No text, letters, numerals, logos, watermarks or UI; no violent humiliation. CRITICAL CHARACTER RULE: supplied reference depicts the ONLY pink-clad executive in the scene. Exactly ONE person in bright pink polo, exactly ONE sharp angular triangular-nose square-jaw executive. Never duplicate this character, never give his face/hair/outfit to the employee, team member or new owner. All OTHER people wear teal/cream/slate and have clearly different rounded or oval faces. A modest ordinary buyer takes ownership of an office. On the LEFT side INSIDE the office, the NEW OWNER is a middle-aged woman with short silver-gray bob haircut, oval face, round glasses, TEAL jacket over CREAM blouse; she alone holds a single new brass key near a door lock, with a neutral professional expression. She is NOT the reference executive. On the RIGHT side going OUT through the doorway, exactly ONE departing FORMER CEO matching reference—spiky brown hair, sharp square jaw, triangular red nose, bright PINK POLO—carries a small cardboard box of personal belongings and looks subdued. No second pink person anywhere. Two ordinary coworkers in SLATE and BLUE-GREEN clothing calmly resume useful work in the background. A wall clock without numbers and a simple abstract reorganized chart suggest quieter governance. The owner changing keys is a distinct silver-haired woman, while the only pink reference executive is LEAVING with his box.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "career_assistant",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/career_assistant.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: An assistant tidies the last small desk, closes a solid handover folder and takes their own bag; modest competent ending with no oversized executive signs.. Distinct story motif: modest completed small desk. Mature hand-drawn2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces, correct natural simplified hands. Rich believable surroundings and atmospheric light, restrained pink/white/slate palette. Main story centered in middle70% frame, all important faces and props visible, lower15% simple tabletop or floor foreground for later story props. Fully opaque illustration. No UI overlay, no words, letters, numerals, logos, watermarks, achievement badges. If phones visible use only pictogram-based cartoon screen patterns, no recognizable social-media marks. If papers visible only blank lines/diagrams. No blood or active violent impact, no sexualization, no photographs or3D. Polished unique animation-film still with emotional clarity at mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "career_chief",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/career_chief.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: At the highest office window, employee pauses over a final approval stamp and chooses which papers to sign; city skyline, clear personal boundaries, power with consequence. Key visual motif: final approval stamp beside highest window. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "career_deputy",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/career_deputy.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Small team around a shared desk; employee holds a modest umbrella shielding colleagues from a rain of incoming tasks while pointing at a realistic calendar. Key visual motif: small umbrella shielding a team. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "career_director",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/career_director.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Employee stands between different office departments connected by bridges, drawing clear boundaries on a large transparent planning board; broad architecture and calm competence. Key visual motif: bridges joining departments. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "career_manager",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/career_manager.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Employee balances a scale carrying team members on one side and budget folders on the other, a manageable office team behind; difficult resource decisions, no superhero halo. Key visual motif: human-resource balance scale. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "career_principal",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/career_principal.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Senior specialist points to a clear route through an intricate technical maze on a glass board, colleagues understand the reasoning; specialist authority rather than people management.. Distinct story motif: clear path through technical maze. Mature hand-drawn2D animated office satire with bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and natural simplified hands. Detailed believable working environment; restrained pink/white/slate palette with atmospheric lighting. Story action central70%, all meaningful faces/props visible. Reserve lower15% as simple floor/tabletop foreground for later story props. Opaque fully drawn environment. No UI overlay, words, letters, numerals, logos, watermarks, achievement badges. Technical diagrams use only connected abstract shapes and paths, no code or readable writing. No gore, no sexualization, no photography or3D. Polished unique animation-film still and mobile-readable story.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "career_senior",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/career_senior.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Experienced employee shows a robust completed prototype to a coworker at a practical workstation, quiet earned confidence and useful documentation.. Distinct story motif: robust prototype and useful documentation. Mature hand-drawn2D animated office satire with bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and natural simplified hands. Detailed believable working environment; restrained pink/white/slate palette with atmospheric lighting. Story action central70%, all meaningful faces/props visible. Reserve lower15% as simple floor/tabletop foreground for later story props. Opaque fully drawn environment. No UI overlay, words, letters, numerals, logos, watermarks, achievement badges. Technical diagrams use only connected abstract shapes and paths, no code or readable writing. No gore, no sexualization, no photography or3D. Polished unique animation-film still and mobile-readable story.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "career_staff",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/career_staff.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: A grounded professional finishes a clean, tangible piece of work at an organized desk; one completed project and open evening window, no management throne. Key visual motif: one tangible completed work. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "cold_storage",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/cold_storage.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Lonely third-floor guard desk and empty corridor, elevator indicator separates upper office from employee below; employee secretly has a packed next-career bag and bright exit view.. Distinct story motif: third-floor guard desk with bright next-career bag. Mature hand-drawn2D animated office satire with bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and natural simplified hands. Detailed believable working environment; restrained pink/white/slate palette with atmospheric lighting. Story action central70%, all meaningful faces/props visible. Reserve lower15% as simple floor/tabletop foreground for later story props. Opaque fully drawn environment. No UI overlay, words, letters, numerals, logos, watermarks, achievement badges. Technical diagrams use only connected abstract shapes and paths, no code or readable writing. No gore, no sexualization, no photography or3D. Polished unique animation-film still and mobile-readable story.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "consultant",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/consultant.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: A comfortable independent consultant desk outside the main office, contract with a clearly drawn boundary line and a half-day clock; old company visible through a window.. Distinct story motif: contract boundary and half-day clock. Medium: mature hand-drawn 2D animated office satire; bold clean dark ink outlines, confident cel shading, expressive exaggerated but respectful adult faces and anatomy, detailed believable surroundings, restrained pink/white/slate palette, atmospheric lighting. Put the main story action in middle 70% of frame; keep faces, hands and symbolic props fully visible. Reserve lower 15% as simple floor/tabletop foreground for later story props. All people are adult, simplified clearly drawn anatomy with natural fingers. Opaque fully illustrated environment. Absolutely no UI, words, letters, numerals, logos, watermarks or achievement badges; papers/screens carry only blank shapes and abstract diagrams. No gore or violent impact, no sexualization, no photographs or 3D. Polished single animation-film still with strong visual storytelling, readable on mobile.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "fired_refused",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/fired_refused.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Employee stands up from the meeting table with both hands open, a blank unsigned form stays on the desk, door leads to daylight; firm composure, three anonymous management silhouettes remain seated. Key visual motif: open palms and blank refusal sheet. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: legal officer: high forehead, round black glasses, navy suit and mauve tie; administration chief: adult woman with shoulder-length straight black hair and grey office jacket; MIS man: short black hair and rectangular black glasses, tan shirt. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "fired_signed",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/fired_signed.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: A pink-sleeved executive hand slides a deceptively blank resignation sheet across an intimidating desk; an employee signs with a pen whose cord curls into a trap, office ID set aside. Uneasy deadpan comedy. Key visual motif: trap-like pen cord and unsigned form. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: legal officer: high forehead, round black glasses, navy suit and mauve tie; administration chief: adult woman with shoulder-length straight black hair and grey office jacket; MIS man: short black hair and rectangular black glasses, tan shirt. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "google_board",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/google_board.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Fantasy giant technology campus acquires the office, a pink executive keeps a smaller boardroom chair while employee receives real resources; abstract four-color windows, no logo. Distinct visual motif: large abstract tech campus and retained bounded board chair. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "google_ousted",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/google_ousted.webp",
+      "prompt": "Create ONE complete widescreen16:9 illustration for a fictional office-satire videogame. Mature hand-drawn2D animated style, chunky clean ink contours, exaggerated expressive adult cartoon faces, polished cel shading, warm pink/cream/teal palette, cinematic lighting. Rich believable environment, exactly two arms per adult and natural connected hands. Main narrative upper80%, lower15% quiet floor/tabletop foreground. No text, letters, numerals, logos, watermarks or UI; no violent humiliation. CRITICAL CHARACTER RULE: supplied reference depicts the ONLY pink-clad executive in the scene. Exactly ONE person in bright pink polo, exactly ONE sharp angular triangular-nose square-jaw executive. Never duplicate this character, never give his face/hair/outfit to the employee, team member or new owner. All OTHER people wear teal/cream/slate and have clearly different rounded or oval faces. Fantasy giant technology campus acquisition. In the LEFT foreground OUTSIDE the glass entrance, exactly ONE former CEO matching reference, spiky brown hair triangular red nose bright PINK POLO, calmly returns a plain blank access badge into a secure drop box. He looks sober, holding only his own small folder, ready to leave. In the RIGHT background INSIDE the open campus entrance, the continuing TEAM consists of exactly THREE ordinary adults: a short-haired round-faced woman in TEAL shirt carrying a laptop, a curly-haired man with round glasses in CREAM shirt carrying a useful tool case, and a dark-skinned woman in SLATE blazer carrying a notebook. No team leader in pink. Team looks relieved and engaged in work, not mocking him. Abstract four-color glass windows hint giant tech campus without any logos. Strong visual divide: the one former executive OUTSIDE, three clearly different ordinary workers INSIDE. This ending means the team stays but the executive loses access.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "handover_author",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/handover_author.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: Employee hands over a neatly indexed operations binder beside an empty desk; replacement coworker understands the diagram, packed personal box waits by the door.. Distinct story motif: indexed handover binder. Medium: mature hand-drawn 2D animated office satire; bold clean dark ink outlines, confident cel shading, expressive exaggerated but respectful adult faces and anatomy, rich environmental detail, restrained pink/white/slate office palette with atmospheric lighting. Central story action in middle 70% of frame, important faces/props fully visible; reserve lower 15% as simple tabletop/floor foreground space for later game props. Fully illustrated opaque environment, no UI, no text or letters or numerals, no logos, no watermarks, no achievement badges. If papers/screens appear use blank shapes and abstract pictograms only. No gore, no impact scene, no sexualization, no photographic or 3D rendering. Compose like a polished single animation-film still, emotionally clear at small mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "historian",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/historian.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Employee archives time-stamped folders into a luminous library shelf; ordinary office evidence becomes an illuminated chronicle, a pen and small desk lamp protect the memory. Key visual motif: illuminated chronicle archive. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "layoff",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/layoff.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Office turnstile shows a red access lamp, employee carries a cardboard box beside the elevator, three management shadows wait behind frosted glass; abruptness without injury. Key visual motif: red access light and packed box. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: legal officer: high forehead, round black glasses, navy suit and mauve tie; administration chief: adult woman with shoulder-length straight black hair and grey office jacket; MIS man: short black hair and rectangular black glasses, tan shirt. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "mediation_pending",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/mediation_pending.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Two sets of documents remain apart on a neutral meeting table, calendar and carefully organized evidence kept by the employee, an open path beyond the unresolved room.. Distinct story motif: separated documents with open next path. Mature hand-drawn2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and correct natural hands. Rich believable surroundings and atmospheric light; restrained pink/white/slate palette. Main action central70%, keep key faces and story props visible; lower15% simple floor/tabletop space for later story props. Fully drawn opaque environment. No UI, words, letters, numerals, logos, watermarks, badges. Documents and calendars use blank shapes/lines only, no readable writing. No guaranteed legal triumph imagery for mediation: sober balanced process. No gore, no sexualization, no photographs or3D. Unique polished animation-film still readable on mobile.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "mediation_settled",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/mediation_settled.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: A neutral mediation table with two sets of blank terms finally aligned, all parties compare the same pages, employee calmly files the agreed copy; no guaranteed legal victory.. Distinct story motif: two aligned written terms. Mature hand-drawn2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and correct natural hands. Rich believable surroundings and atmospheric light; restrained pink/white/slate palette. Main action central70%, keep key faces and story props visible; lower15% simple floor/tabletop space for later story props. Fully drawn opaque environment. No UI, words, letters, numerals, logos, watermarks, badges. Documents and calendars use blank shapes/lines only, no readable writing. No guaranteed legal triumph imagery for mediation: sober balanced process. No gore, no sexualization, no photographs or3D. Unique polished animation-film still readable on mobile.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "merged_out",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/merged_out.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: An office organizational chart has one square removed, while the remaining desk is buried in the removed employee tasks; departing employee walks beyond the frame.. Distinct story motif: removed org-chart square with tasks left behind. Medium: mature hand-drawn 2D animated office satire; bold clean dark ink outlines, confident cel shading, expressive exaggerated but respectful adult faces and anatomy, detailed believable surroundings, restrained pink/white/slate palette, atmospheric lighting. Put the main story action in middle 70% of frame; keep faces, hands and symbolic props fully visible. Reserve lower 15% as simple floor/tabletop foreground for later story props. All people are adult, simplified clearly drawn anatomy with natural fingers. Opaque fully illustrated environment. Absolutely no UI, words, letters, numerals, logos, watermarks or achievement badges; papers/screens carry only blank shapes and abstract diagrams. No gore or violent impact, no sexualization, no photographs or 3D. Polished single animation-film still with strong visual storytelling, readable on mobile.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "nasdaq",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/nasdaq.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Fantasy New York exchange stage with a giant ceremonial golden bell, confetti and luminous skyscraper windows, small celebratory office team; no exchange logo or invented ticker lettering. Key visual motif: giant golden bell and New York windows. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: CEO: angular square-jawed man in bright pink polo; chairman: very round face and giant round glasses in pink polo. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "nasdaq_failed",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/nasdaq_failed.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Fantasy exchange trip stalls behind a closed velvet rope, ceremonial bell remains behind glass and confetti stays inside an unopened box; employee keeps the unused ticket. Distinct visual motif: bell behind closed velvet rope. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "pip_exit",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/pip_exit.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Employee crosses a finish tape made of stamped review sheets, then calmly takes the exit door rather than another desk; warm outside light and neatly filed proof. Key visual motif: completed review tape and exit door. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: HR director: adult woman with shoulder-length curved dark hair, round glasses, cobalt blue blazer. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "pip_fail",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/pip_fail.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Impossible improvement plan unfurls from a high office desk like a steep staircase; employee carries completed folders while the final step moves away. Absurd bureaucratic perspective. Key visual motif: moving staircase made of checklists. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: HR director: adult woman with shoulder-length curved dark hair, round glasses, cobalt blue blazer. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "promotion",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/promotion.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Employee sits on a slightly higher office chair beneath an avalanche of responsibility folders; a glorious blank nameplate rises while the desk remains too small. Key visual motif: higher chair under many more folders. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: CEO: angular square-jawed man in bright pink polo. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "rage_coup",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/rage_coup.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: Fantastically absurd boardroom succession: employee sits bewildered in a much too large executive chair while board members ceremonially pass a rubber stamp; paper crown and spiraling org chart.. Distinct story motif: oversized chair with rubber-stamp succession. Reference image guides the cartoon chairman ONLY: round exaggerated glasses, swept dark hair, bright pink polo, plump friendly executive face. Include him ceremonially passing a rubber stamp to the astonished employee; redraw into the wide illustrated boardroom, do not paste portrait. Mature hand-drawn 2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and clean natural hands. Detailed environment, restrained pink/white/slate palette with story-appropriate atmospheric light. Main action central70%, all important faces/props visible, lower15% simple floor/tabletop foreground for later story props. Opaque fully drawn environment. No UI, text, letters, numerals, logos, watermarks or achievement symbols. Blank paper and pictograms only. No blood, no visible impact, no sexualization, no photorealism or3D. A polished animation-film still with unique composition and emotional clarity at mobile scale.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "rage_defeated",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/rage_defeated.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: Employee sits sheepishly on a waiting-room stool holding an ice pack while intact office opponent stands at a distance; exaggerated failed bravado, no blood or impact.. Distinct story motif: sheepish waiting-room ice pack.  Mature hand-drawn 2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and clean natural hands. Detailed environment, restrained pink/white/slate palette with story-appropriate atmospheric light. Main action central70%, all important faces/props visible, lower15% simple floor/tabletop foreground for later story props. Opaque fully drawn environment. No UI, text, letters, numerals, logos, watermarks or achievement symbols. Blank paper and pictograms only. No blood, no visible impact, no sexualization, no photorealism or3D. A polished animation-film still with unique composition and emotional clarity at mobile scale.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "rage_legal",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/rage_legal.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: Two separated office parties sit at a neutral legal meeting table; recorder, evidence folders, blank signed statements and a sober scale motif; consequences, no triumphant courtroom guarantee.. Distinct story motif: neutral divided evidence table. Medium: mature hand-drawn 2D animated office satire; bold clean dark ink outlines, confident cel shading, expressive exaggerated but respectful adult faces and anatomy, detailed believable surroundings, restrained pink/white/slate palette, atmospheric lighting. Put the main story action in middle 70% of frame; keep faces, hands and symbolic props fully visible. Reserve lower 15% as simple floor/tabletop foreground for later story props. All people are adult, simplified clearly drawn anatomy with natural fingers. Opaque fully illustrated environment. Absolutely no UI, words, letters, numerals, logos, watermarks or achievement badges; papers/screens carry only blank shapes and abstract diagrams. No gore or violent impact, no sexualization, no photographs or 3D. Polished single animation-film still with strong visual storytelling, readable on mobile.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "rage_meme",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/rage_meme.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Employee reacts to a giant wall of stylized phone screens showing a harmless freeze-frame silhouette, tiny reaction icons cascade; sudden accidental internet attention without readable comments.. Distinct story motif: wall of harmless reaction phones. Mature hand-drawn2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces, correct natural simplified hands. Rich believable surroundings and atmospheric light, restrained pink/white/slate palette. Main story centered in middle70% frame, all important faces and props visible, lower15% simple tabletop or floor foreground for later story props. Fully opaque illustration. No UI overlay, no words, letters, numerals, logos, watermarks, achievement badges. If phones visible use only pictogram-based cartoon screen patterns, no recognizable social-media marks. If papers visible only blank lines/diagrams. No blood or active violent impact, no sexualization, no photographs or3D. Polished unique animation-film still with emotional clarity at mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "rage_truce",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/rage_truce.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: Two office parties sit on opposite sides of a freshly drawn boundary, a small potted plant and written agreement between them; handshake optional, cautious quiet.. Distinct story motif: agreement and plant between two desks.  Mature hand-drawn 2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and clean natural hands. Detailed environment, restrained pink/white/slate palette with story-appropriate atmospheric light. Main action central70%, all important faces/props visible, lower15% simple floor/tabletop foreground for later story props. Opaque fully drawn environment. No UI, text, letters, numerals, logos, watermarks or achievement symbols. Blank paper and pictograms only. No blood, no visible impact, no sexualization, no photorealism or3D. A polished animation-film still with unique composition and emotional clarity at mobile scale.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "rage_walkaway",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/rage_walkaway.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Employee puts a raised hand gently back into a pocket, collects a folder of consequences and walks toward a clear street; tension cooling, self-possession.. Distinct story motif: hand returned to pocket beside collected folder. Mature hand-drawn2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces, correct natural simplified hands. Rich believable surroundings and atmospheric light, restrained pink/white/slate palette. Main story centered in middle70% frame, all important faces and props visible, lower15% simple tabletop or floor foreground for later story props. Fully opaque illustration. No UI overlay, no words, letters, numerals, logos, watermarks, achievement badges. If phones visible use only pictogram-based cartoon screen patterns, no recognizable social-media marks. If papers visible only blank lines/diagrams. No blood or active violent impact, no sexualization, no photographs or3D. Polished unique animation-film still with emotional clarity at mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "ragequit",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/ragequit.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: An exhausted employee sets an office badge on a desk and strides through an open door, a muted phone and unoccupied chair behind, airy street beyond. Key visual motif: badge left on desk. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "retired_flexible",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/retired_flexible.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Independent occasional consultant chooses one small interesting project at a bright home desk, calendar has large blank days, walking shoes by an open door.. Distinct story motif: calendar with only one chosen task. Mature hand-drawn2D animated office-life satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and correct simplified natural hands. Rich believable surroundings, restrained pink/white/slate palette balanced with warm daylight and calm green plants. Story action central70%, key faces and symbolic props fully visible. Reserve lower15% as simple foreground floor/tabletop for later story props. Fully illustrated opaque environment. No UI overlay, words, letters, numerals, logos, watermarks or badges. Calendar only empty grid, currency only plain blank coins, alarm has no readable numbers. No gore, no sexualization, no photographic or3D rendering. A distinct polished animation-film still emotionally readable at mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "retired_free",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/retired_free.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Former employee enjoys a slow sunlit morning at home or seaside balcony, switched-off alarm, tea, comfortable savings jar and an unhurried open day.. Distinct story motif: switched-off alarm and slow morning tea. Mature hand-drawn2D animated office-life satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and correct simplified natural hands. Rich believable surroundings, restrained pink/white/slate palette balanced with warm daylight and calm green plants. Story action central70%, key faces and symbolic props fully visible. Reserve lower15% as simple foreground floor/tabletop for later story props. Fully illustrated opaque environment. No UI overlay, words, letters, numerals, logos, watermarks or badges. Calendar only empty grid, currency only plain blank coins, alarm has no readable numbers. No gore, no sexualization, no photographic or3D rendering. A distinct polished animation-film still emotionally readable at mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "second_offer",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/second_offer.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen 16:9 scene, no panels or collage. Scene: Employee reads a fresh blank offer letter in a sunny cafe while the old office badge lies turned over; another door stands open, hopeful without lavish fantasy.. Distinct story motif: fresh offer in sunny cafe. Medium: mature hand-drawn 2D animated office satire; bold clean dark ink outlines, confident cel shading, expressive exaggerated but respectful adult faces and anatomy, rich environmental detail, restrained pink/white/slate office palette with atmospheric lighting. Central story action in middle 70% of frame, important faces/props fully visible; reserve lower 15% as simple tabletop/floor foreground space for later game props. Fully illustrated opaque environment, no UI, no text or letters or numerals, no logos, no watermarks, no achievement badges. If papers/screens appear use blank shapes and abstract pictograms only. No gore, no impact scene, no sexualization, no photographic or 3D rendering. Compose like a polished single animation-film still, emotionally clear at small mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "slacker",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/slacker.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Employee calmly relaxes in a tidy office nook while automated monitors do the repetitive work; steaming tea, closed calendar blocks, sunbeam and strategically placed plant. Key visual motif: automated monitors and warm tea. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. No supplied NPCs are needed. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "sycophant",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/sycophant.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: A long red carpet curls from the employee desk toward a pink executive throne; floating approval stars follow a flattering speech bubble without text, coworkers look sideways. Key visual motif: red carpet curving into executive throne. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: CEO: angular square-jawed man in bright pink polo; favored employee: thick rectangular glasses, short brown-black hair, pink polo and tiny crown. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "taiwan",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/taiwan.webp",
+      "prompt": "Use case: illustration-story. Asset: unique ending key art for mature Taiwanese office satire game. Generate ONE complete cinematic 16:9 LANDSCAPE illustration, no panels or collage, no UI. Scene: Fantasy Taiwan market listing ceremony, bright gold ceremonial gong against an urban Taipei skyline, jubilant office team, plum and coral confetti; no official logos. Key visual motif: golden gong and Taipei skyline. ORIGINAL PLAYER AVATAR: an adult East Asian office worker wearing a dark teal cardigan and a cream shirt, soft ordinary round youthful face, short black hair, small round eyes, no pink polo, no crown, no huge triangular nose, and MUST NOT resemble any supplied NPC. Show the player as the person experiencing this ending; management stays in its distinct supporting role. Supporting NPCs: CEO: angular square-jawed man in bright pink polo; chairman: very round face and giant round glasses in pink polo. All supplied images, if any, are supporting fictional NPC character references only, NOT the employee and NOT scene layouts. Only show the listed NPCs. Do not add the square-jawed pink-shirt CEO unless explicitly listed. Mature hand-drawn 2D animation, broad clean dark-navy outlines, highly simplified expressive facial shapes, deliberate caricature proportions, flat cel-shaded warm skin and graphic angular shadows, subdued pink office colors with warm cream and desaturated teal. Clearly cartoon, never photorealistic or 3D. Fully drawn environment with original composition and depth, important action centered in middle 70%, faces and hands intact. Bottom 15% is quiet foreground desk or floor with simple relevant props, no crucial face or story action there. No text, letters, numbers, logos, watermark, graphs, interface, achievement symbols or speech writing. Any papers/screens have only abstract blank geometric marks. Adults only. No gore, death or self-harm.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "taiwan_failed",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/taiwan_failed.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: A planned market gong ceremony remains a taped-off rehearsal stage, unlit board and neatly stacked cancelled event decorations; ordinary work desk visible behind. Distinct visual motif: taped-off gong rehearsal stage. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "venture_independent",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/venture_independent.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: A modest independent studio opens its small shutters to morning light; employee works for their own real customers, balanced cash jar and useful tools, toy goose optional only for matching story.. Distinct story motif: small shutters opening on independent studio. Mature hand-drawn2D animated office satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and correct natural hands. Rich believable surroundings and atmospheric light; restrained pink/white/slate palette. Main action central70%, keep key faces and story props visible; lower15% simple floor/tabletop space for later story props. Fully drawn opaque environment. No UI, words, letters, numerals, logos, watermarks, badges. Documents and calendars use blank shapes/lines only, no readable writing. No guaranteed legal triumph imagery for mediation: sober balanced process. No gore, no sexualization, no photographs or3D. Unique polished animation-film still readable on mobile.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "venture_restart",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/venture_restart.webp",
+      "prompt": "Use case: illustration-story. Asset type: distinct videogame ending-family cinematic key art. Create ONE complete widescreen16:9 scene, no panels or collage. Scene: Employee calmly closes a small shop for the evening and places saved tools and a remaining coin reserve into a box; new plan sketches wait beneath the box, setback with room to restart.. Distinct story motif: closing shop while preserving tools and reserve. Mature hand-drawn2D animated office-life satire, bold clean dark ink outlines, polished cel shading, expressive exaggerated adult cartoon faces and correct simplified natural hands. Rich believable surroundings, restrained pink/white/slate palette balanced with warm daylight and calm green plants. Story action central70%, key faces and symbolic props fully visible. Reserve lower15% as simple foreground floor/tabletop for later story props. Fully illustrated opaque environment. No UI overlay, words, letters, numerals, logos, watermarks or badges. Calendar only empty grid, currency only plain blank coins, alarm has no readable numbers. No gore, no sexualization, no photographic or3D rendering. A distinct polished animation-film still emotionally readable at mobile size.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_apology",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_apology.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Employee lowers a speech-bubble storm, offers a small apology note while keeping a separate work-issue folder open; neither groveling nor erasing the original question. Distinct visual motif: apology note separated from retained work dispute. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_boardroom",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_boardroom.webp",
+      "prompt": "Create ONE complete widescreen 16:9 narrative illustration for a fictional office-satire videogame. Mature hand-drawn 2D animation, chunky clean dark ink contours, exaggerated expressive adult cartoon faces, polished cel shading, warm pink/cream/teal colors and cinematic light, fully painted believable environment. Anatomically clear adults with exactly two arms each and naturally connected hands. Main narrative centered upper80%, lower15% quieter floor/tabletop foreground for later props. No text, no letters, no numerals, no logos, no watermark, no UI. No violence. An ordinary young adult employee with shoulder-length dark brown hair, an olive-teal office shirt and plain notebook sits at the CENTRAL foreground end of a boardroom table, speaking confidently for the first time. Exactly THREE desk microphones tilt and point DIRECTLY at THIS TEAL-CLAD EMPLOYEE, and all directors turn their eyes toward this ordinary employee. The supplied reference is the CHAIRMAN, NOT THE SPEAKER: place exactly ONE cartoon chairman with round huge glasses, swept blue-black hair and PINK polo, SMALLER on the SIDE BACK RIGHT seat, mouth closed, surprised and LISTENING. The chairman must NOT sit centrally, must NOT have any microphone pointed at him, and must NOT give a speech. Two generic suit-clad directors on other sides listen. A screen behind the teal employee shows a single abstract audio waveform and blank record shapes. The main image must unmistakably show the ordinary employee finally being heard by the board.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_colleague_solidarity",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_colleague_solidarity.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Several coworkers stand shoulder to shoulder at a meeting table, each adds one documented note, the employee no longer isolated; warm mutual support. Distinct visual motif: coworkers each add one factual note. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_hr_rewrite",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_hr_rewrite.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: HR chief erases an impossible improvement checklist and rewrites measurable blank boxes with the employee present; crossed-out old paper curls aside. Distinct visual motif: erased impossible checklist and new checkboxes. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_kind_ghost",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_kind_ghost.webp",
+      "prompt": "Create ONE complete widescreen 16:9 narrative illustration for a fictional office-satire videogame. Mature hand-drawn 2D animation, chunky clean dark ink contours, exaggerated expressive adult cartoon faces, polished cel shading, warm pink/cream/teal colors and cinematic light, fully painted believable environment. Anatomically clear adults with exactly two arms each and naturally connected hands. Main narrative centered upper80%, lower15% quieter floor/tabletop foreground for later props. No text, no letters, no numerals, no logos, no watermark, no UI. No violence. A late-night restaurant table seen from a waiting ordinary employee's side. EXACTLY ONE PERSON: a young adult ordinary employee with wavy black hair, round gentle face, TEAL cardigan over cream blouse, looking tired and mildly annoyed at an entirely EMPTY opposite HOST CHAIR. A dark jacket is draped on that empty chair. On the table in foreground lies the employee's phone, its screen glowing with a simple wordless invitation-envelope pictogram and a tiny empty chair pictogram; no portrait or person displayed on phone. Two untouched plates and water glasses emphasize the no-show. The open restaurant doorway in background is EMPTY. The organizer is absent: DO NOT draw any purple-shirt man, no glasses manager, no host, no waiter, no other people or silhouettes. The whole joke is: host enthusiastically invited you, then never showed up. The teal-clad waiting employee is NOT the organizer.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_legal_letter",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_legal_letter.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Two hands exchange clearly separated official-looking blank letters over a legal desk, talk bubbles replaced by clean envelopes and a recording folder. Distinct visual motif: clean letters replace speech bubbles. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_mutual_mute",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_mutual_mute.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Two office desks communicate through a transparent mailbox bridge while phone sound icons are muted; neutral professional distance and written boundaries. Distinct visual motif: two desks joined by written-mail bridge. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_onboarding",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_onboarding.webp",
+      "prompt": "Create ONE complete widescreen 16:9 narrative illustration for a fictional office-satire videogame. Mature hand-drawn 2D animation, chunky clean dark ink contours, exaggerated expressive adult cartoon faces, polished cel shading, warm pink/cream/teal colors and cinematic light, fully painted believable environment. Anatomically clear adults with exactly two arms each and naturally connected hands. Main narrative centered upper80%, lower15% quieter floor/tabletop foreground for later props. No text, no letters, no numerals, no logos, no watermark, no UI. No violence. Reception desk and bright office entrance. TWO DIFFERENT NAMED VISUAL ROLES: (A) the NEW HIRE is a gentle round-faced young adult with short curly black hair, BLUE-GREEN button-up shirt, cream messenger bag; this ordinary employee is near the doorway turning BACK OUT toward the street, disappointed but determined, no pink clothes, no angular nose, no executive resemblance. A fresh badge LEFT ON THE RECEPTION DESK contains a tiny round-faced portrait in BLUE-GREEN shirt matching this new hire, never pink. (B) the supplied reference is exactly ONE CEO: angular square jaw, spiky brown hair, triangular red nose, bright PINK POLO. Keep this CEO STANDING BEHIND THE RECEPTION DESK deep in the office, staring in surprise at the departing blue-green new hire. CEO is NOT carrying a bag, NOT leaving, NOT appearing on the unclaimed badge. One receptionist at desk may look stunned. Registration papers remain untouched. No gestures of aggression or triumph: the appointment stopped before the first workday. Exactly one pink CEO, and exactly one blue-green new hire.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_rick_awake",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_rick_awake.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: A sleepy favored manager puts down a ringing phone and faces a real task board for the first time; coffee cup, startled eyes, coworkers quietly watch. Distinct visual motif: ringing phone set down before actual task board. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_sonny_statement",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_sonny_statement.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: An office excuse-maker holds a tiny press conference with microphones made of staplers and a pizza-box podium; several conflicting blank diagram cards, deadpan audience. Distinct visual motif: pizza-box podium and stapler microphones. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_viral",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_viral.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Employee takes a small comedy stage telling an original office story; empty office chair used as a prop and amused silhouette audience, not a defamatory real-person poster. Distinct visual motif: comedy stage with empty chair as prop. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "verbal_wing_concession",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/verbal_wing_concession.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: A pink-clad executive reluctantly writes terms onto a blank sheet while employee points to a documented work item; overheated speech bubbles settle into straight written lines. Distinct visual motif: heated bubbles settle into written terms. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "vietnam_afterdark",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/vietnam_afterdark.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Absurd fantasy Vietnam nightlife company listing: a grand piano with four gloved hands, empty host chair, gold ceremonial gong and neon city skyline; playful mysterious late-night business, fully clothed adults, no explicit sexual imagery. Distinct visual motif: four gloved hands on grand piano with empty host chair. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "vietnam_core",
+      "type": "ending-family",
+      "method": "built-in image_gen",
+      "path": "./assets/ending-scenes/vietnam_core.webp",
+      "prompt": "Create ONE finished landscape illustration, widescreen composition, in a bold hand-drawn 2D animated workplace-satire game style: chunky confident ink contours, deliberately exaggerated adult cartoon faces, polished flat cel shading, expressive posing, warm pink/cream/teal palette and cinematic lighting. Clearly drawn animation, never photorealism, never a photo filter. Richly illustrated distinct setting with narrative props, no text, no letters or numerals, no logos, no watermark, no frame or UI. Exactly two arms per person and naturally connected hands. Focus the action in the central upper 80%, leave some quiet space in bottom 15% for foreground job props added later. Narrative: Fantasy Vietnam listing ceremony unites two engineering offices through a glowing network bridge, Ho Chi Minh City-inspired skyline, software terminals and gold gong, no national stereotype. Distinct visual motif: two engineering offices with Vietnam exchange gong. If character reference images are attached, keep their hair/glasses/clothes and exaggerated cartoon identity, change their pose as the scene needs. Never simply float a portrait over a background. Only depict people required by this narrative. This is a fictional satirical ending scene, not an accusation or a real documentary.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "academic_lab",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/academic_lab.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: University electrical engineering lab linked to an office meeting table, research notebook, circuit model and half-day clock.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "accounting",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/accounting.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Accounting desk with calculator, tied receipts, voucher binder, orderly stamps and a missing-paper gap.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "admin_coffee",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/admin_coffee.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Office supply cupboard, coffee machine, key hook, personnel folder and overflowing errands tray.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "archive",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/archive.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Warm desk lamp illuminates carefully filed timestamp cards and backup folders in an office archive, no private text. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "arm_wrestling",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/arm_wrestling.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Office arm-wrestling table, intact hands hovering before contest, pizza box and multiple absurd excuse props, no injury.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "banquet",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/banquet.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Pink-lit company banquet hall, round dining tables, stage microphone and unopened raffle box, lively arrival.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "bd_partner",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/bd_partner.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Partnership negotiation cafe table, exchanged business cards, map and bridge-shaped notebook divider.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "brand_studio",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/brand_studio.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Design workstation, large drawing tablet, colored swatches and many pinned alternate layouts, absurd version pile.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "bug_debug",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/bug_debug.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Developer workstation, terminal blocks, database cylinders and tangled bug-shaped cables, meaningful debugging mood.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "client_call",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/client_call.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Sales desk with phone, customer cards, calendar and small order ledger; incoming calls surround a central empty seat.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "cloud_files",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/cloud_files.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Office desk between a glowing cloud file cabinet and piles of duplicate paper attachments, no readable file names.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "collapse",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/collapse.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Office scene under a deep crimson stress vignette, chair set back, spilling blank task sheets, visible calming exit route; no self-harm or violence. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "company_buyout",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/company_buyout.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: An EMPTY negotiation room with unsigned blank deal folders and board chairs, large windows showing two different-size office buildings linked by a glass bridge. Preparation for a possible acquisition, no signed agreement, no success or failure cues. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "company_market",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/company_market.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: An EMPTY company planning room preparing a hypothetical exchange ceremony: a small model of a bell, a gong prop, globe and blank display board, rolled decorations still in their boxes. No ceremony in progress, no ringing, no confetti or success cues. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "company_vietnam",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/company_vietnam.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: An EMPTY remote engineering planning office with multiple generic software terminals, a blank map-shaped wall graphic and a view of a Vietnam-inspired modern city skyline. Hypothetical future business planning, no finished listing ceremony, no success or failure cues. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "dark_invite",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/dark_invite.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: An EMPTY neon-lit music lounge exterior after work, closed music case and piano visible through the doorway, an empty chair for the missing host. Playful intrigue, no people or explicit content. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "dinner",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/dinner.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Cozy modest restaurant table for two, steaming dishes, two water glasses and room for added character portraits, no outcome cues. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "dream_rage",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/dream_rage.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Lavender cloud-framed imagined office stage with a crescent moon and exaggerated harmless comic motion burst; visually impossible dream scenery. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "exit_paper",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/exit_paper.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Three empty management chairs behind a table of unsigned documents, closed laptop, employee badge and exit door. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "finance_budget",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/finance_budget.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Finance workstation with cash-flow graph, budget tokens on a balance scale and payment envelopes.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "hallway_gate",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/hallway_gate.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Quiet third-floor corridor and small guard desk, elevator shaft rises to a distant fifth-floor office, empty chair and notebook. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "hr_review",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/hr_review.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: HR review room, thick improvement folders, moving checklist on clipboard, anonymous phone on table, tense but ordinary. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "karaoke",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/karaoke.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Company banquet karaoke stage with two competing microphones and dramatic spotlights, fully clothed playful singing duel, no lyric lettering.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "learning",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/learning.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Office conversation beside a small bookshelf, diploma-shaped blank frame, university application notebook and looming book stacks.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "legal",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/legal.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Evidence folder, blank letters and recorder on a neutral desk, sober plum-blue light, no judge verdict. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "meeting",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/meeting.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Cramped meeting room with oversized projector, empty presentation board, wall clock and too many task folders.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "office_day",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/office_day.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Open-plan office in late morning, pink dividers, occupied desks, generic work clutter, clean central action space.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "onboarding",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/onboarding.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: New-hire reception desk with sealed offer envelope, blank ID badge, office map and waiting chair, future assignment hidden. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "printer",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/printer.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Temperamental office printer, absurd paper snake, open service ticket clipboard and patient empty stool.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "product_planning",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/product_planning.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Product planning wall with movable roadmap cards, prototype screens and many competing arrows.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "project_schedule",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/project_schedule.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Project planning desk with a paper calendar, dependencies made from colored strings and a shrinking hourglass.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "public_stage",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/public_stage.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: An EMPTY tiny office press-conference podium with stapler-like microphones, a spotlight and several rows of empty chairs. No people, no accusation, no lettering. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "real_rage",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/real_rage.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: An EMPTY ordinary office meeting room after an awkward disturbance: one pushed-back stool, blank scattered papers and separated empty chairs, a water cup still on the desk. No people, no fight, no injury, no impact. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "recruiting",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/recruiting.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: HR interview desk, blank candidate folders, coffee equipment intrudes on a recruitment board.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "rest_cafe",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/rest_cafe.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Peaceful cafe window, favorite drink, muted phone and comfortable chair, warm daylight and no work props invading. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "retirement",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/retirement.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Sunlit calm home desk facing a park, tea, walking shoes and a mostly empty calendar, no luxury guarantee. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "riddle_festival",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/riddle_festival.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Office festival quiz desk with rice dumpling decorations, blank riddle cards, tiny buzzer and tea. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "salary",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/salary.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Salary discussion table with two different blank pay sheets, calculator, pen and tiny imperial-style stamp cushion as office joke. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "server_room",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/server_room.webp",
+      "prompt": "Create ONE complete wide landscape background illustration for a fictional Taiwanese office-satire visual-novel game. Bold hand-drawn 2D animation: confident chunky ink contours, attractive polished cel shading, warm cream with pink/teal accents, cinematic perspective, a richly detailed yet uncluttered environment. Clearly cartoon painted artwork, not photorealism, not 3D. LOCATION: Compact server room with blinking rack lights, loose cable and repair toolkit, no literal uncontrolled flames.. Show the setting BEFORE any choice has been made: neutral preparations and environmental props, no outcome, no victory, dismissal or injury implied. Prefer an unoccupied location, no close-up character portraits. Leave lower left/right some uncluttered room for character sprites composited in the game. No letters/numbers/text, no logos, no watermarks or UI. A single coherent landscape scene, not a collage or a grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "startup",
+      "type": "scene",
+      "method": "built-in image_gen",
+      "path": "./assets/scenes/startup.webp",
+      "prompt": "Use case: illustration-story. Asset: complete wide 16:9 landscape background for a fictional Taiwanese office-satire visual novel. Scene: Small independent studio planning table, savings jar, tools, customer notebook and partly open shutters, no success or failure indication. Style: bold hand-drawn 2D animation with chunky confident ink contours, polished cel shading, cream/pink/teal palette with plum shadows, cinematic perspective, detailed but uncluttered. NO PEOPLE OR CHARACTERS in the environment plate; character portraits will be overlaid by the game later. Neutral current setting only, not a future choice outcome. All papers/screens/signs must be blank or abstract shapes. NO TEXT, NO LETTERING, NO NUMBERS, NO LOGOS, NO UI, NO WATERMARK. Fill the full wide frame with a coherent illustrated environment, no border, no collage.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "accounting",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/accounting.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: receipt ledger, abacus-like calculator and voucher clips. Main accent color: mint. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "admin",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/admin.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: office key ring, supply trolley and multi-task coffee tray. Main accent color: lavender. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "ai",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/ai.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: neural-node desk lamp, database cylinder and model notebook. Main accent color: violet. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "bd",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/bd.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: folding world map, paired business cards and partnership bridge. Main accent color: amber. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "design",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/design.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: stylus, color-wheel fan and illustration tablet. Main accent color: magenta. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "executive",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/executive.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: briefcase, organizational chart and oversized responsibility stamp. Main accent color: indigo. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "finance",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/finance.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: cash-flow chart, budget calculator and neatly stacked coins. Main accent color: gold. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "hr",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/hr.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: personnel folders, recruitment board and an unsolicited coffee cup. Main accent color: salmon. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "mis",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/mis.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: network switch, screwdriver and access-card key ring. Main accent color: cyan. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "product",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/product.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: roadmap cards, user research notebook and prototype block. Main accent color: rose. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "project",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/project.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: calendar timeline, linked task cards and clipboard. Main accent color: coral. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "sales",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/sales.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: customer call handset, sales notebook and compact presentation case. Main accent color: orange. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    },
+    {
+      "id": "system",
+      "type": "job-props",
+      "method": "built-in image_gen",
+      "path": "./assets/role-props/system.webp",
+      "prompt": "Create ONE isolated arrangement of illustrated professional workplace props as a foreground game illustration asset, transparent background. Mature hand-drawn 2D animated office-satire style, bold confident dark ink outlines, polished flat cel shading, gentle warm rim light, highly recognizable shapes even at 240 pixels wide. The objects for THIS profession are: server rack, terminal console and small uptime monitor. Main accent color: teal. Arrange the three tools together on a short oblique desk corner, satisfying readable triangular composition, slightly three-quarter top view; substantial upright silhouette but compact, all edges inside image with transparent padding. No people, no hands, no characters, no letters/numbers or readable screens, no logos, no watermark. No circles or card frame behind the props. These props will sit in lower corner of a narrative office painting. Single coherent object arrangement, not an icon sheet or grid.",
+      "review": "Visually inspected; final approved version"
+    }
+  ]
+}
