@@ -68,10 +68,10 @@ for(const mobile of [false,true]){
 
  test(`${device}: one solo or air curse resolves once, labels actual speech and never credits a hit`,async()=>{
   for(const phase of ['event','result'])for(const target of ['wing','self']){
-   const app=await harness(mobile),route=routes.find(row=>row.id===`target-${phase}-${target}`),run=sourceFor(route),expected=engine.requestVerbal(run);
+   const app=await harness(mobile),route=routes.find(row=>row.id===`target-${phase}-${target}`),run=sourceFor(route),expected=engine.requestVerbal(run,undefined,2);
    const html=app.render(run);if(target==='self')assert.match(html,/惡言相向 · 對空氣開罵/);
    const old=characterStats.deriveCharacterStats(run);await app.action('verbal');await app.action('verbal');
-   assert.equal(app.dialog().open,false);assert.equal(app.calls.verbal.length,1);assert.equal(app.calls.verbal[0].argsLength,1);assert.equal(app.calls.advance,0);assert.equal(app.calls.save,1);assert.equal(app.calls.proof,1);
+   assert.equal(app.dialog().open,false);assert.equal(app.calls.verbal.length,1);assert.equal(app.calls.verbal[0].argsLength,3);assert.equal(app.calls.advance,0);assert.equal(app.calls.save,1);assert.equal(app.calls.proof,1);
    assert.deepEqual(plain(app.state()),plain(expected));assert.match(app.html(),/reality-verbal/);assert.match(app.html(),/真的說出口/);assert.match(app.html(),/這是口頭衝突，沒有動手/);
    assert.doesNotMatch(app.html(),/reality-imagined|reality-real|imagined-consequence|real-consequence|dream-return-note/);
    assert.match(app.html(),/<button[^>]*data-action="verbal" disabled/);assert.match(app.html(),/<button[^>]*data-action="rage" disabled/);

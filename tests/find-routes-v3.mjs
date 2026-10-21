@@ -24,7 +24,7 @@ export function replayRoute(route, verify = () => {}) {
     else if (action.type === 'raise') run = requestRaise(run);
     else if (action.type === 'salary-advice') run = requestSalaryAdvice(run);
     else if (action.type === 'verbal') {
-      run=Object.hasOwn(action,'target')?requestVerbal(run,action.target):requestVerbal(run);checkpoint();
+      run=requestVerbal(run,Object.hasOwn(action,'target')?action.target:undefined,action.version);checkpoint();
       run=advance(run);
     }
     else if (action.type === 'rage') {
@@ -296,7 +296,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['events-ai-v31','verbal-v30','verbal-copy-v30','character-stats','patronage-v29','events-gender-v29','events-backoffice-v28','roles-v28','endings-backoffice-v28','wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['verbal-scenario-v2','verbal-scene-copy','events-ai-v31','verbal-v30','verbal-copy-v30','character-stats','patronage-v29','events-gender-v29','events-backoffice-v28','roles-v28','endings-backoffice-v28','wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };

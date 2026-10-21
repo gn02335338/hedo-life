@@ -1,3 +1,4 @@
+import {VERBAL_V2_EVENTS,getVerbalScenarioV2,verbalLineV2} from './verbal-scenario-v2.js';
 import {VERBAL_EVENTS_V30,VERBAL_KINDS_V30,VERBAL_LEGAL_RESULTS_V30,getVerbalEventV30,verbalTargetsV30} from './verbal-v30.js';
 import { ROLES, ROLE_MAP } from './roles.js';
 import { EVENTS, FANTASY_EVENTS } from './events.js';
@@ -225,6 +226,7 @@ function rawGetEvent(run){
  return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':'daily'};
 }
 export function getEvent(run){
+ if(run?.verbalContext?.version===2&&(run.eventId===run.verbalContext.eventId||VERBAL_V2_EVENTS.includes(run.eventId))){const context=run.verbalContext,source=getEvent({...run,eventId:context.eventId,verbalContext:null});return getVerbalScenarioV2(run,source);}
  const event=withGenderContextV29(rawGetEvent(run),run);
  if(contentRules(run)>=30&&VERBAL_EVENTS_V30.includes(event?.id))return event;
  if(contentRules(run)>=29&&event?.id===PATRONAGE_EVENT_V29)return event;
@@ -268,7 +270,14 @@ export function endingEligibility(run,target){const s=run.stats;const common=s.e
 }
 export function applyChoice(run,index){
  if(run.completed||run.pending)return run;
+ if(run.verbalContext?.version===2&&run.verbalContext.stage==='decision'){
+  const event=getEvent(run),option=event.choices[index];if(!Number.isInteger(index)||!option||option.available===false||!Number.isInteger(option.sourceIndex))throw new Error('Unavailable verbal decision');
+  const next=structuredClone(run),context=next.verbalContext;next.actions.push({type:'choice',eventId:event.id,index});next.verbalContext=null;next.eventId=context.eventId;
+  const chosen=applyChoice(next,option.sourceIndex);chosen.actions.pop();return chosen;
+ }
+
  const event=getEvent(run),originalChoice=event.choices[index];if(!Number.isInteger(index)||!originalChoice||originalChoice.available===false)throw new Error('Unavailable choice');
+ const scenarioRelease=run.verbalContext?.version===2&&run.verbalContext.stage==='release';
  const next=structuredClone(run);const before={...run.stats},modern=rules2(run),breakdown=[];let spentThisChoice=0;next.lastWeather=null;
  const change=(source,label,delta)=>{const actual={};for(const [key,value]of Object.entries(delta)){const previous=next.stats[key];next.stats[key]=clamp(previous+value);if(next.stats[key]!==previous)actual[key]=next.stats[key]-previous;if(contentRules(next)>=18&&key==='cash'&&next.stats[key]<previous)spentThisChoice+=previous-next.stats[key];}if(modern&&Object.keys(actual).length)breakdown.push({source,label,delta:actual});};
  next.actions.push({type:'choice',eventId:event.id,index});
@@ -281,7 +290,7 @@ export function applyChoice(run,index){
  if(choice.check){const passed=roll(next)<choice.check.chance;choice={...choice,...choice.check[passed?'success':'failure']};chanceOutcome=passed?'success':'setback';}
  const choiceDelta=Object.fromEntries(STAT_KEYS.map(k=>[k,choice.delta[k]||0]));
  if(contentRules(next)>=18){choiceDelta.boss=scopedBossDeltaV18(event,choiceDelta.boss,{source:'choice',target:run.rageContext?.target,effect:choice.effect,result:choice.result});if(!['self-care','rage','rage-world',...(contentRules(next)>=30?['verbal']:[])].includes(event.kind)&&!['mood-collapse','crisis-mood',...(contentRules(next)>=25?['mood-self-destruct']:[])].includes(event.id))for(const key of ['mood','energy'])choiceDelta[key]=Math.round(choiceDelta[key]*1.35);}
- if(contentRules(next)>=20&&!(contentRules(next)>=30&&event.kind==='verbal')){const provocation=freshPersonnelProvocation(run,event,choiceDelta);if(provocation&&(!next.personnelPending||provocation.reason==='post-pip'))next.personnelPending=provocation;}
+ if(contentRules(next)>=20&&!scenarioRelease&&!(contentRules(next)>=30&&event.kind==='verbal')){const provocation=freshPersonnelProvocation(run,event,choiceDelta);if(provocation&&(!next.personnelPending||provocation.reason==='post-pip'))next.personnelPending=provocation;}
  change('choice',eventOutcome?`${eventOutcome.label}：${eventOutcome.result}`:'選擇結果',choiceDelta);
  for(const name of choice.flags||[])flag(next,name);
  if(contentRules(next)>=13&&event.kind==='rage'&&originalChoice.rageTarget){flag(next,'rage_attempts');flag(next,`rage_target_${originalChoice.rageTarget}`);next.flags.rage_last_turn=next.turn+1;}
@@ -343,8 +352,8 @@ export function applyChoice(run,index){
  if(effect==='promote'){
   if(next.assignment==='assistant'){next.assignment='honest';next.rank=0;next.pay=Math.max(next.pay,rolePay(next));result+=' 助理轉正；';}else{next.rank=Math.min(4,next.rank+1);next.pay=Math.max(next.pay+5,rolePay(next));}next.lastPromotion=next.turn;flag(next,'promotions');result+=` 職稱變更：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
  }
- if(event.id==='promotion-review'||event.id==='career-review')next.lastPromotion=next.turn;
- if(contentRules(next)>=10&&event.id==='career-review'){
+ if(!scenarioRelease&&(event.id==='promotion-review'||event.id==='career-review'))next.lastPromotion=next.turn;
+ if(contentRules(next)>=10&&!scenarioRelease&&event.id==='career-review'){
   flag(next,'career_reviews');
   next.flags.career_last_review_target=(run.assignment==='assistant'?(contentRules(run)>=17?1:0):Math.min(careerMaxRank(run),run.rank+1))+1;
   next.flags.career_last_review_result=effect==='careerTrain'?1:effect==='careerDefer'?2:['careerPromote','careerRegularize'].includes(effect)?4:3;
@@ -371,7 +380,7 @@ export function applyChoice(run,index){
  if(effect==='salaryAccept'){next.pay=next.salaryCut.to;next.basePay=Math.max(contentRules(next)>=25?1:0,Math.round(next.pay/(contentRules(next)>=8?careerLevels(next)[next.rank].payMultiplier:1+next.rank*.15)));next.salaryCut.status='accepted';flag(next,'pay_cut');result+=` 遊戲月薪變更為${next.pay}K。`;}
  if(effect==='salaryRescind')next.salaryCut.status='rescinded';
  if(contentRules(next)>=18&&effect==='moodUnpaidLeave'){const oldPay=next.pay;next.pay=Math.max(1,Math.round(next.pay*(contentRules(next)>=25?1-moodCollapseProfileV25(next).cut/100:.9)));next.basePay=Math.max(1,Math.round(next.pay/careerLevels(next)[next.rank].payMultiplier));result+=` 缺勤後的遊戲月薪：${oldPay}K → ${next.pay}K。`;if(contentRules(next)>=19&&next.raiseContext){const offer=next.raiseContext;offer.fromPay=next.pay;if(offer.offerPay!==null)offer.offerPay=Math.min(raisePayCeiling(next),Math.max(next.pay+1,Math.round(next.pay*(1+offer.percent/100))));result+=' 尚未確認的談薪方案也會按調整後的月薪重新核對。';}}
- if(contentRules(next)>=19&&RAISE_EVENTS.includes(event.id)){
+ if(contentRules(next)>=19&&!scenarioRelease&&RAISE_EVENTS.includes(event.id)){
   if(event.id==='raise-request'&&effect!=='raiseCancel'){flag(next,'raise_attempts');next.flags.raise_last_work=workCount(run);next.raiseContext.approach=['merit','politics','seal'][index];}
   if(effect==='raiseOffer'){const percent=4+Math.floor(roll(next)*8);next.raiseContext.outcome='offer';next.raiseContext.percent=percent;next.raiseContext.offerPay=Math.min(raisePayCeiling(next),Math.max(next.pay+1,Math.round(next.pay*(1+percent/100))));result+=` 提出的遊戲月薪方案：${next.pay}K → ${next.raiseContext.offerPay}K，尚未生效。`;}
   if(effect==='raisePromise')next.raiseContext.outcome='promise';
@@ -388,6 +397,7 @@ export function applyChoice(run,index){
    result+=` 正式任用：${jobTitle(run)} → ${title}；月薪 ${fromPay}K → ${appointedPay}K。原本的專業職級保留，之後薪資入帳使用新月薪，額外交辦壓力也會減輕。`;
   }
  }
+ if(scenarioRelease){next.verbalContext.outcome=choice.verbalKind;next.lastVerbalTurn=next.turn;flag(next,'verbal_attempts');flag(next,`verbal_target_${next.verbalContext.target}`);}
  if(contentRules(next)>=30&&event.id==='verbal-release'){
   next.verbalContext.outcome=choice.verbalKind;next.lastVerbalTurn=next.turn;
   flag(next,'verbal_attempts');flag(next,`verbal_target_${next.verbalContext.target}`);
@@ -402,7 +412,7 @@ export function applyChoice(run,index){
  if(event.id==='onboarding'&&index<2)result+=` 目前實際職稱：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
  if(contentRules(run)>=5){result=polishEngineText(result);if(next.lastWeather)next.lastWeather.text=polishEngineText(next.lastWeather.text);}
  if(contentRules(run)>=16){result=replayText(result);if(next.lastWeather)next.lastWeather.text=replayText(next.lastWeather.text);}
- next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{}),...(contentRules(next)>=30&&event.id==='verbal-release'?{verbalOutcome:{kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{})});
+ next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:scenarioRelease?run.verbalContext.sourceChoiceCount:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{}),...(contentRules(next)>=30&&event.id==='verbal-release'?{verbalOutcome:{kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{}),...(scenarioRelease?{verbalOutcome:{version:2,kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{})});
  if(contentRules(next)>=24&&(!next.salaryAdvice||next.salaryAdvice.status==='queued')){
   if(next.pay>=30)next.salaryAdvice=null;
   else if(next.pay<run.pay)next.salaryAdvice={from:run.pay,to:next.pay,historyIndex:next.history.length-1,returnEventId:null,status:'queued'};
@@ -418,10 +428,44 @@ function openPersonnel(run,decision){
  run.eventId=decision==='freeze'?'floor-notice':decision==='direct'?'dismissal-final':'crisis-boss';
  return run;
 }
-function advanceCore(run){
+function finishVerbalSourceV2(run,context,effect=null){
+ const next=structuredClone(run),history=next.history;
+ next.verbalContext=null;next.eventId=context.eventId;
+ next.history=history.slice(0,context.historyLength+(context.phase==='event'?1:0));
+ next.pending=true;next.pendingEffect=context.phase==='result'?context.pendingEffect:effect;next.pendingFamily=context.pendingFamily;
+ const resumed=advance(next,{verbalV2:context.phase==='event'});resumed.history=history;return resumed;
+}
+function advanceVerbalScenarioV2(run,next,last,effect){
+ const context=next.verbalContext;
+ if(effect==='verbalV2Legal'){context.stage='legal';next.eventId='verbal-v2-legal';return next;}
+ if(effect==='verbalV2LegalResult'){context.stage='legal-result';next.eventId='verbal-v2-legal-result';return next;}
+ if(effect==='verbalV2Personnel'){
+  if(next.flags.post_pip_tolerance||(context.target==='wing'&&next.stats.boss<=3)){
+   if(['daily','fantasy'].includes(context.sourceKind)){if(!next.seen.includes(context.eventId))next.seen.push(context.eventId);next.turn++;if(next.crisisCooldown>0)next.crisisCooldown--;}
+   next.verbalContext=null;next.resumeEventId=null;next.exitReturnEventId=null;next.breakReturnEventId=null;next.banquetReturnEventId=null;next.meltdownReturnEventId=null;next.raiseContext=null;next.salaryAdvice=null;next.mealContext=null;next.wealthReturnEventId=null;next.patronageContext=null;next.personnelPending=null;next.pip=null;next.flags.hr_pip_allowed=0;next.flags.boss_crisis_armed=0;next.eventId='dismissal-final';return next;
+  }
+  context.stage='warning';next.eventId='verbal-v2-warning';return next;
+ }
+ if(effect!=='verbalV2Resolve')throw new Error('Invalid verbal scenario transition');
+ if(context.phase==='result')return finishVerbalSourceV2(next,context);
+ if(['daily','fantasy'].includes(context.sourceKind)||context.eventId==='onboarding'&&next.assignment==='honest')return finishVerbalSourceV2(next,context);
+ if(context.eventId==='low-pay-tip')return finishVerbalSourceV2(next,context,'salaryAdviceReturn');
+ if(context.eventId==='self-care')return finishVerbalSourceV2(next,context,'cancelBreak');
+ if(context.eventId==='kind-break')return finishVerbalSourceV2(next,context,'kindDecline');
+ if(context.eventId==='kind-workday')return finishVerbalSourceV2(next,context,'kindWorkDecline');
+ if(MEAL_EVENTS_V25.includes(context.eventId))return finishVerbalSourceV2(next,context,next.mealContext?.guest?'mealFinish':'mealCancel');
+ if(WEALTH_EVENTS_V27.includes(context.eventId)){
+  next.eventId=next.wealthReturnEventId;next.wealthReturnEventId=null;next.verbalContext=null;return next;
+ }
+ const banquetEffect={'banquet-welcome':'banquetDraw','banquet-draw':'banquetAfterparty','banquet-afterparty':'banquetFinish'}[context.eventId];
+ if(banquetEffect){if(context.eventId==='banquet-welcome')flag(next,'banquet_attended');return finishVerbalSourceV2(next,context,banquetEffect);}
+ context.stage='decision';next.eventId='verbal-v2-decision';return next;
+}
+function advanceCore(run,options={}){
  if(!run.pending||run.completed)return run;
  const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(next.pendingFamily)return finish(next,next.pendingFamily);
+ if(next.verbalContext?.version===2)return advanceVerbalScenarioV2(run,next,last,effect);
  if(contentRules(next)>=30&&VERBAL_EVENTS_V30.includes(last.eventId)){
   const context=next.verbalContext;if(!context)throw new Error('Missing verbal conversation');
   if(effect==='verbalLegal'){next.eventId='verbal-legal';return next;}
@@ -573,7 +617,7 @@ function advanceCore(run){
    }
   }
  }
- if(next.stats.boss<=12&&!next.pip?.active&&next.crisisCooldown===0&&(contentRules(next)<10||next.flags.boss_crisis_armed===1)){
+ if(!options.verbalV2&&next.stats.boss<=12&&!next.pip?.active&&next.crisisCooldown===0&&(contentRules(next)<10||next.flags.boss_crisis_armed===1)){
   if(contentRules(next)<20){if(contentRules(next)>=10)next.flags.boss_crisis_armed=0;next.resumeEventId=next.eventId;next.eventId='crisis-boss';return next;}
   // A passed PIP is not restarted by weather or a meter that stayed low.
   // A fresh choice queues its own decision, after any current modal closes.
@@ -596,11 +640,12 @@ function advanceCore(run){
  }
  return next;
 }
-export function advance(run){
- const next=advanceCore(run);
+export function advance(run,options={}){
+ const next=advanceCore(run,options);
+ if(run.verbalContext?.version===2)return next;
  if(contentRules(next)>=30&&next.verbalContext)return next;
  if(contentRules(next)>=18&&run.pending&&!next.pending&&!next.completed&&next.stats.mood===0&&!next.rageContext&&!next.meltdownReturnEventId&&next.eventId!=='mood-collapse'){next.meltdownReturnEventId=next.eventId;next.eventId='mood-collapse';flag(next,'mood_crash_count');}
- if(run.pending&&contentRules(next)>=20&&next.personnelPending&&!next.pip?.active&&personnelSafe(next,getEvent(next))){const pending=next.personnelPending;next.personnelPending=null;const decision=personnelDecision(next,pending.reason,pending.strength,roll(next));if(decision)openPersonnel(next,decision);}
+ if(!options.verbalV2&&run.pending&&contentRules(next)>=20&&next.personnelPending&&!next.pip?.active&&personnelSafe(next,getEvent(next))){const pending=next.personnelPending;next.personnelPending=null;const decision=personnelDecision(next,pending.reason,pending.strength,roll(next));if(decision)openPersonnel(next,decision);}
  if(run.pending&&contentRules(next)>=24&&next.salaryAdvice?.status==='queued'&&personnelSafe(next,getEvent(next))){
   if(next.pay>=30)next.salaryAdvice=null;
   else{next.salaryAdvice.returnEventId=next.eventId;next.salaryAdvice.status='open';next.eventId='low-pay-tip';}
@@ -628,7 +673,7 @@ export function canRequestSalaryAdvice(run){
  if(!run||contentRules(run)<28||run.pending||run.completed||run.pendingFamily||run.salaryAdvice!==null||run.actions.length>=299||!Number.isInteger(run.pay)||run.pay>=30||run.pay<1||run.stats.mood<=0||run.stats.energy<=0)return false;
  if(run.verbalContext||run.patronageContext||run.mealContext||run.wealthReturnEventId||run.personnelPending||run.actions.some(action=>action.type==='salary-advice')||run.history.some(row=>row.eventId==='low-pay-tip'))return false;
  const first=run.history.find(row=>row.eventId==='onboarding'),anchor=run.history.at(-1);
- if(first?.eventId!=='onboarding'||first.kind!=='onboarding'||![0,1].includes(first.choiceIndex)||!Number.isInteger(first.pay)||first.pay<1||first.pay>=30||anchor?.pay!==run.pay||createRun(run.roleId,run.seed).pay>=30)return false;
+ if(first?.eventId!=='onboarding'||first.kind!=='onboarding'||!([0,1].includes(first.choiceIndex)||first.verbalOutcome?.version===2&&first.verbalOutcome.phase==='event')||!Number.isInteger(first.pay)||first.pay<1||first.pay>=30||anchor?.pay!==run.pay||createRun(run.roleId,run.seed).pay>=30)return false;
  return personnelSafe(run,getEvent(run));
 }
 export function requestSalaryAdvice(run){
@@ -643,8 +688,23 @@ export function canRequestVerbal(run){
  return !!event&&!VERBAL_EVENTS_V30.includes(event.id)&&!['rage','rage-world','verbal'].includes(event.kind);
 }
 export function getVerbalTargets(run){return canRequestVerbal(run)?verbalTargetsV30(getEvent(run)):[];}
-export function requestVerbal(run,target){
+export function getVerbalLine(run,target){
+ if(!canRequestVerbal(run))return '';
+ const event=getEvent(run),targets=getVerbalTargets(run),selected=target??targets[0];
+ return targets.includes(selected)?verbalLineV2(run,event,selected,run.pending?'result':'event'):'';
+}
+export function requestVerbal(run,target,version){
+ if(version!==undefined&&version!==2)return run;
  if(!canRequestVerbal(run))return run;
+ if(version===2){
+  const targets=getVerbalTargets(run);if(target!==undefined&&(targets.length<2||!targets.includes(target)))return run;
+  const next=structuredClone(run),source=getEvent(run),phase=run.pending?'result':'event',selected=target??targets[0];
+  const action={type:'verbal',phase,eventId:source.id,version:2};if(target!==undefined)action.target=target;next.actions.push(action);
+  next.verbalContext={version:2,eventId:source.id,speaker:source.speaker||'wing',target:selected,phase,historyLength:run.history.length,pendingEffect:run.pendingEffect??null,pendingFamily:null,outcome:null,legalResult:null,line:verbalLineV2(run,source,selected,phase),sourceKind:source.kind,sourceChoiceCount:source.choices.length,stage:'release'};
+  next.pending=false;next.pendingEffect=null;next.pendingFamily=null;
+  const resolved=applyChoice(next,0);resolved.actions.pop();return resolved;
+ }
+
  const targets=getVerbalTargets(run);
  if(target!==undefined&&(targets.length<2||!targets.includes(target)))return run;
  const next=structuredClone(run),event=getEvent(run),phase=run.pending?'result':'event';
@@ -704,8 +764,8 @@ export function replayRun(roleId,seed,actions){
   }
   else if(action.type==='verbal'){
    const selected=Object.hasOwn(action,'target');
-   if(contentRules(run)<30||action.phase!==(run.pending?'result':'event')||action.eventId!==run.eventId||Object.keys(action).some(key=>!['type','phase','eventId','target'].includes(key))||(selected&&typeof action.target!=='string'))throw new Error('Verbal conversation mismatch');
-   const next=selected?requestVerbal(run,action.target):requestVerbal(run);if(next===run)throw new Error('Unavailable verbal conversation');run=advance(next);
+   if(contentRules(run)<30||action.phase!==(run.pending?'result':'event')||action.eventId!==run.eventId||Object.keys(action).some(key=>!['type','phase','eventId','target',...(action.version===2?['version']:[])].includes(key))||(Object.hasOwn(action,'version')&&action.version!==2)||(selected&&typeof action.target!=='string'))throw new Error('Verbal conversation mismatch');
+   const next=requestVerbal(run,selected?action.target:undefined,action.version);if(next===run)throw new Error('Unavailable verbal conversation');run=advance(next);
   }
   else if(action.type==='rage'){
    const selected=Object.hasOwn(action,'target');
@@ -716,7 +776,7 @@ export function replayRun(roleId,seed,actions){
   else if(action.type==='choice'){
    if(action.eventId!==run.eventId||!Number.isInteger(action.index))throw new Error('Replay event mismatch');
    if(contentRules(run)>=14&&run.eventId==='rage-release')throw new Error('Direct rage cannot be chosen separately');
-   if(contentRules(run)>=30&&run.eventId==='verbal-release')throw new Error('Direct verbal cannot be chosen separately');
+   if(contentRules(run)>=30&&(run.eventId==='verbal-release'||run.verbalContext?.version===2&&run.verbalContext.stage==='release'))throw new Error('Direct verbal cannot be chosen separately');
    const chosen=applyChoice(run,action.index);
    run=contentRules(run)>=14&&(following?.type==='rage'||contentRules(run)>=30&&following?.type==='verbal')&&following.phase==='result'?chosen:advance(chosen);
   }else throw new Error('Unknown replay action');
@@ -734,16 +794,28 @@ export function validRun(run){
   if(!run.education||typeof run.education.school!=='string'||typeof run.education.department!=='string'||!['學士','碩士','EMBA'].includes(run.education.degree)||!['public','private','overseas'].includes(run.education.sector)||!Number.isInteger(run.education.wingBias))return false;
   if(!run.abilityDice||!['skill','slack','lick'].every(k=>Array.isArray(run.abilityDice[k])&&run.abilityDice[k].length===3&&run.abilityDice[k].every(n=>Number.isInteger(n)&&n>=1&&n<=6)))return false;
   if(typeof run.educationReviewed!=='boolean'||typeof run.salaryCutOffered!=='boolean'||!Array.isArray(run.actions)||run.actions.length>300)return false;
-  if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='career'&&contentRules(run)>=10)||(a.type==='raise'&&contentRules(run)>=19&&Object.keys(a).every(key=>key==='type'))||(a.type==='salary-advice'&&contentRules(run)>=28&&Object.keys(a).every(key=>key==='type'))||(a.type==='rage'&&contentRules(run)>=13&&(contentRules(run)<14?!Object.hasOwn(a,'target'):(['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||(typeof a.target==='string'&&a.target.length<=100))&&Object.keys(a).every(key=>['type','phase','eventId','target'].includes(key)))))||(a.type==='verbal'&&contentRules(run)>=30&&['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||typeof a.target==='string')&&Object.keys(a).every(key=>['type','phase','eventId','target'].includes(key)))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
+  if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='career'&&contentRules(run)>=10)||(a.type==='raise'&&contentRules(run)>=19&&Object.keys(a).every(key=>key==='type'))||(a.type==='salary-advice'&&contentRules(run)>=28&&Object.keys(a).every(key=>key==='type'))||(a.type==='rage'&&contentRules(run)>=13&&(contentRules(run)<14?!Object.hasOwn(a,'target'):(['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||(typeof a.target==='string'&&a.target.length<=100))&&Object.keys(a).every(key=>['type','phase','eventId','target'].includes(key)))))||(a.type==='verbal'&&contentRules(run)>=30&&['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||typeof a.target==='string')&&(!Object.hasOwn(a,'version')||a.version===2)&&Object.keys(a).every(key=>['type','phase','eventId','target',...(a.version===2?['version']:[])].includes(key)))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
   if(rules2(run)&&(!Number.isInteger(run.lastBreakTurn)||run.lastBreakTurn< -1||run.lastBreakTurn>run.turn||!(run.breakReturnEventId===null||typeof run.breakReturnEventId==='string')))return false;
   if(contentRules(run)>=7&&(!Number.isInteger(run.lastKindInviteTurn)||run.lastKindInviteTurn< -1||run.lastKindInviteTurn>run.turn))return false;
   const currentEventId=contentRules(run)>=30&&run.verbalContext?(run.meltdownReturnEventId&&['mood-collapse','mood-self-destruct'].includes(run.verbalContext.eventId)?run.meltdownReturnEventId:run.verbalContext.eventId):contentRules(run)>=18&&run.meltdownReturnEventId?run.meltdownReturnEventId:contentRules(run)>=13&&run.rageContext?run.rageContext.eventId:run.eventId;
   if(contentRules(run)>=30){
    if(!Number.isInteger(run.lastVerbalTurn)||run.lastVerbalTurn< -1||run.lastVerbalTurn>run.turn)return false;
-   const releases=run.history.filter(row=>row.eventId==='verbal-release');
+   const releases=run.history.filter(row=>row.eventId==='verbal-release'||row.verbalOutcome?.version===2);
    if(releases.length!==new Set(releases.map(row=>row.turn)).size||run.lastVerbalTurn!==(releases.at(-1)?.turn??-1))return false;
    const context=run.verbalContext;
-   if(context!==null){
+   if(context?.version===2){
+    if(Object.keys(context).sort().join(',')!=='eventId,historyLength,legalResult,line,outcome,pendingEffect,pendingFamily,phase,sourceChoiceCount,sourceKind,speaker,stage,target,version'||run.rageContext||context.pendingFamily!==null)return false;
+    if(!['event','result'].includes(context.phase)||!['release','warning','legal','legal-result','decision'].includes(context.stage)||!VERBAL_KINDS_V30.includes(context.outcome)||!(context.legalResult===null||VERBAL_LEGAL_RESULTS_V30.includes(context.legalResult))||typeof context.line!=='string'||!context.line.trim()||context.line.length>1200)return false;
+    if(!Number.isInteger(context.historyLength)||context.historyLength<0||context.historyLength>=run.history.length||!Number.isInteger(context.sourceChoiceCount)||context.sourceChoiceCount<1||context.sourceChoiceCount>12||!(context.pendingEffect===null||typeof context.pendingEffect==='string'))return false;
+    const source=getEvent({...run,eventId:context.eventId,verbalContext:null}),action=run.actions.findLast(item=>item.type==='verbal'),selected=action&&Object.hasOwn(action,'target');
+    if(!source||(source.speaker||'wing')!==context.speaker||source.kind!==context.sourceKind||['rage','rage-world','verbal'].includes(source.kind)||!action||action.version!==2||action.eventId!==context.eventId||action.phase!==context.phase)return false;
+    const targets=verbalTargetsV30(source);if(selected?(targets.length<2||!targets.includes(action.target)||context.target!==action.target):context.target!==targets[0])return false;
+    if(context.phase==='result'&&(context.historyLength===0||run.history[context.historyLength-1]?.eventId!==context.eventId))return false;
+    const row=run.history[context.historyLength],evidence=row?.verbalOutcome;
+    if(row?.eventId!==context.eventId||row.choiceIndex!==context.sourceChoiceCount||row.choiceText!==context.line||evidence?.version!==2||evidence.kind!==context.outcome||evidence.target!==context.target||evidence.origin!==context.eventId||evidence.phase!==context.phase)return false;
+    if(context.stage==='release'?(run.eventId!==context.eventId||!run.pending):run.eventId!==`verbal-v2-${context.stage}`)return false;
+    if(context.stage==='warning'&&context.outcome!=='personnel'||['legal','legal-result'].includes(context.stage)&&context.outcome!=='legal'||context.stage==='legal-result'&&context.legalResult===null)return false;
+   }else if(context!==null){
     if(!context||typeof context!=='object'||Array.isArray(context)||Object.keys(context).sort().join(',')!=='eventId,historyLength,legalResult,outcome,pendingEffect,pendingFamily,phase,speaker,target')return false;
     if(!VERBAL_EVENTS_V30.includes(run.eventId)||VERBAL_EVENTS_V30.includes(context.eventId)||run.rageContext||context.pendingFamily!==null||!['event','result'].includes(context.phase)||!VERBAL_KINDS_V30.includes(context.outcome)||!(context.legalResult===null||VERBAL_LEGAL_RESULTS_V30.includes(context.legalResult)))return false;
     if(!Number.isInteger(context.historyLength)||context.historyLength<0||context.historyLength>=run.history.length||!(context.pendingEffect===null||typeof context.pendingEffect==='string'))return false;
@@ -756,9 +828,13 @@ export function validRun(run){
     const row=run.history[context.historyLength];
     if(row?.eventId!=='verbal-release'||row.verbalOutcome?.kind!==context.outcome||row.verbalOutcome?.target!==context.target||row.verbalOutcome?.origin!==context.eventId||row.verbalOutcome?.phase!==context.phase)return false;
     if(run.eventId==='verbal-warning'&&context.outcome!=='personnel'||['verbal-legal','verbal-legal-result'].includes(run.eventId)&&context.outcome!=='legal'||run.eventId==='verbal-legal-result'&&!VERBAL_LEGAL_RESULTS_V30.includes(context.legalResult))return false;
-   }else if(VERBAL_EVENTS_V30.includes(run.eventId))return false;
+   }else if(VERBAL_EVENTS_V30.includes(run.eventId)||VERBAL_V2_EVENTS.includes(run.eventId))return false;
    for(const row of run.history){
-    if(row.eventId==='verbal-release'){
+    if(row.verbalOutcome?.version===2){
+     const evidence=row.verbalOutcome;
+     if(Object.keys(evidence).sort().join(',')!=='affinityDelta,kind,origin,phase,target,version'||evidence.origin!==row.eventId||evidence.target!==row.speaker||!VERBAL_KINDS_V30.includes(evidence.kind)||!(evidence.target==='self'||Object.hasOwn(PERSONAS,evidence.target))||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||!['event','result'].includes(evidence.phase)||!Number.isInteger(row.choiceIndex)||row.choiceIndex<1||row.choiceIndex>12||!['daily','fantasy','onboarding','verbal'].includes(row.kind)||evidence.phase==='result'&&row.kind!=='verbal')return false;
+     if(evidence.target==='self'&&(evidence.affinityDelta!==0||['relationship','personnel','legal'].includes(evidence.kind)))return false;
+    }else if(row.eventId==='verbal-release'){
      const evidence=row.verbalOutcome;
      if(row.kind!=='verbal'||row.choiceIndex!==0||!evidence||typeof evidence!=='object'||Object.keys(evidence).sort().join(',')!=='affinityDelta,kind,origin,phase,target'||!VERBAL_KINDS_V30.includes(evidence.kind)||evidence.target!==row.speaker||!(evidence.target==='self'||Object.hasOwn(PERSONAS,evidence.target))||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||typeof evidence.origin!=='string'||!['event','result'].includes(evidence.phase))return false;
      if(evidence.target==='self'&&(evidence.affinityDelta!==0||['relationship','personnel','legal'].includes(evidence.kind)))return false;
@@ -794,7 +870,7 @@ export function validRun(run){
     if(contentRules(run)<28||typeof advice!=='object'||Array.isArray(advice)||Object.keys(advice).sort().join(',')!=='from,historyIndex,origin,returnEventId,status,to'||!['open','done'].includes(advice.status))return false;
     const first=run.history.find(row=>row.eventId==='onboarding'),anchor=run.history[advice.historyIndex];
     if(!Number.isInteger(advice.from)||advice.from<1||advice.from>=30||!Number.isInteger(advice.to)||advice.to<1||advice.to>=30||!Number.isInteger(advice.historyIndex)||advice.historyIndex<0||advice.historyIndex>=run.history.length)return false;
-    if(first?.eventId!=='onboarding'||first.kind!=='onboarding'||![0,1].includes(first.choiceIndex)||first.pay!==advice.from||anchor?.pay!==advice.to||createRun(run.roleId,run.seed).pay>=30)return false;
+    if(first?.eventId!=='onboarding'||first.kind!=='onboarding'||!([0,1].includes(first.choiceIndex)||first.verbalOutcome?.version===2&&first.verbalOutcome.phase==='event')||first.pay!==advice.from||anchor?.pay!==advice.to||createRun(run.roleId,run.seed).pay>=30)return false;
     if(run.actions.filter(action=>action.type==='salary-advice').length!==1)return false;
     const entryIndex=run.actions.findIndex(action=>action.type==='salary-advice'),entry=replayRun(run.roleId,run.seed,run.actions.slice(0,entryIndex));
     if(!canRequestSalaryAdvice(entry)||entry.history.length-1!==advice.historyIndex||entry.pay!==advice.to||entry.history.find(row=>row.eventId==='onboarding')?.pay!==advice.from||advice.status==='open'&&entry.eventId!==advice.returnEventId)return false;

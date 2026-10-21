@@ -33,15 +33,37 @@ function sampleLabel(row) {
  return '選擇';
 }
 
-// A direct rage action commits one implicit result row. Menu-opening actions
-// such as break/raise/exit do not. If an action log is available, a mismatch
-// proves the history has been shortened; do not invent its missing origin.
+// Direct rage and verbal actions commit an implicit result row. Menu-opening
+// actions do not. A v2 verbal decision then commits the explicitly selected
+// source answer, rather than a row named after the decision wrapper.
 function historyMatchesActions(run, history) {
  if (!Array.isArray(run?.actions)) return true;
  const committed = run.actions.filter(action => action?.type === 'choice' ||
-  (action?.type === 'rage' && ['event','result'].includes(action.phase)));
- return committed.length === history.length && committed.every((action, index) =>
-  history[index]?.eventId === (action.type === 'rage' ? 'rage-release' : action.eventId));
+  (['rage','verbal'].includes(action?.type) && ['event','result'].includes(action.phase)));
+ if (committed.length !== history.length) return false;
+ let spokenSource = null;
+ return committed.every((action, index) => {
+  const row = history[index];
+  if (action.type === 'verbal') {
+   const evidence = row?.verbalOutcome;
+   spokenSource = action.version === 2 ? action : null;
+   return row?.eventId === (action.version === 2 ? action.eventId : 'verbal-release') &&
+    evidence?.origin === action.eventId && evidence.phase === action.phase &&
+    (action.version === 2 ? evidence.version === 2 : evidence.version === undefined);
+  }
+  if (action.type === 'rage') { spokenSource = null; return row?.eventId === 'rage-release'; }
+  if (action.eventId === 'verbal-v2-decision') {
+   const origin = spokenSource?.eventId;
+   // Onboarding offers only two follow-up answers: accept (source 0), leave
+   // (source 2). Other modal decisions preserve the source option indices.
+   const sourceIndex = origin === 'onboarding' ? [0,2][action.index] : action.index;
+   const matches = spokenSource?.phase === 'event' && row?.eventId === origin && row.choiceIndex === sourceIndex;
+   spokenSource = null;
+   return matches;
+  }
+  if (!['verbal-v2-warning','verbal-v2-legal','verbal-v2-legal-result'].includes(action.eventId)) spokenSource = null;
+  return row?.eventId === action.eventId && row.choiceIndex === action.index;
+ });
 }
 
 export function buildEndingReport(run) {
