@@ -113,6 +113,10 @@ export function validateCompletion(body, roleMap) {
     if (!action || typeof action !== 'object' || Array.isArray(action)) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
+    if (action.type === 'salary-advice') {
+      if (/^e(?:28|29|30|31)-/.test(body.seed)&&Object.keys(action).every(key=>key==='type')) continue;
+      throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
+    }
     if (action.type === 'verbal') {
       const keys=Object.keys(action),targetValid=!Object.hasOwn(action,'target')||RAGE_TARGET_IDS.has(action.target);
       if (/^e(?:30|31)-/.test(body.seed)&&['event','result'].includes(action.phase)&&typeof action.eventId==='string'&&action.eventId.length>0&&action.eventId.length<=100&&targetValid&&keys.every(key=>['type','phase','eventId','target'].includes(key))) continue;

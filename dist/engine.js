@@ -624,6 +624,19 @@ export function canRequestCareer(run){return !!(run&&!(contentRules(run)>=30&&ru
 export function requestCareer(run){if(!canRequestCareer(run))return run;const next=structuredClone(run);next.actions.push({type:'career'});next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
 export function canRequestRaise(run){return !(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
 export function requestRaise(run){if(!canRequestRaise(run))return run;const next=structuredClone(run);next.actions.push({type:'raise'});next.raiseContext={eventId:run.eventId,fromPay:run.pay,offerPay:null,percent:null,outcome:null,view:null,approach:null};next.eventId='raise-request';return next;}
+export function canRequestSalaryAdvice(run){
+ if(!run||contentRules(run)<28||run.pending||run.completed||run.pendingFamily||run.salaryAdvice!==null||run.actions.length>=299||!Number.isInteger(run.pay)||run.pay>=30||run.pay<1||run.stats.mood<=0||run.stats.energy<=0)return false;
+ if(run.verbalContext||run.patronageContext||run.mealContext||run.wealthReturnEventId||run.personnelPending||run.actions.some(action=>action.type==='salary-advice')||run.history.some(row=>row.eventId==='low-pay-tip'))return false;
+ const first=run.history.find(row=>row.eventId==='onboarding'),anchor=run.history.at(-1);
+ if(first?.eventId!=='onboarding'||first.kind!=='onboarding'||![0,1].includes(first.choiceIndex)||!Number.isInteger(first.pay)||first.pay<1||first.pay>=30||anchor?.pay!==run.pay||createRun(run.roleId,run.seed).pay>=30)return false;
+ return personnelSafe(run,getEvent(run));
+}
+export function requestSalaryAdvice(run){
+ if(!canRequestSalaryAdvice(run))return run;
+ const next=structuredClone(run);next.actions.push({type:'salary-advice'});
+ next.salaryAdvice={from:run.history.find(row=>row.eventId==='onboarding').pay,to:run.pay,historyIndex:run.history.length-1,returnEventId:run.eventId,status:'open',origin:'starting-pay'};
+ next.eventId='low-pay-tip';return next;
+}
 export function canRequestVerbal(run){
  if(!run||contentRules(run)<30||run.completed||run.verbalContext||run.rageContext||run.pendingFamily||run.lastVerbalTurn===run.turn||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0)return false;
  const event=getEvent(run);
@@ -685,6 +698,10 @@ export function replayRun(roleId,seed,actions){
   else if(action.type==='break'){const next=requestBreak(run);if(next===run)throw new Error('Unavailable break');run=next;}
   else if(action.type==='career'){const next=requestCareer(run);if(next===run)throw new Error('Unavailable career review');run=next;}
   else if(action.type==='raise'){if(Object.keys(action).some(key=>key!=='type'))throw new Error('Invalid raise action');const next=requestRaise(run);if(next===run)throw new Error('Unavailable raise');run=next;}
+  else if(action.type==='salary-advice'){
+   if(Object.keys(action).some(key=>key!=='type'))throw new Error('Invalid salary advice action');
+   const next=requestSalaryAdvice(run);if(next===run)throw new Error('Unavailable salary advice');run=next;
+  }
   else if(action.type==='verbal'){
    const selected=Object.hasOwn(action,'target');
    if(contentRules(run)<30||action.phase!==(run.pending?'result':'event')||action.eventId!==run.eventId||Object.keys(action).some(key=>!['type','phase','eventId','target'].includes(key))||(selected&&typeof action.target!=='string'))throw new Error('Verbal conversation mismatch');
@@ -717,7 +734,7 @@ export function validRun(run){
   if(!run.education||typeof run.education.school!=='string'||typeof run.education.department!=='string'||!['學士','碩士','EMBA'].includes(run.education.degree)||!['public','private','overseas'].includes(run.education.sector)||!Number.isInteger(run.education.wingBias))return false;
   if(!run.abilityDice||!['skill','slack','lick'].every(k=>Array.isArray(run.abilityDice[k])&&run.abilityDice[k].length===3&&run.abilityDice[k].every(n=>Number.isInteger(n)&&n>=1&&n<=6)))return false;
   if(typeof run.educationReviewed!=='boolean'||typeof run.salaryCutOffered!=='boolean'||!Array.isArray(run.actions)||run.actions.length>300)return false;
-  if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='career'&&contentRules(run)>=10)||(a.type==='raise'&&contentRules(run)>=19&&Object.keys(a).every(key=>key==='type'))||(a.type==='rage'&&contentRules(run)>=13&&(contentRules(run)<14?!Object.hasOwn(a,'target'):(['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||(typeof a.target==='string'&&a.target.length<=100))&&Object.keys(a).every(key=>['type','phase','eventId','target'].includes(key)))))||(a.type==='verbal'&&contentRules(run)>=30&&['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||typeof a.target==='string')&&Object.keys(a).every(key=>['type','phase','eventId','target'].includes(key)))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
+  if(!run.actions.every(a=>a&&typeof a==='object'&&(a.type==='exit'||(a.type==='break'&&rules2(run))||(a.type==='career'&&contentRules(run)>=10)||(a.type==='raise'&&contentRules(run)>=19&&Object.keys(a).every(key=>key==='type'))||(a.type==='salary-advice'&&contentRules(run)>=28&&Object.keys(a).every(key=>key==='type'))||(a.type==='rage'&&contentRules(run)>=13&&(contentRules(run)<14?!Object.hasOwn(a,'target'):(['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||(typeof a.target==='string'&&a.target.length<=100))&&Object.keys(a).every(key=>['type','phase','eventId','target'].includes(key)))))||(a.type==='verbal'&&contentRules(run)>=30&&['event','result'].includes(a.phase)&&typeof a.eventId==='string'&&a.eventId.length<=100&&(!Object.hasOwn(a,'target')||typeof a.target==='string')&&Object.keys(a).every(key=>['type','phase','eventId','target'].includes(key)))||(a.type==='choice'&&typeof a.eventId==='string'&&Number.isInteger(a.index)&&a.index>=0&&a.index<10))))return false;
   if(rules2(run)&&(!Number.isInteger(run.lastBreakTurn)||run.lastBreakTurn< -1||run.lastBreakTurn>run.turn||!(run.breakReturnEventId===null||typeof run.breakReturnEventId==='string')))return false;
   if(contentRules(run)>=7&&(!Number.isInteger(run.lastKindInviteTurn)||run.lastKindInviteTurn< -1||run.lastKindInviteTurn>run.turn))return false;
   const currentEventId=contentRules(run)>=30&&run.verbalContext?(run.meltdownReturnEventId&&['mood-collapse','mood-self-destruct'].includes(run.verbalContext.eventId)?run.meltdownReturnEventId:run.verbalContext.eventId):contentRules(run)>=18&&run.meltdownReturnEventId?run.meltdownReturnEventId:contentRules(run)>=13&&run.rageContext?run.rageContext.eventId:run.eventId;
@@ -773,7 +790,20 @@ export function validRun(run){
   }
   if(contentRules(run)>=24){
    const advice=run.salaryAdvice;
-   if(advice!==null){
+   if(advice?.origin==='starting-pay'){
+    if(contentRules(run)<28||typeof advice!=='object'||Array.isArray(advice)||Object.keys(advice).sort().join(',')!=='from,historyIndex,origin,returnEventId,status,to'||!['open','done'].includes(advice.status))return false;
+    const first=run.history.find(row=>row.eventId==='onboarding'),anchor=run.history[advice.historyIndex];
+    if(!Number.isInteger(advice.from)||advice.from<1||advice.from>=30||!Number.isInteger(advice.to)||advice.to<1||advice.to>=30||!Number.isInteger(advice.historyIndex)||advice.historyIndex<0||advice.historyIndex>=run.history.length)return false;
+    if(first?.eventId!=='onboarding'||first.kind!=='onboarding'||![0,1].includes(first.choiceIndex)||first.pay!==advice.from||anchor?.pay!==advice.to||createRun(run.roleId,run.seed).pay>=30)return false;
+    if(run.actions.filter(action=>action.type==='salary-advice').length!==1)return false;
+    const entryIndex=run.actions.findIndex(action=>action.type==='salary-advice'),entry=replayRun(run.roleId,run.seed,run.actions.slice(0,entryIndex));
+    if(!canRequestSalaryAdvice(entry)||entry.history.length-1!==advice.historyIndex||entry.pay!==advice.to||entry.history.find(row=>row.eventId==='onboarding')?.pay!==advice.from||advice.status==='open'&&entry.eventId!==advice.returnEventId)return false;
+    if(run.history.slice(0,advice.historyIndex+1).some(row=>row.eventId==='low-pay-tip'))return false;
+    if(advice.status==='open'){
+     if(run.pay!==advice.to||typeof advice.returnEventId!=='string'||advice.returnEventId==='low-pay-tip'||!['daily','fantasy'].includes(getEvent({...run,eventId:advice.returnEventId})?.kind)||currentEventId!=='low-pay-tip')return false;
+     if(run.resumeEventId||run.exitReturnEventId||run.breakReturnEventId||run.banquetReturnEventId||run.raiseContext||run.mealContext||run.wealthReturnEventId||run.patronageContext)return false;
+    }else if(advice.returnEventId!==null||currentEventId==='low-pay-tip'||!run.history.slice(advice.historyIndex+1).some(row=>row.eventId==='low-pay-tip'&&Number.isInteger(row.choiceIndex)&&row.choiceIndex>=0))return false;
+   }else if(advice!==null){
     if(!advice||typeof advice!=='object'||Array.isArray(advice)||Object.keys(advice).sort().join(',')!=='from,historyIndex,returnEventId,status,to')return false;
     if(!Number.isInteger(advice.from)||advice.from<2||advice.from>500||!Number.isInteger(advice.to)||advice.to<1||advice.to>=30||advice.to>=advice.from||!Number.isInteger(advice.historyIndex)||advice.historyIndex<1||advice.historyIndex>=run.history.length||!['queued','open','done'].includes(advice.status))return false;
     const before=run.history[advice.historyIndex-1],reduction=run.history[advice.historyIndex];

@@ -8,7 +8,7 @@ import { CAREER_FAMILIES_V17 } from '../dist/career-v17.js';
 import { eligibleStoryEndings } from '../dist/story-career.js';
 import { wealthEligibilityV27 } from '../dist/wealth-exit-v27.js';
 
-import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, requestRaise, canRequestRaise, requestRage, canRequestRage, getRageTargets, requestVerbal, validRun } from '../dist/engine.js';
+import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, requestRaise, canRequestRaise, requestRage, canRequestRage, getRageTargets, requestVerbal, requestSalaryAdvice, validRun } from '../dist/engine.js';
 
 const WEALTH_GOALS=new Set(['venture_independent','venture_restart','retired_free','retired_flexible']);
 
@@ -22,6 +22,7 @@ export function replayRoute(route, verify = () => {}) {
     else if (action.type === 'break') run = requestBreak(run);
     else if (action.type === 'career') run = requestCareer(run);
     else if (action.type === 'raise') run = requestRaise(run);
+    else if (action.type === 'salary-advice') run = requestSalaryAdvice(run);
     else if (action.type === 'verbal') {
       run=Object.hasOwn(action,'target')?requestVerbal(run,action.target):requestVerbal(run);checkpoint();
       run=advance(run);

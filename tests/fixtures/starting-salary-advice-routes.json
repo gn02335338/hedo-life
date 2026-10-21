@@ -1,0 +1,1339 @@
+{
+  "method": "Natural e28–e31 initial pay draws, canonical onboarding/work choices and explicit salary-advice actions only. Boundaries include 27/28/29/30K, deferred urgent scenes and active PIP. No pay, role, scene, stat, flag, history or RNG state is injected.",
+  "routes": [
+    {
+      "id": "admin-27",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e31-start-pay-r",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-recruiting-hat",
+        "pay": 27,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "admin-28",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e31-start-pay-c2",
+      "startPay": 28,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-recruiting-hat",
+        "pay": 28,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "admin-29",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e31-start-pay-2c",
+      "startPay": 29,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-extension-grandeur",
+        "pay": 29,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "admin-30",
+      "kind": "boundary",
+      "roleId": "admin",
+      "seed": "e31-start-pay-2",
+      "startPay": 30,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-room-tetris",
+        "pay": 30,
+        "eligible": false,
+        "salaryAdvice": null
+      }
+    },
+    {
+      "id": "assistant-low",
+      "kind": "eligible",
+      "roleId": "accounting",
+      "seed": "e31-start-pay-87",
+      "startPay": 28,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "accounting28-denominator",
+        "pay": 28,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "normal-high",
+      "kind": "boundary",
+      "roleId": "admin",
+      "seed": "e31-start-pay-0",
+      "startPay": 35,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-room-tetris",
+        "pay": 35,
+        "eligible": false,
+        "salaryAdvice": null
+      }
+    },
+    {
+      "id": "cohort-e28",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e28-start-pay-1u",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-extension-grandeur",
+        "pay": 27,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "cohort-e29",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e29-start-pay-5r",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-room-tetris",
+        "pay": 27,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "cohort-e30",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e30-start-pay-1k",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-coffee-round",
+        "pay": 27,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "cohort-e31",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e31-start-pay-r",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-recruiting-hat",
+        "pay": 27,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "onboarding-after-dream",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e31-start-dream-3",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-coffee-round",
+        "pay": 27,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "onboarding-after-verbal",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e31-start-verbal-b",
+      "startPay": 26,
+      "actions": [
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-coffee-round",
+        "pay": 26,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "openActions": [
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ]
+    },
+    {
+      "id": "reply-0",
+      "kind": "reply",
+      "roleId": "admin",
+      "seed": "e31-start-pay-r",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-recruiting-hat",
+        "pay": 27,
+        "eligible": false,
+        "salaryAdvice": {
+          "from": 27,
+          "to": 27,
+          "historyIndex": 0,
+          "returnEventId": null,
+          "status": "done",
+          "origin": "starting-pay"
+        }
+      },
+      "index": 0,
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-admin"
+    },
+    {
+      "id": "reply-1",
+      "kind": "reply",
+      "roleId": "admin",
+      "seed": "e31-start-pay-r",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-recruiting-hat",
+        "pay": 27,
+        "eligible": false,
+        "salaryAdvice": {
+          "from": 27,
+          "to": 27,
+          "historyIndex": 0,
+          "returnEventId": null,
+          "status": "done",
+          "origin": "starting-pay"
+        }
+      },
+      "index": 1,
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-admin"
+    },
+    {
+      "id": "reply-2",
+      "kind": "reply",
+      "roleId": "admin",
+      "seed": "e31-start-pay-r",
+      "startPay": 27,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-recruiting-hat",
+        "pay": 27,
+        "eligible": false,
+        "salaryAdvice": {
+          "from": 27,
+          "to": 27,
+          "historyIndex": 0,
+          "returnEventId": null,
+          "status": "done",
+          "origin": "starting-pay"
+        }
+      },
+      "index": 2,
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        }
+      ],
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 2
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-admin"
+    },
+    {
+      "id": "raised-above-threshold",
+      "kind": "boundary",
+      "roleId": "admin",
+      "seed": "e31-admin-c-2",
+      "startPay": 28,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-coffee-round",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meeting-ten-minutes",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "admin28-supply-minimum",
+        "pay": 36,
+        "eligible": false,
+        "salaryAdvice": null
+      }
+    },
+    {
+      "id": "deferred-hr",
+      "kind": "deferred",
+      "roleId": "accounting",
+      "seed": "e31-accounting-9-2",
+      "startPay": 28,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "accounting28-receipt-orphan",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "accounting28-close-clock",
+          "index": 0
+        }
+      ],
+      "expected": {
+        "eventId": "education-scrutiny",
+        "pay": 28,
+        "eligible": false,
+        "salaryAdvice": null
+      },
+      "resumeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "accounting28-receipt-orphan",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "accounting28-close-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        }
+      ],
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "accounting28-receipt-orphan",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "accounting28-close-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "salary-advice"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "accounting28-receipt-orphan",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "accounting28-close-clock",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-accounting"
+    },
+    {
+      "id": "active-pip",
+      "kind": "eligible",
+      "roleId": "admin",
+      "seed": "e31-admin-z-x",
+      "startPay": 26,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-extension-grandeur",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        }
+      ],
+      "expected": {
+        "eventId": "q26-bonus-anchor",
+        "pay": 26,
+        "eligible": true,
+        "salaryAdvice": null
+      },
+      "resumeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-extension-grandeur",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        }
+      ],
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-extension-grandeur",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "salary-advice"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-extension-grandeur",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-admin"
+    },
+    {
+      "id": "deferred-mood",
+      "kind": "deferred",
+      "roleId": "admin",
+      "seed": "e31-admin-6-23",
+      "startPay": 28,
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-recruiting-hat",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-seat-key",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-room-tetris",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-forwarded-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-supply-minimum",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "leave-still-online",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-banquet-cup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-coffee-round",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "gender29-blind-resume",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-extension-grandeur",
+          "index": 1
+        }
+      ],
+      "expected": {
+        "eventId": "mood-collapse",
+        "pay": 28,
+        "eligible": false,
+        "salaryAdvice": null
+      },
+      "resumeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-recruiting-hat",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-seat-key",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-room-tetris",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-forwarded-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-supply-minimum",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "leave-still-online",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-banquet-cup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-coffee-round",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "gender29-blind-resume",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-extension-grandeur",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        }
+      ],
+      "openActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-recruiting-hat",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-seat-key",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-room-tetris",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-forwarded-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-supply-minimum",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "leave-still-online",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-banquet-cup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-coffee-round",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "gender29-blind-resume",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-extension-grandeur",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-recruiting-hat",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dinner-budget",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-seat-key",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-room-tetris",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-forwarded-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-supply-minimum",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "leave-still-online",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-banquet-cup",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-coffee-round",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "gender29-blind-resume",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "admin28-extension-grandeur",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "salary-advice"
+        },
+        {
+          "type": "choice",
+          "eventId": "low-pay-tip",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-admin"
+    }
+  ]
+}
