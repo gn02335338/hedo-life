@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-hr-rewrite-title verbal-hr-rewrite-desc">
+  <title id="verbal-hr-rewrite-title">被改寫的改善表</title>
+  <desc id="verbal-hr-rewrite-desc">夾板上的舊主詞被劃掉，一支鉛筆正在旁邊補寫。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="63" y="48" width="83" height="112" rx="7" fill="#fffaf4"/><path d="M76 66h57m-57 12h57m-57 12h48" stroke="#b489a5" stroke-width="3"/><path d="m85 134 10 9 20-23" fill="none" stroke="#e6256e"/><rect x="85" y="39" width="39" height="16" rx="5" fill="#ed6995"/><path d="m76 82 56 11m20 45 36-61 12 7-36 62-16 12z" fill="#f3c36a"/><path d="m176 99 12 7m-36 32 12 8" fill="none"/><path d="M132 22h56q8 0 8 8v22q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-22q0-8 8-8z" fill="#fffaf4"/><path d="M144 39h32m-32 12h16" stroke="#b489a5" stroke-width="3"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

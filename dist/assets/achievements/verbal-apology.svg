@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-apology-title verbal-apology-desc">
+  <title id="verbal-apology-title">有底線的道歉</title>
+  <desc id="verbal-apology-desc">一個附有小花的對話框，下方的信紙仍保留清楚的界線。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 27h114q8 0 8 8v31q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-31q0-8 8-8z" fill="#fffaf4"/><path d="M72 44h90m-90 12h74" stroke="#b489a5" stroke-width="3"/><rect x="70" y="89" width="79" height="70" rx="7" fill="#fffaf4"/><path d="M83 107h53m-53 12h53m-53 12h44" stroke="#b489a5" stroke-width="3"/><path d="M84 136h49" stroke="#e6256e"/><path d="M176 145V98m0 20q-22-2-20-17 21 0 20 17m0 8q23-1 23-19-23 0-23 19" fill="#b489a5"/><path d="M176 78q-18-19-23 0 0 13 23 21 23-8 23-21-5-19-23 0z" fill="#ed6995"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

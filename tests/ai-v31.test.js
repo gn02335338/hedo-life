@@ -33,7 +33,7 @@ test('the AI-specific database story and illustrated achievement append without 
  for(const choice of event.choices){assert.equal(choice.detail,'');assert.match(choice.result,/auto[ _]?increment/i);assert.match(choice.result,/主鍵|自動編號/);assert.match(choice.result,/模型|人工智慧/);assert.doesNotMatch(choice.text,/成功率|機率|\d+(?:\.\d+)?\s*[%％]/);}
  assert.equal(badge.title,'原來公司的AI是Auto Increment');assert.ok(badge.description.trim().length>15);assert.equal(badge.image,'./assets/achievements/ai-auto-increment.svg');
  const artwork=readFileSync(new URL('../dist/assets/achievements/ai-auto-increment.svg',import.meta.url),'utf8');assert.match(artwork,/<svg\b/);assert.match(artwork,/<title\b|aria-label="[^"]+"/);assert.doesNotMatch(artwork,/<script|(?:xlink:)?href="https?:\/\//i);
- assert.equal(roles.ROLES.length,13);assert.equal(endings.ENDINGS.length,545);assert.equal(characterStats.CHARACTER_IDS.length,16);assert.equal(badges.ACHIEVEMENTS.length,123);
+ assert.equal(roles.ROLES.length,13);assert.equal(endings.ENDINGS.length,805);assert.equal(characterStats.CHARACTER_IDS.length,16);assert.equal(badges.ACHIEVEMENTS.length,149);
 });
 
 test('all three AI replies are naturally reached by an actual AI employee and remain save-safe through completion',()=>{

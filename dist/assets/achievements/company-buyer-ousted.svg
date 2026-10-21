@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="company-buyer-ousted-title company-buyer-ousted-desc">
+  <title id="company-buyer-ousted-title">新招牌下的離場通知</title>
+  <desc id="company-buyer-ousted-desc">新東家的大門打開，離場箭頭與交回的工作證並排。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M47 55h112v111H47z" fill="#fffaf4"/><path d="M72 79h58v87H72z" fill="#b489a5"/><path d="m72 79 39 14v73H72z" fill="#ed6995"/><circle cx="102" cy="128" r="3" fill="#273144" stroke="none"/><path d="M134 104h40V91l26 26-26 26v-13h-40" fill="#f3c36a"/><rect x="48" y="32" width="111" height="24" rx="5" fill="#f3c36a"/><path d="M65 44h77" stroke-width="3"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

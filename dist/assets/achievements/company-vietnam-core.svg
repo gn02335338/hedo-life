@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="company-vietnam-core-title company-vietnam-core-desc">
+  <title id="company-vietnam-core-title">越南團隊的原業敲鐘</title>
+  <desc id="company-vietnam-core-desc">長條形海岸地圖旁有伺服器機櫃，跨海交付接上了鐘。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m67 27 22 9-7 18 10 17-11 19 10 17-1 20 17 18-4 25-17 5-10-18 2-18-11-15 5-20-10-18 7-18-10-19z" fill="#ed6995"/><rect x="119" y="115" width="66" height="48" rx="5" fill="#fffaf4"/><path d="M119 131h66m-66 16h66m-53-25h8m-8 16h8m-8 16h8" fill="none" stroke-width="3"/><path d="M132 88h60q-9-11-9-27 0-23-21-23t-21 23q0 16-9 27z" fill="#f3c36a"/><path d="M126 95h72m-45 10q9 12 18 0M162 38v-13" fill="none"/><path d="M95 112h13" stroke="#e6256e" stroke-dasharray="4 4"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

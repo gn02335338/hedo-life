@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="company-google-ousted-title company-google-ousted-desc">
+  <title id="company-google-ousted-title">收購後交回門禁卡</title>
+  <desc id="company-google-ousted-desc">四彩辦公樓旁的離場箭頭指向門外，手提箱跟著離開。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="38" y="48" width="79" height="95" rx="5" fill="#fffaf4"/><rect x="50" y="61" width="10" height="10" rx="1" fill="#ed6995" stroke="none"/><rect x="71" y="61" width="10" height="10" rx="1" fill="#f3c36a" stroke="none"/><rect x="92" y="61" width="10" height="10" rx="1" fill="#81b7c2" stroke="none"/><rect x="50" y="82" width="10" height="10" rx="1" fill="#f3c36a" stroke="none"/><rect x="71" y="82" width="10" height="10" rx="1" fill="#81b7c2" stroke="none"/><rect x="92" y="82" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="50" y="103" width="10" height="10" rx="1" fill="#81b7c2" stroke="none"/><rect x="71" y="103" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="92" y="103" width="10" height="10" rx="1" fill="#ed6995" stroke="none"/><path d="M67 143v-20h21v20" fill="#ed6995"/><path d="M138 90h43V76l26 26-26 26v-14h-43" fill="#ed6995"/><rect x="153" y="145" width="45" height="28" rx="5" fill="#f3c36a"/><path d="M166 145v-9h18v9m-31 10h45" fill="none"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

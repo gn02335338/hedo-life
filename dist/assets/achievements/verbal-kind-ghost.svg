@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-kind-ghost-title verbal-kind-ghost-desc">
+  <title id="verbal-kind-ghost-title">空椅與留下的答應</title>
+  <desc id="verbal-kind-ghost-desc">一張空椅子上方飄著淡色的對話幽靈，桌上只剩承諾。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="78" y="100" width="43" height="39" rx="10" fill="#fffaf4"/><path d="M72 139h55v11H72zm8 11v22m39-22v22" fill="#fffaf4"/><path d="M130 96V61q0-28 27-28t27 28v43l-12-9-12 10-12-10-18 9z" fill="#ed6995"/><circle cx="147" cy="60" r="3" fill="#273144" stroke="none"/><circle cx="167" cy="60" r="3" fill="#273144" stroke="none"/><path d="M48 146h121m-12-41h27" fill="none"/><path d="M39 89h21m-14-13h25" stroke="#b489a5" stroke-dasharray="5 5"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

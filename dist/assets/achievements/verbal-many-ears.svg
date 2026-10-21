@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-many-ears-title verbal-many-ears-desc">
+  <title id="verbal-many-ears-title">三個實際收件人</title>
+  <desc id="verbal-many-ears-desc">三個不同顏色的頭像，各有一個寄到面前的對話泡泡。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="61" cy="117" r="16" fill="#fffaf4"/><path d="M38 160v-7q0-20 23-20t23 20v7" fill="#fffaf4"/><circle cx="121" cy="117" r="16" fill="#ed6995"/><path d="M98 160v-7q0-20 23-20t23 20v7" fill="#ed6995"/><circle cx="181" cy="117" r="16" fill="#f3c36a"/><path d="M158 160v-7q0-20 23-20t23 20v7" fill="#f3c36a"/><path d="M38 33h36q8 0 8 8v24q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-24q0-8 8-8z" fill="#fffaf4"/><path d="M50 50h12m-12 12h-4" stroke="#b489a5" stroke-width="3"/><path d="M102 20h36q8 0 8 8v24q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-24q0-8 8-8z" fill="#ed6995"/><path d="M114 37h12m-12 12h-4" stroke="#b489a5" stroke-width="3"/><path d="M166 33h36q8 0 8 8v24q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-24q0-8 8-8z" fill="#f3c36a"/><path d="M178 50h12m-12 12h-4" stroke="#b489a5" stroke-width="3"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

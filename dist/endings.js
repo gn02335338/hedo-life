@@ -6,7 +6,9 @@ import { EXTRA_CAREER_FAMILIES_V17, EXTRA_CAREER_ENDINGS_V17 } from './endings-c
 import { PERSONNEL_FAMILIES, PERSONNEL_ENDINGS } from './endings-personnel-v20.js';
 import { WEALTH_FAMILIES_V27, WEALTH_ENDINGS_V27 } from './endings-wealth-v27.js';
 import { backofficeEndingsV28 } from './endings-backoffice-v28.js';
-export const FAMILIES = [
+import { VERBAL_FAMILIES_V32, VERBAL_ENDINGS_V32 } from './endings-verbal-v32.js';
+import { COMPANY_FAMILIES_V32, COMPANY_ENDINGS_V32 } from './endings-company-v32.js';
+const LEGACY_FAMILIES = [
   { id: 'fired_signed', label: '自願離職陷阱', type: 'bad', description: '公司要你走，紙上卻寫成你想走。' },
   { id: 'fired_refused', label: '拒簽離場', type: 'normal', description: '老闆收走座位，沒收走你說不的權利。' },
   { id: 'layoff', label: '直接資遣', type: 'bad', description: '沒有改善期，只有突然失效的門禁。' },
@@ -30,6 +32,8 @@ export const FAMILIES = [
   ...PERSONNEL_FAMILIES,
   ...WEALTH_FAMILIES_V27,
 ];
+
+export const FAMILIES = [...LEGACY_FAMILIES, ...VERBAL_FAMILIES_V32, ...COMPANY_FAMILIES_V32];
 
 const ROLE_NAMES = { system: '系統工程師', ai: 'AI 工程師', project: '專案經理', product: '產品經理', design: '設計師', bd: '商務開發', sales: '業務', executive: '空降主管', mis: 'MIS 工程師' };
 const FAMILY_DETAILS = {
@@ -231,7 +235,7 @@ const AUTHORED = {
   ],
 };
 
-export const ENDINGS = [...FAMILIES.flatMap((family) =>
+export const ENDINGS = [...LEGACY_FAMILIES.flatMap((family) =>
   (AUTHORED[family.id] || []).map(([roleId, title, subtitle, body]) => ({
     id: `${family.id}-${roleId}`,
     family: family.id,
@@ -243,4 +247,4 @@ export const ENDINGS = [...FAMILIES.flatMap((family) =>
     hint: family.id === 'assistant' && roleId === 'executive' ? '應徵空降主管；第4回合起老闆心情低於45時，可選擇以名義主管的經歷離場。' : `應徵${ROLE_NAMES[roleId]}；${FAMILY_DETAILS[family.id][1]}。`,
     symbol: FAMILY_DETAILS[family.id][0],
   })),
-),...CAREER_ENDINGS,...STORY_ENDINGS,...RAGE_ENDINGS,...EXTRA_CAREER_ENDINGS_V17,...PERSONNEL_ENDINGS,...WEALTH_ENDINGS_V27,...backofficeEndingsV28(FAMILIES)];
+),...CAREER_ENDINGS,...STORY_ENDINGS,...RAGE_ENDINGS,...EXTRA_CAREER_ENDINGS_V17,...PERSONNEL_ENDINGS,...WEALTH_ENDINGS_V27,...backofficeEndingsV28(LEGACY_FAMILIES),...VERBAL_ENDINGS_V32,...COMPANY_ENDINGS_V32];

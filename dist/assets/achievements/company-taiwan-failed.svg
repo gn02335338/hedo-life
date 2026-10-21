@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="company-taiwan-failed-title company-taiwan-failed-desc">
+  <title id="company-taiwan-failed-title">補件比鐘聲早到</title>
+  <desc id="company-taiwan-failed-desc">敲鐘前面堆著兩份文件，最上方的申請蓋了退回叉號。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="rotate(-12 92 107)"><rect x="45" y="63" width="68" height="98" rx="7" fill="#fffaf4"/><path d="M58 81h42m-42 12h42m-42 12h33" stroke="#b489a5" stroke-width="3"/></g><path d="M130 116h60q-9-11-9-27 0-23-21-23t-21 23q0 16-9 27z" fill="#fffaf4"/><path d="M124 123h72m-45 10q9 12 18 0M160 66v-13" fill="none"/><g transform="rotate(7 107 119)"><rect x="74" y="58" width="70" height="103" rx="7" fill="#fffaf4"/><path d="M87 76h44m-44 12h44m-44 12h35" stroke="#b489a5" stroke-width="3"/><path d="m98 125 23 23m0-23-23 23" fill="none" stroke="#e6256e"/></g>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

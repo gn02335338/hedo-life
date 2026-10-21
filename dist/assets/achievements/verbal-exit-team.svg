@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-exit-team-title verbal-exit-team-desc">
+  <title id="verbal-exit-team-title">三件套中的一位</title>
+  <desc id="verbal-exit-team-desc">三張談話名牌排成一列，一個對話箭頭只指向中間一張。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="30" y="92" width="52" height="63" rx="7" fill="#fffaf4"/><rect x="94" y="92" width="52" height="63" rx="7" fill="#ed6995"/><rect x="158" y="92" width="52" height="63" rx="7" fill="#fffaf4"/><path d="M42 109h28m36 0h28m36 0h28m-156 15h22m42 0h22m42 0h22" stroke-width="3"/><path d="M75 23h89q8 0 8 8v24q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-24q0-8 8-8z" fill="#fffaf4"/><path d="M87 40h65m-65 12h49" stroke="#b489a5" stroke-width="3"/><path d="M120 63v18m-7-7 7 7 7-7" fill="none" stroke="#e6256e"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

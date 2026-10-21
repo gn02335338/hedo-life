@@ -14,6 +14,8 @@ function sampleLabel(row) {
  if (id === 'mood-collapse') return '崩潰';
  if (id.startsWith('meal-')) return '飯局';
  if (id.startsWith('wealth-')) return '離職後規劃';
+ if (id.startsWith('company-v32-')) return '公司未來';
+ if (id === 'verbal-v32-aftermath') return '口舌收尾';
  if (id.startsWith('pip-')) return 'PIP';
  if (row?.kind === 'self-care' || ['kind-break','kind-workday'].includes(id)) return '休整';
  if (row?.kind === 'banquet') return '尾牙';
@@ -61,7 +63,7 @@ function historyMatchesActions(run, history) {
    spokenSource = null;
    return matches;
   }
-  if (!['verbal-v2-warning','verbal-v2-legal','verbal-v2-legal-result'].includes(action.eventId)) spokenSource = null;
+  if (!['verbal-v2-warning','verbal-v2-legal','verbal-v2-legal-result','verbal-v32-aftermath'].includes(action.eventId)) spokenSource = null;
   return row?.eventId === action.eventId && row.choiceIndex === action.index;
  });
 }

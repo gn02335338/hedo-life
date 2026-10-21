@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="company-nasdaq-failed-title company-nasdaq-failed-desc">
+  <title id="company-nasdaq-failed-title">沒有敲響的鐘</title>
+  <desc id="company-nasdaq-failed-desc">敲鐘台上的鐘被膠帶固定，電線停在沒有接上的插頭前。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M80 110h60q-9-11-9-27 0-23-21-23t-21 23q0 16-9 27z" fill="#fffaf4"/><path d="M74 117h72m-45 10q9 12 18 0M110 60v-13" fill="none"/><path d="m80 66 56 45m-49-52 56 45" stroke="#b489a5" stroke-width="9"/><path d="M52 144h126v17H52zm118-30h23v15m-5-15v-10m10 10v-10M41 130h22" fill="#ed6995"/><path d="m175 50 15 15m0-15-15 15" stroke="#e6256e"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

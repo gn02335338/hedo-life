@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-mutual-mute-title verbal-mutual-mute-desc">
+  <title id="verbal-mutual-mute-title">雙方靜音</title>
+  <desc id="verbal-mutual-mute-desc">兩個相對的對話框，中間的喇叭被關掉。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42 39h65q8 0 8 8v28q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-28q0-8 8-8z" fill="#fffaf4"/><path d="M54 56h41m-41 12h25" stroke="#b489a5" stroke-width="3"/><path d="M135 110h65q8 0 8 8v26q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-26q0-8 8-8z" fill="#ed6995"/><path d="M147 127h41m-41 12h25" stroke="#b489a5" stroke-width="3"/><path d="M89 115h14l20-17v52l-20-17H89z" fill="#fffaf4"/><path d="m141 108 24 29m0-29-24 29" stroke="#e6256e"/><path d="M153 53h25m-12-12v24M55 127h14" stroke="#b489a5" stroke-width="3"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

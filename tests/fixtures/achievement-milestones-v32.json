@@ -1,0 +1,232 @@
+{
+  "method": "Natural e32 seeds and canonical game actions only. Menus, speech and follow-up choices are replayed from createRun; no stats, targets, flags or RNG state are injected.",
+  "routes": [
+    {
+      "id": "verbal-late-reply",
+      "roleId": "system",
+      "seed": "e32-badges-result-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "result",
+          "eventId": "onboarding",
+          "version": 2
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-first-word",
+        "verbal-late-reply"
+      ]
+    },
+    {
+      "id": "verbal-exit-team",
+      "roleId": "system",
+      "seed": "e32-system-0-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-school-exception",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-intern-vacation",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 2
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "crisis-boss",
+          "version": 2,
+          "target": "sonny"
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-first-word",
+        "verbal-exit-team"
+      ]
+    },
+    {
+      "id": "verbal-pip-microphone",
+      "roleId": "system",
+      "seed": "e32-system-3-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-application-progress",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-toast-battery",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "pip-review",
+          "version": 2
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-first-word",
+        "verbal-pip-microphone"
+      ]
+    },
+    {
+      "id": "verbal-many-ears",
+      "roleId": "system",
+      "seed": "e32-badges-three-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "job-system-rollback",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "job-system-schema",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-replaces-tests",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "dismissal-final",
+          "version": 2,
+          "target": "erich"
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-first-word",
+        "verbal-many-ears",
+        "verbal-exit-team"
+      ]
+    }
+  ]
+}

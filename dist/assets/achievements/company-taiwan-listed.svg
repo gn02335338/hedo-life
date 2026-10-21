@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="company-taiwan-listed-title company-taiwan-listed-desc">
+  <title id="company-taiwan-listed-title">上櫃公告與敲鐘</title>
+  <desc id="company-taiwan-listed-desc">公告上的確認勾旁，鐘聲與向上的行情一起出現。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="37" y="46" width="63" height="103" rx="7" fill="#fffaf4"/><path d="M50 64h37m-37 12h37m-37 12h28" stroke="#b489a5" stroke-width="3"/><path d="m59 123 10 9 20-23" fill="none" stroke="#e6256e"/><path d="M123 115h60q-9-11-9-27 0-23-21-23t-21 23q0 16-9 27z" fill="#f3c36a"/><path d="M117 122h72m-45 10q9 12 18 0M153 65v-13" fill="none"/><path d="M40 161h161m-68-10 17-18 13 7 27-30m-14 0h14v14" fill="none" stroke="#e6256e"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

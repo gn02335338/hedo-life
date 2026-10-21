@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="company-buyer-board-title company-buyer-board-desc">
+  <title id="company-buyer-board-title">新招牌與舊董事椅</title>
+  <desc id="company-buyer-board-desc">新的公司招牌掛上辦公樓，熟悉的粉紅董事椅仍留在旁邊。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="40" y="63" width="79" height="95" rx="5" fill="#fffaf4"/><rect x="52" y="76" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="73" y="76" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="94" y="76" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="52" y="97" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="73" y="97" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="94" y="97" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="52" y="118" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="73" y="118" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="94" y="118" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><path d="M69 158v-20h21v20" fill="#ed6995"/><rect x="151" y="99" width="43" height="39" rx="10" fill="#ed6995"/><path d="M145 138h55v11H145zm8 11v22m39-22v22" fill="#fffaf4"/><rect x="51" y="33" width="99" height="24" rx="6" fill="#f3c36a"/><path d="M65 45h70m-22 12v6" stroke-width="3"/><path d="M137 143h66" fill="none"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

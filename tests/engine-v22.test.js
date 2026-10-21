@@ -133,10 +133,10 @@ test('only committed Helen dialogue records an encounter; ordinary work is neith
  const recorded=structuredClone(pending);deriveCharacterStats(pending);characterAffinity(pending,'helen');assert.deepEqual(pending,recorded);
 });
 
-test('the current e31 ending report remains complete across all occupations',()=>{
+test('the current ending report remains complete across all occupations',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
  assert.equal(report.complete,true);assert.equal(report.found,ENDINGS.length);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>route.seed.startsWith('e31-')));
+ assert.ok(report.routes.every(route=>/^e(?:31|32)-/.test(route.seed)));
  for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id),role.id);
 });
 

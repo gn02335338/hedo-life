@@ -13,7 +13,7 @@ const paid=(row,cost)=>row.delta?.cash===-cost&&row.breakdown.some(part=>part?.s
 const noSpend=row=>row.delta?.cash===0&&row.breakdown.every(part=>part?.delta&&(part.delta.cash===undefined||part.delta.cash===0));
 
 export function deriveWealthAchievements(run){
- if(!/^e(?:27|28|29|30|31)-/.test(run?.seed||''))return [];
+ if(!/^e(?:27|28|29|30|31|32)-/.test(run?.seed||''))return [];
  const history=Array.isArray(run.history)?run.history:[],ids=new Set();
  for(const row of history){
   if(!resolved(row))continue;

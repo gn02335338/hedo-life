@@ -2,10 +2,13 @@ import { writeFileSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { ROLES } from '../dist/roles.js';
+import {FANTASY_EVENTS} from '../dist/events.js';
 import { FAMILIES, ENDINGS } from '../dist/endings.js';
 import { careerEndingAvailable, careerReadiness } from '../dist/career-api.js';
 import { CAREER_FAMILIES_V17 } from '../dist/career-v17.js';
 import { eligibleStoryEndings } from '../dist/story-career.js';
+import {COMPANY_ENDING_IDS_V32} from '../dist/company-v32.js';
+import {VERBAL_ENDING_IDS_V32} from '../dist/verbal-outcomes-v32.js';
 import { wealthEligibilityV27 } from '../dist/wealth-exit-v27.js';
 
 import { createRun, getEvent, applyChoice, advance, requestExit, requestBreak, canRequestBreak, canRequestCareer, requestCareer, requestRaise, canRequestRaise, requestRage, canRequestRage, getRageTargets, requestVerbal, requestSalaryAdvice, validRun } from '../dist/engine.js';
@@ -29,13 +32,13 @@ export function replayRoute(route, verify = () => {}) {
     }
     else if (action.type === 'rage') {
       run=Object.hasOwn(action,'target')?requestRage(run,action.target):requestRage(run);checkpoint();
-      if(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)-/.test(route.seed))run=advance(run);
+      if(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(route.seed))run=advance(run);
     }
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
       checkpoint();
-      if(!(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)-/.test(route.seed)&&['rage','verbal'].includes(route.actions[position+1]?.type)&&route.actions[position+1].phase==='result'))run = advance(run);
+      if(!(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32)-/.test(route.seed)&&['rage','verbal'].includes(route.actions[position+1]?.type)&&route.actions[position+1].phase==='result'))run = advance(run);
     }
     checkpoint();
   }
@@ -45,6 +48,7 @@ export function replayRoute(route, verify = () => {}) {
 const safe = (value, minimum) => value < minimum ? (value-minimum)*8 : 0;
 const evChoiceIndex=(event,effect)=>event.choices.findIndex(choice=>choice.effect===effect&&choice.available!==false);
 function utility(run,target) {
+  if(COMPANY_ENDING_IDS_V32.includes(target)&&!['nasdaq','taiwan'].includes(target))target=target.startsWith('nasdaq')?'nasdaq':target.startsWith('taiwan')?'taiwan':target.startsWith('vietnam')?'taiwan':'acquired';
   const s=run.stats, f=run.flags;
   let value=safe(s.energy,30)+safe(s.cash,12)+safe(s.mood,35);
   if (target!=='burnout') value+=Math.min(s.energy,65)*.5;
@@ -105,7 +109,35 @@ function simulateRage(roleId,target,attempt,seedPrefix='e31') {
   return {run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}};
 }
 
+function simulateVerbalV32(roleId,target,attempt){
+ const seed=`e32-${roleId}-v${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+ let run=createRun(roleId,seed);
+ const packageRun=()=>({run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}});
+ const choose=index=>{run=advance(applyChoice(run,index));};
+ const guest={verbal_wing_concession:'wing',verbal_boardroom:'spencer',verbal_rick_awake:'rick',verbal_hr_rewrite:'hope',verbal_legal_letter:'erich',verbal_sonny_statement:'sonny',verbal_kind_ghost:'kind',verbal_colleague_solidarity:'jack',verbal_viral:'wing',verbal_mutual_mute:'wing',verbal_apology:'wing'}[target];
+ const speech=()=>{const spoken=advance(requestVerbal(run,undefined,2));if(spoken===run)return false;run=spoken;if(run.eventId!=='verbal-v32-aftermath')return false;const event=getEvent(run),exact=event.choices.findIndex((choice,index)=>index<3&&applyChoice(run,index).pendingFamily===target);choose(exact>=0?exact:0);return true;};
+ if(target==='verbal_onboarding'){speech();return packageRun();}
+ const onboard=getEvent(run).choices.map((choice,index)=>({choice,index})).filter(({choice,index})=>index<2&&choice.available!==false).sort((a,b)=>utility(applyChoice(run,b.index),'taiwan')-utility(applyChoice(run,a.index),'taiwan'))[0];choose(onboard.index);
+ for(let step=0;step<30&&!run.completed;step++){
+  if(getEvent(run)?.speaker===guest&&speech())return packageRun();
+  if(canRequestBreak(run)){run=requestBreak(run);}
+  const event=getEvent(run);if(event.id==='kind-break'||event.id==='kind-workday'){choose(event.choices.findIndex(choice=>choice.effect==='kindDecline'||choice.effect==='kindWorkDecline'));continue;}
+  if(event.id==='self-care'||event.id==='crisis-mood'){const open=event.choices.findIndex(choice=>choice.effect==='mealOpen');if(open>=0){choose(open);continue;}}
+  if(event.id.startsWith('meal-guests-')){
+   const pick=event.choices.findIndex(choice=>choice.mealTarget===guest&&choice.available!==false);
+   choose(pick>=0?pick:event.choices.findIndex(choice=>choice.effect==='mealPage'));continue;
+  }
+  if(event.id===`meal-with-${guest}`){speech();return packageRun();}
+  const candidates=event.choices.map((choice,index)=>({choice,index})).filter(({choice})=>choice.available!==false);
+  const best=candidates.map(({index})=>({index,score:utility(applyChoice(run,index),'taiwan')+(applyChoice(run,index).pendingFamily?-10000:0)})).sort((a,b)=>b.score-a.score)[0];
+  if(!best)break;choose(best.index);
+ }
+ return packageRun();
+}
+
 export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}) {
+  if(VERBAL_ENDING_IDS_V32.includes(target))return simulateVerbalV32(roleId,target,attempt);
+  if(COMPANY_ENDING_IDS_V32.includes(target)&&!['nasdaq','taiwan'].includes(target))seedPrefix='e32';
   if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt,seedPrefix);
   const seed=`${seedPrefix}-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[],openedRaise=false;
@@ -147,6 +179,15 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}
       if(careerReadiness(run).ready||canApply||usefulTraining){actions.push({type:'career'});run=menu;continue;}
     }
     const ev=getEvent(run);
+    if(seedPrefix==='e32'&&COMPANY_ENDING_IDS_V32.includes(target)){
+      if(ev.id===FANTASY_EVENTS[3].id){choose(target.startsWith('nasdaq')||target.startsWith('taiwan')?0:target.startsWith('vietnam')?2:1);continue;}
+      if(ev.kind==='company'){
+       const exact=ev.choices.findIndex((choice,index)=>choice.available!==false&&applyChoice(run,index).pendingFamily===target);
+       if(exact>=0){choose(exact);continue;}
+       const candidate=ev.choices.findIndex(choice=>choice.available!==false&&choice.draw);if(candidate>=0){choose(candidate);continue;}
+       choose(ev.choices.length-1);continue;
+      }
+    }
     if(ev.id==='patronage-application'){choose(2);continue;} // Ordinary ending witnesses keep the professional career path.
     if(raise&&run.eventId.startsWith('raise-')){
       const options=ev.choices.map((choice,index)=>({choice,index})).filter(({choice})=>choice.available!==false&&choice.effect!=='raiseCancel')
@@ -296,10 +337,27 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['verbal-scenario-v2','verbal-scene-copy','events-ai-v31','verbal-v30','verbal-copy-v30','character-stats','patronage-v29','events-gender-v29','events-backoffice-v28','roles-v28','endings-backoffice-v28','wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['achievements-v32','company-v32','verbal-outcomes-v32','endings-company-v32','endings-verbal-v32','verbal-scenario-v2','verbal-scene-copy','events-ai-v31','verbal-v30','verbal-copy-v30','character-stats','patronage-v29','events-gender-v29','events-backoffice-v28','roles-v28','endings-backoffice-v28','wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };
+}
+
+export function collectV32Routes(report,{maxAttempts=5000}={}){
+ const routes=report.routes.filter(route=>route.seed.startsWith('e32-'));
+ // The catalog keeps old success cards; prove their new ten-way company
+ // resolver as well rather than relying on the legacy e31 success witnesses.
+ for(const role of ROLES)for(const target of ['nasdaq','taiwan']){
+  let found=null;
+  for(let attempt=0;attempt<maxAttempts&&!found;attempt++){
+   const candidate=simulate(role.id,target,attempt,{seedPrefix:'e32'});
+   if(candidate.run.endingId===`${target}-${role.id}`)found=candidate.route;
+  }
+  if(!found)throw new Error(`No e32 company success ${target}-${role.id}`);
+  replayRoute(found,state=>{if(!validRun(state))throw new Error(`Invalid e32 company success ${target}-${role.id} ${state.eventId}`);});
+  routes.push(found);
+ }
+ return {method:'Natural e32 createRun seeds and canonical actions only. All 260 new ending cards plus 26 current-cohort NASDAQ/Taiwan success resolutions; old-cohort witnesses remain separate.',routes};
 }
 
 export function collectPersonnelWitnesses(report,{maxExtraAttempts=250}={}){
@@ -341,10 +399,11 @@ export function collectPersonnelWitnesses(report,{maxExtraAttempts=250}={}){
             record('dream-result-restores-personnel',dreamed,dreamActions,route);
           }
         }
-        run=route.actions[index+1]?.type==='rage'&&route.actions[index+1].phase==='result'?pending:advance(pending);
+        run=['rage','verbal'].includes(route.actions[index+1]?.type)&&route.actions[index+1].phase==='result'?pending:advance(pending);
         inspect(run,actions,route,{source:action.eventId,effect:pending.pendingEffect});
       }else if(action.type==='rage')run=advance(Object.hasOwn(action,'target')?requestRage(run,action.target):requestRage(run));
-      else run=({exit:requestExit,break:requestBreak,career:requestCareer,raise:requestRaise})[action.type](run);
+      else if(action.type==='verbal')run=advance(requestVerbal(run,Object.hasOwn(action,'target')?action.target:undefined,action.version));
+      else run=({exit:requestExit,break:requestBreak,career:requestCareer,raise:requestRaise,'salary-advice':requestSalaryAdvice})[action.type](run);
       inspect(run,actions,route);
       if(['floor-notice','watch-review','watch-future'].includes(run.eventId)&&!run.pending){
         for(const [choiceIndex,choice]of getEvent(run).choices.entries())if(choice.available!==false){
@@ -393,9 +452,10 @@ export function collectRageGroupWitnesses(report){
    inspect(run);const action=route.actions[index];
    if(action.type==='choice'){
     run=applyChoice(run,action.index);inspect(run);
-    if(!(route.actions[index+1]?.type==='rage'&&route.actions[index+1].phase==='result'))run=advance(run);
+    if(!(['rage','verbal'].includes(route.actions[index+1]?.type)&&route.actions[index+1].phase==='result'))run=advance(run);
    }else if(action.type==='rage')run=advance(Object.hasOwn(action,'target')?requestRage(run,action.target):requestRage(run));
-   else run=({exit:requestExit,break:requestBreak,career:requestCareer,raise:requestRaise})[action.type](run);
+   else if(action.type==='verbal')run=advance(requestVerbal(run,Object.hasOwn(action,'target')?action.target:undefined,action.version));
+   else run=({exit:requestExit,break:requestBreak,career:requestCareer,raise:requestRaise,'salary-advice':requestSalaryAdvice})[action.type](run);
    if(found.size===12)break;
   }
   if(found.size===12)break;
@@ -414,6 +474,7 @@ export function collectRageGroupWitnesses(report){
 if(process.argv[1]===fileURLToPath(import.meta.url)){
   const report=findRoutes({maxAttempts:Number(process.argv[2])||3000,onProgress:p=>{if(!p.found||p.family==='historian')console.log(JSON.stringify(p));}});
   writeFileSync(new URL('../research/reachability-v3.json',import.meta.url),JSON.stringify(report,null,2)+'\n');
+  if(report.complete)writeFileSync(new URL('./fixtures/v32-routes.json',import.meta.url),JSON.stringify(collectV32Routes(report,{maxAttempts:Number(process.argv[2])||3000}),null,2)+'\n');
   if(report.complete&&process.argv.includes('--personnel')){
     const witnesses=collectPersonnelWitnesses(report);
     writeFileSync(new URL('./fixtures/personnel-routes-v20.json',import.meta.url),JSON.stringify(witnesses,null,2)+'\n');

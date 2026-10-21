@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-colleague-solidarity-title verbal-colleague-solidarity-desc">
+  <title id="verbal-colleague-solidarity-title">有名字的附議</title>
+  <desc id="verbal-colleague-solidarity-desc">三位同事共同托住一個對話框，桌上有三個確認勾。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="64" cy="102" r="16" fill="#fffaf4"/><path d="M41 145v-7q0-20 23-20t23 20v7" fill="#fffaf4"/><circle cx="120" cy="102" r="16" fill="#ed6995"/><path d="M97 145v-7q0-20 23-20t23 20v7" fill="#ed6995"/><circle cx="176" cy="102" r="16" fill="#fffaf4"/><path d="M153 145v-7q0-20 23-20t23 20v7" fill="#fffaf4"/><path d="M65 26h110q8 0 8 8v26q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-26q0-8 8-8z" fill="#fffaf4"/><path d="M77 43h86m-86 12h70" stroke="#b489a5" stroke-width="3"/><path d="M38 158h164m-146-3 5 5 10-12m41 7 5 5 10-12m41 7 5 5 10-12" fill="none" stroke="#e6256e" stroke-width="3"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

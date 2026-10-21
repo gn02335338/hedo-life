@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="company-google-board-title company-google-board-desc">
+  <title id="company-google-board-title">四彩公司與一張董事椅</title>
+  <desc id="company-google-board-desc">四種顏色的辦公樓旁，董事椅上多了一塊粉紅名牌。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="43" y="53" width="79" height="95" rx="5" fill="#fffaf4"/><rect x="55" y="66" width="10" height="10" rx="1" fill="#ed6995" stroke="none"/><rect x="76" y="66" width="10" height="10" rx="1" fill="#f3c36a" stroke="none"/><rect x="97" y="66" width="10" height="10" rx="1" fill="#81b7c2" stroke="none"/><rect x="55" y="87" width="10" height="10" rx="1" fill="#f3c36a" stroke="none"/><rect x="76" y="87" width="10" height="10" rx="1" fill="#81b7c2" stroke="none"/><rect x="97" y="87" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="55" y="108" width="10" height="10" rx="1" fill="#81b7c2" stroke="none"/><rect x="76" y="108" width="10" height="10" rx="1" fill="#b489a5" stroke="none"/><rect x="97" y="108" width="10" height="10" rx="1" fill="#ed6995" stroke="none"/><path d="M72 148v-20h21v20" fill="#ed6995"/><rect x="148" y="102" width="43" height="39" rx="10" fill="#ed6995"/><path d="M142 141h55v11H142zm8 11v22m39-22v22" fill="#fffaf4"/><rect x="148" y="132" width="45" height="18" rx="4" fill="#f3c36a"/><path d="M157 140h27" stroke-width="2.5"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

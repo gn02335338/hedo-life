@@ -177,8 +177,8 @@ test('departure totals include every historical catalog ending without requiring
  h.sql.exec('INSERT INTO runs VALUES (?,?,?,?,?,?,?,?,?,?)',randomUUID(),player.id,'private-future-ending-title','system','system',0,40,2,3,created);
  const before=h.sql.exec('SELECT * FROM runs ORDER BY id').toArray().map(row=>({...row}));h.reopen();
  const stats=(await h.call('/api/stats')).body;
- assert.equal(stats.totalRuns,546);assert.equal(stats.observatory.recordedRuns,0);assert.equal(stats.observatory.unclassifiedRuns,546);
- assert.equal(stats.observatory.departureWays.reduce((total,row)=>total+row.count,0),546);
+ assert.equal(stats.totalRuns,806);assert.equal(stats.observatory.recordedRuns,0);assert.equal(stats.observatory.unclassifiedRuns,806);
+ assert.equal(stats.observatory.departureWays.reduce((total,row)=>total+row.count,0),806);
  assert.deepEqual(stats.observatory.departureWays.map(row=>row.id),departureIds);
  assert.ok(stats.observatory.departureWays.every(row=>row.count>0),'every departure group is represented');
  assert.equal(stats.observatory.departureWays.find(row=>row.id==='unclassified').count,1);

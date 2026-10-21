@@ -7,7 +7,7 @@ const groups={
   'career_assistant','career_staff','career_senior','career_principal','career_deputy','career_manager','career_director','career_chief',
   'second_offer','handover_author','alumni_network','consultant','rage_walkaway'],
  forced_signed:['fired_signed'],
- company_exit:['fired_refused','layoff','merged_out'],
+ company_exit:['fired_refused','layoff','merged_out','verbal_onboarding'],
  pip_failed:['pip_fail'],
  pip_passed_exit:['pip_exit'],
  cold_storage:['cold_storage'],
@@ -16,7 +16,9 @@ const groups={
  cash_exhausted:['broke'],
  startup:['venture_independent','venture_restart'],
  retirement:['retired_free','retired_flexible'],
- other:['nasdaq','taiwan','acquired','rage_legal','rage_defeated','rage_coup','rage_truce','rage_meme'],
+ other:['nasdaq','taiwan','acquired','rage_legal','rage_defeated','rage_coup','rage_truce','rage_meme',
+  'nasdaq_failed','taiwan_failed','google_board','google_ousted','buyer_board','buyer_ousted','vietnam_core','vietnam_afterdark',
+  'verbal_wing_concession','verbal_boardroom','verbal_rick_awake','verbal_hr_rewrite','verbal_legal_letter','verbal_sonny_statement','verbal_kind_ghost','verbal_colleague_solidarity','verbal_viral','verbal_mutual_mute','verbal_apology'],
 };
 
 export const DEPARTURE_WAYS=Object.freeze([...Object.keys(groups),'unclassified']);

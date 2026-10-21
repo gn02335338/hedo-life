@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-boardroom-title verbal-boardroom-desc">
+  <title id="verbal-boardroom-title">有逐字稿的董事會</title>
+  <desc id="verbal-boardroom-desc">長桌、董事椅與一張伸到桌面上的對話紀錄。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="105" y="70" width="43" height="39" rx="10" fill="#ed6995"/><path d="M99 109h55v11H99zm8 11v22m39-22v22" fill="#fffaf4"/><path d="M44 135h152l-18 23H63z" fill="#fffaf4"/><path d="M62 158v13m115-13v13" fill="none"/><path d="M62 26h111q8 0 8 8v22q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-22q0-8 8-8z" fill="#fffaf4"/><path d="M74 43h87m-87 12h71" stroke="#b489a5" stroke-width="3"/><path d="M83 124h56l-9 18H75z" fill="#f3c36a"/><path d="m91 130 28-1" stroke-width="2.5"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

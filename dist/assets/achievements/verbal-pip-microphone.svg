@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-pip-microphone-title verbal-pip-microphone-desc">
+  <title id="verbal-pip-microphone-title">評核表上的原話</title>
+  <desc id="verbal-pip-microphone-desc">PIP 夾板上多出一個麥克風，把現場發言一起留下。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="48" y="47" width="87" height="113" rx="7" fill="#fffaf4"/><path d="M61 65h61m-61 12h61m-61 12h52" stroke="#b489a5" stroke-width="3"/><rect x="74" y="38" width="37" height="17" rx="5" fill="#ed6995"/><path d="M65 114h52m-52 14h33m-33 13h43" stroke="#b489a5" stroke-width="3"/><rect x="156" y="74" width="29" height="57" rx="14" fill="#f3c36a"/><path d="M147 109v11q0 25 24 25t24-25v-11m-24 36v20m-15 0h31" fill="none"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

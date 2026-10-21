@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-first-word-title verbal-first-word-desc">
+  <title id="verbal-first-word-title">第一句現場發言</title>
+  <desc id="verbal-first-word-desc">桌上的麥克風接住一個完整對話框，聲音沒有留在腦內。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M73 27h111q8 0 8 8v34q0 8-8 8h-44l-15 14 3-14h-28q-8 0-8-8v-34q0-8 8-8z" fill="#fffaf4"/><path d="M85 44h87m-87 12h71" stroke="#b489a5" stroke-width="3"/><rect x="91" y="91" width="38" height="55" rx="18" fill="#ed6995"/><path d="M80 122v7q0 29 30 29t30-29v-7m-30 36v15m-22 0h44M101 103h18m-18 12h18" fill="none"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

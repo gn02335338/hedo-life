@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-sonny-statement-title verbal-sonny-statement-desc">
+  <title id="verbal-sonny-statement-title">理由伯的聲明台</title>
+  <desc id="verbal-sonny-statement-desc">披薩盒上放著長長的聲明稿，四支麥克風一起收音。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m41 124 111-19 40 23-111 24z" fill="#f3c36a"/><path d="m41 124 40 28v16l-40-28zm40 28 111-24v17L81 168z" fill="#fffaf4"/><rect x="89" y="30" width="67" height="92" rx="7" fill="#fffaf4"/><path d="M102 48h41m-41 12h41m-41 12h32" stroke="#b489a5" stroke-width="3"/><path d="M52 114V81m18 30V68m101 50V84m18 42V98" fill="none"/><rect x="43" y="65" width="17" height="25" rx="7" fill="#ed6995"/><rect x="62" y="50" width="17" height="25" rx="7" fill="#fffaf4"/><rect x="163" y="67" width="17" height="25" rx="7" fill="#ed6995"/><rect x="181" y="83" width="17" height="25" rx="7" fill="#fffaf4"/>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

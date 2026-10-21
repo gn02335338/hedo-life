@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-legal-letter-title verbal-legal-letter-desc">
+  <title id="verbal-legal-letter-title">原話與正式回函</title>
+  <desc id="verbal-legal-letter-desc">信封裡裝著一份對話說明，旁邊有一支小法槌。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+  <path d="M35 172q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="81" y="31" width="66" height="93" rx="7" fill="#fffaf4"/><path d="M94 49h40m-40 12h40m-40 12h31" stroke="#b489a5" stroke-width="3"/><path d="M56 88h115v70H56z" fill="#ed6995"/><path d="m56 88 57 43 58-43m-115 70 37-35m78 35-36-35" fill="none"/><g transform="rotate(25 177 82)"><rect x="159" y="54" width="35" height="18" rx="4" fill="#f3c36a"/><path d="M176 72v48" fill="none"/><path d="M162 126h33" fill="none"/></g>
+  </g>
+  <path d="M205 46h10m-5-5v10M27 108h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

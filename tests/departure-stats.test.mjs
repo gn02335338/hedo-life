@@ -5,11 +5,11 @@ import {DEPARTURE_WAYS,departureWays} from '../worker/departures.js';
 
 const expectedFamilies={
  voluntary:'ragequit assistant promotion slacker sycophant historian career_assistant career_staff career_senior career_principal career_deputy career_manager career_director career_chief second_offer handover_author alumni_network consultant rage_walkaway',
- forced_signed:'fired_signed',company_exit:'fired_refused layoff merged_out',
+ forced_signed:'fired_signed',company_exit:'fired_refused layoff merged_out verbal_onboarding',
  pip_failed:'pip_fail',pip_passed_exit:'pip_exit',cold_storage:'cold_storage',
  labor_dispute:'mediation_settled mediation_pending',burnout:'burnout',cash_exhausted:'broke',
  startup:'venture_independent venture_restart',retirement:'retired_free retired_flexible',
- other:'nasdaq taiwan acquired rage_legal rage_defeated rage_coup rage_truce rage_meme',
+ other:'nasdaq taiwan acquired rage_legal rage_defeated rage_coup rage_truce rage_meme nasdaq_failed taiwan_failed google_board google_ousted buyer_board buyer_ousted vietnam_core vietnam_afterdark verbal_wing_concession verbal_boardroom verbal_rick_awake verbal_hr_rewrite verbal_legal_letter verbal_sonny_statement verbal_kind_ghost verbal_colleague_solidarity verbal_viral verbal_mutual_mute verbal_apology',
 };
 const ids=['voluntary','forced_signed','company_exit','pip_failed','pip_passed_exit','cold_storage','labor_dispute','burnout','cash_exhausted','startup','retirement','other','unclassified'];
 
@@ -18,8 +18,8 @@ test('departure contract always exposes all thirteen anonymous groups in stable 
  assert.deepEqual(departureWays([]),ids.map(id=>({id,count:0})));
 });
 
-test('all 545 published endings belong to exactly one departure group without treating career or fantasy endings as dismissals',()=>{
- assert.equal(ENDINGS.length,545);
+test('all 805 published endings belong to exactly one departure group without treating career or fantasy endings as dismissals',()=>{
+ assert.equal(ENDINGS.length,805);
  const classifiedFamilies=Object.values(expectedFamilies).flatMap(value=>value.split(' '));
  assert.equal(new Set(classifiedFamilies).size,classifiedFamilies.length,'group families must be mutually exclusive');
  assert.deepEqual([...new Set(ENDINGS.map(ending=>ending.family))].sort(),[...classifiedFamilies].sort(),'all published families are explicitly classified');
