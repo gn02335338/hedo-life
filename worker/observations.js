@@ -10,7 +10,7 @@ const bins=(ids,counts)=>ids.map(id=>({id,count:counts[id]||0}));
 // body. It stores only rule/rank classifications and small derived counters.
 export function deriveObservation(run){
  if(!run?.completed||!endingTypes.has(run.endingId))return null;
- const match=/^e([2-9]|[12]\d|3[012345])-/.exec(run.seed),cohort=match?Number(match[1]):1;
+ const match=/^e([2-9]|[12]\d|3[0123456])-/.exec(run.seed),cohort=match?Number(match[1]):1;
  const history=run.history||[];
  const payCuts=history.reduce((total,row,index)=>total+Number(index>0&&Number.isFinite(row.pay)&&Number.isFinite(history[index-1]?.pay)&&row.pay<history[index-1].pay),0);
  const title=run.patronage?.title;

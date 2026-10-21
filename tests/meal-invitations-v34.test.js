@@ -128,7 +128,7 @@ test('the solo fallback is guaranteed, affordable and distinct from a shared din
 });
 
 test('legacy menus and every non-menu event retain their exact object and RNG-free behavior',()=>{
- for(const seed of ['e25-frozen','e29-frozen','e33-frozen','e36-future','legacy']){
+ for(const seed of ['e25-frozen','e29-frozen','e33-frozen','e37-future','legacy']){
   const run=base({seed}),source=getMealV25(run),before=structuredClone(source);
   assert.equal(withMealInvitationsV34(source,run),source);assert.deepEqual(source,before);assert.ok(source.choices.every(choice=>choice.draw===undefined));
  }
@@ -144,6 +144,18 @@ test('e35 inherits current-life invitation relationships, seeded refusals and an
   assert.deepEqual(menu(current),menu(before));
   assert.ok(menu(current).choices.slice(0,8).every(choice=>choice.draw?.outcomes.length===2));
   assert.equal(menu(current).choices.at(-1).effect,'mealFinish');
+  assert.equal(menu(current).choices.at(-1).delta.cash,-8);
+ }
+});
+
+
+test('e36 inherits invitation access without charging or revealing its reaction before dinner',()=>{
+ for(const page of [0,1]){
+  const before=base({eventId:page?'meal-guests-b':'meal-guests-a',mealContext:{origin:'self-care',page,guest:null},history:[row('jack',{trust:8})]});
+  const current={...before,seed:'e36-meal-invitation'};
+  assert.deepEqual(invitationProfileV34(current,'jack'),invitationProfileV34(before,'jack'));
+  assert.deepEqual(menu(current),menu(before));
+  assert.ok(menu(current).choices.slice(0,8).every(choice=>choice.draw?.outcomes.length===2));
   assert.equal(menu(current).choices.at(-1).delta.cash,-8);
  }
 });

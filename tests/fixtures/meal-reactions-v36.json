@@ -1,0 +1,7585 @@
+{
+  "version": 36,
+  "method": "Natural first-workday invitations and committed table replies; no state injection or RNG preview.",
+  "attemptedSeeds": 167,
+  "routes": [
+    {
+      "id": "wing-reply-0-warm",
+      "guest": "wing",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        }
+      ],
+      "stateHash": "3a98fc7bdc1d231d0d2290651b23c7fc30f43460d3c2289ced7f62ac65d60e4e",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "wing-reply-0-neutral",
+      "guest": "wing",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        }
+      ],
+      "stateHash": "a08dcf95947b84092b3e29fd7712d45e5c6173e04016489e7ac89c698604c2d3",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "wing-reply-0-mine",
+      "guest": "wing",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -8,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        }
+      ],
+      "stateHash": "580a5004c8f47468ec76a78a479c3fa3307e552968064ff1cb5aa571407dc54c",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "wing-reply-1-warm",
+      "guest": "wing",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 10,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 1
+        }
+      ],
+      "stateHash": "760c3ddc6fb0fd82edc518216ea47c24fbf885b183e5d8bdc5365b5e01891f9b",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "wing-reply-1-neutral",
+      "guest": "wing",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "design",
+      "seed": "e36-mchat-2m",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 1
+        }
+      ],
+      "stateHash": "f42bd5e24644d2881b69b1beda757b7b008dcf037900c1ef8cdf5a3bee5d8106",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "wing-reply-1-mine",
+      "guest": "wing",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -10,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 1
+        }
+      ],
+      "stateHash": "d5e1d270997fa65c3f760af79749bb4bd5ad8f0c86460d59fd759fdeb085923c",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "spencer-reply-0-warm",
+      "guest": "spencer",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        }
+      ],
+      "stateHash": "fa4a7d5563fec3f23f0b825882a6db00a3c8edd27506127cf3f8314630efb5d0",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "spencer-reply-0-neutral",
+      "guest": "spencer",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "system",
+      "seed": "e36-mchat-2c",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        }
+      ],
+      "stateHash": "a7fa2d540e6ce6e85f4ff7e3cf28e47833910d2c53a645634bbef53fc9cd57e7",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "spencer-reply-0-mine",
+      "guest": "spencer",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "mis",
+      "seed": "e36-mchat-4m",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        }
+      ],
+      "stateHash": "eef3100afacd1512321e2b80f11044f8fb3b3ba88b208989f68a93a5b266f5a8",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-mis"
+    },
+    {
+      "id": "spencer-reply-1-warm",
+      "guest": "spencer",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 1
+        }
+      ],
+      "stateHash": "263f52a6a6410da14fe1350a1e0b2cab6aac253bff8f3f996836babfa12c3d93",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "spencer-reply-1-neutral",
+      "guest": "spencer",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "system",
+      "seed": "e36-mchat-2c",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 1
+        }
+      ],
+      "stateHash": "e3d8a672e62f833001992f9ba4127b1b8b3da25089d74443e63ad42658066ccc",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "spencer-reply-1-mine",
+      "guest": "spencer",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -9,
+      "roleId": "mis",
+      "seed": "e36-mchat-4m",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 1
+        }
+      ],
+      "stateHash": "00060b6bc696489deefb23416f3987e661bc27ba88bca2435af3d972a89b4f0e",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-mis"
+    },
+    {
+      "id": "erich-reply-0-warm",
+      "guest": "erich",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        }
+      ],
+      "stateHash": "572cbec8a54a02d52782949f93e39acfc5967977891ea3220084abcb5926da04",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "erich-reply-0-neutral",
+      "guest": "erich",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        }
+      ],
+      "stateHash": "0143582dca7759ad262b28247a08fb78c2c7950964ce7a144947068bf0183550",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "erich-reply-0-mine",
+      "guest": "erich",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -6,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        }
+      ],
+      "stateHash": "8ec5ed59705fc98e160a4967ad3249d0e4cf62427e65a2a71fdc5c97cbd20d69",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "erich-reply-1-warm",
+      "guest": "erich",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        }
+      ],
+      "stateHash": "4d0e4502085cb0d716d0d905a10e31ae6231dba27e364ef45831940d7e7bebd8",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "erich-reply-1-neutral",
+      "guest": "erich",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        }
+      ],
+      "stateHash": "3cda79c57ae8997dbf0bb0fef7367be0c0f17d1e755b06cc4b5de91062114059",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "erich-reply-1-mine",
+      "guest": "erich",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -8,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        }
+      ],
+      "stateHash": "ca9f9cfe748808a34e62fbb0fb3e77af1b2cdefd4247e008362931b0a89175bb",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "sonny-reply-0-warm",
+      "guest": "sonny",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        }
+      ],
+      "stateHash": "ed693f7082f4f6c1e8518bfc2d3938985a6ba37a2d0d538e0a65185cf2e82b48",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "sonny-reply-0-neutral",
+      "guest": "sonny",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        }
+      ],
+      "stateHash": "92cd8fbfeaaf9b01928ec26cff88fc120a063f66da326de9d59800939da17bd9",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "sonny-reply-0-mine",
+      "guest": "sonny",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "design",
+      "seed": "e36-mchat-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        }
+      ],
+      "stateHash": "732e20d16a4ee9766fe30606a9c41631d713ce20ae98992472a4857d21bbc945",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "sonny-reply-1-warm",
+      "guest": "sonny",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        }
+      ],
+      "stateHash": "4914708c88c9914facd4c87a2e99d89ae43062602e3abc7ead4bb3bf3343e8bf",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "sonny-reply-1-neutral",
+      "guest": "sonny",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-u",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        }
+      ],
+      "stateHash": "49755ac0275c2760c087035e556398dcb75b06e60012a1f0b140c2935d9cb0c1",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "sonny-reply-1-mine",
+      "guest": "sonny",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -9,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        }
+      ],
+      "stateHash": "99a89851fc69141ac3ccbd985a97d79d93b32fc546fc9edd0a6dcc99b8950035",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jenjen-reply-0-warm",
+      "guest": "jenjen",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        }
+      ],
+      "stateHash": "36a14aa19f61f3043969b29bce3ed9133a4777f1df6abbbd38434be1c919032b",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "jenjen-reply-0-neutral",
+      "guest": "jenjen",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        }
+      ],
+      "stateHash": "a91b257405fef155194f871f2e51b04013ef6f88128ed6913a6f3d2ce5e30e82",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jenjen-reply-0-mine",
+      "guest": "jenjen",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        }
+      ],
+      "stateHash": "1818193463dae957b9e01e84df1af7de7be381e7410d47195f5fd78edeaa7d80",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "jenjen-reply-1-warm",
+      "guest": "jenjen",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 1
+        }
+      ],
+      "stateHash": "49875cbd213e75575d65af37c7d47aabf6dbb2ea2371b385a581999e9606abc1",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "jenjen-reply-1-neutral",
+      "guest": "jenjen",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 1
+        }
+      ],
+      "stateHash": "542548a692480b15530b376408fb1217ee1a3ad3df1077829b544619dd8f46cf",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jenjen-reply-1-mine",
+      "guest": "jenjen",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -9,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 1
+        }
+      ],
+      "stateHash": "fa719b9beecf2d8c936d3c1c32cc4ad14c2bea75ec07a68a573e5fb7839c683e",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "rick-reply-0-warm",
+      "guest": "rick",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        }
+      ],
+      "stateHash": "e867f965ab08351a5ebbe96205d66881d10db986553532ff4eb35bcbc05d99a1",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "rick-reply-0-neutral",
+      "guest": "rick",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        }
+      ],
+      "stateHash": "f11e843071a557e9941cd58d2221089dcbc94b126ccdf9f6c9e9f52e94430bbf",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "rick-reply-0-mine",
+      "guest": "rick",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "system",
+      "seed": "e36-mchat-z",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        }
+      ],
+      "stateHash": "aebb206607ea00b5be27257b694d7f7e9055a1734d841db902802712f18525d2",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "rick-reply-1-warm",
+      "guest": "rick",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 1
+        }
+      ],
+      "stateHash": "410dc3873174814d7af5d0583d84ad0cbe3a70079d579d05a5e8ce86c95897d6",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "rick-reply-1-neutral",
+      "guest": "rick",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "ai",
+      "seed": "e36-mchat-d",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 1
+        }
+      ],
+      "stateHash": "ddfe7a56cfad9c0dad8d54c48e750944777cea2c252c6ca18f725f2ee7f9fd3a",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "rick-reply-1-mine",
+      "guest": "rick",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -9,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 1
+        }
+      ],
+      "stateHash": "f7d0329da6c603a90812135ed036a9f83b69cdab7629328d272cf7bd0b984727",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "kind-reply-0-warm",
+      "guest": "kind",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        }
+      ],
+      "stateHash": "42388ed23c7861f4a0eec027f0687fe22b667dac035d3d1b7986d6fc3dd8f7ca",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "kind-reply-0-neutral",
+      "guest": "kind",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        }
+      ],
+      "stateHash": "974a98c1a9e0846069ed1bee52f2770526e68652998dd0dd49cdd4eb7a51b10d",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "kind-reply-0-mine",
+      "guest": "kind",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -6,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        }
+      ],
+      "stateHash": "cf7412d68f7cf0bc0497ebd784b1ceecec2c322da39049569109ebd4c16a6650",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "kind-reply-1-warm",
+      "guest": "kind",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        }
+      ],
+      "stateHash": "3aaac16e71684acffdaed93e69405f0b4ae9ebb08bc7a27ea4ee207e5da4e7fa",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "kind-reply-1-neutral",
+      "guest": "kind",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        }
+      ],
+      "stateHash": "c73f749b5efd60240fcdb37fc49257255bc56e9ffc0d58108b07242fdb463711",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "kind-reply-1-mine",
+      "guest": "kind",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -8,
+      "roleId": "system",
+      "seed": "e36-mchat-z",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        }
+      ],
+      "stateHash": "5cb75cf4b7594193195071131d05b74875b23305f5e1293f80894db8ff73a2ae",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "hope-reply-0-warm",
+      "guest": "hope",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        }
+      ],
+      "stateHash": "9a01eed0ae58e2acc80bb9e39a66bb50906a53d043e9802b6dc0c07ddf681751",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "hope-reply-0-neutral",
+      "guest": "hope",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        }
+      ],
+      "stateHash": "73ef63b3f8369d7bfb18299466001a95a71cce077ac5bfac6dff6b701d7bec72",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "hope-reply-0-mine",
+      "guest": "hope",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        }
+      ],
+      "stateHash": "5db248269bdea46971a3443745d367377153b4c4881d617c26622481ec4ef7a2",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "hope-reply-1-warm",
+      "guest": "hope",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 1
+        }
+      ],
+      "stateHash": "ed9032ee07d3c8fd99ac4c1197aa0ed87a76b3f0597ff15bad82cd2309f703fb",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "hope-reply-1-neutral",
+      "guest": "hope",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "mis",
+      "seed": "e36-mchat-2h",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 1
+        }
+      ],
+      "stateHash": "de25335eceea43b4d09148cb024d5f085f37ec26ec070d6af266f6a185494f61",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-mis"
+    },
+    {
+      "id": "hope-reply-1-mine",
+      "guest": "hope",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -9,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 1
+        }
+      ],
+      "stateHash": "7a6a1ceb3f7c97ebfd51bb32f093a45f613e98d3432c6f1311879654d2a9dd70",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jack-reply-0-warm",
+      "guest": "jack",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        }
+      ],
+      "stateHash": "a8c29f2542cf898eb0b6dcf150257a2033f2eb99f4c4e0dc3d525aefa8e91a9c",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "jack-reply-0-neutral",
+      "guest": "jack",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        }
+      ],
+      "stateHash": "6d85d88c9a0481edc7e17f78016f22b0688fb092d46ee2b68c974b5fe0710f52",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jack-reply-0-mine",
+      "guest": "jack",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -5,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        }
+      ],
+      "stateHash": "89f65e0bfa64a54294212c483a3ba1d6f2e280218db9a162d5fc70600cb82ba2",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "jack-reply-1-warm",
+      "guest": "jack",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 1
+        }
+      ],
+      "stateHash": "234f99feb62a1e7944905870ab8c94c563cc5b9f2e403c4e5236eb5aec06a9aa",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "jack-reply-1-neutral",
+      "guest": "jack",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 1
+        }
+      ],
+      "stateHash": "24c38e631e493d26b28814b9b08d6b2203a7a4332f65023b94e510f86a590595",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jack-reply-1-mine",
+      "guest": "jack",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 1
+        }
+      ],
+      "stateHash": "121f5ac3ffe030502e4184da6fa2e3b8294254041cfc6d1c8d2c1fd4e0f39111",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "meimei-reply-0-warm",
+      "guest": "meimei",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        }
+      ],
+      "stateHash": "3d9f25c5b872d3353b5b6157681d7cdc0e3f50f849cdd1b18eebcc75bc063de4",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "meimei-reply-0-neutral",
+      "guest": "meimei",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        }
+      ],
+      "stateHash": "0072f8e0cb61cd46d72731d9ae8c8daf62454f0d70e8e5ea536926184940ab0b",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "meimei-reply-0-mine",
+      "guest": "meimei",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -6,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        }
+      ],
+      "stateHash": "361e69b2d38d1af9785df6e1b8407a6ec0ddf3ef9bb1d7741daf148ae96e16d3",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "meimei-reply-1-warm",
+      "guest": "meimei",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 1
+        }
+      ],
+      "stateHash": "fb0da9f11c8fef8be71249fdde6e72abc48361bbd0b5bcbda3ba7e96015215dd",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "meimei-reply-1-neutral",
+      "guest": "meimei",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 1
+        }
+      ],
+      "stateHash": "6d9e393178af65e4637853f217348cf8bd5a9557bb995ea6a4249c8d1e6411a2",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "meimei-reply-1-mine",
+      "guest": "meimei",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -8,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 1
+        }
+      ],
+      "stateHash": "54fa41a49415099ba7f92e1443318ebb212bfda1b299223b2520a1b768cd50d9",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "helen-reply-0-warm",
+      "guest": "helen",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        }
+      ],
+      "stateHash": "20330d33f33f46c6a0979195ea37f24294d50e705c5d9515d1a6a710e3866120",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "helen-reply-0-neutral",
+      "guest": "helen",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        }
+      ],
+      "stateHash": "7846684920aad7f581c4ecdc6380bf63ed05d62b2d038bc7f01445aec68d4549",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "helen-reply-0-mine",
+      "guest": "helen",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -6,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        }
+      ],
+      "stateHash": "80c1d0ab17e6fa6667af9cd5ad9a61da368680b5e6ea38626ae5a2d20725a50f",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "helen-reply-1-warm",
+      "guest": "helen",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 1
+        }
+      ],
+      "stateHash": "e45815eece4b78e73bd689b404fd6caccfdf29b87a63e54d0ff1d0588246c6ed",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "helen-reply-1-neutral",
+      "guest": "helen",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 1
+        }
+      ],
+      "stateHash": "a3f16c9dfa87a6dd6ee90b11a5256c0abff047ec947b57d329a363f459394b6f",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "helen-reply-1-mine",
+      "guest": "helen",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -8,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 1
+        }
+      ],
+      "stateHash": "c2c081864d470f3c974945e87c8e7b6a65d5ea692b839dade7c33d394bb67596",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "sophie-reply-0-warm",
+      "guest": "sophie",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        }
+      ],
+      "stateHash": "d03b33f3b6c32563699d2bf9fbcbdc5bdd8f96527571101784bd6e1f1e426149",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "sophie-reply-0-neutral",
+      "guest": "sophie",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        }
+      ],
+      "stateHash": "c55de3e104dbe56b573f63baaaf4d3d905246a9c048c67e92efde3903bd708e9",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "sophie-reply-0-mine",
+      "guest": "sophie",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        }
+      ],
+      "stateHash": "3c908a5ef3a683f5f9eb550363dbbcf3827fbe131be113455f2c46fac81ff75c",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "sophie-reply-1-warm",
+      "guest": "sophie",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 1
+        }
+      ],
+      "stateHash": "fd83e2623234cd4aaa7ad58c38e2712f70f990b93e70909a5483a85411a826e4",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "sophie-reply-1-neutral",
+      "guest": "sophie",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "ai",
+      "seed": "e36-mchat-1j",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 1
+        }
+      ],
+      "stateHash": "8cab979e57b2e136bdcc1796a5afb22e526eb7883489f4b7dfc9833ffb6b2adf",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "sophie-reply-1-mine",
+      "guest": "sophie",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -9,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 1
+        }
+      ],
+      "stateHash": "e4425a14f9af522a2f2d4ad595da78accde6c855a466f0af7a483af21692ac05",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jonathan-reply-0-warm",
+      "guest": "jonathan",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        }
+      ],
+      "stateHash": "2056457eb5eea134ec5e4609c184de1e487a43adc3ce346bda1ad91ad46b928e",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "jonathan-reply-0-neutral",
+      "guest": "jonathan",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        }
+      ],
+      "stateHash": "6a4e10784f9a3dd567f2d1951821152f293657cc32f172403b6e17f3d89b2954",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jonathan-reply-0-mine",
+      "guest": "jonathan",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -6,
+      "roleId": "design",
+      "seed": "e36-mchat-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        }
+      ],
+      "stateHash": "fa90846af001c6b75d26604004947b1fc4892377faca9bfdf1664bfde345ec4d",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "jonathan-reply-1-warm",
+      "guest": "jonathan",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        }
+      ],
+      "stateHash": "a38a54581c77569a4bf877671801dc2a002342da2e822367b1c20d0b8b19aace",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "jonathan-reply-1-neutral",
+      "guest": "jonathan",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        }
+      ],
+      "stateHash": "9949ea86f065e97334dd3788538937c79278ed207c2e2474ca118f5625829d9b",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "jonathan-reply-1-mine",
+      "guest": "jonathan",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -8,
+      "roleId": "design",
+      "seed": "e36-mchat-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        }
+      ],
+      "stateHash": "5aef76f10251728b0f5b2c66fdac6250c9f13209c6c1e828f6396ce25d395c2e",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "owen-reply-0-warm",
+      "guest": "owen",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        }
+      ],
+      "stateHash": "15729d6ae8bac1733c33ecc594c67eccc3ce9a4548ae3f92398bed985a5f6864",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "owen-reply-0-neutral",
+      "guest": "owen",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        }
+      ],
+      "stateHash": "53bb089cfc2d7c226c24b209b178a0f7cfb9c8a7ea33514e9bb24f28e50e381e",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "owen-reply-0-mine",
+      "guest": "owen",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        }
+      ],
+      "stateHash": "37100b8e6ff122dbd26c184a5b219fc33ef5e832a8f376f08216e351a3a073da",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "owen-reply-1-warm",
+      "guest": "owen",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "design",
+      "seed": "e36-mchat-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 1
+        }
+      ],
+      "stateHash": "02b92c57bbf4d5b65381f1e4a371c3295815eeb97299b55ad2e801992848727c",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "owen-reply-1-neutral",
+      "guest": "owen",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 1
+        }
+      ],
+      "stateHash": "1fd4d8e17d49b5026ea5dda504f0603d89e8fc1a9da713678cf727a5d4fc8c4a",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "owen-reply-1-mine",
+      "guest": "owen",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -9,
+      "roleId": "ai",
+      "seed": "e36-mchat-2p",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 1
+        }
+      ],
+      "stateHash": "e06fa5de9f5dd07273ca1a9c45e22230e69ec16cc57b1a38f5caedc99dce5032",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "sam-reply-0-warm",
+      "guest": "sam",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        }
+      ],
+      "stateHash": "7971e7da4c09a3b92007e58f9d5b80adc399fb962d3bc6ba8568ce81aede86f5",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "sam-reply-0-neutral",
+      "guest": "sam",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        }
+      ],
+      "stateHash": "80222125f8dc66f4dc11b89b1e8b4bba90e9da4d17bf363d1176030a9a9dc65f",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "sam-reply-0-mine",
+      "guest": "sam",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -7,
+      "roleId": "design",
+      "seed": "e36-mchat-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        }
+      ],
+      "stateHash": "8e9d52affc62603282fa5302c4c31cba71195afc790abe15a1ecfa9e8e884297",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "sam-reply-1-warm",
+      "guest": "sam",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 1
+        }
+      ],
+      "stateHash": "ff910178bf1ea962dca0418d4ac568bbb38599ed05bd7dbf3007973d508e5667",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "sam-reply-1-neutral",
+      "guest": "sam",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "ai",
+      "seed": "e36-mchat-d",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 1
+        }
+      ],
+      "stateHash": "9759dd53b0904167264fc7315053afbb123337080f429c494c6a34de40e1c9ce",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "sam-reply-1-mine",
+      "guest": "sam",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -9,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 1
+        }
+      ],
+      "stateHash": "5fbef100bdf11a570266f6607cc5e1075f4b6094e736409debd8ab841441eccb",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "cindy-reply-0-warm",
+      "guest": "cindy",
+      "replyIndex": 0,
+      "reaction": "warm",
+      "affinityDelta": 8,
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        }
+      ],
+      "stateHash": "0575822d732bc6fae6e965a99ff0aaa496b5ab3368ec733357fd68d108d1d865",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "cindy-reply-0-neutral",
+      "guest": "cindy",
+      "replyIndex": 0,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        }
+      ],
+      "stateHash": "b8f9f3cf9768208623a726968dd547d2a9519d97b83a0ed4742a3138a00c4e92",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "cindy-reply-0-mine",
+      "guest": "cindy",
+      "replyIndex": 0,
+      "reaction": "mine",
+      "affinityDelta": -6,
+      "roleId": "design",
+      "seed": "e36-mchat-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        }
+      ],
+      "stateHash": "39acf9f183826a03e0e349c758cb2296d6695ab918502d97dbb0503c571149ed",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    },
+    {
+      "id": "cindy-reply-1-warm",
+      "guest": "cindy",
+      "replyIndex": 1,
+      "reaction": "warm",
+      "affinityDelta": 9,
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 1
+        }
+      ],
+      "stateHash": "aacb53ccfe4268fb7805d6c04f6efeb215cc8f86c49756d9422d492168effe51",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-system"
+    },
+    {
+      "id": "cindy-reply-1-neutral",
+      "guest": "cindy",
+      "replyIndex": 1,
+      "reaction": "neutral",
+      "affinityDelta": 0,
+      "roleId": "product",
+      "seed": "e36-mchat-9",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 1
+        }
+      ],
+      "stateHash": "157fc573e65cae910ace7d37ad6e308240a6b911b3c22df85c405469d444f297",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-product"
+    },
+    {
+      "id": "cindy-reply-1-mine",
+      "guest": "cindy",
+      "replyIndex": 1,
+      "reaction": "mine",
+      "affinityDelta": -8,
+      "roleId": "design",
+      "seed": "e36-mchat-a",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 1
+        }
+      ],
+      "stateHash": "e1bcce74238f33859d0718886b8b296e2bc22a4e30a0c92c44529e841817a179",
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-design"
+    }
+  ],
+  "refusals": [
+    {
+      "id": "wing-declined",
+      "guest": "wing",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        }
+      ],
+      "stateHash": "85b02a8d2b722f7cbedfd712dde928ec8f3e3ec3a5f0fdc17d57a349fbf518dc"
+    },
+    {
+      "id": "spencer-declined",
+      "guest": "spencer",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        }
+      ],
+      "stateHash": "62d878682f996280be4a07a596a132c529ca943751974b43bea69c839adeb207"
+    },
+    {
+      "id": "erich-declined",
+      "guest": "erich",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        }
+      ],
+      "stateHash": "bcb150cbedbfb98f07230c85f2d4e44967a5da2293b32a6d0b6a629062824abd"
+    },
+    {
+      "id": "sonny-declined",
+      "guest": "sonny",
+      "roleId": "sales",
+      "seed": "e36-mchat-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        }
+      ],
+      "stateHash": "c9f6754554c9b1f93c6f617fd786b3f492a3556d95ef044f9948c9b063022f66"
+    },
+    {
+      "id": "jenjen-declined",
+      "guest": "jenjen",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        }
+      ],
+      "stateHash": "85fdf2c78405ed9c5b379c6573c18b34564afc1c32a28676d19daeb7a7607aee"
+    },
+    {
+      "id": "rick-declined",
+      "guest": "rick",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        }
+      ],
+      "stateHash": "15b6758a8d22bc7639c824f5103477319c49f35c0ae2f1deece1e38f2642e295"
+    },
+    {
+      "id": "kind-declined",
+      "guest": "kind",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        }
+      ],
+      "stateHash": "6cc28e96535112424689dd5b1848724642796ebd5ac11ea4c0dbb0d9207a5d8b"
+    },
+    {
+      "id": "hope-declined",
+      "guest": "hope",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        }
+      ],
+      "stateHash": "b9ce3e8cdd6639ab0abc40004b29d6a165ec3cfbd8c8df35debd1794a81ca539"
+    },
+    {
+      "id": "jack-declined",
+      "guest": "jack",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        }
+      ],
+      "stateHash": "a283f67c419c3ecd48c554c41896ce48d034d647fd5aea8e443bb3624b0363a3"
+    },
+    {
+      "id": "meimei-declined",
+      "guest": "meimei",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        }
+      ],
+      "stateHash": "e995610eb166bedee108e19a424813a8e032fb476b03e8590bd251b53a8c85e1"
+    },
+    {
+      "id": "helen-declined",
+      "guest": "helen",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        }
+      ],
+      "stateHash": "bae09b939e1541e68b1f7d5287a00f0a946d2f5563d76624b6678be3ed22b9b7"
+    },
+    {
+      "id": "sophie-declined",
+      "guest": "sophie",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        }
+      ],
+      "stateHash": "8f549bacc67f39411ca7fc59fdba32c5ad9fedd6350f3c15185def6bf6468a59"
+    },
+    {
+      "id": "jonathan-declined",
+      "guest": "jonathan",
+      "roleId": "sales",
+      "seed": "e36-mchat-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        }
+      ],
+      "stateHash": "fa073a02e73b1ce1b9d319d3b865836a29f74c32d7b6f7e786d34d225d042ffc"
+    },
+    {
+      "id": "owen-declined",
+      "guest": "owen",
+      "roleId": "system",
+      "seed": "e36-mchat-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        }
+      ],
+      "stateHash": "0156905af1834bb774665cfa1964fe2529c6c6348d1a734070edce838d68932d"
+    },
+    {
+      "id": "sam-declined",
+      "guest": "sam",
+      "roleId": "sales",
+      "seed": "e36-mchat-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        }
+      ],
+      "stateHash": "1246fc9dfd5131651110e34c72eafcf7690d342670d57b3dc67e75aab7e96529"
+    },
+    {
+      "id": "cindy-declined",
+      "guest": "cindy",
+      "roleId": "sales",
+      "seed": "e36-mchat-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        }
+      ],
+      "stateHash": "ae4d46d44f8517fe5075f2312ed093100222cd2706e81602ef192d3859cae233"
+    }
+  ]
+}
