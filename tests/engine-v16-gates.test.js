@@ -14,7 +14,7 @@ function candidate(roleId='system',rank=2){
 const cohort=(run,prefix)=>({...run,seed:`${prefix}-balanced-career`});
 
 test('e16 high-rank checks restore the e12 caps for all roles without rewriting e15 balance',()=>{
- for(const role of ROLES)for(const rank of [2,3]){
+ for(const role of ROLES.filter(role=>(role.minRules||1)<28))for(const rank of [2,3]){
   const run=candidate(role.id,rank),modern=getCareerReview(run),balanced=getCareerReview(cohort(run,'e12')),published=getCareerReview(cohort(run,'e15'));
   for(const index of [0,1]){
    assert.equal(modern.choices[index].available,true,`${role.id}/${rank}/${index}`);

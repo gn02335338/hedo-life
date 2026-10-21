@@ -1,8 +1,9 @@
 import { writeFileSync } from 'node:fs';
-import { ROLES } from '../dist/roles.js';
+import { ROLES as ALL_ROLES } from '../dist/roles.js';
 import { EVENTS } from '../dist/events.js';
 import { getEvent, applyChoice, canRequestRage, requestRage, getRageTargets, replayRun, validRun } from '../dist/engine.js';
 import { simulate, replayRoute } from '../tests/find-routes-v3.mjs';
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=23);
 
 const events = EVENTS.filter(event => event.minRules === 23);
 if (events.length !== 20) throw new Error('Expected all twenty e23 scenes before generating witnesses');

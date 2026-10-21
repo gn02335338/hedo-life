@@ -35,7 +35,7 @@ test('wealth planning requires earned work days and exact cash thresholds; menus
 
 test('the 36 new endings are naturally reachable for every chosen profession and retain valid complete save boundaries',()=>{
  assert.equal(endings.length,36);assert.equal(new Set(endings.map(route=>route.id)).size,36);
- assert.deepEqual(new Set(endings.map(route=>route.id)),new Set(ROLES.flatMap(role=>families.map(family=>`${family}-${role.id}`))));
+ assert.deepEqual(new Set(endings.map(route=>route.id)),new Set(ROLES.filter(role=>(role.minRules||1)<=27).flatMap(role=>families.map(family=>`${family}-${role.id}`))));
  assert.ok(ENDINGS.length>=377);assert.deepEqual(new Set(WEALTH_EVENTS_V27),new Set(['wealth-plan','wealth-startup','wealth-retire']));
  let boundaries=0;
  for(const route of endings){

@@ -59,7 +59,7 @@ test('twenty e22 chronicle scenes use known characters and sources, with authore
 });
 
 test('e22 starts with the eight-rank career and retains ability, interruption and personnel state',()=>{
- for(const role of ROLES)for(let index=0;index<8;index++){
+ for(const role of ROLES.filter(role=>(role.minRules||1)<=22))for(let index=0;index<8;index++){
   const run=createRun(role.id,`e22-inherit-${role.id}-${index}`);
   assert.equal(careerMaxRank(run),7);
   assert.equal(run.rank,role.id==='executive'?5:run.assignment==='assistant'?0:1);
@@ -133,10 +133,10 @@ test('only committed Helen dialogue records an encounter; ordinary work is neith
  const recorded=structuredClone(pending);deriveCharacterStats(pending);characterAffinity(pending,'helen');assert.deepEqual(pending,recorded);
 });
 
-test('the current e27 ending report remains complete across all occupations',()=>{
+test('the current e28 ending report remains complete across all occupations',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
  assert.equal(report.complete,true);assert.equal(report.found,ENDINGS.length);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>route.seed.startsWith('e27-')));
+ assert.ok(report.routes.every(route=>route.seed.startsWith('e28-')));
  for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id),role.id);
 });
 

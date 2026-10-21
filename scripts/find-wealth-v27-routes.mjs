@@ -1,8 +1,9 @@
 import {writeFileSync} from 'node:fs';
-import {ROLES} from '../dist/roles.js';
+import {ROLES as ALL_ROLES} from '../dist/roles.js';
 import {getEvent,applyChoice,advance,requestExit,replayRun,validRun} from '../dist/engine.js';
 import {wealthEligibilityV27} from '../dist/wealth-exit-v27.js';
 import {simulate,replayRoute} from '../tests/find-routes-v3.mjs';
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=27);
 
 // Every prefix below comes from a fresh life and canonical public actions. A
 // menu may be inspected or declined, but neither resources nor RNG are injected.

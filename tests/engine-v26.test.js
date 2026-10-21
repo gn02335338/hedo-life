@@ -69,7 +69,7 @@ test('every quiz response has a natural canonical prefix, valid JSON save bounda
 
 test('all actual occupations retain the eight-rank career and inherited interventions while new scenes follow the actual job',()=>{
  const witnesses=routes.filter(route=>route.id.startsWith('role-'));
- assert.deepEqual(witnesses.map(route=>route.actualRoleId).sort(),ROLES.map(role=>role.id).sort());
+ assert.deepEqual(witnesses.map(route=>route.actualRoleId).sort(),ROLES.filter(role=>(role.minRules||1)<=26).map(role=>role.id).sort());
  for(const route of witnesses){
   const initial=createRun(route.roleId,route.seed),run=replayRun(route.roleId,route.seed,route.actions.slice(0,-1));
   assert.equal(careerMaxRank(initial),7);assert.equal(initial.raiseContext,null);assert.equal(initial.personnelPending,null);

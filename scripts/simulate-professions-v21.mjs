@@ -1,8 +1,9 @@
 import {mkdirSync,writeFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
-import {ROLES} from '../dist/roles.js';
+import {ROLES as ALL_ROLES} from '../dist/roles.js';
 import {EVENTS} from '../dist/events.js';
 import {createRun,getEvent,applyChoice,advance,canRequestBreak,requestBreak,canRequestCareer,requestCareer,replayRun,validRun} from '../dist/engine.js';
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=21);
 
 // Decisions use the visible event/choice text and current meters only. Outcome
 // inspection is reserved for reporting after a choice has been committed.

@@ -12,7 +12,9 @@ const count=Number(args.runs??500),prefix=args.prefix||'e9',label=args.label||`$
 if(!Number.isSafeInteger(count)||count<1)throw Error('--runs must be a positive integer');
 const dist=resolve(args.dist||'dist');
 const out=resolve(args.out||'artifacts/balance');mkdirSync(out,{recursive:true});
-const {ROLES}=await import(pathToFileURL(resolve(dist,'roles.js')));
+const {ROLES:ALL_ROLES}=await import(pathToFileURL(resolve(dist,'roles.js')));
+const cohort=Number(/^e(\d+)(?:-|$)/.exec(prefix)?.[1]||1);
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=cohort);
 const selectedRoles=ROLES;
 const {createRun,getEvent,applyChoice,advance,requestBreak,canRequestBreak,validRun,replayRun}=await import(pathToFileURL(resolve(dist,'engine.js')));
 const policies=['expert-merit','expert-politics'];

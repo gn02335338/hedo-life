@@ -18,7 +18,7 @@ const scene=(id,roles)=>({id,roles,weight:1});
 
 test('sixty new single-profession scenes prioritize sales, BD and design with authored absurd choices',()=>{
  const events=newEvents();assert.equal(events.length,60);assert.equal(EVENTS.filter(event=>(event.minRules||1)<=21).length,283);
- for(const role of ROLES)assert.equal(events.filter(event=>event.roles[0]===role.id).length,['sales','bd','design'].includes(role.id)?12:4,role.id);
+ for(const role of ROLES.filter(role=>(role.minRules||1)<=21))assert.equal(events.filter(event=>event.roles[0]===role.id).length,['sales','bd','design'].includes(role.id)?12:4,role.id);
  assert.equal(new Set(events.map(event=>event.id)).size,60);
  for(const event of events){
   assert.equal(event.roles.length,1);assert.ok(ROLE_MAP[event.roles[0]]);assert.ok(PERSONAS[event.speaker]);
@@ -75,7 +75,7 @@ test('e21 inherits full careers, ability tradeoffs, wild choices, raises, HR rul
 });
 
 test('natural e21 first work scenes belong to the current job, while every saved step replays canonically',()=>{
- for(const role of ROLES)for(let index=0;index<12;index++){
+ for(const role of ROLES.filter(role=>(role.minRules||1)<=21))for(let index=0;index<12;index++){
   let run=createRun(role.id,`e21-first-work-${role.id}-${index}`);
   for(let step=0;step<8&&getEvent(run)?.kind!=='daily'&&!run.completed;step++){
    const event=getEvent(run);const choice=event.id==='onboarding'?0:event.id.startsWith('career-duty-')?0:event.choices.findIndex(choice=>choice.available!==false);
@@ -87,9 +87,9 @@ test('natural e21 first work scenes belong to the current job, while every saved
  }
 });
 
-test('the latest complete report uses e27 and retains every profession and every ending',()=>{
+test('the latest complete report uses e28 and retains every profession and every ending',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
  assert.equal(report.complete,true);assert.equal(report.found,ENDINGS.length);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>route.seed.startsWith('e27-')));
- for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id&&route.actions.some(action=>newEvents().some(event=>event.id===action.eventId))),role.id);
+ assert.ok(report.routes.every(route=>route.seed.startsWith('e28-')));
+ for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id&&route.actions.some(action=>EVENTS.some(event=>event.id===action.eventId&&event.roles?.length===1))),role.id);
 });

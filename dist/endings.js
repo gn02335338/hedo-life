@@ -5,6 +5,7 @@ import { RAGE_FAMILIES, RAGE_ENDINGS } from './endings-rage.js';
 import { EXTRA_CAREER_FAMILIES_V17, EXTRA_CAREER_ENDINGS_V17 } from './endings-career-v17.js';
 import { PERSONNEL_FAMILIES, PERSONNEL_ENDINGS } from './endings-personnel-v20.js';
 import { WEALTH_FAMILIES_V27, WEALTH_ENDINGS_V27 } from './endings-wealth-v27.js';
+import { backofficeEndingsV28 } from './endings-backoffice-v28.js';
 export const FAMILIES = [
   { id: 'fired_signed', label: '自願離職陷阱', type: 'bad', description: '公司要你走，紙上卻寫成你想走。' },
   { id: 'fired_refused', label: '拒簽離場', type: 'normal', description: '老闆收走座位，沒收走你說不的權利。' },
@@ -242,4 +243,4 @@ export const ENDINGS = [...FAMILIES.flatMap((family) =>
     hint: family.id === 'assistant' && roleId === 'executive' ? '應徵空降主管；第4回合起老闆心情低於45時，可選擇以名義主管的經歷離場。' : `應徵${ROLE_NAMES[roleId]}；${FAMILY_DETAILS[family.id][1]}。`,
     symbol: FAMILY_DETAILS[family.id][0],
   })),
-),...CAREER_ENDINGS,...STORY_ENDINGS,...RAGE_ENDINGS,...EXTRA_CAREER_ENDINGS_V17,...PERSONNEL_ENDINGS,...WEALTH_ENDINGS_V27];
+),...CAREER_ENDINGS,...STORY_ENDINGS,...RAGE_ENDINGS,...EXTRA_CAREER_ENDINGS_V17,...PERSONNEL_ENDINGS,...WEALTH_ENDINGS_V27,...backofficeEndingsV28(FAMILIES)];

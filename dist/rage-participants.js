@@ -24,6 +24,13 @@ const GROUPS = Object.freeze({
   'quiz26-mantis-memo': Object.freeze(['jonathan', 'wing']),
   'quiz26-api-points': Object.freeze(['jack', 'wing']),
   'q26-calendar-operator': Object.freeze(['jack', 'wing']),
+  'accounting28-final-form': Object.freeze(['sophie', 'sonny']),
+  'hr28-coffee-jd': Object.freeze(['wing', 'hope']),
+  'hr28-onboarding-notice': Object.freeze(['wing', 'sonny']),
+  'hr28-attendance-access': Object.freeze(['jack', 'meimei']),
+  'admin28-extension-grandeur': Object.freeze(['wing', 'jenjen', 'erich', 'sonny']),
+  'admin28-supply-minimum': Object.freeze(['wing', 'jenjen']),
+  'admin28-seat-key': Object.freeze(['sophie', 'sonny']),
 });
 const EXIT_TEAM = Object.freeze(['erich', 'jenjen', 'sonny']);
 

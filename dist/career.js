@@ -1,4 +1,5 @@
 import { eligibleStoryEndings } from './story-career.js';
+import {BACKOFFICE_LADDERS_V28} from './roles-v28.js';
 // The e8 career track is separate from the published role ladders.
 export const CAREER_FAMILIES=['career_staff','career_deputy','career_manager','career_director','career_chief'];
 export const CAREER_LEVELS=[
@@ -9,6 +10,7 @@ export const CAREER_LEVELS=[
  {rank:4,label:'C-level／副總',payMultiplier:2.7,responsibility:'列席高層會議，也要為簽下去的決定負責。',pressure:{energy:-2,mood:-2}}
 ];
 export const CAREER_LADDERS={
+ ...Object.fromEntries(Object.entries(BACKOFFICE_LADDERS_V28).map(([id,titles])=>[id,[titles[1],...titles.slice(4)]])),
  system:['系統工程師','系統工程副理','系統工程經理','技術總監','技術長 CTO'],
  ai:['AI工程師','AI研發副理','AI研發經理','AI研發總監','人工智慧長 CAIO'],
  project:['專案經理','專案管理副理','專案管理經理','專案管理總監','營運副總 COO'],

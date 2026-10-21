@@ -1,7 +1,8 @@
 import { writeFileSync } from 'node:fs';
-import { ROLES } from '../dist/roles.js';
+import { ROLES as ALL_ROLES } from '../dist/roles.js';
 import { createRun, getEvent, applyChoice, advance, requestBreak, requestCareer, requestRaise, requestExit, requestRage, canRequestRage, replayRun, validRun } from '../dist/engine.js';
 import { simulate } from '../tests/find-routes-v3.mjs';
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=24);
 
 const found = new Map();
 const routeOf = (id, run, extra = {}) => ({ id, roleId: run.roleId, seed: run.seed, actions: run.actions, expected: {

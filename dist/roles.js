@@ -1,4 +1,5 @@
-export const ROLES = [
+import {BACKOFFICE_ROLES_V28} from './roles-v28.js';
+export const LEGACY_ROLES = [
   {id:'system',name:'系統工程師',symbol:'系',subtitle:'上雲之前，先修他的印表機。',description:'資料庫、API、主機、Wi-Fi。只要插電，原則上都是你的範圍。',stats:{energy:72,cash:60,trust:55,dream:48,boss:60,mood:72,skill:68,slack:35,lick:25},pay:52,payRange:[42,78],assistantTitle:'助理工程師',swapChance:.15,assistantChance:.2,swapTo:'project',ladder:['系統工程師','資深系統工程師','系統工程副理','系統工程經理','技術總監']},
   {id:'ai',name:'AI工程師',symbol:'AI',subtitle:'模型還沒訓練，你先被訓話。',description:'JD 寫 LLM、RAG、模型部署。入職之後才知道，AI 是「啊，你順便」。',stats:{energy:70,cash:60,trust:48,dream:80,boss:58,mood:78,skill:70,slack:28,lick:22},pay:58,payRange:[50,95],assistantTitle:'助理工程師',swapChance:.75,assistantChance:.15,swapTo:'system',ladder:['AI工程師','資深AI工程師','人工智慧工程副理','AI研發經理','人工智慧總監']},
   {id:'project',name:'專案經理',symbol:'專',subtitle:'時程是你的，插單是他的。',description:'把「快好了」翻譯成日期，再把不存在的工期塞進行事曆。會議比需求完整。',stats:{energy:65,cash:60,trust:70,dream:50,boss:63,mood:68,skill:60,slack:38,lick:40},pay:50,payRange:[42,75],assistantTitle:'專案助理',swapChance:.48,assistantChance:.12,swapTo:'system',assignmentTable:[{actualRoleId:'system',assignment:'assistant',weight:.16},{actualRoleId:'product',assignment:'swapped',weight:.12},{actualRoleId:'sales',assignment:'swapped',weight:.10},{actualRoleId:'sales',assignment:'assistant',weight:.12},{actualRoleId:'design',assignment:'swapped',weight:.10}],ladder:['專案經理','資深專案經理','專案副理','專案管理主管','營運總監']},
@@ -9,5 +10,6 @@ export const ROLES = [
   {id:'mis',name:'MIS工程師',symbol:'MIS',subtitle:'帳號出問題，第一個叫你。',description:'門禁、電腦、網路、帳號和印表機。平常是資訊救火隊，人事異動時突然成為離場最後一關。',stats:{energy:74,cash:60,trust:58,dream:42,boss:60,mood:73,skill:64,slack:40,lick:24},pay:48,payRange:[36,68],assistantTitle:'助理工程師',swapChance:0,assistantChance:.35,swapTo:'system',assignmentTable:[{actualRoleId:'system',assignment:'assistant',weight:.35}],ladder:['MIS工程師','資深MIS工程師','資訊副理','資訊經理','資訊長']},
   {id:'executive',name:'空降主管',symbol:'降',subtitle:'蜜月期，比試用期短。',description:'第一天說你帶來新氣象，第三天問你憑什麼改。你要管理的人，可能比你更能管理老闆。',stats:{energy:68,cash:82,trust:35,dream:65,boss:82,mood:76,skill:74,slack:25,lick:30},pay:150,payRange:[105,220],assistantTitle:'名義主管',swapChance:0,assistantChance:0,swapTo:'executive',ladder:['空降主管','資深空降主管','事業部副總','營運長','執行副總']}
 ];
+export const ROLES = [...LEGACY_ROLES,...BACKOFFICE_ROLES_V28];
 export const ROLE_MAP = Object.fromEntries(ROLES.map(r=>[r.id,r]));
 export const ROLE_ORDER = ROLES.map(r=>r.id);

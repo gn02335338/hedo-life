@@ -85,7 +85,7 @@ for (const mobile of [false, true]) {
     assert.match(html, slogan);
     assert.ok(html.indexOf('class="recruitment-slogan"') < html.indexOf('class="role-grid"'));
     assert.equal([...html.matchAll(/class="recruitment-slogan"/g)].length, 1);
-    assert.equal([...html.matchAll(/data-role="/g)].length, 9);
+    assert.equal([...html.matchAll(/data-role="/g)].length, roles.ROLES.length);
     assert.match(html, /data-role="random"/);
     assert.doesNotMatch(html, /data-role="executive"|data-choice=|outcome-ledger|delta-chip|\d+%/);
     assert.equal(JSON.stringify(app.state()), before, 'opening vacancies preserves the full RNG and replay state');

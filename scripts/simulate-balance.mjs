@@ -9,7 +9,9 @@ const args=Object.fromEntries(process.argv.slice(2).reduce((a,x,i,v)=>{if(x.star
 const count=Number(args.runs)||1000,prefix=args.prefix||'e9',label=args.label||prefix;
 const dist=resolve(args.dist||'dist');
 const out=resolve(args.out||'artifacts/balance');mkdirSync(out,{recursive:true});
-const {ROLES}=await import(pathToFileURL(resolve(dist,'roles.js')));
+const {ROLES:ALL_ROLES}=await import(pathToFileURL(resolve(dist,'roles.js')));
+const cohort=Number(/^e(\d+)(?:-|$)/.exec(prefix)?.[1]||1);
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=cohort);
 const selectedRoles=args.roles?ROLES.filter(r=>args.roles.split(',').includes(r.id)):ROLES;
 const {createRun,getEvent,applyChoice,advance,requestBreak,canRequestBreak,validRun,replayRun}=await import(pathToFileURL(resolve(dist,'engine.js')));
 const policies=['random','work','politics','balanced'];

@@ -1,8 +1,9 @@
 import {writeFileSync} from 'node:fs';
-import {ROLES} from '../dist/roles.js';
+import {ROLES as ALL_ROLES} from '../dist/roles.js';
 import {EVENTS} from '../dist/events.js';
 import {getEvent,applyChoice,advance,requestExit,replayRun,validRun} from '../dist/engine.js';
 import {simulate,replayRoute} from '../tests/find-routes-v3.mjs';
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=26);
 
 // Witnesses come only from ordinary createRun/choice/request actions. Replaying
 // complete games also lets this finder inspect every real saved boundary.

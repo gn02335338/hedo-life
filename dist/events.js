@@ -14,6 +14,7 @@ import { QUIZ_EVENTS_V26_B } from './events-quiz26-b.js';
 import { COMMERCIAL_EVENTS_V21 } from './events-commercial-v21.js';
 import { DESIGN_EVENTS_V21 } from './events-design-v21.js';
 import { PROFESSION_EVENTS_V21 } from './events-professions-v21.js';
+import { BACKOFFICE_EVENTS_V28 } from './events-backoffice-v28.js';
 const choice = (text, detail, result, delta, flags = []) => ({ text, detail, result, delta, flags });
 
 export const EVENTS = [
@@ -1285,3 +1286,6 @@ EVENTS.push(...COLLEAGUE_EVENTS_V23);
 
 // Verified quiz recollections become original scenes only in e26 and later lives.
 EVENTS.push(...QUIZ_EVENTS_V26_A, ...QUIZ_EVENTS_V26_B);
+
+// New backoffice occupations retain their own work; older pools stay frozen.
+EVENTS.push(...BACKOFFICE_EVENTS_V28);

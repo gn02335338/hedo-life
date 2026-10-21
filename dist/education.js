@@ -32,9 +32,14 @@ const SUBJECTS = [
  {name:'歷史',field:'humanities'}, {name:'視覺設計',field:'design'},
  {name:'機械工程',field:'stem'}, {name:'統計',field:'stem'}
 ];
-export function rollEducation(random) {
+const BACKOFFICE_SUBJECTS_V28=[
+ {name:'財務金融',field:'business'}, {name:'會計',field:'business'},
+ {name:'人力資源管理',field:'business'}, {name:'公共行政',field:'humanities'}
+];
+export function rollEducation(random,rules=1) {
  const school=SCHOOLS[Math.floor(random()*SCHOOLS.length)];
- const subject=SUBJECTS[Math.floor(random()*SUBJECTS.length)];
+ const subjects=rules>=28?[...SUBJECTS,...BACKOFFICE_SUBJECTS_V28]:SUBJECTS;
+ const subject=subjects[Math.floor(random()*subjects.length)];
  const degreeRoll=random();
  const degree=degreeRoll<.68?'學士':degreeRoll<.94?'碩士':'EMBA';
  const field=degree==='EMBA'?'business':subject.field;

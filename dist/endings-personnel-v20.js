@@ -1,11 +1,11 @@
-import {ROLES} from './roles.js';
+import {LEGACY_ROLES} from './roles.js';
 export const PERSONNEL_FAMILIES=[
  {id:'cold_storage',label:'三樓的下一站',type:'good',description:'工作被收走，自己的下一步沒有一起交出去。'},
  {id:'mediation_settled',label:'協商成文',type:'normal',description:'條件逐項寫下來，沒有靠一句好聚好散帶過。'},
  {id:'mediation_pending',label:'爭議仍在',type:'normal',description:'本次未成立，留下紀錄與自己的選擇。'}
 ];
 const tools={system:'系統維護與交付紀錄',ai:'能實際執行的模型與實驗',project:'完整的時程與交接清單',product:'驗證過的需求與判斷',design:'作品集與修改依據',bd:'自己經營的合作關係',sales:'核對過的客戶與回款紀錄',mis:'測試過的備份與工作紀錄',executive:'親自做過的決策與交付'};
-export const PERSONNEL_ENDINGS=PERSONNEL_FAMILIES.flatMap(family=>ROLES.map(role=>({
+export const PERSONNEL_ENDINGS=PERSONNEL_FAMILIES.flatMap(family=>LEGACY_ROLES.map(role=>({
  id:`${family.id}-${role.id}`,family:family.id,roleId:role.id,type:family.type,
  title:family.id==='cold_storage'?`三樓沒有${role.name}的工作，外面還有。`:family.id==='mediation_settled'?`${role.name}的條件，這次寫清楚。`:`${role.name}的這一頁，先留未成立。`,
  subtitle:family.description,symbol:family.id==='cold_storage'?'樓':family.id==='mediation_settled'?'議':'記',

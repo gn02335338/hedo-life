@@ -28,17 +28,17 @@ const checkOutcome=(eventId,index,extras={},wanted='promote')=>{
  throw new Error(`No ${wanted} check result`);
 };
 
-test('nine careers retain the published 144 endings and expand to a 377-card catalog with eight career stages',()=>{
- assert.equal(VERSION,3);assert.equal(ROLES.length,9);assert.equal(STAT_KEYS.length,9);
+test('thirteen careers retain the published 377 endings and expand to a 545-card catalog with eight career stages',()=>{
+ assert.equal(VERSION,3);assert.equal(ROLES.length,13);assert.equal(STAT_KEYS.length,9);
  assert.equal(FAMILIES.slice(0,16).length,16);assert.equal(ENDINGS.slice(0,144).length,144);
- assert.equal(FAMILIES.length,42);assert.equal(ENDINGS.length,377);
+ assert.equal(FAMILIES.length,42);assert.equal(ENDINGS.length,545);
  for(const list of [ROLES,EVENTS,FANTASY_EVENTS,ENDINGS])assert.equal(new Set(list.map(x=>x.id)).size,list.length);
- assert.equal(EVENTS.filter(event=>(event.minRules||1)<26).length,323);assert.equal(EVENTS.length,323+EVENTS.filter(event=>event.minRules===26).length);assert.equal(FANTASY_EVENTS.length,4);
+ assert.equal(EVENTS.filter(event=>(event.minRules||1)<26).length,323);assert.equal(EVENTS.length,323+EVENTS.filter(event=>event.minRules>=26).length);assert.equal(FANTASY_EVENTS.length,4);
  for(const role of ROLES){
   assert.deepEqual(Object.keys(role.stats).sort(),[...STAT_KEYS].sort());
-  assert.equal(role.ladder.length,5);assert.ok(role.assistantTitle);
+  assert.equal(role.ladder.length,(role.minRules||1)<28?5:8);assert.ok(role.assistantTitle);
   assert.ok(role.payRange[1]>role.payRange[0]);
-  assert.equal(ENDINGS.slice(0,144).filter(e=>e.roleId===role.id).length,16);
+  assert.equal(ENDINGS.slice(0,144).filter(e=>e.roleId===role.id).length,(role.minRules||1)<28?16:0);
   assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,role.id==='executive'?41:42);
  }
  assert.equal(new Set(ENDINGS.map(e=>e.title)).size,ENDINGS.length);
@@ -73,7 +73,7 @@ test('all careers remain accessible regardless of education; bias belongs only t
  const ntuEmba=findRun('system',r=>r.education.schoolId==='ntu'&&r.education.degree==='EMBA');
  const privateArts=findRun('system',r=>r.education.sector==='private'&&r.education.field==='humanities');
  assert.ok(ntu.education.wingBias>0);assert.ok(ntuEmba.education.wingBias<0);assert.ok(privateArts.education.wingBias<0);
- for(const role of ROLES){const run=createRun(role.id,privateArts.seed);assert.equal(run.roleId,role.id);assert.equal(run.education.school,privateArts.education.school);}
+ for(const role of ROLES.filter(role=>(role.minRules||1)<28)){const run=createRun(role.id,privateArts.seed);assert.equal(run.roleId,role.id);assert.equal(run.education.school,privateArts.education.school);}
  assert.equal(ntu.stats.boss,ROLE_MAP.system.stats.boss+ntu.education.wingBias);
 });
 

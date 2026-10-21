@@ -12,7 +12,7 @@ export function wealthEligibilityV27(run){
  const history=Array.isArray(run?.history)?run.history:[];
  const completed=run?.pending?history.slice(0,-1):history;
  const workDays=completed.filter(row=>row.kind==='daily'||row.kind==='fantasy').length;
- const enabled=/^e27-/.test(run?.seed||'');
+ const enabled=/^e(?:27|28)-/.test(run?.seed||'');
  const startup=enabled&&run.stats.cash>=75&&workDays>=6;
  const retirement=enabled&&run.stats.cash>=90&&workDays>=10;
  return {startup,retirement,eligible:startup||retirement,workDays};
@@ -36,12 +36,16 @@ const studios={
  bd:'替小公司牽合作，把分潤、責任與退出條件談明白',
  sales:'經營自己能交付的商品，報價不再附送無限承諾',
  mis:'接小公司的資訊維護，夜間待命另外約定',
- executive:'找幾個願意一起做事的人，從有收入的小生意開始'
+ executive:'找幾個願意一起做事的人，從有收入的小生意開始',
+ finance:'替小團隊整理資金與付款規劃，先確認資料和服務範圍',
+ accounting:'整理小團隊的帳務流程，需要執業資格的部分找合格專業人士合作',
+ hr:'接範圍清楚的招募與人事流程案，追加服務重新談',
+ admin:'替小團隊整理採購與行政流程，把臨時交辦也算進工時'
 };
 
 export function getWealthEventV27(run){
  const eligibility=wealthEligibilityV27(run),s=run.stats;
- if(!/^e27-/.test(run.seed)||!WEALTH_EVENTS_V27.includes(run.eventId))throw new Error('Invalid wealth scene');
+ if(!/^e(?:27|28)-/.test(run.seed)||!WEALTH_EVENTS_V27.includes(run.eventId))throw new Error('Invalid wealth scene');
  if(run.eventId==='wealth-plan')return scene('wealth-plan','存款清單上，終於寫得到自己的名字。',
   `你把離職後的計畫攤開。目前存款 ${s.cash}，已完成 ${eligibility.workDays} 個工作回合。創業準備需存款至少 75、完成 6 個工作回合；退休安排需存款至少 90、完成 10 個工作回合。這些是這段人生的故事門檻。今天先選方向，後面還能回來想。`,[
    c('想做自己的生意，先看看要準備什麼。','你打開一張空白計畫表，第一欄寫的是自己想做什麼。還沒花錢，也還沒離職。',{},'wealthStart',{available:eligibility.startup}),

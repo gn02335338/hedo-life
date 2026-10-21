@@ -239,7 +239,7 @@ test('saved personnel state rejects malformed queues, impossible floor flags and
 
 test('published e20 routes retain every personnel family for every profession',()=>{
  const routes=fixtures('legacy-e20-routes');
- for(const family of ['cold_storage','mediation_settled','mediation_pending'])for(const role of ROLES){
+ for(const family of ['cold_storage','mediation_settled','mediation_pending'])for(const role of ROLES.filter(role=>(role.minRules||1)<=20)){
   const route=routes.find(item=>item.ending===`${family}-${role.id}`);assert.ok(route,`${family}-${role.id}`);
   assert.match(route.seed,/^e20-/);assert.equal(replayRun(route.roleId,route.seed,route.actions).endingId,route.ending);
  }

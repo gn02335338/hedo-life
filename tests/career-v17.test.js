@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {ROLE_MAP} from '../dist/roles.js';
 import {
  CAREER_FAMILIES_V17,CAREER_LEVELS_V17,CAREER_LADDERS_V17,
  careerTitleV17,careerInfoV17,careerSalaryV17,careerEndingAvailableV17,
@@ -10,15 +11,15 @@ import {
 
 const run=(rank=1,extras={})=>({seed:'e17-career-module',actualRoleId:'system',roleId:'system',assignment:rank===0?'assistant':'honest',rank,basePay:60,pay:60,turn:22,lastPromotion:0,eventId:'career-review',resumeEventId:null,pip:null,...extras,flags:{career_service:4,...extras.flags},stats:{skill:100,lick:100,boss:100,trust:100,mood:90,energy:90,...extras.stats}});
 
-test('e17 has eight real ranks in every role, with a professional track before management',()=>{
+test('current careers have eight real ranks in every role, with a professional track before management',()=>{
  assert.deepEqual(CAREER_LEVELS_V17.map(level=>level.rank),[0,1,2,3,4,5,6,7]);
  assert.deepEqual(CAREER_FAMILIES_V17,['career_assistant','career_staff','career_senior','career_principal','career_deputy','career_manager','career_director','career_chief']);
  assert.deepEqual(CAREER_LADDERS_V17.system,['助理工程師','工程師','資深工程師','主任工程師','工程副理','工程經理','工程總監','技術長 CTO']);
- assert.equal(Object.keys(CAREER_LADDERS_V17).length,9);
+ assert.equal(Object.keys(CAREER_LADDERS_V17).length,13);
  for(const [roleId,ladder] of Object.entries(CAREER_LADDERS_V17)){
   assert.equal(ladder.length,8);assert.equal(new Set(ladder).size,8);
   for(let rank=0;rank<8;rank++){
-   const current=run(rank,{actualRoleId:roleId});
+   const current=run(rank,{actualRoleId:roleId,roleId,seed:ROLE_MAP[roleId].minRules===28?'e28-career-module':'e17-career-module'});
    assert.equal(careerTitleV17(current),ladder[rank]);
    assert.equal(careerInfoV17(current).nextTitle,ladder[rank+1]||null);
    assert.equal(careerSalaryV17(current),Math.round(60*CAREER_LEVELS_V17[rank].payMultiplier));

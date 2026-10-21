@@ -50,7 +50,7 @@ function routeFor(ending){const route=report().routes.find(r=>r.ending===ending)
 test('e8 nine-role career ladders have five distinct stages while published role titles remain intact',()=>{
  assert.deepEqual(CAREER_LEVELS.map(x=>x.rank),[0,1,2,3,4]);
  assert.deepEqual(CAREER_FAMILIES,['career_staff','career_deputy','career_manager','career_director','career_chief']);
- for(const role of ROLES){
+ for(const role of ROLES.filter(role=>(role.minRules||1)<28)){
   assert.equal(CAREER_LADDERS[role.id].length,5);assert.equal(new Set(CAREER_LADDERS[role.id]).size,5);
   for(let rank=0;rank<5;rank++){
    const current=boundary(rank,{roleId:role.id,actualRoleId:role.id});assert.equal(jobTitle(current),CAREER_LADDERS[role.id][rank]);
@@ -246,7 +246,7 @@ test('published e11 fixtures retain complete states and every direct/JSON checkp
 });
 
 test('natural e13 witnesses prove every role can finish all five tiers and preserve saved replays',()=>{
- for(const role of ROLES)for(const family of CAREER_FAMILIES){
+ for(const role of ROLES.filter(role=>(role.minRules||1)<28))for(const family of CAREER_FAMILIES){
   const route=routeFor(`${family}-${role.id}`),run=replayRoute(route,state=>{assert.equal(validRun(copy(state)),true);assertRankContext(state);});
   assert.equal(run.endingId,`${family}-${role.id}`);assert.deepEqual(replayRun(run.roleId,run.seed,run.actions),run);
   assert.ok(run.actions.length<=160);

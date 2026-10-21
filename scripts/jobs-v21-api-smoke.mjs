@@ -3,9 +3,10 @@ import { randomBytes, randomUUID } from 'node:crypto';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { EVENTS } from '../dist/events.js';
-import { ROLES } from '../dist/roles.js';
+import { ROLES as ALL_ROLES } from '../dist/roles.js';
 import { replayRun, getEvent } from '../dist/engine.js';
 import { CHARACTER_IDS, CHARACTER_METRICS, deriveCharacterStats } from '../dist/character-stats.js';
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=21);
 
 const base = (process.env.API_BASE || 'http://127.0.0.1:4179').replace(/\/$/, '');
 const origin = new URL(base);
@@ -25,7 +26,7 @@ if (process.env.JOBS_WITNESS_FILE) {
 }
 const candidates = new Map(ROLES.map(role => [role.id, []]));
 for (const route of routes) {
-  if (!/^e(?:21|22|23|24|25|26|27)-/.test(route.seed||'') || !candidates.has(route.roleId) || !route.actions?.some(action => newEvents.has(action.eventId))) continue;
+  if (!/^e(?:21|22|23|24|25|26|27|28)-/.test(route.seed||'') || !candidates.has(route.roleId) || !route.actions?.some(action => newEvents.has(action.eventId))) continue;
   const run = replayRun(route.roleId, route.seed, route.actions);
   if (!run.completed) continue;
   const newRows = run.history.filter(row => row.choiceIndex >= 0 && row.kind === 'daily' && newEvents.has(row.eventId));

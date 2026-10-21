@@ -43,7 +43,7 @@ function replay(route,{saved=false,stopBeforeFirstRaise=false}={}){
 }
 
 test('natural raise witnesses cover every profession and all three initial responses without state injection',()=>{
- assert.deepEqual([...new Set(report.routes.filter(route=>route.id.startsWith('role-')).map(route=>route.roleId))].sort(),ROLES.map(role=>role.id).sort());
+ assert.deepEqual([...new Set(report.routes.filter(route=>route.id.startsWith('role-')).map(route=>route.roleId))].sort(),ROLES.filter(role=>(role.minRules||1)<=19).map(role=>role.id).sort());
  for(const id of ['offer','promise','fury']){
   const route=routeFor(`initial-${id}`),{run,trace}=replay(route,{saved:true});
   const opened=trace.find(item=>item.action.type==='raise');

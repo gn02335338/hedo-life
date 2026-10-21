@@ -1,6 +1,7 @@
 import { eligibleStoryEndings } from './story-career.js';
 import { getCareerDuty } from './career.js';
 import { applyPersonaCopy } from './persona.js';
+import { BACKOFFICE_LADDERS_V28 } from './roles-v28.js';
 
 // Only new e17 lives use these ranks. Published runs keep career.js unchanged.
 export const CAREER_MAX_RANK_V17=7;
@@ -17,6 +18,7 @@ export const CAREER_LEVELS_V17=[
  {rank:7,label:'C-level',payMultiplier:2.7,responsibility:'列席高層會議，也要為簽下去的決定負責。',pressure:{energy:-2,mood:-3}}
 ];
 export const CAREER_LADDERS_V17={
+ ...BACKOFFICE_LADDERS_V28,
  system:['助理工程師','工程師','資深工程師','主任工程師','工程副理','工程經理','工程總監','技術長 CTO'],
  ai:['助理工程師','AI工程師','資深AI工程師','主任AI工程師','AI工程副理','AI工程經理','AI工程總監','人工智慧長 CAIO'],
  project:['專案助理','專案經理','資深專案經理','主任專案經理','專案管理副理','專案管理經理','專案管理總監','營運長 COO'],
@@ -63,7 +65,7 @@ export function careerReadinessV17(run){
 }
 export function careerReviewWaitV17(run){return run.turn-run.lastPromotion>=(run.rank<=3?2:3)&&run.turn>=(run.flags.career_defer_until||0);}
 export function careerInvitationEligibleV17(run){
- return /^e(?:17|18|19|20|21|22|23|24|25|26|27)-/.test(run.seed)&&run.turn>=3&&run.turn<24&&run.rank<CAREER_MAX_RANK_V17&&!run.pip?.active&&careerReviewWaitV17(run)&&careerReadinessV17(run).ready&&getCareerReviewV17(run).choices.slice(0,2).some(choice=>choice.available!==false);
+ return /^e(?:17|18|19|20|21|22|23|24|25|26|27|28)-/.test(run.seed)&&run.turn>=3&&run.turn<24&&run.rank<CAREER_MAX_RANK_V17&&!run.pip?.active&&careerReviewWaitV17(run)&&careerReadinessV17(run).ready&&getCareerReviewV17(run).choices.slice(0,2).some(choice=>choice.available!==false);
 }
 
 export function getCareerReviewV17(run){

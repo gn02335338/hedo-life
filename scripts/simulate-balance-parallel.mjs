@@ -9,7 +9,9 @@ const args=Object.fromEntries(process.argv.slice(2).reduce((a,x,i,v)=>{if(x.star
 const prefix=args.prefix||'e9',label=args.label||prefix,runs=args.runs||'1000',dist=resolve(args.dist||'dist'),jobs=Number(args.jobs)||4;
 const base=resolve(args.out||'artifacts/balance'),shards=resolve(base,`${label}-shards`);mkdirSync(shards,{recursive:true});
 const harness=fileURLToPath(new URL('./simulate-balance.mjs',import.meta.url));
-const {ROLES}=await import(pathToFileURL(resolve(dist,'roles.js')));
+const {ROLES:ALL_ROLES}=await import(pathToFileURL(resolve(dist,'roles.js')));
+const cohort=Number(/^e(\d+)(?:-|$)/.exec(prefix)?.[1]||1);
+const ROLES=ALL_ROLES.filter(role=>(role.minRules||1)<=cohort);
 const roles=ROLES.map(r=>r.id);
 function execute(argv,log){return new Promise((res,rej)=>{const fd=openSync(log,'w');const p=spawn(process.execPath,[harness,...argv],{stdio:['ignore',fd,fd]});p.on('error',rej);p.on('exit',c=>{closeSync(fd);c===0?res():rej(Error(`Exit ${c}: ${log}`));});});}
 let next=0;

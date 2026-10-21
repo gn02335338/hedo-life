@@ -101,7 +101,7 @@ test('each new quiz scene replays through anonymous progress and completion with
 test('actual-role replay is accepted for all occupations while replaced branches, foreign owners and invented scenes are rejected',async t=>{
  const h=harness(t),player=await h.register(),other=await h.register();
  const occupations=routes.filter(route=>route.id.startsWith('role-'));
- assert.deepEqual(occupations.map(route=>route.actualRoleId).sort(),Object.keys(ROLE_MAP).sort());
+ assert.deepEqual(occupations.map(route=>route.actualRoleId).sort(),Object.values(ROLE_MAP).filter(role=>(role.minRules||1)<=26).map(role=>role.id).sort());
  for(const route of occupations){
   const result=await h.call('/api/characters',{method:'POST',token:player.token,body:proof(route,randomUUID())});
   assert.equal(result.status,200,route.id);assert.equal(result.body.verified,true);

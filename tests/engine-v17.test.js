@@ -35,7 +35,7 @@ test('all e16 endings and direct rage modes retain every published direct and JS
 test('all nine professions have eight real ranks, with assistant and executive entry correctly placed',()=>{
  assert.deepEqual(CAREER_LADDERS_V17.system,['助理工程師','工程師','資深工程師','主任工程師','工程副理','工程經理','工程總監','技術長 CTO']);
  const assignments=new Set();
- for(const role of ROLES){
+ for(const role of ROLES.filter(role=>(role.minRules||1)<28)){
   assert.equal(CAREER_LADDERS_V17[role.id].length,8);
   for(let index=0;index<60;index++){
    const run=createRun(role.id,`e17-entry-${index}`);assignments.add(run.assignment);
