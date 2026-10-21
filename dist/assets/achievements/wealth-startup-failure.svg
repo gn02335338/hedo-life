@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="startup-failure-title startup-failure-desc">
+  <title id="startup-failure-title">生意沒成，退路還在</title>
+  <desc id="startup-failure-desc">倉庫留下幾箱庫存，一隻玩具鵝探出紙箱；收好存款和雨傘，還能重新出發。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="96" r="75" fill="#f2d8ce"/>
+  <path d="M35 168q85 14 170 0" fill="none" stroke="#dbb4a6" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M54 112h59v48H54z" fill="#f3bfae"/>
+    <path d="m54 112 29-13 30 13-30 13z" fill="#fffaf4"/>
+    <path d="M83 125v35m-29-48 29 13" fill="none"/>
+    <path d="M92 118h65v45H92z" fill="#ed6995"/>
+    <path d="m92 118 32-13 33 13-33 13z" fill="#fffaf4"/>
+    <path d="M124 131v32m-32-45 32 13" fill="none"/>
+    <path d="m92 118-9 13 30 14 11-14 33 13 9-14-9-12" fill="#f8d7e4"/>
+    <path d="M118 114c-13-10-10-25 3-26V74c0-10 15-13 21-5 6 9-4 16-12 15v14c12-2 16 7 8 15" fill="#fffaf4"/>
+    <path d="m142 75 11 5-13 4" fill="#db886c" stroke-width="3"/>
+    <circle cx="135" cy="73" r="2.5" fill="#273144" stroke="none"/>
+    <path d="M135 101q-10-1-13 6" fill="none" stroke-width="3"/>
+    <path d="M171 106V65m0 40q0 12 10 12t10-12" fill="none"/>
+    <path d="M140 65q30-52 61 0-11-9-20 0-10-9-20 0-11-9-21 0z" fill="#ed6995"/>
+    <path d="M171 42v-7m-10 30q0-16 10-29 10 13 10 29" fill="none" stroke-width="3"/>
+    <rect x="164" y="130" width="37" height="31" rx="6" fill="#fffaf4"/>
+    <path d="M189 140h12v12h-12q-9-6 0-12z" fill="#ed6995" stroke-width="3"/>
+    <circle cx="191" cy="146" r="1.8" fill="#273144" stroke="none"/>
+  </g>
+  <path d="M43 73h9m-4-5v10m11-34h11M202 94h9" fill="none" stroke="#db886c" stroke-width="3" stroke-linecap="round"/>
+  <path d="m66 53 6 6 12-13" fill="none" stroke="#db886c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

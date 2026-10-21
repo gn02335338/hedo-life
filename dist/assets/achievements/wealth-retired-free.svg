@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="retired-free-title retired-free-desc">
+  <title id="retired-free-title">鬧鐘今天也沒班</title>
+  <desc id="retired-free-desc">人躺在粉紅吊床上曬太陽，早餐和咖啡慢慢吃；旁邊的鬧鐘已經關掉。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="96" r="75" fill="#f8d7e4"/>
+  <path d="M35 168q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M37 68v96m166-96v96" fill="none"/>
+    <path d="M37 84q84 91 166 0-17 72-83 72T37 84z" fill="#ed6995"/>
+    <path d="m37 84 22 38m144-38-23 38" fill="none" stroke="#fffaf4" stroke-width="3"/>
+    <path d="m77 103 22-12 18 13 32 7 27-10" fill="none" stroke="#273144" stroke-width="13"/>
+    <path d="m108 99 10-14 23 10" fill="none" stroke="#273144" stroke-width="10"/>
+    <path d="M100 96q16 5 18 19l-22 6-20-18z" fill="#fffaf4" stroke-width="3.5"/>
+    <circle cx="71" cy="94" r="13" fill="#fffaf4" stroke-width="3.5"/>
+    <path d="m65 92 4 2 5-3m-8 8q5 4 9-1" fill="none" stroke-width="2.5"/>
+    <path d="m138 106 6 7m-29-20 6-8" fill="none" stroke="#fffaf4" stroke-width="3"/>
+    <circle cx="161" cy="48" r="17" fill="#f4cc76" stroke-width="3"/>
+    <path d="M161 20v-5m0 66v-5m28-28h5m-66 0h5m48-20 4-4m-48 48 4-4m40 0 4 4m-48-48 4 4" fill="none" stroke="#db886c" stroke-width="3"/>
+    <path d="M167 149h32m-26 1-3 19m23-19 3 19" fill="none" stroke-width="3.5"/>
+    <path d="M173 134h14v14h-14z" fill="#fffaf4" stroke-width="3"/>
+    <path d="M187 137h4q6 6-4 7m-11-16v-5m7 5v-5" fill="none" stroke-width="2.5"/>
+    <path d="M196 146q-11-12-1-15 10 0 9 15z" fill="#f4cc76" stroke-width="2.5"/>
+    <circle cx="51" cy="151" r="17" fill="#fffaf4" stroke-width="3"/>
+    <path d="m39 135-5-5m29 5 5-5m-27 36-3 5m23-5 3 5M51 141v11l7 3" fill="none" stroke-width="3"/>
+    <path d="m37 164 28-27" fill="none" stroke="#e6256e" stroke-width="4"/>
+  </g>
+  <path d="M92 43h18l-18 21h21" fill="none" stroke="#b489a5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

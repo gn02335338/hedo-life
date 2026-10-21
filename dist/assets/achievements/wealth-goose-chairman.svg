@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="goose-chairman-title goose-chairman-desc">
+  <title id="goose-chairman-title">玩具鵝董事長</title>
+  <desc id="goose-chairman-desc">戴皇冠的玩具鵝坐上董事長大椅，桌上的永久休假決議蓋了一個大大的勾。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff0f5"/>
+  <circle cx="120" cy="96" r="75" fill="#f8d7e4"/>
+  <path d="M35 168q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="67" y="48" width="106" height="99" rx="24" fill="#ed6995"/>
+    <path d="M80 61q40-11 80 0m-40-2v10" fill="none" stroke="#fffaf4" stroke-width="3" opacity=".8"/>
+    <rect x="56" y="111" width="21" height="43" rx="8" fill="#fffaf4"/>
+    <rect x="163" y="111" width="21" height="43" rx="8" fill="#fffaf4"/>
+    <path d="M97 132c-20 0-27-16-13-24 10-6 23-3 29-1V81c-12-9-4-26 10-23 15 3 16 21 2 25v28c18-5 31 4 27 16-5 14-34 16-55 5z" fill="#fffaf4"/>
+    <path d="m134 70 15 6-15 6" fill="#db886c" stroke-width="3"/>
+    <circle cx="127" cy="67" r="2.7" fill="#273144" stroke="none"/>
+    <path d="M101 119q14-13 25 0-14 12-25 0z" fill="#f8d7e4" stroke-width="3"/>
+    <path d="m109 53-5-21 13 9 8-15 7 15 13-8-5 20z" fill="#f4cc76" stroke-width="3.5"/>
+    <path d="M110 53h29" fill="none" stroke-width="3"/>
+    <path d="M41 146h158l6 17H35z" fill="#fffaf4"/>
+    <path d="M49 164v10m143-10v10" fill="none"/>
+    <g transform="rotate(-9 136 151)">
+      <rect x="114" y="135" width="47" height="28" rx="3" fill="#fffaf4" stroke-width="3"/>
+      <path d="M121 143h14m-14 7h11m8 1 5 5 10-12" fill="none" stroke="#e6256e" stroke-width="3"/>
+    </g>
+    <path d="M65 154h29l-2-13H67z" fill="#273144" stroke-width="3"/>
+    <path d="M73 148h13" fill="none" stroke="#f4cc76" stroke-width="2"/>
+  </g>
+  <path d="m40 60 3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1zM197 90l3 7 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z" fill="#e6256e"/>
+  <path d="M190 42h10m-5-5v10M35 112h8" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="startup-success-title startup-success-desc">
+  <title id="startup-success-title">自己的招牌，第一筆入帳</title>
+  <desc id="startup-success-desc">獨立工作室的桌上，筆電亮著，收款單蓋了勾；門禁卡成了離職紀念品。</desc>
+  <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+  <circle cx="120" cy="96" r="75" fill="#f8d7e4"/>
+  <path d="M35 168q85 14 170 0" fill="none" stroke="#dfb1c4" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M43 132h154m-139 1v30m123-30v30" fill="none"/>
+    <rect x="56" y="75" width="79" height="49" rx="7" fill="#fffaf4"/>
+    <path d="M50 124h91l-7 8H57z" fill="#ed6995"/>
+    <path d="m80 99 11 10 22-22" fill="none" stroke="#e6256e"/>
+    <path d="M155 115h28l-4 17h-20z" fill="#ed6995"/>
+    <path d="M169 115V91m0 12q-20 0-17-16 18 0 17 16zm0-7q17-3 18-18-18 0-18 18z" fill="#fffaf4"/>
+    <g transform="rotate(9 159 65)">
+      <rect x="134" y="28" width="50" height="65" rx="6" fill="#fffaf4"/>
+      <path d="M145 41h19m-19 10h27" fill="none" stroke="#b489a5" stroke-width="3"/>
+      <circle cx="159" cy="72" r="12" fill="#f8d7e4" stroke="#e6256e" stroke-width="3"/>
+      <path d="m153 72 4 4 9-10" fill="none" stroke="#e6256e" stroke-width="3"/>
+    </g>
+    <g transform="rotate(-13 81 158)">
+      <rect x="65" y="145" width="32" height="25" rx="4" fill="#fffaf4" stroke-width="3"/>
+      <path d="M78 145v-6m-5-1h10" fill="none" stroke-width="3"/>
+      <circle cx="76" cy="155" r="3" fill="#ed6995" stroke="none"/>
+      <path d="M84 154h6m-18 9h18" fill="none" stroke="#b489a5" stroke-width="2"/>
+    </g>
+  </g>
+  <path d="m57 38 3 8 9 1-7 6 2 9-7-4-8 4 2-9-7-6 10-1z" fill="#e6256e"/>
+  <path d="M198 56h10m-5-5v10M31 99h9" fill="none" stroke="#e6256e" stroke-width="3" stroke-linecap="round"/>
+</svg>

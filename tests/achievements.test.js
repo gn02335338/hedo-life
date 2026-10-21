@@ -7,9 +7,9 @@ import {createRun,getEvent,applyChoice,advance,requestRage,replayRun,validRun} f
 const copy=value=>JSON.parse(JSON.stringify(value));
 const choose=(run,index)=>advance(applyChoice(run,index));
 
-test('118 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
- assert.equal(ACHIEVEMENTS.length,118);
- assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,118);
+test('122 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
+ assert.equal(ACHIEVEMENTS.length,122);
+ assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,122);
  assert.deepEqual(Object.keys(ACHIEVEMENT_MAP),ACHIEVEMENTS.map(item=>item.id));
  const pictures=new Set();
  for(const achievement of ACHIEVEMENTS){
@@ -87,7 +87,7 @@ test('published complete routes derive real onboarding, PIP, salary and career a
  for(const id of ['assistant','switch','robot','promotion','manager','director','pip','pip-pass','pay-cut','education','kind-decline','nasdaq'])assert.ok(covered.has(id),`natural goal ${id}`);
 });
 
-test('published e18, strict-rage and chronicle routes prove all current achievements without injected state',()=>{
+test('published e18, strict-rage, chronicle and wealth routes prove all current achievements without injected state',()=>{
  const routes=JSON.parse(readFileSync(new URL('./fixtures/achievement-routes-v18.json',import.meta.url),'utf8'));
  const covered=new Set();
  assert.ok(routes.length>0);
@@ -106,7 +106,12 @@ test('published e18, strict-rage and chronicle routes prove all current achievem
  for(const route of rageRoutes)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
  const chronicleRoutes=JSON.parse(readFileSync(new URL('./fixtures/chronicle-achievement-routes.json',import.meta.url),'utf8')).routes;
  for(const route of chronicleRoutes)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
- assert.equal(covered.size,118);
+ const wealthRoutes=JSON.parse(readFileSync(new URL('./fixtures/wealth-routes-v27.json',import.meta.url),'utf8')).routes.filter(route=>route.kind==='ending');
+ for(const route of wealthRoutes)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
+ const retirement=wealthRoutes.find(route=>route.family==='retired_free');
+ const goose=applyChoice(replayRun(retirement.roleId,retirement.seed,retirement.choiceActions),2);
+ for(const id of deriveAchievements(goose))covered.add(id);
+ assert.equal(covered.size,122);
  assert.deepEqual(ACHIEVEMENTS.filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.map(item=>item.id));
 });
 
