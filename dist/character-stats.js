@@ -22,7 +22,7 @@ export function characterHistoryChanges(run){
   let mode=null,verbal=null;
   if(row.eventId==='verbal-release'){
    const evidence=row.verbalOutcome;
-   if(!/^e30-/.test(run.seed||'')||row.kind!=='verbal'||row.choiceIndex!==0||!evidence||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||typeof evidence.origin!=='string'||!['event','result'].includes(evidence.phase))continue;
+   if(!/^e(?:30|31)-/.test(run.seed||'')||row.kind!=='verbal'||row.choiceIndex!==0||!evidence||evidence.target!==row.speaker||!verbalKinds.has(evidence.kind)||!Number.isInteger(evidence.affinityDelta)||evidence.affinityDelta< -60||evidence.affinityDelta>12||typeof evidence.origin!=='string'||!['event','result'].includes(evidence.phase))continue;
    verbal=evidence;
   }
   if(row.eventId==='rage-release'){

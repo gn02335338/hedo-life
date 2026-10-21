@@ -1,0 +1,465 @@
+{
+  "method": "Three natural e31 AI-role responses, each reached from createRun and canonical choices, with complete continuations. No occupation, event, stat, flag, history, seed outcome or RNG state is injected.",
+  "eventId": "ai31-auto-increment",
+  "routes": [
+    {
+      "id": "ai31-auto-increment-choice-0",
+      "eventId": "ai31-auto-increment",
+      "index": 0,
+      "roleId": "ai",
+      "actualRoleId": "ai",
+      "seed": "e31-ai-d-3",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai31-auto-increment",
+          "index": 0
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai31-auto-increment",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "ai31-auto-increment-choice-1",
+      "eventId": "ai31-auto-increment",
+      "index": 1,
+      "roleId": "ai",
+      "actualRoleId": "ai",
+      "seed": "e31-ai-d-3",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai31-auto-increment",
+          "index": 1
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai31-auto-increment",
+          "index": 1
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    },
+    {
+      "id": "ai31-auto-increment-choice-2",
+      "eventId": "ai31-auto-increment",
+      "index": 2,
+      "roleId": "ai",
+      "actualRoleId": "ai",
+      "seed": "e31-ai-d-3",
+      "beforeActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai31-auto-increment",
+          "index": 2
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-pureblood-degree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai-crud",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-php-volunteer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "ai31-auto-increment",
+          "index": 2
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ],
+      "endingId": "ragequit-ai"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="資料庫替新資料自動發號">
+ <rect x="4" y="4" width="152" height="152" rx="38" fill="#fff0f5"/>
+ <circle cx="80" cy="80" r="65" fill="#f8d7e4"/>
+ <path d="M28 131q52 25 104 0" fill="none" stroke="#dfb1c4" stroke-width="2"/>
+ <g stroke="#20263c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M40 49v59c0 11 18 20 40 20s40-9 40-20V49" fill="#fffaf4"/>
+  <ellipse cx="80" cy="49" rx="40" ry="18" fill="#ed6995"/>
+  <path d="M40 69c0 11 18 20 40 20s40-9 40-20M40 89c0 11 18 20 40 20s40-9 40-20" fill="none"/>
+  <path d="M56 74v5m0 16v5m0 15v5" fill="none"/>
+  <path d="M111 31h24v36h-24z" fill="#fffaf4"/>
+  <path d="M118 42h10m-5-5v10m-5 11h10m-5-5v10" fill="none" stroke="#e6256e" stroke-width="3"/>
+  <path d="M90 19v10m-5-5h10" fill="none" stroke="#e6256e" stroke-width="3"/>
+ </g>
+ <circle cx="130" cy="92" r="5" fill="#e6256e"/>
+ <path d="M23 98v9m-4-4h8" stroke="#e6256e" stroke-width="2" stroke-linecap="round"/>
+</svg>

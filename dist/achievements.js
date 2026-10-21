@@ -22,7 +22,7 @@ export const LEGACY_RAGE_ACHIEVEMENT_MAP=Object.freeze(Object.fromEntries(LEGACY
 export const ACHIEVEMENTS=Object.freeze([
  badge('work-card','報到成功，內容另議。','在報到日做出第一個選擇，領到這段人生的工作證。','office'),
  badge('switch','JD 文學獎','報到後的實際工作與應徵職缺不同。你替「工作內容有彈性」補上了註解。','office'),
- badge('assistant','少兩個字，少一份薪。','拿到助理職稱，並在報到日看清楚自己的新工作。','office'),
+ badge('assistant','多兩個字，少一份薪。','報到時被改以助理任用。多出的是「助理」，縮水的是原本談好的待遇。','office'),
  badge('robot','AI 的 A 是 Anything。','應徵 AI 工程師，報到後卻去了另一個職缺。模型晚點再找，工作先做。','office'),
  badge('promotion','名片真的換了。','成功升遷，或從助理轉正。這次人事通知有改到你的職稱。','career'),
  badge('manager','輪到你簽表了。','靠升遷走到經理級，開始接住別人的工作與自己的鍋。','career'),
@@ -66,7 +66,8 @@ export const ACHIEVEMENTS=Object.freeze([
  badge('banquet-first-love','First Love 搶麥決鬥','替傑克和水蛇的 First Love 決鬥舉牌計分。就算翅膀拿願景插播，這場搶麥也已經開打。','banquet'),
  badge('sonny-press-conference','阿福的理由伯記者會','腕力賽後，用披薩盒替阿福開記者會。抽筋、拉到、吃太飽，聲明比比賽還長。','office'),
  badge('sonny-unplayed-champion','尚未出賽世界冠軍','先收桌不比，把披薩盒冠軍盃頒給阿福。人還沒上桌，勝利聲明已經講到第四點。','office'),
- ...WEALTH_ACHIEVEMENTS
+ ...WEALTH_ACHIEVEMENTS,
+ badge('ai-auto-increment','原來公司的AI是Auto Increment','以 AI 工程師身分修好資料匯入，發現被叫作 AI 的東西，其實是主鍵的自動編號。','craft')
 ]);
 export const ACHIEVEMENT_MAP=Object.freeze(Object.fromEntries(ACHIEVEMENTS.map(item=>[item.id,item])));
 export const ACHIEVEMENT_RECORD_MAP=Object.freeze({...LEGACY_RAGE_ACHIEVEMENT_MAP,...ACHIEVEMENT_MAP});
@@ -82,15 +83,15 @@ export function deriveAchievements(run){
  add('assistant',onboard&&flags.assistant>0);
  add('robot',onboard&&run.roleId==='ai'&&run.actualRoleId!=='ai');
  add('promotion',flags.promotions>0);
- const promotedPeak=/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30)-/.test(run.seed||'')?flags.career_promoted_peak:flags.career_peak_rank;
- add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30)-/.test(run.seed||'')?5:2));
- add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30)-/.test(run.seed||'')?6:3));
+ const promotedPeak=/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30|31)-/.test(run.seed||'')?flags.career_promoted_peak:flags.career_peak_rank;
+ add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)-/.test(run.seed||'')?5:2));
+ add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29|30|31)-/.test(run.seed||'')?6:3));
  add('pip',run.pipCount>0);
  add('pip-pass',flags.pip_passed>0);
  add('pay-cut',flags.pay_cut>0);
  add('salary-save',run.salaryCut?.status==='rescinded');
  add('education',flags.education_outcome>0);
- add('self-care',history.filter(item=>/^e(?:25|26|27|28|29|30)-/.test(run.seed||'')&&item?.eventId?.startsWith('meal-with-')?(item.delta?.cash||0)<0:item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30)-/.test(run.seed||'')?7:3)&&(!/^e(?:25|26|27|28|29|30)-/.test(run.seed||'')||item.choiceIndex!==4)).length>=3);
+ add('self-care',history.filter(item=>/^e(?:25|26|27|28|29|30|31)-/.test(run.seed||'')&&item?.eventId?.startsWith('meal-with-')?(item.delta?.cash||0)<0:item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30|31)-/.test(run.seed||'')?7:3)&&(!/^e(?:25|26|27|28|29|30|31)-/.test(run.seed||'')||item.choiceIndex!==4)).length>=3);
  add('kind-decline',flags.kind_declined>0);
  const attempts=resolvedRageAttempts(run),real=attempts.filter(item=>item.mode==='real'),imagined=attempts.filter(item=>item.mode==='imagined');
  for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei'])add(`real-hit-${person}`,real.some(item=>item.person===person));
@@ -112,6 +113,7 @@ export function deriveAchievements(run){
  // Read committed canonical choices, not the corrected display copy or broad
  // banquet/rage flags. Both resolved song draws participated in the duel.
  const resolved=history.filter(item=>Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0&&typeof item.result==='string'&&item.result.trim());
+ add('ai-auto-increment',/^e31-/.test(run.seed||'')&&run.actualRoleId==='ai'&&resolved.some(item=>item.eventId==='ai31-auto-increment'&&item.kind==='daily'&&item.speaker==='rick'&&item.choiceIndex<=2));
  add('banquet-first-love',resolved.some(item=>item.eventId==='banquet-welcome'&&item.kind==='banquet'&&item.speaker==='rick'&&item.choiceIndex===1&&item.eventOutcome?.label==='尾牙點歌台'&&['成功搶麥','被夢想插播'].includes(item.eventOutcome.result)));
  const arm=resolved.filter(item=>item.eventId==='video-pizza-overtime'&&item.kind==='daily'&&item.speaker==='sonny');
  add('sonny-press-conference',arm.some(item=>item.choiceIndex===1));

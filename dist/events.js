@@ -16,6 +16,7 @@ import { DESIGN_EVENTS_V21 } from './events-design-v21.js';
 import { PROFESSION_EVENTS_V21 } from './events-professions-v21.js';
 import { BACKOFFICE_EVENTS_V28 } from './events-backoffice-v28.js';
 import { GENDER_EVENTS_V29 } from './events-gender-v29.js';
+import { AI_EVENTS_V31 } from './events-ai-v31.js';
 const choice = (text, detail, result, delta, flags = []) => ({ text, detail, result, delta, flags });
 
 export const EVENTS = [
@@ -1293,3 +1294,6 @@ EVENTS.push(...BACKOFFICE_EVENTS_V28);
 
 // Fictional character gender and patronage stories belong only to e29 lives.
 EVENTS.push(...GENDER_EVENTS_V29);
+
+// New AI work stays out of every published e30 or earlier draw pool.
+EVENTS.push(...AI_EVENTS_V31);
