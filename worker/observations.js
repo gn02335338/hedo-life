@@ -1,5 +1,6 @@
 import {ENDINGS} from '../dist/endings.js';
 import {fullCareer} from '../dist/career-api.js';
+import {departureWays} from './departures.js';
 
 const endingTypes=new Map(ENDINGS.map(ending=>[ending.id,ending.type]));
 const count=value=>Number.isSafeInteger(value)&&value>=0?value:0;
@@ -61,8 +62,9 @@ export class ObservationStore{
    return Array.from({length:scheme==='full8'?8:5},(_,rank)=>({rank,count:rows.find(row=>row.rank===rank)?.count||0}));
   };
   const special=Object.fromEntries(sql.exec('SELECT appointment AS id,COUNT(*) AS count FROM run_observations WHERE appointment IS NOT NULL GROUP BY appointment').toArray().map(row=>[row.id,row.count]));
+  const endingCounts=sql.exec('SELECT ending_id AS id,COUNT(*) AS count FROM runs GROUP BY ending_id').toArray();
   const types={good:0,normal:0,bad:0,secret:0};
-  for(const row of sql.exec('SELECT ending_id AS id,COUNT(*) AS count FROM runs GROUP BY ending_id').toArray()){
+  for(const row of endingCounts){
    const type=endingTypes.get(row.id);if(Object.hasOwn(types,type))types[type]+=row.count;
   }
   const tenure=Object.fromEntries(sql.exec(`SELECT CASE WHEN turns <= 3 THEN '1-3' WHEN turns <= 7 THEN '4-7' WHEN turns <= 12 THEN '8-12' WHEN turns <= 19 THEN '13-19' ELSE '20-24' END AS id,COUNT(*) AS count FROM runs GROUP BY 1`).toArray().map(row=>[row.id,row.count]));
@@ -74,6 +76,7 @@ export class ObservationStore{
    actualRoles:sql.exec('SELECT actual_role_id AS id,COUNT(*) AS count FROM runs GROUP BY actual_role_id ORDER BY count DESC,id').toArray(),
    reassignments:sql.exec('SELECT COUNT(*) AS n FROM runs WHERE role_id != actual_role_id').one().n,
    endingTypes:bins(['good','normal','bad','secret'],types),
+   departureWays:departureWays(endingCounts),
    tenure:bins(['1-3','4-7','8-12','13-19','20-24'],tenure),
    salary:{average:Math.round(average*10)/10,bands:bins(['under30','30-49','50-79','80-119','120plus'],salaries)},
    experiences:{pip:observations.pip,promoted:observations.promoted,payCut:observations.payCut,collapse:observations.collapse,appointed:observations.appointed},

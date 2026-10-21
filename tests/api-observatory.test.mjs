@@ -21,6 +21,7 @@ const patronage=JSON.parse(readFileSync(new URL('./fixtures/patronage-routes-v29
 const proof=(run,runId=randomUUID())=>({runId,roleId:run.roleId,seed:run.seed,actions:run.actions});
 const completed=fixture=>replayRun(fixture.roleId,fixture.seed,fixture.completionActions||fixture.actions);
 const appointee=gender=>completed(patronage.find(row=>row.id===`application-${gender}-success`));
+const departureIds=['voluntary','forced_signed','company_exit','pip_failed','pip_passed_exit','cold_storage','labor_dispute','burnout','cash_exhausted','startup','retirement','other','unclassified'];
 function early(cohort,rank=0){
  for(let n=0;n<100;n++){
   let run=createRun('system',`e${cohort}-observatory-${n}`);if(run.rank!==rank)continue;
@@ -64,6 +65,7 @@ test('empty observations expose the versioned zero-filled contract and preserve 
   version:1,trackingSince:null,recordedRuns:0,unclassifiedRuns:0,
   career:{full8:Array.from({length:8},(_,rank)=>({rank,count:0})),legacy5:Array.from({length:5},(_,rank)=>({rank,count:0})),special:[{id:'son',count:0},{id:'daughter',count:0}]},
   actualRoles:[],reassignments:0,endingTypes:['good','normal','bad','secret'].map(id=>({id,count:0})),
+  departureWays:departureIds.map(id=>({id,count:0})),
   tenure:['1-3','4-7','8-12','13-19','20-24'].map(id=>({id,count:0})),
   salary:{average:0,bands:['under30','30-49','50-79','80-119','120plus'].map(id=>({id,count:0}))},
   experiences:{pip:0,promoted:0,payCut:0,collapse:0,appointed:0},
@@ -87,6 +89,9 @@ test('historical SQL databases migrate additively without guessing a career sche
  assert.deepEqual(stats.actualRoles,[{id:'design',count:1},{id:'system',count:1}]);assert.equal(stats.reassignments,1);
  assert.equal(stats.tenure.find(row=>row.id==='1-3').count,1);assert.equal(stats.tenure.find(row=>row.id==='20-24').count,1);
  assert.equal(stats.endingTypes.find(row=>row.id===ENDINGS.find(ending=>ending.id===run.endingId).type).count,1);
+ assert.equal(stats.departureWays.find(row=>row.id==='voluntary').count,1);
+ assert.equal(stats.departureWays.find(row=>row.id==='unclassified').count,1);
+ assert.equal(stats.departureWays.reduce((total,row)=>total+row.count,0),2,'departure chart includes historical runs without observations');
  assert.doesNotMatch(JSON.stringify(stats),/unknown-private-ending-name|historical-player|historical-hash|2001-02-03|seed|actions|history|playerId|runId/);
  assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM run_observations').one().n,0);
 });
@@ -124,6 +129,7 @@ test('all-run occupation, reassignment, salary, ending-type and tenure charts co
  assert.equal(stats.recordedRuns,4);assert.equal(stats.actualRoles.reduce((sum,row)=>sum+row.count,0),4);
  assert.equal(stats.reassignments,selected.filter(run=>run.roleId!==run.actualRoleId).length);
  assert.equal(stats.endingTypes.reduce((sum,row)=>sum+row.count,0),4);assert.equal(stats.tenure.reduce((sum,row)=>sum+row.count,0),4);
+ assert.equal(stats.departureWays.reduce((sum,row)=>sum+row.count,0),4);
  assert.equal(stats.salary.bands.reduce((sum,row)=>sum+row.count,0),4);assert.equal(stats.salary.average,Math.round(selected.reduce((sum,run)=>sum+run.pay,0)/4*10)/10);
  const row=h.sql.exec('SELECT * FROM run_observations WHERE pay_cuts > 0').toArray()[0];assert.ok(row);
  assert.ok(stats.experiences.payCut<=stats.recordedRuns,'experience charts count lives, not the number of incidents');
@@ -161,4 +167,47 @@ test('historical completions without an action commitment cannot be reclassified
  assert.equal(response.status,200);assert.equal(response.body.duplicate,true);assert.equal(response.body.totalRuns,1);
  const stats=await h.observatory();assert.equal(stats.recordedRuns,0);assert.equal(stats.unclassifiedRuns,1);assert.equal(stats.trackingSince,null);
  assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM character_runs').one().n,0);
+});
+
+test('departure totals include every historical catalog ending without requiring new observations or rewriting saved runs',async t=>{
+ const h=harness(t),player=await h.register(),created='2001-02-03T04:05:06.000Z';
+ for(const ending of ENDINGS){
+  h.sql.exec('INSERT INTO runs VALUES (?,?,?,?,?,?,?,?,?,?)',randomUUID(),player.id,ending.id,ending.roleId,ending.roleId,0,40,2,3,created);
+ }
+ h.sql.exec('INSERT INTO runs VALUES (?,?,?,?,?,?,?,?,?,?)',randomUUID(),player.id,'private-future-ending-title','system','system',0,40,2,3,created);
+ const before=h.sql.exec('SELECT * FROM runs ORDER BY id').toArray().map(row=>({...row}));h.reopen();
+ const stats=(await h.call('/api/stats')).body;
+ assert.equal(stats.totalRuns,546);assert.equal(stats.observatory.recordedRuns,0);assert.equal(stats.observatory.unclassifiedRuns,546);
+ assert.equal(stats.observatory.departureWays.reduce((total,row)=>total+row.count,0),546);
+ assert.deepEqual(stats.observatory.departureWays.map(row=>row.id),departureIds);
+ assert.ok(stats.observatory.departureWays.every(row=>row.count>0),'every departure group is represented');
+ assert.equal(stats.observatory.departureWays.find(row=>row.id==='unclassified').count,1);
+ assert.doesNotMatch(JSON.stringify(stats.observatory),/private-future-ending-title|seed|actions|history|playerId|runId/);
+ assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM run_observations').one().n,0);
+ assert.deepEqual(h.sql.exec('SELECT * FROM runs ORDER BY id').toArray().map(row=>({...row})),before);
+});
+
+test('verified departure categories ignore supplied labels and stay deduplicated across retries, rejected forks and foreign owners',async t=>{
+ const h=harness(t),player=await h.register(),other=await h.register();
+ const cases=[['voluntary','ragequit-system'],['forced_signed','fired_signed-system'],['company_exit','layoff-system'],
+  ['pip_failed','pip_fail-system'],['pip_passed_exit','pip_exit-system'],['cold_storage','cold_storage-system'],
+  ['labor_dispute','mediation_settled-system'],['burnout','burnout-ai'],['cash_exhausted','broke-ai'],
+  ['startup','venture_independent-system'],['retirement','retired_free-system'],['other','nasdaq-system']];
+ const bodies=[];
+ for(const [category,endingId] of cases){
+  const fixture=legacy.find(route=>route.ending===endingId);assert.ok(fixture,endingId);
+  const run=completed(fixture);assert.equal(run.endingId,endingId);
+  const body={...proof(run),endingId:'retired_free-system',family:'retired_free',departureWay:'retirement',departureWays:[{id:'retirement',count:999}],observatory:{departureWays:[{id:'retirement',count:999}]}};
+  const response=await h.call('/api/complete',{method:'POST',token:player.token,body});assert.equal(response.status,200,endingId);assert.equal(response.body.endingId,endingId);
+  bodies.push(body);
+  const rows=(await h.observatory()).departureWays;assert.equal(rows.find(row=>row.id===category).count,1,category);
+ }
+ const before=await h.observatory();assert.deepEqual(before.departureWays,departureIds.map(id=>({id,count:Number(id!=='unclassified')})));
+ for(const body of bodies){
+  const retry=await h.call('/api/complete',{method:'POST',token:player.token,body});assert.equal(retry.status,200);assert.equal(retry.body.duplicate,true);assert.equal(retry.body.totalRuns,12);
+ }
+ const fork=await h.call('/api/complete',{method:'POST',token:player.token,body:{...bodies[0],roleId:bodies[1].roleId,seed:bodies[1].seed,actions:bodies[1].actions}});assert.equal(fork.status,409);
+ const foreign=await h.call('/api/complete',{method:'POST',token:other.token,body:bodies[0]});assert.equal(foreign.status,409);
+ assert.deepEqual(await h.observatory(),before);assert.equal((await h.call('/api/stats')).body.totalRuns,12);
+ assert.equal((await h.call('/api/me',{token:other.token})).body.totalRuns,0);
 });
