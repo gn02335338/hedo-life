@@ -26,7 +26,7 @@ if (process.env.JOBS_WITNESS_FILE) {
 }
 const candidates = new Map(ROLES.map(role => [role.id, []]));
 for (const route of routes) {
-  if (!/^e(?:21|22|23|24|25|26|27|28|29)-/.test(route.seed||'') || !candidates.has(route.roleId) || !route.actions?.some(action => newEvents.has(action.eventId))) continue;
+  if (!/^e(?:21|22|23|24|25|26|27|28|29|30)-/.test(route.seed||'') || !candidates.has(route.roleId) || !route.actions?.some(action => newEvents.has(action.eventId))) continue;
   const run = replayRun(route.roleId, route.seed, route.actions);
   if (!run.completed) continue;
   const newRows = run.history.filter(row => row.choiceIndex >= 0 && row.kind === 'daily' && newEvents.has(row.eventId));

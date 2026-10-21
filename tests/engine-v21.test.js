@@ -87,9 +87,9 @@ test('natural e21 first work scenes belong to the current job, while every saved
  }
 });
 
-test('the latest complete report uses e29 and retains every profession and every ending',()=>{
+test('the latest complete report uses e30 and retains every profession and every ending',()=>{
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url)));
  assert.equal(report.complete,true);assert.equal(report.found,ENDINGS.length);assert.deepEqual(report.missing,[]);
- assert.ok(report.routes.every(route=>route.seed.startsWith('e29-')));
+ assert.ok(report.routes.every(route=>route.seed.startsWith('e30-')));
  for(const role of ROLES)assert.ok(report.routes.some(route=>route.roleId===role.id&&route.actions.some(action=>EVENTS.some(event=>event.id===action.eventId&&event.roles?.length===1))),role.id);
 });

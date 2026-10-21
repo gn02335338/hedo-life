@@ -201,7 +201,7 @@ test('the application and two shared Rick conversations permit only their co-pre
 let endingWitnesses;
 function contemporaryEnding(id){
  endingWitnesses??=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8')).routes;
- const route=endingWitnesses.find(row=>row.ending===id);assert.ok(route,`natural ending proof ${id}`);assert.match(route.seed,/^e29-/);
+ const route=endingWitnesses.find(row=>row.ending===id);assert.ok(route,`natural ending proof ${id}`);assert.match(route.seed,/^e(?:29|30)-/);
  const run=replayRun(route.roleId,route.seed,route.actions);assert.equal(run.endingId,id);assert.equal(validRun(copy(run)),true);return {route,run};
 }
 
