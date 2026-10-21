@@ -7,6 +7,7 @@ import { validateFeedback, validatePublisherToken } from './feedback.js';
 import { FeedbackStore } from './feedback-store.js';
 import { AchievementStore } from './achievements.js';
 import { CharacterStore } from './characters.js';
+import { ObservationStore } from './observations.js';
 
 const ENDING_IDS = new Set(ENDINGS.map(ending => ending.id));
 
@@ -46,6 +47,7 @@ export class HedoArchive extends DurableObject {
     this.feedback = new FeedbackStore(this.sql, ctx.storage);
     this.achievements = new AchievementStore(this.sql, ctx.storage);
     this.characters = new CharacterStore(this.sql, ctx.storage);
+    this.observations = new ObservationStore(this.sql);
     ctx.blockConcurrencyWhile(() => this.scheduleFeedbackCleanup());
   }
 
@@ -120,6 +122,11 @@ export class HedoArchive extends DurableObject {
       // prove their historical branch. Keep the receipt without estimating it.
       if (this.characters.progress(runId)) {
         await this.characters.record(playerId, runId, replay);
+        const commitment = this.characters.progress(runId);
+        if (replay.completed && commitment?.completed && commitment.action_count === actions.length &&
+            commitment.action_hash === await tokenHash(JSON.stringify(actions))) {
+          this.observations.record(runId, replay);
+        }
       }
       return this.completedResponse(playerId, existing, true);
     }
@@ -145,6 +152,7 @@ export class HedoArchive extends DurableObject {
         runId, playerId, run.endingId, run.roleId, run.actualRoleId, run.rank, run.pay, Math.min(run.turn + 1, MAX_TURNS), VERSION, now);
       this.sql.exec('INSERT OR IGNORE INTO player_endings (player_id, ending_id, first_seen_at) VALUES (?, ?, ?)', playerId, run.endingId, now);
     });
+    this.observations.record(runId, run, now);
     return this.completedResponse(playerId, { id: runId, ending_id: run.endingId }, duplicate);
   }
 
@@ -181,6 +189,7 @@ export class HedoArchive extends DurableObject {
       roles: this.sql.exec('SELECT role_id AS id, COUNT(*) AS count FROM runs GROUP BY role_id ORDER BY count DESC, id').toArray(),
       endings: this.sql.exec('SELECT ending_id AS id, COUNT(*) AS count FROM runs GROUP BY ending_id ORDER BY count DESC, id').toArray(),
       daily: this.sql.exec('SELECT substr(created_at, 1, 10) AS date, COUNT(*) AS count FROM runs GROUP BY date ORDER BY date').toArray(),
+      observatory: this.observations.snapshot(),
     });
   }
 

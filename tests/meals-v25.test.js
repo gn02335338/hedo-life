@@ -38,7 +38,7 @@ test('e25 two guest pages expose all sixteen portraits without a charge or RNG a
   assert.equal(guests.length,8);
   for(const choice of guests){
    const id=choice.mealTarget;listed.push(id);
-   assert.ok(PERSONAS[id].image);assert.ok(choice.text.includes(PERSONAS[id].name));
+   assert.ok(PERSONAS[id].image);assert.ok(choice.text.includes(id==='rick'?'老闆乾兒子':PERSONAS[id].name));
    assert.ok(choice.text.includes(`${choice.mealCost} 存款`));assert.equal(choice.effect,'mealPick');
   }
   assert.equal(event.choices[8].effect,'mealPage');assert.equal(event.choices[8].mealPage,1-page);

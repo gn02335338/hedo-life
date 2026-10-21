@@ -153,10 +153,10 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e28 and the guide explains solo and group targets', () => {
+test('new browser lives use e29 and the guide explains solo and group targets', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e28-[a-f0-9]+$/);
+  assert.match(seed, /^e29-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
@@ -231,16 +231,17 @@ test('career preparation respects each cohort maximum instead of stopping new li
   assert.equal(control('e16-ui-chief', 4), '');
 });
 
-test('career statistics retain old family meanings beside the new assistant and professional stages', () => {
+test('career statistics do not infer eight-stage ranks from legacy ending-only aggregates', () => {
   const assistant = endings.ENDINGS.find(ending => ending.family === 'career_assistant');
   const staff = endings.ENDINGS.find(ending => ending.family === 'career_staff');
   assert.ok(assistant);assert.ok(staff);
   const app = appHarness();
   app.context.testData = { endings: [{ id: assistant.id, count: 1 }, { id: staff.id, count: 2 }] };
   const html = vm.runInContext('careerStatsHTML(testData)', app.context);
-  assert.match(html, /八階職涯結算 · 3局/);
-  assert.match(html, /助理：1局/);assert.match(html, /專業員工：2局/);
-  assert.equal([...html.matchAll(/class="bar-row"/g)].length, 8);
+  assert.match(html, /等待新版分類資料/);
+  assert.match(html, /不由結局路線猜職級/);
+  assert.doesNotMatch(html, /class="bar-row"|助理：1局|專業員工：2局/);
+  assert.ok(!html.includes(assistant.title));assert.ok(!html.includes(staff.title));
 });
 
 

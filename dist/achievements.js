@@ -49,7 +49,7 @@ export const ACHIEVEMENTS=Object.freeze([
  badge('banquet-prize','這次不是願景。','在尾牙抽到大獎。這一次的幸運，終於有實物可以領。','banquet'),
  badge('banquet-stage','麥克風來不及收回。','參與尾牙的上台橋段。你留下的表現，可能比簡報更有人記得。','banquet'),
  badge('banquet-shared','同桌的人才是主菜。','尾牙中獎後，照說好的請同桌喝一輪飲料。獎金有人分，甜度自己選。','banquet'),
- badge('kind-ghost','他說好，然後人就沒了。','約阿良去暗黑續攤，收到他的答應，也等到他的消失。','banquet'),
+ badge('kind-ghost','他說好，然後人就沒了。','約阿良去續攤，收到他的答應，也等到他的消失。','banquet'),
  badge('first-ending','第一張離場證明','完成一段人生。這個結尾已經收好，下一局可以換一種活法。','career'),
  realBadge('jack','史官，這筆也要記？','真的對傑克動手一次。他的筆記本這回得記下現場的事，也包括你的那一下。'),
  badge('nasdaq','願景真的敲得響。','走到納斯達克敲鐘的結局。這一次，鐘聲不是會議通知。','career'),
@@ -82,15 +82,15 @@ export function deriveAchievements(run){
  add('assistant',onboard&&flags.assistant>0);
  add('robot',onboard&&run.roleId==='ai'&&run.actualRoleId!=='ai');
  add('promotion',flags.promotions>0);
- const promotedPeak=/^e(?:18|19|20|21|22|23|24|25|26|27|28)-/.test(run.seed||'')?flags.career_promoted_peak:flags.career_peak_rank;
- add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28)-/.test(run.seed||'')?5:2));
- add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28)-/.test(run.seed||'')?6:3));
+ const promotedPeak=/^e(?:18|19|20|21|22|23|24|25|26|27|28|29)-/.test(run.seed||'')?flags.career_promoted_peak:flags.career_peak_rank;
+ add('manager',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29)-/.test(run.seed||'')?5:2));
+ add('director',flags.promotions>0&&promotedPeak>=(/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29)-/.test(run.seed||'')?6:3));
  add('pip',run.pipCount>0);
  add('pip-pass',flags.pip_passed>0);
  add('pay-cut',flags.pay_cut>0);
  add('salary-save',run.salaryCut?.status==='rescinded');
  add('education',flags.education_outcome>0);
- add('self-care',history.filter(item=>/^e(?:25|26|27|28)-/.test(run.seed||'')&&item?.eventId?.startsWith('meal-with-')?(item.delta?.cash||0)<0:item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20|21|22|23|24|25|26|27|28)-/.test(run.seed||'')?7:3)&&(!/^e(?:25|26|27|28)-/.test(run.seed||'')||item.choiceIndex!==4)).length>=3);
+ add('self-care',history.filter(item=>/^e(?:25|26|27|28|29)-/.test(run.seed||'')&&item?.eventId?.startsWith('meal-with-')?(item.delta?.cash||0)<0:item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20|21|22|23|24|25|26|27|28|29)-/.test(run.seed||'')?7:3)&&(!/^e(?:25|26|27|28|29)-/.test(run.seed||'')||item.choiceIndex!==4)).length>=3);
  add('kind-decline',flags.kind_declined>0);
  const attempts=resolvedRageAttempts(run),real=attempts.filter(item=>item.mode==='real'),imagined=attempts.filter(item=>item.mode==='imagined');
  for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei'])add(`real-hit-${person}`,real.some(item=>item.person===person));

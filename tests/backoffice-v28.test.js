@@ -58,7 +58,7 @@ test('HR and admin can be reassigned in either direction while in-service dual d
 });
 
 test('32 original role-specific scenes keep choice outcomes hidden and give each occupation eight different duties',()=>{
- assert.equal(events().length,32);assert.equal(EVENTS.length,450);
+ assert.equal(events().length,32);assert.equal(EVENTS.filter(event=>(event.minRules||0)<=28).length,450);
  for(const roleId of BACKOFFICE_ROLE_IDS_V28)assert.equal(events().filter(event=>event.roles?.[0]===roleId).length,8);
  for(const event of events()){
   assert.equal(event.roles.length,1);assert.ok(ROLE_MAP[event.roles[0]]);assert.equal(event.choices.length,3);
@@ -91,7 +91,7 @@ test('all 96 backoffice responses have natural save-safe histories, actual-role 
  }
 });
 
-test('the 168 new role endings append after all original377 and each family has an attainable e28 proof',()=>{
+test('the 168 new role endings append after all original377 and each family retains an attainable current proof',()=>{
  const old=JSON.parse(readFileSync(new URL('./fixtures/legacy-e27-routes.json',import.meta.url),'utf8'));
  assert.equal(ENDINGS.length,545);assert.equal(FAMILIES.length,42);
  assert.deepEqual(ENDINGS.slice(0,377).map(ending=>ending.id),old.map(route=>route.ending));

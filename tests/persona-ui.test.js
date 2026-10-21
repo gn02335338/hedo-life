@@ -10,12 +10,13 @@ import {getRageV20,rageTargetForV20} from '../dist/rage-v20.js';
 import {getRageV16} from '../dist/rage-v16.js';
 
 test('all named game characters have stable IDs, public aliases and original portrait paths',()=>{
- const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'老闆乾兒子',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友',sophie:'紅茶',jonathan:'強哥',owen:'歐文',sam:'山姆',cindy:'辛蒂'};
+ const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'瑞克',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友',sophie:'紅茶',jonathan:'強哥',owen:'歐文',sam:'山姆',cindy:'辛蒂'};
  assert.deepEqual(Object.fromEntries(Object.keys(PERSONAS).map(id=>[id,displayName(id)])),expected);
  for(const [id,person]of Object.entries(PERSONAS)){
   assert.equal(person.image,`./assets/${id}.png`);
   assert.ok(Object.isFrozen(person));assert.ok(person.title.length>0);
  }
+ assert.equal(PERSONAS.rick.name,'瑞克');assert.equal(PERSONAS.rick.title,'老闆乾兒子');
  assert.equal(PERSONAS.jack.title,'研發部經理');
  assert.equal(PERSONAS.meimei.title,'業務經理');
  assert.equal(PERSONAS.meimei.portrait,true);
@@ -40,9 +41,9 @@ test('the five new character identities use supplied titles and display-only ali
 });
 
 test('display aliases handle Chinese-adjacent names and existing nicknames without changing identifiers or URLs',()=>{
- assert.equal(displayText('Wing問Rick，Hope跟Erich／JenJen／Sonny在旁邊。Spencer叫Jack跟Kind過來。'),'翅膀問老闆乾兒子，希望跟法師／真真／阿福在旁邊。屎潘蛇叫傑克跟阿良過來。');
- assert.equal(displayText('阿良（Kind）、Rick（乾兒子）、Jack（傑克）、林澤教授。'),'阿良、老闆乾兒子、傑克、林澤教授。');
- assert.equal(displayText('SPENCER / WING / RICK / HOPE'),'屎潘蛇 / 翅膀 / 老闆乾兒子 / 希望');
+ assert.equal(displayText('Wing問Rick，Hope跟Erich／JenJen／Sonny在旁邊。Spencer叫Jack跟Kind過來。'),'翅膀問瑞克，希望跟法師／真真／阿福在旁邊。屎潘蛇叫傑克跟阿良過來。');
+ assert.equal(displayText('阿良（Kind）、Rick（乾兒子）、Jack（傑克）、林澤教授。'),'阿良、瑞克、傑克、林澤教授。');
+ assert.equal(displayText('SPENCER / WING / RICK / HOPE'),'屎潘蛇 / 翅膀 / 瑞克 / 希望');
  const unchanged='kind hopeful Wingman Rickshaw wing rage_wing WingFeature ./assets/Wing.png https://example.test/Wing?Kind=Hope';
  assert.equal(displayText(unchanged),unchanged);
  assert.equal(displayText('空降主管／資深空降主管／禾多人生'),'高階主管／資深高階主管／移動人生');
@@ -142,7 +143,7 @@ test('all public collections can be displayed with aliases while original catalo
 test('searchable unlocked stories and certificate text use the same public names as the story screen',()=>{
  const ending=ENDINGS.find(row=>/Rick/.test(row.body));assert.ok(ending);
  const displayed=displayText([ending.title,ending.body,ending.subtitle].join(' '));
- assert.ok(displayed.includes('老闆乾兒子'));assert.ok(!displayed.includes('Rick'));
+ assert.ok(displayed.includes('瑞克'));assert.ok(!displayed.includes('Rick'));
  assert.equal(displayText('老闆乾兒子'),displayText('Rick'));
  const certificate=displayText('Wing簽收：資深空降主管。');
  assert.equal(certificate,'翅膀簽收：資深高階主管。');

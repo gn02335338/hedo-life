@@ -73,7 +73,7 @@ for(const mobile of [false,true]){
   assert.equal([...html.matchAll(/class="role-card /g)].length,roles.ROLES.length);
   for(const id of BACKOFFICE_ROLE_IDS_V28){
    await app.role(id);await app.action('roll');const candidate=app.candidate();html=app.html();
-   assert.equal(candidate.roleId,id);assert.match(candidate.seed,/^e28-/);assert.ok(html.includes(display(roles.ROLE_MAP[id].name)));
+   assert.equal(candidate.roleId,id);assert.match(candidate.seed,/^e29-/);assert.ok(html.includes(display(roles.ROLE_MAP[id].name)));
    assert.match(html,/骰子點數/);assert.match(html,/面試談好的月薪/);assert.doesNotMatch(html,/改派機率|成功率|[0-9]+\s*[%％]/);
    assert.equal(engine.validRun(candidate),true);await app.action('start');
    assert.equal(app.state().roleId,id);assert.equal(app.state().seed,candidate.seed);assert.ok(app.state().runId);
@@ -176,6 +176,6 @@ test('random occupation draw includes all four new jobs and the hidden executive
   const index=roles.ROLES.findIndex(role=>role.id===id),app=await appHarness({random:(index+.5)/roles.ROLES.length});
   await app.action('new');assert.doesNotMatch(app.html(),/data-role="executive"/);
   await app.role('random');await app.action('roll');assert.equal(app.candidate().roleId,id);
-  assert.ok(app.html().includes(display(roles.ROLE_MAP[id].name)));assert.match(app.candidate().seed,/^e28-/);
+  assert.ok(app.html().includes(display(roles.ROLE_MAP[id].name)));assert.match(app.candidate().seed,/^e29-/);
  }
 });

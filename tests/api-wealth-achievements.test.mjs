@@ -1,3 +1,4 @@
+import {ObservationStore} from '../worker/observations.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
@@ -35,7 +36,7 @@ function harness(t){
  const db=new DatabaseSync(':memory:');t.after(()=>db.close());db.exec('PRAGMA foreign_keys = ON');
  const sql={exec(query,...args){let rows=[];if(!args.length&&query.includes(';'))db.exec(query);else{const statement=db.prepare(query);if(statement.columns().length)rows=statement.all(...args);else statement.run(...args);}return{toArray:()=>rows,one:()=>{assert.equal(rows.length,1);return rows[0];}};}};
  const storage={sql,transactionSync(fn){db.exec('BEGIN IMMEDIATE');try{const result=fn();db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}},async getAlarm(){return null;},async setAlarm(){}};
- const scope=vm.createContext({DurableObject:class{constructor(context){this.ctx=context;}},replayRun,VERSION,MAX_TURNS,ROLE_MAP,ENDINGS,...http,validateFeedback,validatePublisherToken,FeedbackStore,AchievementStore,CharacterStore,crypto,Response,Request,URL,Date});
+ const scope=vm.createContext({DurableObject:class{constructor(context){this.ctx=context;}},replayRun,VERSION,MAX_TURNS,ROLE_MAP,ENDINGS,...http,validateFeedback,validatePublisherToken,FeedbackStore,AchievementStore,CharacterStore,ObservationStore,crypto,Response,Request,URL,Date});
  vm.runInContext(workerSource,scope);const archive=new scope.HedoArchive({storage,blockConcurrencyWhile:fn=>fn()},{});
  const call=async(path,{method='GET',token,body}={})=>{
   archive.rate=new http.RateGuard();const headers={};if(token)headers.Authorization=`Bearer ${token}`;if(body)headers['Content-Type']='application/json';

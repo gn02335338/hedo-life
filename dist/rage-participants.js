@@ -31,6 +31,9 @@ const GROUPS = Object.freeze({
   'admin28-extension-grandeur': Object.freeze(['wing', 'jenjen', 'erich', 'sonny']),
   'admin28-supply-minimum': Object.freeze(['wing', 'jenjen']),
   'admin28-seat-key': Object.freeze(['sophie', 'sonny']),
+  'patronage-application': Object.freeze(['wing', 'hope', 'rick']),
+  'rick29-protected-report': Object.freeze(['rick', 'owen']),
+  'rick29-pm-family-tree': Object.freeze(['rick', 'cindy']),
 });
 const EXIT_TEAM = Object.freeze(['erich', 'jenjen', 'sonny']);
 

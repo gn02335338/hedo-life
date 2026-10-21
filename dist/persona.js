@@ -7,7 +7,7 @@ export const PERSONAS = Object.freeze(Object.fromEntries([
  ['erich','法師','法務長'],
  ['sonny','阿福','MIS','史冊裡也叫桑尼。工單、點名和腕力賽，各有一套尚待補充的說法。'],
  ['jenjen','真真','行政長'],
- ['rick','老闆乾兒子','技術資深經理'],
+ ['rick','瑞克','老闆乾兒子'],
  ['kind','阿良','技術經理'],
  ['hope','希望','HR長'],
  ['jack','傑克','研發部經理'],
@@ -58,7 +58,7 @@ export function replayText(value=''){return proseText(value,renameCopy);}
 // Skip URLs, asset paths and identifiers while rendering both saved aliases
 // and original names with the current public name.
 export function displayText(value=''){
- return proseText(value,part=>renameCopy(part).replace(/(?<![A-Za-z0-9_])Moon\s+Dog(?![A-Za-z0-9_])/g,'真真').replace(displayNamePattern,name=>displayNames[name]).replaceAll('蘇菲','紅茶').replaceAll('顧問教授','林澤教授').replaceAll('遊戲月薪','月薪'));
+ return proseText(value,part=>renameCopy(part).replace(/(?<![A-Za-z0-9_])Moon\s+Dog(?![A-Za-z0-9_])/g,'真真').replace(displayNamePattern,name=>displayNames[name]).replaceAll('蘇菲','紅茶').replaceAll('老闆乾兒子','瑞克').replaceAll('顧問教授','林澤教授').replaceAll('遊戲月薪','月薪'));
 }
 
 function copyFields(value,keys){

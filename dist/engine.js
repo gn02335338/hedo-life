@@ -28,6 +28,7 @@ import { selectWorkEventV21 } from './work-events-v21.js';
 import { getSalaryAdviceV24 } from './salary-advice-v24.js';
 import { getMoodCollapseV25, getMoodSelfDestructV25, moodCollapseProfileV25 } from './meltdown-v25.js';
 import { MEAL_GUEST_IDS_V25, MEAL_EVENTS_V25, withMealEntryV25, getMealV25, withMealRageCopyV25 } from './meals-v25.js';
+import { PATRONAGE_EVENT_V29, patronageTitleV29, canKindDarkInviteV29, patronageWorkCountV29, patronageEligibleV29, withPatronageEntryV29, getPatronageEventV29, withGenderContextV29 } from './patronage-v29.js';
 import { WEALTH_EVENTS_V27, wealthEligibilityV27, getWealthEventV27, withWealthEntryV27 } from './wealth-exit-v27.js';
 export {raiseAvailability} from './salary-raise-v19.js';
 export const VERSION = 3;
@@ -36,7 +37,7 @@ export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e28-')?28:run.seed.startsWith('e27-')?27:run.seed.startsWith('e26-')?26:run.seed.startsWith('e25-')?25:run.seed.startsWith('e24-')?24:run.seed.startsWith('e23-')?23:run.seed.startsWith('e22-')?22:run.seed.startsWith('e21-')?21:run.seed.startsWith('e20-')?20:run.seed.startsWith('e19-')?19:run.seed.startsWith('e18-')?18:run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const contentRules = run => run.seed.startsWith('e29-')?29:run.seed.startsWith('e28-')?28:run.seed.startsWith('e27-')?27:run.seed.startsWith('e26-')?26:run.seed.startsWith('e25-')?25:run.seed.startsWith('e24-')?24:run.seed.startsWith('e23-')?23:run.seed.startsWith('e22-')?22:run.seed.startsWith('e21-')?21:run.seed.startsWith('e20-')?20:run.seed.startsWith('e19-')?19:run.seed.startsWith('e18-')?18:run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 // Leave three full work scenes for improvement, then review before the finale.
@@ -48,7 +49,7 @@ function salaryCutTarget(run,percent){return contentRules(run)>=25?Math.max(1,Ma
 const c=(text,detail,result,delta={},effect=null,flags=[])=>({text,detail,result,delta,effect,flags});
 const e=(id,title,body,wing,choices,kind='crisis',speaker=null)=>({id,title,body,wing,speaker:speaker||({'crisis-boss':'exit-team',paperwork:'exit-team','pip-review':'hope','pip-passed':'hope','salary-cut':'hope','salary-final':'hope'}[id]||'wing'),choices,kind,era:kind==='onboarding'?'入職報到':kind==='career'?'人事異動':'突發人事事件',sourceIds:[]});
 const conversationalTarget=(run,event)=>contentRules(run)>=23?rageTargetForV23(event):contentRules(run)>=22?rageTargetForV22(event):contentRules(run)>=20?rageTargetForV20(event):contentRules(run)>=16?rageTargetForV16(event):rageTargetFor(event);
-export function jobTitle(run){if(contentRules(run)>=16)return displayText(careerTitle(run));if(contentRules(run)>=8)return careerTitle(run);const role=ROLE_MAP[run.actualRoleId];return run.assignment==='assistant'?role.assistantTitle:role.ladder[Math.min(run.rank,role.ladder.length-1)];}
+export function jobTitle(run){if(contentRules(run)>=29&&patronageTitleV29(run))return patronageTitleV29(run);if(contentRules(run)>=16)return displayText(careerTitle(run));if(contentRules(run)>=8)return careerTitle(run);const role=ROLE_MAP[run.actualRoleId];return run.assignment==='assistant'?role.assistantTitle:role.ladder[Math.min(run.rank,role.ladder.length-1)];}
 export function bossLabel(n){return n<=12?'準備找你談談':n<30?'看誰都不順眼':n<60?'今天還算陰天':n<85?'龍心尚可':'聖眷正濃';}
 export function createRun(roleId,seed=Date.now()){
  const role=ROLE_MAP[roleId];if(!role||role.minRules>contentRules({seed:String(seed).slice(0,32)}))throw new Error('Unknown role');
@@ -74,6 +75,7 @@ export function createRun(roleId,seed=Date.now()){
  if(contentRules(run)>=24)run.salaryAdvice=null;
  if(contentRules(run)>=25)run.mealContext=null;
  if(contentRules(run)>=27)run.wealthReturnEventId=null;
+ if(contentRules(run)>=29){run.characterGender=roll(run)<.5?'male':'female';run.patronage=null;run.patronageContext=null;}
  return run;
 }
 function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta={}){
@@ -84,6 +86,7 @@ function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta
 }
 function rawGetEvent(run){
  if(!run||run.completed)return null;
+ if(contentRules(run)>=29&&run.eventId===PATRONAGE_EVENT_V29)return getPatronageEventV29(run);
  if(WEALTH_EVENTS_V27.includes(run.eventId)){
   if(contentRules(run)<27||!run.wealthReturnEventId)throw new Error('Invalid wealth departure');
   return getWealthEventV27(run);
@@ -179,10 +182,10 @@ function rawGetEvent(run){
  c('先不要升。我只想把下班時間保住。','心情與體力回復；偷懶能力增加。','你禮貌拒絕了「被更多人找到」的權利。公司少一位主管，你多一個晚上。',{mood:12,energy:10,slack:10,boss:-6},'declinePromotion')
  ],'career');}
  case 'kind-break':{
- if(contentRules(run)<6||!run.breakReturnEventId)throw new Error('Invalid Kind break');
+ if(contentRules(run)<6||!run.breakReturnEventId||!canKindDarkInviteV29(run))throw new Error('Invalid Kind break');
  return getKindBreak(run);}
  case 'kind-workday':{
- if(contentRules(run)<7||!run.breakReturnEventId)throw new Error('Invalid Kind workday');
+ if(contentRules(run)<7||!run.breakReturnEventId||!canKindDarkInviteV29(run))throw new Error('Invalid Kind workday');
  return getKindBreak(run);}
  case 'self-care':{
  if(!modern||!run.breakReturnEventId)throw new Error('Invalid break');
@@ -214,19 +217,20 @@ function rawGetEvent(run){
  ],'career');
  }
  const event=EVENTS.find(e=>e.id===run.eventId)||FANTASY_EVENTS.find(e=>e.id===run.eventId);
- if(!event||(event.minRules??0)>contentRules(run))throw new Error(`Unknown event ${run.eventId}`);
+ if(!event||(event.minRules??0)>contentRules(run)||(contentRules(run)>=29&&event.requireGender&&event.requireGender!==run.characterGender))throw new Error(`Unknown event ${run.eventId}`);
  if(event===FANTASY_EVENTS[3])return {...event,kind:'fantasy',choices:[...event.choices,c('不去交易所。我的人生另有用途。','選擇職涯、離職或隱藏結局。','你從口袋裡拿出那張舊清單，翻到背面。空白，剛好可以寫自己的。',{},'careerExit')]};
  return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':'daily'};
 }
 export function getEvent(run){
- const event=rawGetEvent(run);
+ const event=withGenderContextV29(rawGetEvent(run),run);
+ if(contentRules(run)>=29&&event?.id===PATRONAGE_EVENT_V29)return event;
  if(contentRules(run)>=27&&WEALTH_EVENTS_V27.includes(event?.id))return event;
  if(contentRules(run)>=25&&(MEAL_EVENTS_V25.includes(event?.id)||event?.id==='mood-self-destruct'))return event;
  if(contentRules(run)>=24&&event?.id==='low-pay-tip')return event;
  if(contentRules(run)>=20&&(PERSONNEL_SCENES.includes(event?.id)||WATCH_DAILY_IDS.includes(event?.id)||event?.id==='pip-passed'))return event;
  if(contentRules(run)>=19&&RAISE_EVENTS.includes(event?.id))return event;
  if(contentRules(run)>=18&&['mood-collapse','crisis-mood','self-care'].includes(event?.id))return event;
- if(contentRules(run)>=17&&(['career-review','rank-exit','career-step-down'].includes(event?.id)||event?.id.startsWith('career-duty-')))return contentRules(run)>=27?withWealthEntryV27(event,run):event;
+ if(contentRules(run)>=17&&(['career-review','rank-exit','career-step-down'].includes(event?.id)||event?.id.startsWith('career-duty-')))return withPatronageEntryV29(contentRules(run)>=27?withWealthEntryV27(event,run):event,run);
  const edited=event&&contentRules(run)>=5?applyEventCopy(event,run,{jobTitle,educationLabel}):event;
  const wild=edited&&contentRules(run)>=12?applyWildOptions(edited,run):edited;
  const copied=contentRules(run)>=15?applyCopyV15(wild,run):wild;
@@ -239,7 +243,7 @@ function nextNormal(run){
  if(contentRules(run)>=20&&run.flags.floor_watch)return watchNextEvent(run);
  if(run.turn>=20&&run.turn<MAX_TURNS)return FANTASY_EVENTS[run.turn-20].id;
  if(run.turn>=MAX_TURNS)return contentRules(run)>=8?'rank-exit':'career-exit';
- const supported=ev=>(ev.minRules??0)<=contentRules(run)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0))&&(contentRules(run)<8||((ev.minRank??0)<=legacyCareerRank(run)&&(ev.maxRank??4)>=legacyCareerRank(run)));
+ const supported=ev=>(ev.minRules??0)<=contentRules(run)&&(!ev.requireGender||contentRules(run)>=29&&ev.requireGender===run.characterGender)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0))&&(contentRules(run)<8||((ev.minRank??0)<=legacyCareerRank(run)&&(ev.maxRank??4)>=legacyCareerRank(run)));
  const matchesRole=ev=>!ev.roles||ev.roles.includes(run.actualRoleId)||(contentRules(run)<21&&ev.roles.includes(run.roleId));
  let pool=EVENTS.filter(ev=>supported(ev)&&!run.seen.includes(ev.id)&&(ev.minTurn??0)<=run.turn&&(ev.maxTurn??99)>=run.turn&&matchesRole(ev));
  if(!pool.length)pool=EVENTS.filter(ev=>supported(ev)&&matchesRole(ev));
@@ -251,7 +255,7 @@ function rankCompatibleReturn(run,eventId){
  const event=EVENTS.find(candidate=>candidate.id===eventId);
  return event&&((event.minRank??0)>legacyCareerRank(run)||(event.maxRank??4)<legacyCareerRank(run))?nextNormal(run):eventId;
 }
-function finish(run,family){run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;if(rules2(run))run.breakReturnEventId=null;if(contentRules(run)>=13){run.rageContext=null;run.banquetReturnEventId=null;}if(contentRules(run)>=18)run.meltdownReturnEventId=null;if(contentRules(run)>=19)run.raiseContext=null;if(contentRules(run)>=20)run.personnelPending=null;if(contentRules(run)>=24)run.salaryAdvice=null;if(contentRules(run)>=25)run.mealContext=null;if(contentRules(run)>=27)run.wealthReturnEventId=null;return run;}
+function finish(run,family){run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;if(rules2(run))run.breakReturnEventId=null;if(contentRules(run)>=13){run.rageContext=null;run.banquetReturnEventId=null;}if(contentRules(run)>=18)run.meltdownReturnEventId=null;if(contentRules(run)>=19)run.raiseContext=null;if(contentRules(run)>=20)run.personnelPending=null;if(contentRules(run)>=24)run.salaryAdvice=null;if(contentRules(run)>=25)run.mealContext=null;if(contentRules(run)>=27)run.wealthReturnEventId=null;if(contentRules(run)>=29)run.patronageContext=null;return run;}
 export function endingEligibility(run,target){const s=run.stats;const common=s.energy>=20&&s.cash>=30&&s.skill>=65&&s.trust>=55;
  if(target==='nasdaq')return common&&s.dream>=70;
  if(target==='taiwan')return common&&s.dream>=45;
@@ -293,16 +297,16 @@ export function applyChoice(run,index){
   }else chanceOutcome='ordinary';
   const weather=WEATHER[Math.floor(roll(next)*WEATHER.length)];change('weather',contentRules(next)>=18?'翅膀今日天氣':'老闆今日天氣',{boss:weather.delta});next.lastWeather={...weather};
   if(next.roleId==='executive'&&next.turn<=6){change('parachute','空降蜜月退潮',{boss:-12,trust:-3});next.lastWeather.text+=' 空降蜜月退潮，連「新氣象」都開始聽起來像罪名。';next.lastWeather.delta-=12;}
-  if(next.assignment==='assistant')change('assignment','職稱落差',{mood:-2});
+  if(next.assignment==='assistant'&&!(contentRules(next)>=29&&next.patronage))change('assignment','職稱落差',{mood:-2});
   if(modern){
-   const drain=contentRules(next)>=18?3+Math.floor(roll(next)*6):4+Math.floor(roll(next)*4);change('workday','又上了一天班',{mood:-drain});
+   const drain=contentRules(next)>=18?3+Math.floor(roll(next)*6):4+Math.floor(roll(next)*4);change('workday','又上了一天班',{mood:-drain});if(contentRules(next)>=29&&next.patronage)change('patronage-perk','特殊任用：少接一輪額外交辦',{mood:Math.min(3,drain-1),energy:2});
    if(next.pip?.active)change('pip-pressure','PIP額外壓力',{mood:-3});
    if(next.stats.energy<=25)change('fatigue','疲勞累積',{mood:-2});
    if(next.salaryCut?.status==='accepted')change('pay-cut','降薪後的悶氣',{mood:-2});
   }
   if(contentRules(next)>=18){const pulse=moodEnergyPulseV18(roll(next));change('volatility',pulse.label,pulse.delta);result+=' '+pulse.text;flag(next,pulse.delta.mood>0?'volatility_recovery':'volatility_shock');}
   if(contentRules(next)>=20&&WATCH_DAILY_IDS.includes(event.id))flag(next,'floor_watch_days');
-  if(!(contentRules(next)>=20&&next.flags.floor_watch)&&contentRules(next)>=8&&(contentRules(next)>=17||next.assignment!=='assistant')){const stage=careerStage(next);flag(next,`career_work_${next.rank}`);change('career-pressure',`${stage.label}的${contentRules(next)>=17&&next.rank<4?'專業責任':'管理責任'}`,stage.pressure);}
+  if(!(contentRules(next)>=20&&next.flags.floor_watch)&&!(contentRules(next)>=29&&next.patronage)&&contentRules(next)>=8&&(contentRules(next)>=17||next.assignment!=='assistant')){const stage=careerStage(next);flag(next,`career_work_${next.rank}`);change('career-pressure',`${stage.label}的${contentRules(next)>=17&&next.rank<4?'專業責任':'管理責任'}`,stage.pressure);}
   if(contentRules(next)>=9&&!(contentRules(next)>=20&&next.flags.floor_watch))flag(next,'career_service');
   // A continuing low mood is one dispute, not a new PIP every cooldown.
   // Only an actual workday outside PIP can establish a fresh recovery.
@@ -371,6 +375,15 @@ export function applyChoice(run,index){
   if(effect==='raiseOffset')next.raiseContext.outcome='offset';
   if(effect==='raiseGrant'){const from=next.pay;next.pay=next.raiseContext.offerPay;next.basePay=Math.max(1,Math.round(next.pay/careerLevels(next)[next.rank].payMultiplier));flag(next,'raises');result+=` 書面調薪生效：遊戲月薪 ${from}K → ${next.pay}K。職級維持${jobTitle(next)}，之後的薪資入帳會使用新月薪。`;}
  }
+ if(contentRules(next)>=29&&['patronageAppoint','patronageReject'].includes(effect)){
+  if(event.id!==PATRONAGE_EVENT_V29||!next.patronageContext)throw new Error('Invalid patronage result');
+  flag(next,'patronage_attempts');
+  if(effect==='patronageAppoint'){
+   const fromPay=next.pay,appointedPay=Math.min(500,Math.max(fromPay+8,Math.round(fromPay*1.15))),title=next.characterGender==='female'?'乾女兒':'乾兒子';
+   next.patronage={title,historyIndex:next.history.length,fromPay,appointedPay};next.pay=appointedPay;next.basePay=Math.min(300,Math.max(1,Math.round(next.pay/careerLevels(next)[next.rank].payMultiplier)));
+   result+=` 正式任用：${jobTitle(run)} → ${title}；月薪 ${fromPay}K → ${appointedPay}K。原本的專業職級保留，之後薪資入帳使用新月薪，額外交辦壓力也會減輕。`;
+  }
+ }
  if(contentRules(next)>=18){const correction=abilityRebalanceV18(before,next.stats);if(Object.values(correction).some(value=>value!==0)){change('ability-tradeoff','時間有限，三種本事互相擠壓',correction);flag(next,'resource_friction_count');}if(spentThisChoice>0)flag(next,'cash_spent_total',spentThisChoice);}
  let family=ENDINGS.some(e=>e.family===effect)?effect:null;
  const rageWorld=contentRules(next)>=14&&(effect==='rageAftermath'||event.kind==='rage-world');
@@ -400,6 +413,15 @@ function advanceCore(run){
  if(!run.pending||run.completed)return run;
  const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(next.pendingFamily)return finish(next,next.pendingFamily);
+ if(contentRules(next)>=29&&effect==='patronageApply'){
+  if(last.eventId!=='career-review'||!patronageEligibleV29(next)||!next.resumeEventId)throw new Error('Invalid patronage entry');
+  next.patronageContext={returnEventId:next.resumeEventId,origin:'career',historyLength:next.history.length};next.resumeEventId=null;
+  flag(next,'patronage_offers');next.flags.patronage_last_offer_work=patronageWorkCountV29(next);next.eventId=PATRONAGE_EVENT_V29;return next;
+ }
+ if(contentRules(next)>=29&&last.eventId===PATRONAGE_EVENT_V29&&['patronageAppoint','patronageReject','patronageReturn'].includes(effect)){
+  if(!next.patronageContext)throw new Error('Missing patronage return');
+  next.eventId=next.patronageContext.returnEventId;next.patronageContext=null;return next;
+ }
  if(contentRules(next)>=27&&['wealthPlan','wealthStart','wealthRetire','wealthBack','wealthReturn'].includes(effect)){
   if(effect==='wealthPlan'){
    const eligibility=wealthEligibilityV27(next);
@@ -530,7 +552,7 @@ function advanceCore(run){
  if(normal&&!next.pip?.active&&!next.salaryCutOffered&&(contentRules(next)<25||next.pay>1)&&next.turn>=5&&next.turn<18&&next.stats.boss<55&&roll(next)<.3){
   const percent=15+Math.floor(roll(next)*21);next.salaryCutOffered=true;next.salaryCut={percent,from:next.pay,to:salaryCutTarget(next,percent),status:'pending'};next.resumeEventId=next.eventId;next.eventId='salary-cut';return next;
  }
- if(!(contentRules(next)>=20&&next.flags.floor_watch)&&contentRules(next)>=8&&normal&&!next.pip?.active&&next.turn>=3&&next.turn<careerReviewCutoff(next)&&careerReviewWait(next)&&next.rank<careerMaxRank(next)&&(contentRules(next)<9||careerReadiness(next).ready)&&(contentRules(next)<10||careerInvitationEligible(next))){next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
+ if(!(contentRules(next)>=20&&next.flags.floor_watch)&&!(contentRules(next)>=29&&next.patronage)&&contentRules(next)>=8&&normal&&!next.pip?.active&&next.turn>=3&&next.turn<careerReviewCutoff(next)&&careerReviewWait(next)&&next.rank<careerMaxRank(next)&&(contentRules(next)<9||careerReadiness(next).ready)&&(contentRules(next)<10||careerInvitationEligible(next))){next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
  if(contentRules(next)<8&&normal&&!next.pip?.active&&next.turn<20&&next.turn-next.lastPromotion>=4&&(next.turn%6===0||next.stats.boss>=90)&&(next.rank<4)) {next.resumeEventId=next.eventId;next.eventId='promotion-review';return next;}
  if(contentRules(next)>=8&&last.kind==='onboarding'&&next.roleId==='executive'&&!next.flags.career_initial_briefing){flag(next,'career_initial_briefing');next.resumeEventId=next.eventId;next.eventId=`career-duty-${contentRules(next)>=17?5:2}`;return next;}
  if(normal&&occasionalEducation(next)&&!next.educationReviewed&&next.turn>=5&&next.turn<=16&&!next.pip&&!next.resumeEventId&&!next.exitReturnEventId&&getEvent(next)?.kind==='daily'&&roll(next)<.1){next.resumeEventId=next.eventId;next.eventId='education-review';}
@@ -539,7 +561,7 @@ function advanceCore(run){
  if(contentRules(next)>=13&&last.kind==='daily'&&next.turn>=10&&next.turn<=18&&!next.flags.banquet_seen&&!next.pip?.active&&!next.resumeEventId&&!next.exitReturnEventId&&!next.breakReturnEventId&&!next.banquetReturnEventId&&getEvent(next)?.kind==='daily'&&roll(next)<.36){
   next.flags.banquet_seen=1;next.banquetReturnEventId=next.eventId;next.eventId='banquet-welcome';return next;
  }
- if(contentRules(next)>=7&&last.kind==='daily'&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&!next.resumeEventId&&!next.exitReturnEventId&&!next.breakReturnEventId&&next.lastBreakTurn!==next.turn&&next.turn-next.lastKindInviteTurn>=KIND_WORKDAY_COOLDOWN&&getEvent(next)?.kind==='daily'&&roll(next)<KIND_WORKDAY_CHANCE){
+ if(canKindDarkInviteV29(next)&&contentRules(next)>=7&&last.kind==='daily'&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&!next.resumeEventId&&!next.exitReturnEventId&&!next.breakReturnEventId&&next.lastBreakTurn!==next.turn&&next.turn-next.lastKindInviteTurn>=KIND_WORKDAY_COOLDOWN&&getEvent(next)?.kind==='daily'&&roll(next)<KIND_WORKDAY_CHANCE){
   next.breakReturnEventId=next.eventId;next.eventId='kind-workday';next.lastKindInviteTurn=next.turn;
  }
  return next;
@@ -560,11 +582,14 @@ export function advance(run){
    if(eligibility.retirement)next.flags.wealth_retire_notice=1;
   }
  }
+ if(run.pending&&contentRules(next)>=29&&!next.pending&&!next.completed&&['daily','fantasy'].includes(run.history.at(-1)?.kind)&&personnelSafe(next,getEvent(next))&&patronageEligibleV29(next)&&roll(next)<.2){
+  next.patronageContext={returnEventId:next.eventId,origin:'automatic',historyLength:next.history.length};flag(next,'patronage_offers');next.flags.patronage_last_offer_work=patronageWorkCountV29(next);next.eventId=PATRONAGE_EVENT_V29;
+ }
  return next;
 }
 export function canRequestBreak(run){return !!(run&&rules2(run)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getEvent(run)?.kind));}
-export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;const invite=contentRules(next)>=6&&!(contentRules(next)>=7&&next.lastKindInviteTurn===next.turn)&&roll(next)<KIND_BREAK_CHANCE;next.eventId=invite?'kind-break':'self-care';if(invite&&contentRules(next)>=7)next.lastKindInviteTurn=next.turn;return next;}
-export function canRequestCareer(run){return !!(run&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getEvent(run)?.kind));}
+export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;const invite=canKindDarkInviteV29(next)&&contentRules(next)>=6&&!(contentRules(next)>=7&&next.lastKindInviteTurn===next.turn)&&roll(next)<KIND_BREAK_CHANCE;next.eventId=invite?'kind-break':'self-care';if(invite&&contentRules(next)>=7)next.lastKindInviteTurn=next.turn;return next;}
+export function canRequestCareer(run){return !!(run&&!(contentRules(run)>=29&&run.patronage)&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getEvent(run)?.kind));}
 export function requestCareer(run){if(!canRequestCareer(run))return run;const next=structuredClone(run);next.actions.push({type:'career'});next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
 export function canRequestRaise(run){return raiseAvailability(run).allowed;}
 export function requestRaise(run){if(!canRequestRaise(run))return run;const next=structuredClone(run);next.actions.push({type:'raise'});next.raiseContext={eventId:run.eventId,fromPay:run.pay,offerPay:null,percent:null,outcome:null,view:null,approach:null};next.eventId='raise-request';return next;}
@@ -599,7 +624,7 @@ export function requestRage(run,target){
  const next=structuredClone(current);next.actions.push({type:'rage'});
  next.rageContext={eventId:next.eventId,speaker:getEvent(next)?.speaker||'wing'};next.eventId='rage-menu';return next;
 }
-export function requestExit(run){if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...MEAL_EVENTS_V25]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestExit(run){if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...MEAL_EVENTS_V25]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 export function replayRun(roleId,seed,actions){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -640,6 +665,29 @@ export function validRun(run){
   if(rules2(run)&&(!Number.isInteger(run.lastBreakTurn)||run.lastBreakTurn< -1||run.lastBreakTurn>run.turn||!(run.breakReturnEventId===null||typeof run.breakReturnEventId==='string')))return false;
   if(contentRules(run)>=7&&(!Number.isInteger(run.lastKindInviteTurn)||run.lastKindInviteTurn< -1||run.lastKindInviteTurn>run.turn))return false;
   const currentEventId=contentRules(run)>=18&&run.meltdownReturnEventId?run.meltdownReturnEventId:contentRules(run)>=13&&run.rageContext?run.rageContext.eventId:run.eventId;
+  if(contentRules(run)>=29){
+   if(!['male','female'].includes(run.characterGender)||createRun(run.roleId,run.seed).characterGender!==run.characterGender)return false;
+   const appointment=run.patronage,context=run.patronageContext,offers=run.flags.patronage_offers||0,attempts=run.flags.patronage_attempts||0;
+   if(!Number.isInteger(offers)||offers<0||offers>2||!Number.isInteger(attempts)||attempts<0||attempts>offers)return false;
+   if(offers>0&&(!Number.isInteger(run.flags.patronage_last_offer_work)||run.flags.patronage_last_offer_work<3||run.flags.patronage_last_offer_work>patronageWorkCountV29(run)))return false;
+   const attemptsInHistory=run.history.filter(row=>row.eventId===PATRONAGE_EVENT_V29&&[0,1].includes(row.choiceIndex));
+   if(attemptsInHistory.length!==attempts)return false;
+   if(appointment!==null){
+    if(!appointment||typeof appointment!=='object'||Array.isArray(appointment)||Object.keys(appointment).sort().join(',')!=='appointedPay,fromPay,historyIndex,title')return false;
+    if(appointment.title!==(run.characterGender==='female'?'乾女兒':'乾兒子')||!Number.isInteger(appointment.historyIndex)||appointment.historyIndex<1||appointment.historyIndex>=run.history.length)return false;
+    const row=run.history[appointment.historyIndex],previous=run.history[appointment.historyIndex-1];
+    if(!Number.isInteger(appointment.fromPay)||appointment.fromPay<1||appointment.fromPay>500||appointment.appointedPay!==Math.min(500,Math.max(appointment.fromPay+8,Math.round(appointment.fromPay*1.15))))return false;
+    if(previous?.pay!==appointment.fromPay||row?.eventId!==PATRONAGE_EVENT_V29||row.kind!=='career'||row.speaker!=='wing'||![0,1].includes(row.choiceIndex)||row.chanceOutcome!=='success'||row.jobTitle!==appointment.title||row.pay!==appointment.appointedPay)return false;
+   }else if(attemptsInHistory.some(row=>row.chanceOutcome==='success'))return false;
+   if(context!==null){
+    if(!context||typeof context!=='object'||Array.isArray(context)||Object.keys(context).sort().join(',')!=='historyLength,origin,returnEventId'||!['automatic','career'].includes(context.origin)||typeof context.returnEventId!=='string'||context.returnEventId===PATRONAGE_EVENT_V29||!Number.isInteger(context.historyLength)||context.historyLength<1||context.historyLength>run.history.length)return false;
+    if(currentEventId!==PATRONAGE_EVENT_V29||!['daily','fantasy'].includes(getEvent({...run,eventId:context.returnEventId,patronageContext:null})?.kind))return false;
+    const entry=run.history[context.historyLength-1];
+    if(context.origin==='career'?(entry.eventId!=='career-review'||entry.choiceIndex!==4):!['daily','fantasy'].includes(entry.kind))return false;
+    if(run.resumeEventId||run.exitReturnEventId||run.breakReturnEventId||run.banquetReturnEventId||run.wealthReturnEventId||run.raiseContext||offers<1)return false;
+   }else if(currentEventId===PATRONAGE_EVENT_V29)return false;
+   if(!canKindDarkInviteV29(run)&&['kind-break','kind-workday'].includes(currentEventId))return false;
+  }
   if(contentRules(run)>=24){
    const advice=run.salaryAdvice;
    if(advice!==null){

@@ -1,8 +1,9 @@
 // Published saves keep their five-stage rules; new lives use the full ladder.
 import * as legacy from './career.js';
 import * as current from './career-v17.js';
+import {patronageTitleV29} from './patronage-v29.js';
 export const {CAREER_LEVELS,CAREER_LADDERS,CAREER_FAMILIES}=legacy;
-export const fullCareer=run=>/^e(?:17|18|19|20|21|22|23|24|25|26|27|28)-/.test(run?.seed||'');
+export const fullCareer=run=>/^e(?:17|18|19|20|21|22|23|24|25|26|27|28|29)-/.test(run?.seed||'');
 export const careerLevels=run=>fullCareer(run)?current.CAREER_LEVELS_V17:legacy.CAREER_LEVELS;
 export const careerLadder=run=>(fullCareer(run)?current.CAREER_LADDERS_V17:legacy.CAREER_LADDERS)[run.actualRoleId];
 export const careerFamilies=run=>fullCareer(run)?current.CAREER_FAMILIES_V17:legacy.CAREER_FAMILIES;
@@ -10,9 +11,9 @@ export const careerMaxRank=run=>fullCareer(run)?7:4;
 export const careerReviewCutoff=run=>fullCareer(run)?24:20;
 export const legacyCareerRank=run=>fullCareer(run)?[0,0,0,0,1,2,3,4][run.rank]:run.rank;
 const dispatch=(name,run,...args)=>(fullCareer(run)?current[`${name}V17`]:legacy[name])(run,...args);
-export const careerTitle=(run,...args)=>dispatch('careerTitle',run,...args);
+export const careerTitle=(run,...args)=>patronageTitleV29(run)||dispatch('careerTitle',run,...args);
 export const careerStage=(run,...args)=>dispatch('careerStage',run,...args);
-export const careerInfo=(run,...args)=>dispatch('careerInfo',run,...args);
+export const careerInfo=(run,...args)=>{const info=dispatch('careerInfo',run,...args),title=patronageTitleV29(run);return title?{...info,title,label:'特殊任用',nextTitle:null,underlyingTitle:info.title}:info;};
 export const careerSalary=(run,...args)=>dispatch('careerSalary',run,...args);
 export const careerEndingAvailable=(run,...args)=>dispatch('careerEndingAvailable',run,...args);
 export const careerReadiness=(run,...args)=>dispatch('careerReadiness',run,...args);

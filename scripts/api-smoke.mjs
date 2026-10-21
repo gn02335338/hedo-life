@@ -68,7 +68,7 @@ assert.equal(after.body.endings.find(row => row.id === run.endingId).count, (bef
 assert.ok(after.body.daily.length > 0);
 const serializedStats = JSON.stringify(after.body);
 assert.ok(!serializedStats.includes(player.body.playerId)); assert.ok(!serializedStats.includes(first));
-assert.deepEqual(Object.keys(after.body).sort(), ['averageTurns', 'daily', 'endings', 'players', 'roles', 'totalRuns', 'uniqueEndings'].sort());
+assert.deepEqual(Object.keys(after.body).sort(), ['averageTurns', 'daily', 'endings', 'players', 'roles', 'totalRuns', 'uniqueEndings', 'observatory'].sort());
 
 // Verify the real server can replay the new self-care action, with a separate local identity.
 const restToken=token();
@@ -166,7 +166,7 @@ for(const mode of ['accept','decline','poor']){
 // Use natural, published witnesses for new top-rank, voluntary step-down, and story exits.
 const careerRoutes=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8')).routes;
 for(const ending of ['career_staff-system','career_deputy-system','career_manager-system','career_director-system','career_chief-system','career_staff-executive','second_offer-system','pip_exit-system']){
-  const route=careerRoutes.find(row=>row.ending===ending);assert.ok(route,`expected current witness ${ending}`);assert.ok(route.seed.startsWith('e21-'));
+  const route=careerRoutes.find(row=>row.ending===ending);assert.ok(route,`expected current witness ${ending}`);assert.match(route.seed,/^e(?:21|22|23|24|25|26|27|28|29)-/);
   const completedRun=replayRun(route.roleId,route.seed,route.actions);assert.equal(completedRun.endingId,ending);
   if(ending==='career_chief-system')assert.equal(completedRun.rank,7);
   if(ending==='career_staff-executive')assert.ok(route.actions.some(action=>action.eventId==='career-step-down'));

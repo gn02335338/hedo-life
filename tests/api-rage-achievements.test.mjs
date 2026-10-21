@@ -1,3 +1,4 @@
+import {ObservationStore} from '../worker/observations.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
@@ -62,7 +63,7 @@ function harness(t) {
   const scope = vm.createContext({
     DurableObject: class { constructor(context) { this.ctx = context; } },
     replayRun, VERSION, MAX_TURNS, ROLE_MAP, ENDINGS, ...http,
-    validateFeedback, validatePublisherToken, FeedbackStore, AchievementStore, CharacterStore,
+    validateFeedback, validatePublisherToken, FeedbackStore, AchievementStore, CharacterStore,ObservationStore,
     crypto, Response, Request, URL, Date,
   });
   vm.runInContext(workerSource, scope);

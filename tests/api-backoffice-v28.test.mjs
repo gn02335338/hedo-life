@@ -1,3 +1,4 @@
+import {ObservationStore} from '../worker/observations.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
@@ -45,7 +46,7 @@ function harness(t){
  }};
  const storage={sql,transactionSync(fn){db.exec('BEGIN IMMEDIATE');try{const result=fn();db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}},async getAlarm(){return null;},async setAlarm(){}};
  const context=vm.createContext({DurableObject:class{constructor(ctx){this.ctx=ctx;}},replayRun,VERSION,MAX_TURNS,ROLE_MAP,ENDINGS,
-  ...http,validateFeedback,validatePublisherToken,FeedbackStore,AchievementStore,CharacterStore,crypto,Response,Request,URL,Date});
+  ...http,validateFeedback,validatePublisherToken,FeedbackStore,AchievementStore,CharacterStore,ObservationStore,crypto,Response,Request,URL,Date});
  vm.runInContext(source,context);
  const archive=new context.HedoArchive({storage,blockConcurrencyWhile:fn=>fn()},{});
  const call=async(path,{method='GET',token,body}={})=>{
