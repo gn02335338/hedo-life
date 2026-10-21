@@ -1,0 +1,89 @@
+{
+  "roleId": "design",
+  "seed": "e34-meal-crisis-42",
+  "actions": [
+    {
+      "type": "choice",
+      "eventId": "onboarding",
+      "index": 0
+    },
+    {
+      "type": "break"
+    },
+    {
+      "type": "choice",
+      "eventId": "self-care",
+      "index": 5
+    },
+    {
+      "type": "choice",
+      "eventId": "design-v21-typeface-mood",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "education-scrutiny",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "salary-cut",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "low-pay-tip",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "design-v21-responsive-banner",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "quiz26-encoded-query",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "career-review",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "career-duty-2",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "q26-recreation-budget",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "q26-resume-name-drop",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "mood-collapse",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "quiz26-school-brag",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "career-review",
+      "index": 0
+    },
+    {
+      "type": "choice",
+      "eventId": "helen-handover-horizon",
+      "index": 0
+    }
+  ]
+}

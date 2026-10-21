@@ -211,3 +211,22 @@ test('verified departure categories ignore supplied labels and stay deduplicated
  assert.deepEqual(await h.observatory(),before);assert.equal((await h.call('/api/stats')).body.totalRuns,12);
  assert.equal((await h.call('/api/me',{token:other.token})).body.totalRuns,0);
 });
+
+
+test('published e33 and current e34 completions retain their exact rule cohort and eight-rank observations',async t=>{
+ const h=harness(t),player=await h.register();
+ for(const cohort of [33,34]){
+  const run=early(cohort),runId=randomUUID(),derived=deriveObservation(run);
+  assert.equal(derived.rule_cohort,cohort);assert.equal(derived.career_scheme,'full8');
+  assert.deepEqual(replayRun(run.roleId,run.seed,run.actions),run);
+  const submitted=await h.call('/api/complete',{method:'POST',token:player.token,body:{...proof(run,runId),rule_cohort:999,career_scheme:'legacy5'}});
+  assert.equal(submitted.status,200);assert.equal(submitted.body.totalRuns,cohort-32);
+  const stored=h.sql.exec('SELECT rule_cohort,career_scheme,final_rank FROM run_observations WHERE run_id = ?',runId).one();
+  assert.deepEqual({...stored},{rule_cohort:cohort,career_scheme:'full8',final_rank:run.rank});
+  const duplicate=await h.call('/api/complete',{method:'POST',token:player.token,body:proof(run,runId)});
+  assert.equal(duplicate.status,200);assert.equal(duplicate.body.duplicate,true);assert.equal(duplicate.body.totalRuns,cohort-32);
+ }
+ assert.deepEqual(h.sql.exec('SELECT rule_cohort FROM run_observations ORDER BY rule_cohort').toArray().map(row=>({...row})),[{rule_cohort:33},{rule_cohort:34}]);
+ const observations=await h.observatory();assert.equal(observations.recordedRuns,2);assert.equal(observations.unclassifiedRuns,0);
+ assert.equal(observations.career.full8.reduce((sum,row)=>sum+row.count,0),2);assert.ok(observations.career.legacy5.every(row=>row.count===0));
+});

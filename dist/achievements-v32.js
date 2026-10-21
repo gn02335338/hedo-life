@@ -64,7 +64,7 @@ function spokenProof(history,index){
 }
 
 export function hasCompanyFinaleV32(run,family){
- if(!/^e(?:32|33)-/.test(run?.seed||'')||run.completed!==true||typeof run.roleId!=='string'||!run.roleId||run.endingId!==`${family}-${run.roleId}`||!Object.hasOwn(companyScenes,family))return false;
+ if(!/^e(?:32|33|34)-/.test(run?.seed||'')||run.completed!==true||typeof run.roleId!=='string'||!run.roleId||run.endingId!==`${family}-${run.roleId}`||!Object.hasOwn(companyScenes,family))return false;
  const row=Array.isArray(run.history)?run.history.at(-1):null;
  return Boolean(resolved(row)&&row.choiceIndex<=2&&row.kind==='company'&&row.eventId===companyScenes[family]&&sameOutcome(row,COMPANY_FINALE_LABELS_V32[family],'計畫落地之後')&&row.speaker===({'company-v32-market':'wing','company-v32-buyer':'spencer','company-v32-vietnam':'kind'}[row.eventId]));
 }
@@ -73,7 +73,7 @@ export function hasCompanyFinaleV32(run,family){
 // nearest spoken response binds target and timing to that same attempt; a
 // different person's earlier speech cannot lend its proof to this finale.
 export function deriveAchievementsV32(run){
- if(!/^e(?:32|33)-/.test(run?.seed||''))return [];
+ if(!/^e(?:32|33|34)-/.test(run?.seed||''))return [];
  const history=Array.isArray(run.history)?run.history:[],ids=new Set(),targets=new Set();
  const speechActions=(Array.isArray(run.actions)?run.actions:[]).filter(action=>action?.type==='verbal');
  let lastSpeech=-1,speechCount=0;

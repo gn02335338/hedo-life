@@ -126,7 +126,7 @@ test('the e33 API still honors frozen e32 endings and rejects future, supplied a
  ]){
   const invalid=await h.post(fresh,route,randomUUID(),actions);assert.equal(invalid.status,400);assert.ok(['invalid_actions','invalid_replay'].includes(invalid.body.error));
  }
- const future=await h.call('/api/achievements',{method:'POST',token:fresh.token,body:{runId:randomUUID(),roleId:'sales',seed:'e34-still-unsupported',actions:[{type:'verbal',phase:'event',eventId:'onboarding',version:2}]}});
+ const future=await h.call('/api/achievements',{method:'POST',token:fresh.token,body:{runId:randomUUID(),roleId:'sales',seed:'e35-still-unsupported',actions:[{type:'verbal',phase:'event',eventId:'onboarding',version:2}]}});
  assert.equal(future.status,400);assert.equal(future.body.error,'invalid_actions');
  assert.equal((await h.call('/api/me',{token:fresh.token})).body.totalRuns,0);
 });

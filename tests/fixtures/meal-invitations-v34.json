@@ -1,0 +1,2215 @@
+{
+  "version": 34,
+  "routes": [
+    {
+      "id": "wing-declined",
+      "guest": "wing",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "spencer-declined",
+      "guest": "spencer",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "erich-declined",
+      "guest": "erich",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sonny-accepted",
+      "guest": "sonny",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "jenjen-declined",
+      "guest": "jenjen",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "rick-declined",
+      "guest": "rick",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "kind-declined",
+      "guest": "kind",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "hope-declined",
+      "guest": "hope",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "jack-declined",
+      "guest": "jack",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meimei-declined",
+      "guest": "meimei",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "helen-declined",
+      "guest": "helen",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sophie-declined",
+      "guest": "sophie",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "jonathan-accepted",
+      "guest": "jonathan",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "owen-declined",
+      "guest": "owen",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sam-accepted",
+      "guest": "sam",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sam",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "cindy-accepted",
+      "guest": "cindy",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-0",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-cindy",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sonny-declined",
+      "guest": "sonny",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "jonathan-declined",
+      "guest": "jonathan",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sam-declined",
+      "guest": "sam",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "cindy-declined",
+      "guest": "cindy",
+      "outcome": "declined",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-2",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "wing-accepted",
+      "guest": "wing",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "erich-accepted",
+      "guest": "erich",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "jenjen-accepted",
+      "guest": "jenjen",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jenjen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "rick-accepted",
+      "guest": "rick",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-rick",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "kind-accepted",
+      "guest": "kind",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "hope-accepted",
+      "guest": "hope",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-hope",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "jack-accepted",
+      "guest": "jack",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "meimei-accepted",
+      "guest": "meimei",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "helen-accepted",
+      "guest": "helen",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-helen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "sophie-accepted",
+      "guest": "sophie",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sophie",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "owen-accepted",
+      "guest": "owen",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-owen",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "spencer-accepted",
+      "guest": "spencer",
+      "outcome": "accepted",
+      "roleId": "sales",
+      "seed": "e34-meal-proof-29",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        }
+      ],
+      "completionActions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-spencer",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    }
+  ]
+}

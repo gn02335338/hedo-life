@@ -77,7 +77,7 @@ test('new resolutions cannot be claimed from an old-cohort proof or an unopened 
  for(const actions of [[{type:'choice',eventId:'verbal-v32-aftermath',index:0}],[{type:'choice',eventId:'company-v32-buyer',index:0}],[{type:'verbal',phase:'event',eventId:'onboarding',version:2,severity:3}],[{type:'verbal',phase:'event',eventId:'onboarding',version:2,family:'verbal_boardroom'}]]){
   const rejected=await h.post(player,fresh,randomUUID(),actions);assert.equal(rejected.status,400);assert.ok(['invalid_actions','invalid_replay'].includes(rejected.body.error));
  }
- const future=await h.call('/api/achievements',{method:'POST',token:player.token,body:{runId:randomUUID(),roleId:'system',seed:'e34-not-supported',actions:[{type:'verbal',phase:'event',eventId:'onboarding',version:2}]}});
+ const future=await h.call('/api/achievements',{method:'POST',token:player.token,body:{runId:randomUUID(),roleId:'system',seed:'e35-not-supported',actions:[{type:'verbal',phase:'event',eventId:'onboarding',version:2}]}});
  assert.equal(future.status,400);assert.equal(future.body.error,'invalid_actions');
 });
 

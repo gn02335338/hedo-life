@@ -40,7 +40,8 @@ test('the cast archive contains sixteen alias-only portraits and never lists loc
  for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));assert.ok(html.includes(persona.PERSONAS[id].name));}
  assert.doesNotMatch(html,/Wing|Spencer|Erich|Sonny|JenJen|Rick|Hope|Kind|Jack|美美/);
  assert.doesNotMatch(html,/納斯達克幻想|自願離職陷阱|勉強通關|成功率/);
- assert.match(html,/目前不影響升遷或事件機率/);
+ assert.match(html,/不影響升遷或工作事件抽選/);
+ assert.match(html,/飯局邀約會參考這局的熟悉程度、好感與部門/);
  assert.match(html,/全站角色統計從上線後開始；舊版沒有逐步互動紀錄，不推算/);
  assert.ok(html.indexOf('class="character-card-grid"')<html.indexOf('class="character-ranking-details"'));
  assert.ok(html.indexOf('class="character-card-grid"')<html.indexOf('class="character-book-help"'));
