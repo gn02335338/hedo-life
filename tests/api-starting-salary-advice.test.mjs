@@ -96,7 +96,7 @@ test('the HTTP action envelope accepts only a type-only salary-advice action for
   assert.throws(()=>http.validateCompletion(payload,ROLE_MAP),error=>error.status===400&&error.code==='invalid_actions');
   const response=await h.post(player,route,payload.runId,actions);assert.equal(response.status,400);assert.equal(response.body.error,'invalid_actions');
  }
- for(const seed of ['old-advice','e24-advice','e27-advice','e35-advice']){
+ for(const seed of ['old-advice','e24-advice','e27-advice','e36-advice']){
   const payload={runId:randomUUID(),roleId:'system',seed,actions:[{type:'salary-advice'}]};
   const response=await h.call('/api/achievements',{method:'POST',token:player.token,body:payload});assert.equal(response.status,400);assert.equal(response.body.error,'invalid_actions');
  }

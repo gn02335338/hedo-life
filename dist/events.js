@@ -17,6 +17,8 @@ import { PROFESSION_EVENTS_V21 } from './events-professions-v21.js';
 import { BACKOFFICE_EVENTS_V28 } from './events-backoffice-v28.js';
 import { GENDER_EVENTS_V29 } from './events-gender-v29.js';
 import { AI_EVENTS_V31 } from './events-ai-v31.js';
+import { CAST_EVENTS_V35_A } from './events-cast-v35-a.js';
+import { CAST_EVENTS_V35_B } from './events-cast-v35-b.js';
 const choice = (text, detail, result, delta, flags = []) => ({ text, detail, result, delta, flags });
 
 export const EVENTS = [
@@ -1297,3 +1299,6 @@ EVENTS.push(...GENDER_EVENTS_V29);
 
 // New AI work stays out of every published e30 or earlier draw pool.
 EVENTS.push(...AI_EVENTS_V31);
+
+// New character stories only enter e35 lives; published cohorts keep their pool.
+EVENTS.push(...CAST_EVENTS_V35_A, ...CAST_EVENTS_V35_B);

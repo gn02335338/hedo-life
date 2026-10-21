@@ -21,8 +21,8 @@ const validLine=(line,id)=>{
  assert.doesNotMatch(line,/undefined|null|NaN|https?:\/\/|\/Users\/|\/private\//,id);
 };
 
-test('all 463 daily and four fantasy scenes have distinct, deterministic speech in both phases',()=>{
- assert.equal(EVENTS.length,463);assert.equal(FANTASY_EVENTS.length,4);
+test('all 681 daily and four fantasy scenes have distinct, deterministic speech in both phases',()=>{
+ assert.equal(EVENTS.length,681);assert.equal(FANTASY_EVENTS.length,4);
  const events=[...EVENTS,...FANTASY_EVENTS].map(rendered),targets=new Set();
  for(const phase of phases){
   const lines=[];

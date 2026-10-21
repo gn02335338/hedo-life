@@ -1,5 +1,6 @@
 // Only explicitly co-present characters belong here. A name mentioned in a
 // story or a phone call does not put that person in the room.
+import {PERSONAS} from './persona.js';
 const GROUPS = Object.freeze({
   'meimei-missing-ticket': Object.freeze(['meimei', 'jack']),
   'floor-notice': Object.freeze(['hope', 'sonny']),
@@ -40,6 +41,10 @@ const EXIT_TEAM = Object.freeze(['erich', 'jenjen', 'sonny']);
 export function rageParticipantsFor(event, defaultTarget) {
   if (!defaultTarget) return [];
   if (event?.speaker === 'exit-team') return [...EXIT_TEAM];
+  if(event?.minRules>=35&&Array.isArray(event.participants)){
+    const present=[...new Set(event.participants.filter(id=>Object.hasOwn(PERSONAS,id)))];
+    if(present.includes(event.speaker)&&present.includes(defaultTarget))return present;
+  }
   const group = GROUPS[event?.id];
   if (group?.includes(event?.speaker) && group.includes(defaultTarget)) return [...group];
   return [defaultTarget];

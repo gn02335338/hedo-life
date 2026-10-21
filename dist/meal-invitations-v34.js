@@ -110,7 +110,7 @@ const replies=Object.freeze({
 });
 
 export function withMealInvitationsV34(event,run){
- if(!/^e34-/.test(run?.seed||'')||!['meal-guests-a','meal-guests-b'].includes(event?.id))return event;
+ if(!/^e(?:34|35)-/.test(run?.seed||'')||!['meal-guests-a','meal-guests-b'].includes(event?.id))return event;
  return {...event,
   body:`${run.mealContext?.origin==='crisis-mood'?'你想找個人陪自己喘口氣，先打開聯絡名單。':'你打開聯絡名單，想找個人一起吃晚餐。'}先傳訊息問時間，對方不一定會答應；不熟的人、高層與別部門主管，通常更難約。邀約不花錢，正式用餐才付餐費。同一天每人只問一次，沒約成可以換人，也可以自己吃，不必等誰回覆。`,
   choices:[...event.choices.map(choice=>{

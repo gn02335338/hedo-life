@@ -1,7 +1,7 @@
 // Fictional character traits and a deliberately absurd employment route.
 // Gender belongs to the rolled character, never to the anonymous player.
 export const PATRONAGE_EVENT_V29='patronage-application';
-export const isV29=run=>/^e(?:29|30|31|32|33|34)-/.test(run?.seed||'');
+export const isV29=run=>/^e(?:29|30|31|32|33|34|35)-/.test(run?.seed||'');
 export const characterGenderLabelV29=run=>isV29(run)?({male:'男',female:'女'}[run.characterGender]||'未擲骰'):'未設定';
 export const patronageTitleV29=run=>isV29(run)?run.patronage?.title||null:null;
 export const canKindDarkInviteV29=run=>!isV29(run)||run.characterGender==='male';

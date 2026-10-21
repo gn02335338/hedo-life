@@ -12,7 +12,7 @@ export function wealthEligibilityV27(run){
  const history=Array.isArray(run?.history)?run.history:[];
  const completed=run?.pending?history.slice(0,-1):history;
  const workDays=completed.filter(row=>row.kind==='daily'||row.kind==='fantasy').length;
- const enabled=/^e(?:27|28|29|30|31|32|33|34)-/.test(run?.seed||'');
+ const enabled=/^e(?:27|28|29|30|31|32|33|34|35)-/.test(run?.seed||'');
  const startup=enabled&&run.stats.cash>=75&&workDays>=6;
  const retirement=enabled&&run.stats.cash>=90&&workDays>=10;
  return {startup,retirement,eligible:startup||retirement,workDays};
@@ -45,7 +45,7 @@ const studios={
 
 export function getWealthEventV27(run){
  const eligibility=wealthEligibilityV27(run),s=run.stats;
- if(!/^e(?:27|28|29|30|31|32|33|34)-/.test(run.seed)||!WEALTH_EVENTS_V27.includes(run.eventId))throw new Error('Invalid wealth scene');
+ if(!/^e(?:27|28|29|30|31|32|33|34|35)-/.test(run.seed)||!WEALTH_EVENTS_V27.includes(run.eventId))throw new Error('Invalid wealth scene');
  if(run.eventId==='wealth-plan')return scene('wealth-plan','存款清單上，終於寫得到自己的名字。',
   `你把離職後的計畫攤開。目前存款 ${s.cash}，已完成 ${eligibility.workDays} 個工作回合。創業準備需存款至少 75、完成 6 個工作回合；退休安排需存款至少 90、完成 10 個工作回合。這些是這段人生的故事門檻。今天先選方向，後面還能回來想。`,[
    c('想做自己的生意，先看看要準備什麼。','你打開一張空白計畫表，第一欄寫的是自己想做什麼。還沒花錢，也還沒離職。',{},'wealthStart',{available:eligibility.startup}),
