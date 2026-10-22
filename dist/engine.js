@@ -1,5 +1,6 @@
 import {isWorkGapV50,workGapSurfaceSafeV50,getWorkGapEventV50} from './work-gap-v50.js';
 import {isEnergyRestV53,energyRestWarningV53,getEnergyRestEventV53} from './energy-rest-v53.js';
+import {isEnergySafetyV54,ENERGY_SAFETY_OWED_V54,energySafetyChoiceV54,energySafetyBoundaryV54,energySafetyReturnedBoundaryV54} from './energy-safety-v54.js';
 import {HIDDEN_SCENE_COUNT_V45,getHiddenEncounterEventV45,resolveHiddenEncounterChoiceV45} from './hidden-encounter-v45.js';
 import {scheduledActivityV46,getActivityInvitationEventV46,invitationResultV46,calendarDailyAllowedV46} from './activity-schedule-v46.js';
 import {isPatronageV49,patronageEligibleV49,withPatronageEntryV49,getPatronageEventV49,patronageApplicationOutcomeV49,isPatronageApplicationOutcomeV49} from './patronage-v49.js';
@@ -57,6 +58,7 @@ import { WEALTH_EVENTS_V27, wealthEligibilityV27, getWealthEventV27, withWealthE
 export {raiseAvailability} from './salary-raise-v19.js';
 export {isWorkGapV50} from './work-gap-v50.js';
 export {isEnergyRestV53} from './energy-rest-v53.js';
+export {isEnergySafetyV54} from './energy-safety-v54.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
 export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'翅膀心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
@@ -109,6 +111,7 @@ export function createRun(roleId,seed=Date.now()){
  if(contentRules(run)>=32)run.companyContext=null;
  if(contentRules(run)>=38)run.chapterContext=null;
  if(isWorkGapV50(run))run.flags.work_gap_open=0;
+ if(isEnergySafetyV54(run))run.flags[ENERGY_SAFETY_OWED_V54]=0;
  return run;
 }
 function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta={}){
@@ -463,6 +466,7 @@ export function applyChoice(run,index){
  }
  if(contentRules(next)>=30&&choice.verbalLegalResult)next.verbalContext.legalResult=choice.verbalLegalResult;
  if(contentRules(next)>=18){const correction=abilityRebalanceV18(before,next.stats);if(Object.values(correction).some(value=>value!==0)){change('ability-tradeoff','時間有限，三種本事互相擠壓',correction);flag(next,'resource_friction_count');}if(spentThisChoice>0)flag(next,'cash_spent_total',spentThisChoice);}
+ energySafetyChoiceV54(run,next,event,change);
  let family=ENDINGS.some(e=>e.family===effect)?effect:null;
  if(contentRules(next)>=38&&event.id==='chapter-resolution'&&effect==='chapterExit')family=next.chapterContext.family;
  const rageWorld=contentRules(next)>=14&&(effect==='rageAftermath'||event.kind==='rage-world');
@@ -784,6 +788,7 @@ function applyHiddenEncounterChoiceV45(run,index){
  };
  change('choice',`相遇結果：${resolved.label}`,resolved.delta);
  change('ability-tradeoff','時間有限，三種本事互相擠壓',abilityRebalanceV18(before,next.stats));
+ energySafetyChoiceV54(run,next,event,change);
  if(spent>0)flag(next,'cash_spent_total',spent);
  next.actions.push({type:'choice',eventId:event.id,index});
  next.history.push({eventId:event.id,kind:'hidden',title:event.title,body:event.body,wing:event.wing,speaker:event.speaker,sourceIds:event.sourceIds,turn:run.turn,choiceIndex:index,choiceText:choice.text,result:resolved.result,chanceOutcome:null,delta:Object.fromEntries(STAT_KEYS.map(key=>[key,next.stats[key]-before[key]])),weather:null,jobTitle:jobTitle(next),pay:next.pay,breakdown,eventOutcome:{label:'相遇結果',result:resolved.label},hiddenOutcome:{version:1,scene:context.scene,stage:context.stage,mode:resolved.mode,done:resolved.done}});
@@ -903,6 +908,7 @@ function applyActivityChoiceV44(run,index){
  change('choice',`活動結果：${resolved.label}`,delta);
  const correction=abilityRebalanceV18(before,next.stats);
  if(Object.values(correction).some(value=>value!==0)){change('ability-tradeoff','時間有限，三種本事互相擠壓',correction);flag(next,'resource_friction_count');}
+ energySafetyChoiceV54(run,next,event,change);
  if(spent>0)flag(next,'cash_spent_total',spent);
  for(const name of resolved.flags||[])flag(next,name);
  next.actions.push({type:'choice',eventId:event.id,index});
@@ -937,6 +943,21 @@ export function advance(run,options={}){
   // recovery. Starting the next scene is the only way to close it. Healthy
   // new lives proceed straight to work, without an extra continue screen.
   else if(next.turn>run.turn)next.flags.work_gap_open=isEnergyRestV53(next)?Number(energyRestWarningV53(next)):1;
+ }
+ if(isEnergySafetyV54(run)){
+  const pending=next.personnelPending,previous=run.personnelPending;
+  // A workday's already-queued HR decision must not be stranded behind a
+  // private invitation or a recovery meal. Fresh private provocations still
+  // use their published exclusion; only the same earlier queue is resumed.
+  if(run.pending&&next!==run&&!next.pending&&!next.completed&&!next.pip?.active&&pending&&previous&&
+   ['reason','strength','source'].every(key=>pending[key]===previous[key])&&energySafetyReturnedBoundaryV54(run,next)){
+   const source=getSourceEventV50(next),candidate={...next,personnelPending:null,flags:{...next.flags,work_gap_open:1}};
+   if(personnelSafe(next,source)&&workGapSurfaceSafeV50(candidate,source)){
+    next.personnelPending=null;const decision=personnelDecision(next,pending.reason,pending.strength,roll(next));
+    if(decision)openPersonnel(next,decision);
+   }
+  }
+  energySafetyBoundaryV54(run,next,getSourceEventV50(next));
  }
  return next;
 }
@@ -1023,6 +1044,7 @@ export function requestPatronageReply(run,target){
  };
  change('choice',`自己人發話之後：${selected.label}`,selected.delta);
  change('ability-budget','三頭馬車的取捨',abilityRebalanceV18(before,next.stats));
+ energySafetyChoiceV54(run,next,event,change);
  next.actions.push({type:'patronage-reply',version:1,eventId:event.id,target});
  flag(next,'patronage_replies');next.flags.patronage_reply_last_turn=run.turn+1;
  const mode=patronageReplyModeV43(target),title=mode==='flattery'?'自己人的名片，先往上遞。':'你把自己人的名片，放到話前面。';
@@ -1162,6 +1184,8 @@ export function replayRun(roleId,seed,actions){return replayActions(roleId,seed,
 export function validRun(run){
  try {
   if(isWorkGapV50(run)&&(![0,1].includes(run.flags?.work_gap_open)||!run.actions?.length&&run.flags.work_gap_open!==0))return false;
+  if(isEnergySafetyV54(run)&&(![0,1].includes(run.flags?.[ENERGY_SAFETY_OWED_V54])||!run.actions?.length&&run.flags[ENERGY_SAFETY_OWED_V54]!==0))return false;
+  if(!isEnergySafetyV54(run)&&run?.flags?.[ENERGY_SAFETY_OWED_V54]!==undefined)return false;
   if(Array.isArray(run?.history)&&run.history.some(row=>isPatronageV49(run)&&row?.eventId===PATRONAGE_EVENT_V29&&[0,1].includes(row.choiceIndex)?!isPatronageApplicationOutcomeV49(run,row):row?.patronageApplicationOutcome!==undefined))return false;
   if(/^e39-cal46-/.test(run?.seed||'')&&run?.actions?.length){
    const first=run.actions[0];

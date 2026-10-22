@@ -1,0 +1,5819 @@
+{
+  "method": "Natural createRun lives under e39-cal46-kin49-g-e-s-. Route search resolves alternatives only to find witnesses. Canonical public actions only; no injected resources, flags, events, history, workday or RNG.",
+  "required": [
+    "healthy-work",
+    "buffered-work",
+    "warning-gap",
+    "paid-recovery",
+    "ignored-chance-burnout",
+    "hidden-return-gap",
+    "mandatory-return-gap",
+    "pip-notice-warning",
+    "pip-start-gap",
+    "pip-review-warning",
+    "pip-paid-recovery",
+    "same-turn-rest-cap",
+    "owed-floor",
+    "rearmed-warning",
+    "activity-return-arm",
+    "activity-return-diet",
+    "activity-return-roadshow",
+    "activity-return-banquet",
+    "activity-return-basketball",
+    "activity-return-review",
+    "activity-dinner-restores"
+  ],
+  "routes": [
+    {
+      "id": "healthy-work",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "warning-gap",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "paid-recovery",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        }
+      ],
+      "purchaseIndex": 1
+    },
+    {
+      "id": "ignored-chance-burnout",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-no-strength",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-medical-dream"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-medical-dream",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-no-strength",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-medical-dream"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-medical-dream",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 0
+        }
+      ],
+      "index": 0,
+      "skippedGap": true
+    },
+    {
+      "id": "rearmed-warning",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-no-strength",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-medical-dream"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-no-strength",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-medical-dream"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-medical-dream",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "buffered-work",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-no-strength",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-medical-dream"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-medical-dream",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-white-team-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-pm-technical-boundary",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-mac-level"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "video-no-strength",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-medical-dream"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-medical-dream",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-white-team-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-pm-technical-boundary",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 1
+        }
+      ],
+      "index": 1
+    },
+    {
+      "id": "activity-return-review",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000001nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-release-check",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ok-means-received",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-saturday-study"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-saturday-study",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-access-handover",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-basketball-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-release-check",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ok-means-received",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-saturday-study"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-saturday-study",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-access-handover",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-basketball-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-2",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "pip-paid-recovery",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000001nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-release-check",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ok-means-received",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-saturday-study"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-saturday-study",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-access-handover",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-basketball-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-basketball-return",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-cola-code",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-release-check",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ok-means-received",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-saturday-study"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-saturday-study",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-access-handover",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-basketball-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-basketball-return",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-cola-code",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        }
+      ],
+      "purchaseIndex": 1
+    },
+    {
+      "id": "mandatory-return-gap",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000001nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-release-check",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ok-means-received",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-saturday-study"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-saturday-study",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-access-handover",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-basketball-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-basketball-return",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-cola-code",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-release-check",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "ok-means-received",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-credit-expiry",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-saturday-study"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-saturday-study",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-access-handover",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-basketball-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-basketball-return",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-cola-code",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        }
+      ],
+      "index": 2
+    },
+    {
+      "id": "activity-return-diet",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-0000003nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-helen-sql-row-fanout"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-sql-row-fanout",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-handoff-window",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-data-contract-shape"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-helen-sql-row-fanout"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-sql-row-fanout",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-handoff-window",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-data-contract-shape"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "activity-dinner-restores",
+      "roleId": "ai",
+      "seed": "e39-cal46-kin49-g-e-s-1000003nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-data-answer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "hidden-encounter",
+          "version": 1,
+          "eventId": "cast35-kind-seo-filter"
+        },
+        {
+          "type": "choice",
+          "eventId": "hidden45-3-0",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seo-filter",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-interview-privacy"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-data-answer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "hidden-encounter",
+          "version": 1,
+          "eventId": "cast35-kind-seo-filter"
+        },
+        {
+          "type": "choice",
+          "eventId": "hidden45-3-0",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seo-filter",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-interview-privacy"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "activity-return-banquet",
+      "roleId": "project",
+      "seed": "e39-cal46-kin49-g-e-s-2000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-dual-calendar",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-assistant-approval"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-assistant-approval",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-pm-bridge"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-group-message",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "video-rick-commentary"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-rick-commentary",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-source-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-overbooked",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-meeting-action-echo",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-ramen-five",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-door-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "project-four-urgent",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-gift-not-settlement",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-2",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-dual-calendar",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-assistant-approval"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-assistant-approval",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-pm-bridge"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-group-message",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "video-rick-commentary"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "video-rick-commentary",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-source-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-overbooked",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-meeting-action-echo",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-ramen-five",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-door-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "project-four-urgent",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-gift-not-settlement",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "project-scope",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-3",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "activity-return-arm",
+      "roleId": "project",
+      "seed": "e39-cal46-kin49-g-e-s-2000001nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-model-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-approval-handoff",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-junior-draft",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-research-credit-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-model-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-approval-handoff",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-junior-draft",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-research-credit-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "activity-return-basketball",
+      "roleId": "project",
+      "seed": "e39-cal46-kin49-g-e-s-2000001nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-model-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-approval-handoff",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-junior-draft",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-research-credit-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-credit-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-scope-amulet",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-helen-meal-cutoff"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-model-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-approval-handoff",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-junior-draft",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-research-credit-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-credit-scope",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-scope-amulet",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-helen-meal-cutoff"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "activity-return-roadshow",
+      "roleId": "design",
+      "seed": "e39-cal46-kin49-g-e-s-4000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-founder-proof",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-responsive-banner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-cindy-unread-party",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seo-filter",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-logo-permission"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-founder-proof",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-responsive-banner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-cindy-unread-party",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seo-filter",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-logo-permission"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "pip-notice-warning",
+      "roleId": "design",
+      "seed": "e39-cal46-kin49-g-e-s-4000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-founder-proof",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-responsive-banner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-cindy-unread-party",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seo-filter",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-logo-permission"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-logo-permission",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-university-brand-frame",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-own-future"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-own-future",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-drink-fund-vote",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-stock-watermark",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-source-file",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-invisible-button",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-production-null",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-founder-proof",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-responsive-banner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-cindy-unread-party",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seo-filter",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-logo-permission"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-logo-permission",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-university-brand-frame",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-own-future"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-own-future",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-drink-fund-vote",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-stock-watermark",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-source-file",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-invisible-button",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-production-null",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "pip-start-gap",
+      "roleId": "design",
+      "seed": "e39-cal46-kin49-g-e-s-4000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-founder-proof",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-responsive-banner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-cindy-unread-party",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seo-filter",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-logo-permission"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-logo-permission",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-university-brand-frame",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-own-future"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-own-future",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-drink-fund-vote",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-stock-watermark",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-source-file",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-invisible-button",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-production-null",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-founder-proof",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-responsive-banner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-cindy-unread-party",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seo-filter",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-logo-permission"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-logo-permission",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-university-brand-frame",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-own-future"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-own-future",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-drink-fund-vote",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-stock-watermark",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-source-file",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-invisible-button",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-production-null",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        }
+      ],
+      "index": 2
+    },
+    {
+      "id": "pip-review-warning",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-6000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-classmate-cc",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-sales-professor-question"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-sales-professor-question",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-commission-proof",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-cash-is-not-contract",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-waffle-customization",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-janet-white-team-budget"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-white-team-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-lunch-handoff",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-renewal-denominator",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-contact-triage",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-revenue-label",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-handover-promise-version",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-classmate-cc",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-sales-professor-question"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-sales-professor-question",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-commission-proof",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-cash-is-not-contract",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-waffle-customization",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-janet-white-team-budget"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-white-team-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-lunch-handoff",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-renewal-denominator",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-contact-triage",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-revenue-label",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-handover-promise-version",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "same-turn-rest-cap",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-9000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-budget-weather",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-recurring-tools",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-forecast-bell",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-consulting-fee-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-responsibility-notebook",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "finance28-resume-invoice"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-scenario-bell",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-shares-invitation",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-janet-verbal-approval"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-budget-weather",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-recurring-tools",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-forecast-bell",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-consulting-fee-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-responsibility-notebook",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "finance28-resume-invoice"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-scenario-bell",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-shares-invitation",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-janet-verbal-approval"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-2",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "owed-floor",
+      "roleId": "hr",
+      "seed": "e39-cal46-kin49-g-e-s-b000000nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-stay-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-assistant-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-captain-benefits-version"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-benefits-version",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-dad-said",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-question-order",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "gender29-blind-resume",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-admin-half-day",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "meimei-product-loop"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-stay-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-assistant-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-captain-benefits-version"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-benefits-version",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-dad-said",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-question-order",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "gender29-blind-resume",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-admin-half-day",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "meimei-product-loop"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-product-loop",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "hidden-return-gap",
+      "roleId": "mis",
+      "seed": "e39-cal46-kin49-g-e-s-7000050nat",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-shared-link-expiry",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mis-printer-is-ai",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-schema-promise"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-schema-promise",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-print-page-trace",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-door-is-not-account",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-cup-and-exit",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-name-check"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-name-check",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mis-access-approval",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-cindy-rights-after-manager"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-rights-after-manager",
+          "index": 2
+        },
+        {
+          "type": "hidden-encounter",
+          "version": 1,
+          "eventId": "job-mis-restore-drill"
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-shared-link-expiry",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mis-printer-is-ai",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-schema-promise"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-schema-promise",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-print-page-trace",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-mis-door-is-not-account",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-cup-and-exit",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-name-check"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-name-check",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "mis-access-approval",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-cindy-rights-after-manager"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-rights-after-manager",
+          "index": 2
+        },
+        {
+          "type": "hidden-encounter",
+          "version": 1,
+          "eventId": "job-mis-restore-drill"
+        },
+        {
+          "type": "choice",
+          "eventId": "hidden45-2-0",
+          "index": 0
+        }
+      ],
+      "index": 0
+    }
+  ]
+}

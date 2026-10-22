@@ -656,3 +656,33 @@ Published seeds keep their original rest timing and canonical proofs. The new
 threshold is derived by the shared engine, and the existing full replay
 validation rejects a forged interval flag or an unauthorized rest action. No
 new action envelope, identifier, database field or credential is introduced.
+
+
+## Warning opportunity safety (v54, e39 lives)
+
+New browser seeds use `e39-cal46-kin49-g-e-s-` plus ten hexadecimal characters.
+Published v53 and older seeds keep their original results. The replay-derived
+integer flag `energy54_rest_owed` starts at zero. A transition from energy above
+30 into the warning range arms it; recovery above 30 rearms a later episode.
+
+A healthy ordinary work choice loses at most 30 energy in total. If a first
+warning occurs inside an activity or mandatory conversation, owed recovery
+keeps at least one energy until a usable interval can be offered. The shared
+choice hook records every adjustment as `fatigue-buffer` in the actual ledger,
+before resource consequences and history are finalized. The buffer does not alter other stats, fees or resolved choice branches, add
+random draws, or advance work/PIP counters.
+
+Only a completed workday or fully closed activity, hidden encounter, or required
+conversation can surface the waiting gap. Active stages, pending results and
+returns to an unfinished rage/verbal conversation cannot open it. A usable
+interval clears the owed flag; continuing past that opportunity can still lead
+to exhaustion. A rest already used in the same work turn cannot be renewed by
+a no-turn interlude; its newly owed warning is protected until the next completed
+workday. Paid recovery and cancellation return to the same held interval.
+
+A workday’s queued personnel decision also resumes after a private invitation
+or recovery meal closes, using its normal seeded decision once. Fresh private
+conversations retain their exclusion from workplace provocations.
+
+Canonical replay verifies the flag, ledger and action availability. No new HTTP
+action, player identifier, database schema or credential is introduced.
