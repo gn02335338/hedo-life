@@ -5,6 +5,7 @@ import {HIDDEN_SCENE_COUNT_V45,getHiddenEncounterEventV45,resolveHiddenEncounter
 import {scheduledActivityV46,getActivityInvitationEventV46,invitationResultV46,calendarDailyAllowedV46} from './activity-schedule-v46.js';
 import {isPatronageV49,patronageEligibleV49,withPatronageEntryV49,getPatronageEventV49,patronageApplicationOutcomeV49,isPatronageApplicationOutcomeV49} from './patronage-v49.js';
 import {ACTIVITY_IDS_V44,getActivityEventV44,resolveActivityChoiceV44} from './activities-v44.js';
+import {isActivityPlayV55,getActivityPlayV55,deriveActivityPlayV55,withActivityPlayEventV55,resolveActivityPlayV55} from './activity-play-v55.js';
 import {getRageV39,rageTargetForV39} from './rage-cast-v39.js';
 import {MEAL_GUEST_IDS_V39,MEAL_EVENTS_V39,mealPageIdV39,getMealEventV39} from './meals-cast-v39.js';
 import {strongVerbalLineV39} from './verbal-lines-v39.js';
@@ -57,6 +58,7 @@ import { PATRONAGE_EVENT_V29, patronageTitleV29, canKindDarkInviteV29, patronage
 import { WEALTH_EVENTS_V27, wealthEligibilityV27, getWealthEventV27, withWealthEntryV27 } from './wealth-exit-v27.js';
 export {raiseAvailability} from './salary-raise-v19.js';
 export {isWorkGapV50} from './work-gap-v50.js';
+export {isActivityPlayV55,getActivityPlayV55,deriveActivityPlayV55} from './activity-play-v55.js';
 export {isEnergyRestV53} from './energy-rest-v53.js';
 export {isEnergySafetyV54} from './energy-safety-v54.js';
 export const VERSION = 3;
@@ -285,7 +287,7 @@ function getPublishedEvent(run){
 export function getEvent(run,skipWorkGap=false){
  if(run?.activityInvitationContext)return getActivityInvitationEventV46(run);
  if(run?.hiddenEncounterContext)return getHiddenEncounterEventV45(run);
- if(run?.activityContext)return getActivityEventV44(run);
+ if(run?.activityContext)return withActivityPlayEventV55(run,getActivityEventV44(run));
  if(run?.patronageReplyContext){
   const row=run.history[run.patronageReplyContext.historyIndex];
   return {id:PATRONAGE_REPLY_EVENT_V43,title:row.title,body:row.body,wing:'',speaker:row.speaker,kind:'patronage',era:'自己人發話',sourceIds:row.sourceIds,choices:[]};
@@ -331,7 +333,7 @@ export function applyChoice(run,index){
  }
  if(run.activityInvitationContext)return applyActivityInvitationChoiceV46(run,index);
  if(run.hiddenEncounterContext)return applyHiddenEncounterChoiceV45(run,index);
- if(run.activityContext)return applyActivityChoiceV44(run,index);
+ if(run.activityContext){if(getActivityPlayV55(run))throw new Error('Activity play input required');return applyActivityChoiceV44(run,index);}
  if(run.verbalContext?.version===2&&run.verbalContext.stage==='decision'){
   const event=getSourceEventV50(run),option=event.choices[index];if(!Number.isInteger(index)||!option||option.available===false||!Number.isInteger(option.sourceIndex))throw new Error('Unavailable verbal decision');
   const next=structuredClone(run),context=next.verbalContext;next.actions.push({type:'choice',eventId:event.id,index});next.verbalContext=null;next.eventId=context.eventId;
@@ -887,11 +889,24 @@ export function requestActivity(run,activityId){
  next.eventId=getActivityEventV44(next).id;
  return next;
 }
-function applyActivityChoiceV44(run,index){
- const event=getActivityEventV44(run),choice=event.choices[index];
+export function applyActivityPlay(run,input){
+ if(!getActivityPlayV55(run))return run;
+ deriveActivityPlayV55(input,run.activityContext.id);
+ return applyActivityChoiceV44(run,1,input);
+}
+function applyActivityChoiceV44(run,index,playInput){
+ const event=withActivityPlayEventV55(run,getActivityEventV44(run)),choice=event.choices[index];
  if(!Number.isInteger(index)||!choice||choice.available===false)throw new Error('Unavailable activity choice');
  const next=structuredClone(run),before={...run.stats},context=next.activityContext;
- const resolved=resolveActivityChoiceV44(run,index,roll(next));
+ const resolved=playInput!==undefined?resolveActivityPlayV55(run,playInput,roll(next)):resolveActivityChoiceV44(run,index,roll(next));
+ if(isActivityPlayV55(run)&&context.id==='arm'&&context.stage===0){resolved.label=resolved.label.replaceAll('十秒','八秒');resolved.result=resolved.result.replaceAll('十秒','八秒').replace('傑克等他講完才伸手','你等他講完才伸手');}
+ // A bruised player stays on the bench for the final decision; narrative
+ // choices never quietly send them back into another contact play.
+ if(isActivityPlayV55(run)&&context.id==='basketball'&&context.stage===2&&context.performance?.injured){
+  resolved.delta={...resolved.delta,energy:0};
+  resolved.result=index===2?'你把「移動迷宮」和「飛天拐子」畫進賽後導航，請強哥簽收。強哥說助理工程師不保固地形，卻還是幫你把水拿來；傑克收好球，這場到此結束，你沒有再上場硬碰。':index===1?'你留在板凳補水，明確說今天不再上場。傑克點頭叫大家收隊，歐文和阿福過來確認狀況；這場球沒有要求你再用身體替比分作證。':'你坐在場邊替隊友喊出空檔，最後一球由還有力氣的人完成。傑克吹熄加賽的念頭，收好球陪你慢慢走；工作仍在明天，今晚的比賽到這裡。';
+  resolved.label='先照顧自己，今晚收隊';
+ }
  if(!resolved||typeof resolved.result!=='string'||typeof resolved.label!=='string'||!Number.isInteger(resolved.score)||!Number.isInteger(resolved.pressure)||typeof resolved.plan!=='string'||typeof resolved.done!=='boolean')throw new Error('Invalid activity result');
  const breakdown=[];let spent=0;
  const change=(source,label,delta)=>{
@@ -911,9 +926,9 @@ function applyActivityChoiceV44(run,index){
  energySafetyChoiceV54(run,next,event,change);
  if(spent>0)flag(next,'cash_spent_total',spent);
  for(const name of resolved.flags||[])flag(next,name);
- next.actions.push({type:'choice',eventId:event.id,index});
- next.history.push({eventId:event.id,kind:'activity',title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'self',sourceIds:event.sourceIds||[],turn:run.turn,choiceIndex:index,choiceText:choice.text,result:resolved.result,chanceOutcome:null,delta:Object.fromEntries(STAT_KEYS.map(key=>[key,next.stats[key]-before[key]])),weather:null,jobTitle:jobTitle(next),pay:next.pay,breakdown,eventOutcome:{label:'活動結果',result:resolved.label},activityOutcome:{version:1,id:context.id,stage:context.stage,label:resolved.label,score:resolved.score,pressure:resolved.pressure,done:resolved.done}});
- context.pendingStep={score:resolved.score,pressure:resolved.pressure,plan:resolved.plan,done:resolved.done,index};
+ next.actions.push(playInput!==undefined?{type:'activity-play',version:1,eventId:event.id,index:1,input:structuredClone(playInput)}:{type:'choice',eventId:event.id,index});
+ next.history.push({eventId:event.id,kind:'activity',title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'self',sourceIds:event.sourceIds||[],turn:run.turn,choiceIndex:index,choiceText:resolved.choiceText||choice.text,result:resolved.result,chanceOutcome:null,delta:Object.fromEntries(STAT_KEYS.map(key=>[key,next.stats[key]-before[key]])),weather:null,jobTitle:jobTitle(next),pay:next.pay,breakdown,eventOutcome:{label:'活動結果',result:resolved.label},activityOutcome:{version:1,id:context.id,stage:context.stage,label:resolved.label,score:resolved.score,pressure:resolved.pressure,done:resolved.done,...(resolved.performance?{performance:resolved.performance}:{})}});
+ context.pendingStep={score:resolved.score,pressure:resolved.pressure,plan:resolved.plan,done:resolved.done,index,...(resolved.performance?{performance:resolved.performance}:{})};
  next.pending=true;next.pendingEffect='activityContinue';next.pendingFamily=null;next.lastWeather=null;
  return next;
 }
@@ -922,7 +937,7 @@ function advanceActivityV44(run){
  const next=structuredClone(run),context=next.activityContext,step=context.pendingStep;
  if(!step||next.pendingEffect!=='activityContinue')throw new Error('Missing activity continuation');
  next.pending=false;next.pendingEffect=null;next.pendingFamily=null;
- context.score=step.score;context.pressure=step.pressure;context.plan=step.plan;context.picks.push(step.index);delete context.pendingStep;
+ context.score=step.score;context.pressure=step.pressure;context.plan=step.plan;context.picks.push(step.index);if(step.performance)context.performance=step.performance;delete context.pendingStep;
  if(!step.done){context.stage++;next.eventId=getActivityEventV44(next).id;return next;}
  next.flags[`activity44_${context.id}`]=1;next.flags.activity44_last_turn=next.turn+1;
  next.eventId=context.returnEventId;delete next.activityContext;
@@ -1148,6 +1163,10 @@ function replayActions(roleId,seed,actions,count=actions.length){
    if(Object.keys(action).sort().join(',')!=='activityId,type,version'||action.version!==1||!ACTIVITY_IDS_V44.includes(action.activityId))throw new Error('Invalid activity action');
    const next=requestActivity(run,action.activityId);if(next===run)throw new Error('Unavailable activity');run=next;
   }
+  else if(action.type==='activity-play'){
+   if(Object.keys(action).sort().join(',')!=='eventId,index,input,type,version'||action.version!==1||action.index!==1||action.eventId!==run.eventId)throw new Error('Invalid activity play action');
+   const next=applyActivityPlay(run,action.input);if(next===run)throw new Error('Unavailable activity play');run=advance(next);
+  }
   else if(action.type==='break'){const next=requestBreak(run);if(next===run)throw new Error('Unavailable break');run=next;}
   else if(action.type==='career'){const next=requestCareer(run);if(next===run)throw new Error('Unavailable career review');run=next;}
   else if(action.type==='raise'){if(Object.keys(action).some(key=>key!=='type'))throw new Error('Invalid raise action');const next=requestRaise(run);if(next===run)throw new Error('Unavailable raise');run=next;}
@@ -1191,11 +1210,12 @@ export function validRun(run){
    const first=run.actions[0];
    if(!first||Object.keys(first).sort().join(',')!=='type,version'||first.type!=='activity-schedule'||first.version!==1)return false;
   }
-  if(Array.isArray(run?.actions)&&run.actions.some(action=>['patronage-reply','activity','hidden-encounter','activity-schedule','activity-invitation'].includes(action?.type))){
+  if(Array.isArray(run?.actions)&&run.actions.some(action=>['patronage-reply','activity','activity-play','hidden-encounter','activity-schedule','activity-invitation'].includes(action?.type))){
    const last=run.actions.at(-1),prefix=run.pending?replayActions(run.roleId,run.seed,run.actions,run.actions.length-1):null;
    let canonical;
    if(!run.pending)canonical=replayRun(run.roleId,run.seed,run.actions);
    else if(last.type==='patronage-reply')canonical=requestPatronageReply(prefix,last.target);
+   else if(last.type==='activity-play')canonical=applyActivityPlay(prefix,last.input);
    else if(last.type==='choice')canonical=applyChoice(prefix,last.index);
    else if(last.type==='verbal')canonical=requestVerbal(prefix,last.target,last.version);
    else if(last.type==='rage')canonical=requestRage(prefix,last.target);

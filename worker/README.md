@@ -686,3 +686,35 @@ conversations retain their exclusion from workplace provocations.
 
 Canonical replay verifies the flag, ledger and action availability. No new HTTP
 action, player identifier, database schema or credential is introduced.
+
+
+## Interactive activity controls (v55, e39 lives)
+
+New browser seeds use `e39-cal46-kin49-g-e-s-m-` plus eight random hex digits.
+At accepted activity stage 1, the strict action is
+`{type:'activity-play',version:1,eventId,index:1,input}`. The shared engine
+requires the actual unanswered stage and rejects an ordinary choice bypass.
+Preparation and closing scenes retain ordinary choices; historical lives retain
+their original action grammar and outcomes.
+
+Inputs have exact keys and bounded integer arrays: arm mode/tap times, seven
+fictional meal/exercise days, six visitor assignments, six dish slots, twelve
+rhythm beat times, five basketball moves, or four evidence assignments. HTTP
+validation checks the same schema under the existing 64 KiB body and 300-action
+limits. Canonical replay derives performance from the controls, uses one seeded
+draw, and records a compact performance summary in the activity result. Supplied
+scores, outcomes, extra fields and duplicate/stale submissions are rejected.
+The trace is bounded game input, not an attestation of physical human timing;
+untimed accessible modes use logical beat positions.
+
+Controls remain local until submission. The UI cleans timers/listeners when
+leaving, cancels an uncommitted timed round on backgrounding, and never submits
+a result automatically. A committed result survives refresh and cannot reroll.
+Basketball collision risk depends on moves and the existing stage state; a
+collision benches the player for the closing scene. All effects use the normal
+ledger and v54 fatigue buffer. No workday, salary or PIP tick is added by the
+minigame. A warning interval still waits until the complete activity has ended.
+
+Character/achievement/completion endpoints replay the same action, keep anonymous
+ownership and idempotent commitments, and ignore client statistics. No new player
+identifier, database migration, credential or public raw-control dataset is added.
