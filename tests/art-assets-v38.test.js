@@ -62,3 +62,13 @@ test('public artwork metadata contains no original local reference paths or embe
  assert.doesNotMatch(raw,/\/Users\/|Downloads|portraits-v38-originals|data:image|base64|圖片\.zip/);
  assert.equal(manifest.counts.endingImages,883);
 });
+
+test('the public hidden encounter reuses the existing game portrait with intact alpha',async()=>{
+ const record=manifest.hiddenEncounterPortrait;
+ assert.equal(record.id,'hidden-visitor');assert.equal(record.referenceRemake,true);
+ assert.equal(record.path,'./assets/hidden-visitor.png');
+ assert.equal(manifest.portraits.some(item=>item.id==='hidden-visitor'),false,'the sealed visitor is not added to the public cast list');
+ const bytes=await readFile(file(record.path)),meta=await sharp(bytes).metadata();
+ assert.equal(hash(bytes),record.sha256);assert.equal(bytes.length,record.bytes);
+ assert.equal(meta.format,'png');assert.equal(meta.hasAlpha,true);assert.equal(meta.width,600);assert.equal(meta.height,722);
+});

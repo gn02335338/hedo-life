@@ -1,3 +1,4 @@
+import {HIDDEN_SCENE_COUNT_V45,getHiddenEncounterEventV45,resolveHiddenEncounterChoiceV45} from './hidden-encounter-v45.js';
 import {ACTIVITY_IDS_V44,getActivityEventV44,resolveActivityChoiceV44} from './activities-v44.js';
 import {getRageV39,rageTargetForV39} from './rage-cast-v39.js';
 import {MEAL_GUEST_IDS_V39,MEAL_EVENTS_V39,mealPageIdV39,getMealEventV39} from './meals-cast-v39.js';
@@ -31,7 +32,7 @@ import { getRage } from './rage.js';
 import { RAGE_WORLD_EVENTS, getRageV14, rageTargetFor } from './rage-v14.js';
 import { getBanquet } from './banquet.js';
 import { getRageV16, rageTargetForV16 } from './rage-v16.js';
-import { PERSONAS, applyPersonaCopy, displayText, replayText } from './persona.js';
+import { PERSONAS, applyPersonaCopy, publishedDisplayText as displayText, replayText } from './persona.js';
 import { applyOnboardingV17 } from './onboarding-v17.js';
 import { normalizeAbilitiesV18, abilityRebalanceV18, moodEnergyPulseV18, getSelfCareV18 } from './resources-v18.js';
 import { scopedBossDeltaV18 } from './relationships-v18.js';
@@ -272,6 +273,7 @@ function getPublishedEvent(run){
  return contentRules(run)>=27?withWealthEntryV27(finalEvent,run):finalEvent;
 }
 export function getEvent(run){
+ if(run?.hiddenEncounterContext)return getHiddenEncounterEventV45(run);
  if(run?.activityContext)return getActivityEventV44(run);
  if(run?.patronageReplyContext){
   const row=run.history[run.patronageReplyContext.historyIndex];
@@ -308,6 +310,7 @@ export function endingEligibility(run,target){if(contentRules(run)>=32&&['nasdaq
 }
 export function applyChoice(run,index){
  if(run.completed||run.pending)return run;
+ if(run.hiddenEncounterContext)return applyHiddenEncounterChoiceV45(run,index);
  if(run.activityContext)return applyActivityChoiceV44(run,index);
  if(run.verbalContext?.version===2&&run.verbalContext.stage==='decision'){
   const event=getEvent(run),option=event.choices[index];if(!Number.isInteger(index)||!option||option.available===false||!Number.isInteger(option.sourceIndex))throw new Error('Unavailable verbal decision');
@@ -729,12 +732,64 @@ function advanceCore(run,options={}){
 }
 // Activities are explicit, versioned interludes. Merely displaying their
 // invitation never changes a published seed, workday, or random stream.
+// This new action is optional and versioned. Existing action lists never
+// inspect a new random ticket or receive an unrequested actor retroactively.
+export function canRequestHiddenEncounter(run){
+ if(!run||!/^e39-/.test(run.seed||'')||run.completed||run.pending||run.turn<2||run.turn>=20||run.actions.length>295||run.flags.hidden45_seen||run.pip?.active||run.flags.floor_watch||run.stats.mood<=15||run.stats.energy<=15||run.stats.cash<=0)return false;
+ if(run.hiddenEncounterContext||run.activityContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.patronageReplyContext||run.patronageContext||run.raiseContext||run.mealContext||run.wealthReturnEventId||run.salaryAdvice?.status==='open'||run.personnelPending||run.pendingFamily||run.resumeEventId||run.exitReturnEventId||run.breakReturnEventId||run.banquetReturnEventId||run.meltdownReturnEventId)return false;
+ if(getEvent(run)?.kind!=='daily')return false;
+ return hash(`hidden45:${run.seed}:${run.turn}`)/4294967296<.12;
+}
+export function requestHiddenEncounter(run){
+ if(!canRequestHiddenEncounter(run))return run;
+ const next=structuredClone(run),scene=Math.min(HIDDEN_SCENE_COUNT_V45-1,Math.floor(roll(next)*HIDDEN_SCENE_COUNT_V45));
+ next.actions.push({type:'hidden-encounter',version:1,eventId:run.eventId});
+ next.hiddenEncounterContext={version:1,returnEventId:run.eventId,scene,stage:0,incident:null};
+ next.flags.hidden45_seen=1;next.eventId=getHiddenEncounterEventV45(next).id;
+ return next;
+}
+function applyHiddenEncounterChoiceV45(run,index){
+ const event=getHiddenEncounterEventV45(run),choice=event.choices[index];
+ if(!Number.isInteger(index)||!choice)throw new Error('Unavailable hidden choice');
+ const next=structuredClone(run),before={...run.stats},context=next.hiddenEncounterContext;
+ const resolved=resolveHiddenEncounterChoiceV45(run,index,roll(next)),breakdown=[];let spent=0;
+ const change=(source,label,delta)=>{
+  const actual={};for(const [key,value]of Object.entries(delta||{})){
+   if(!STAT_KEYS.includes(key)||!Number.isFinite(value)||key==='boss'&&value!==0)throw new Error('Invalid hidden delta');
+   const previous=next.stats[key];next.stats[key]=clamp(previous+value);
+   if(previous!==next.stats[key])actual[key]=next.stats[key]-previous;
+   if(key==='cash'&&next.stats[key]<previous)spent+=previous-next.stats[key];
+  }
+  if(Object.keys(actual).length)breakdown.push({source,label,delta:actual});
+ };
+ change('choice',`相遇結果：${resolved.label}`,resolved.delta);
+ change('ability-tradeoff','時間有限，三種本事互相擠壓',abilityRebalanceV18(before,next.stats));
+ if(spent>0)flag(next,'cash_spent_total',spent);
+ next.actions.push({type:'choice',eventId:event.id,index});
+ next.history.push({eventId:event.id,kind:'hidden',title:event.title,body:event.body,wing:event.wing,speaker:event.speaker,sourceIds:event.sourceIds,turn:run.turn,choiceIndex:index,choiceText:choice.text,result:resolved.result,chanceOutcome:null,delta:Object.fromEntries(STAT_KEYS.map(key=>[key,next.stats[key]-before[key]])),weather:null,jobTitle:jobTitle(next),pay:next.pay,breakdown,eventOutcome:{label:'相遇結果',result:resolved.label},hiddenOutcome:{version:1,scene:context.scene,stage:context.stage,mode:resolved.mode,done:resolved.done}});
+ context.pendingStep={done:resolved.done,incident:resolved.incident||context.incident};
+ next.pending=true;next.pendingEffect='hiddenContinue';next.pendingFamily=null;next.lastWeather=null;
+ return next;
+}
+function advanceHiddenEncounterV45(run){
+ if(!run.pending||run.completed)return run;
+ const next=structuredClone(run),context=next.hiddenEncounterContext,step=context.pendingStep;
+ if(!step||next.pendingEffect!=='hiddenContinue')throw new Error('Missing hidden continuation');
+ next.pending=false;next.pendingEffect=null;next.pendingFamily=null;delete context.pendingStep;
+ if(!step.done){context.stage=1;context.incident=step.incident;next.eventId=getHiddenEncounterEventV45(next).id;return next;}
+ next.eventId=context.returnEventId;delete next.hiddenEncounterContext;
+ const family=next.stats.cash<=0?'broke':next.stats.energy<=0?'burnout':null;
+ if(family){next.chapterContext={family,historyIndex:next.history.length-1,actionIndex:next.actions.length,eventId:next.eventId,pendingEffect:null,verbal:null,rage:null};next.flags[`chapter38_${family}`]=next.history.length;next.eventId='chapter-resolution';}
+ else if(next.stats.mood<=0){next.meltdownReturnEventId=next.eventId;next.eventId='mood-collapse';flag(next,'mood_crash_count');}
+ return next;
+}
 export function getActivityAvailability(run,activityId){
  const no=reason=>({available:false,reason});
  if(!run||!/^e39-/.test(run.seed||''))return no('這段人生保留原有規則，新人生可以參加活動。');
  if(activityId!==undefined&&!ACTIVITY_IDS_V44.includes(activityId))return no('目前沒有這項活動。');
  if(run.completed)return no('這段人生已經結束。');
  if(run.pending)return no('先看完眼前結果，再決定活動安排。');
+ if(run.hiddenEncounterContext)return no('先完成眼前的相遇，再安排活動。');
  if(run.activityContext)return no('先完成目前的活動，再安排下一場。');
  if(run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.patronageReplyContext||run.patronageContext||run.raiseContext||run.mealContext||run.wealthReturnEventId||run.salaryAdvice?.status==='open'||run.personnelPending||run.pendingFamily||run.resumeEventId||run.exitReturnEventId||run.breakReturnEventId||run.banquetReturnEventId||run.meltdownReturnEventId)return no('先處理眼前的安排，再回來選活動。');
  if(run.pip?.active)return no('先完成目前的 PIP，再另外安排活動。');
@@ -808,6 +863,7 @@ function advanceActivityV44(run){
  return next;
 }
 export function advance(run,options={}){
+ if(run?.hiddenEncounterContext)return advanceHiddenEncounterV45(run);
  if(run?.activityContext)return advanceActivityV44(run);
  if(run?.patronageReplyContext){
   if(!run.pending||run.completed)return run;
@@ -841,14 +897,14 @@ export function advance(run,options={}){
  }
  return next;
 }
-export function canRequestBreak(run){return !!(run&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&rules2(run)&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getEvent(run)?.kind));}
+export function canRequestBreak(run){return !!(run&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&rules2(run)&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getEvent(run)?.kind));}
 export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;const invite=canKindDarkInviteV29(next)&&contentRules(next)>=6&&!(contentRules(next)>=7&&next.lastKindInviteTurn===next.turn)&&roll(next)<KIND_BREAK_CHANCE;next.eventId=invite?'kind-break':'self-care';if(invite&&contentRules(next)>=7)next.lastKindInviteTurn=next.turn;return next;}
-export function canRequestCareer(run){return !!(run&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&!(contentRules(run)>=30&&run.verbalContext)&&!(contentRules(run)>=29&&run.patronage)&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getEvent(run)?.kind));}
+export function canRequestCareer(run){return !!(run&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&!(contentRules(run)>=30&&run.verbalContext)&&!(contentRules(run)>=29&&run.patronage)&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getEvent(run)?.kind));}
 export function requestCareer(run){if(!canRequestCareer(run))return run;const next=structuredClone(run);next.actions.push({type:'career'});next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
-export function canRequestRaise(run){return !run?.activityContext&&!run?.chapterContext&&!run?.companyContext&&!(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
+export function canRequestRaise(run){return !run?.hiddenEncounterContext&&!run?.activityContext&&!run?.chapterContext&&!run?.companyContext&&!(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
 export function requestRaise(run){if(!canRequestRaise(run))return run;const next=structuredClone(run);next.actions.push({type:'raise'});next.raiseContext={eventId:run.eventId,fromPay:run.pay,offerPay:null,percent:null,outcome:null,view:null,approach:null};next.eventId='raise-request';return next;}
 export function canRequestSalaryAdvice(run){
- if(!run||run.activityContext||run.chapterContext||run.companyContext||contentRules(run)<28||run.pending||run.completed||run.pendingFamily||run.salaryAdvice!==null||run.actions.length>=299||!Number.isInteger(run.pay)||run.pay>=30||run.pay<1||run.stats.mood<=0||run.stats.energy<=0)return false;
+ if(!run||run.hiddenEncounterContext||run.activityContext||run.chapterContext||run.companyContext||contentRules(run)<28||run.pending||run.completed||run.pendingFamily||run.salaryAdvice!==null||run.actions.length>=299||!Number.isInteger(run.pay)||run.pay>=30||run.pay<1||run.stats.mood<=0||run.stats.energy<=0)return false;
  if(run.verbalContext||run.patronageContext||run.mealContext||run.wealthReturnEventId||run.personnelPending||run.actions.some(action=>action.type==='salary-advice')||run.history.some(row=>row.eventId==='low-pay-tip'))return false;
  const first=run.history.find(row=>row.eventId==='onboarding'),anchor=run.history.at(-1);
  if(first?.eventId!=='onboarding'||first.kind!=='onboarding'||!([0,1].includes(first.choiceIndex)||first.verbalOutcome?.version===2&&first.verbalOutcome.phase==='event')||!Number.isInteger(first.pay)||first.pay<1||first.pay>=30||anchor?.pay!==run.pay||createRun(run.roleId,run.seed).pay>=30)return false;
@@ -863,7 +919,7 @@ export function requestSalaryAdvice(run){
 // This optional action leaves the original scene and its choice indices intact.
 // Published lives change only after explicitly choosing the new response.
 export function canRequestPatronageReply(run){
- if(!run||run.activityContext||contentRules(run)<29||!run.patronage||run.pending||run.completed||run.pendingFamily||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0||run.actions.length>=299||run.flags.patronage_reply_last_turn===run.turn+1)return false;
+ if(!run||run.hiddenEncounterContext||run.activityContext||contentRules(run)<29||!run.patronage||run.pending||run.completed||run.pendingFamily||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0||run.actions.length>=299||run.flags.patronage_reply_last_turn===run.turn+1)return false;
  const event=getEvent(run);
  return !!event&&!['rage','rage-world','verbal','patronage'].includes(event.kind)&&!['self-care','exit-menu','rank-exit','career-exit','story-exit',...WEALTH_EVENTS_V27].includes(event.id)&&!/^meal-guests-/.test(event.id)&&verbalTargetsV30(event).some(id=>Object.hasOwn(PERSONAS,id));
 }
@@ -895,7 +951,7 @@ export function requestPatronageReply(run,target){
  next.eventId=PATRONAGE_REPLY_EVENT_V43;next.pending=true;next.pendingEffect='patronageReplyReturn';return next;
 }
 export function canRequestVerbal(run){
- if(run?.activityContext||run?.patronageReplyContext)return false;
+ if(run?.hiddenEncounterContext||run?.activityContext||run?.patronageReplyContext)return false;
  if(!run||run.chapterContext||run.companyContext||contentRules(run)<30||run.completed||run.verbalContext||run.rageContext||run.pendingFamily||run.lastVerbalTurn===run.turn||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0)return false;
  const event=getEvent(run);
  return !!event&&!VERBAL_EVENTS_V30.includes(event.id)&&!['rage','rage-world','verbal'].includes(event.kind);
@@ -932,7 +988,7 @@ export function requestVerbal(run,target,version){
  resolved.actions.pop();return resolved;
 }
 export function canRequestRage(run){
- if(run?.activityContext||run?.patronageReplyContext)return false;
+ if(run?.hiddenEncounterContext||run?.activityContext||run?.patronageReplyContext)return false;
  if(!(run&&!run.chapterContext&&!run.companyContext&&contentRules(run)>=13&&!run.completed&&!run.rageContext&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pendingFamily))return false;
  if(contentRules(run)>=18&&run.stats.mood===0)return false;
  if(contentRules(run)>=14)return run.flags.rage_last_turn!==run.turn+1&&!!conversationalTarget(run,getEvent(run));
@@ -963,7 +1019,7 @@ export function requestRage(run,target){
  const next=structuredClone(current);next.actions.push({type:'rage'});
  next.rageContext={eventId:next.eventId,speaker:getEvent(next)?.speaker||'wing'};next.eventId='rage-menu';return next;
 }
-export function requestExit(run){if(run?.activityContext||run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestExit(run){if(run?.hiddenEncounterContext||run?.activityContext||run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 function replayActions(roleId,seed,actions,count=actions.length){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -971,6 +1027,10 @@ function replayActions(roleId,seed,actions,count=actions.length){
   const action=actions[actionIndex],following=actions[actionIndex+1];
   if(!action||typeof action!=='object'||run.completed)throw new Error('Invalid replay action');
   if(action.type==='exit'){const next=requestExit(run);if(next===run)throw new Error('Duplicate exit');run=next;}
+  else if(action.type==='hidden-encounter'){
+   if(Object.keys(action).sort().join(',')!=='eventId,type,version'||action.version!==1||action.eventId!==run.eventId)throw new Error('Hidden encounter mismatch');
+   const next=requestHiddenEncounter(run);if(next===run)throw new Error('Unavailable hidden encounter');run=next;
+  }
   else if(action.type==='activity'){
    if(Object.keys(action).sort().join(',')!=='activityId,type,version'||action.version!==1||!ACTIVITY_IDS_V44.includes(action.activityId))throw new Error('Invalid activity action');
    const next=requestActivity(run,action.activityId);if(next===run)throw new Error('Unavailable activity');run=next;
@@ -1010,7 +1070,7 @@ function replayActions(roleId,seed,actions,count=actions.length){
 export function replayRun(roleId,seed,actions){return replayActions(roleId,seed,actions);}
 export function validRun(run){
  try {
-  if(Array.isArray(run?.actions)&&run.actions.some(action=>action?.type==='patronage-reply'||action?.type==='activity')){
+  if(Array.isArray(run?.actions)&&run.actions.some(action=>action?.type==='patronage-reply'||action?.type==='activity'||action?.type==='hidden-encounter')){
    const last=run.actions.at(-1),prefix=run.pending?replayActions(run.roleId,run.seed,run.actions,run.actions.length-1):null;
    let canonical;
    if(!run.pending)canonical=replayRun(run.roleId,run.seed,run.actions);
@@ -1033,6 +1093,7 @@ export function validRun(run){
    };
    return equal(actual,canonical);
   }
+  if(run?.hiddenEncounterContext!==undefined||run?.eventId?.startsWith('hidden45-')||run?.history?.some(row=>row?.hiddenOutcome!==undefined||row?.kind==='hidden')||Object.keys(run?.flags||{}).some(key=>key.startsWith('hidden45_')))return false;
   if(run?.activityContext!==undefined||run?.history?.some(row=>row?.activityOutcome!==undefined||row?.kind==='activity')||Object.keys(run?.flags||{}).some(key=>key.startsWith('activity44_')))return false;
   if(run?.patronageReplyContext!==undefined||run?.eventId===PATRONAGE_REPLY_EVENT_V43||run?.history?.some(row=>row?.patronageOutcome!==undefined||row?.kind==='patronage'||row?.eventId===PATRONAGE_REPLY_EVENT_V43)||Object.keys(run?.flags||{}).some(key=>key.startsWith('patronage_reply_')||key==='patronage_replies'))return false;
   if(/^e(?:38|39)-/.test(run?.seed||'')&&run.chapterContext){

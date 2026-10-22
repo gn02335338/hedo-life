@@ -2,7 +2,7 @@ import {professorVerbalLineV37} from './verbal-professor-v37.js';
 import {CAST_IDS_V39} from './cast-v39.js';
 import {castVerbalLineV39} from './verbal-cast-v39.js';
 import {ROLE_MAP} from './roles.js';
-import {PERSONAS,displayText} from './persona.js';
+import {PERSONAS,publishedDisplayText as displayText} from './persona.js';
 
 // Original dialogue for the fictional game. These are neither quotations nor
 // accounts of real conversations. Only the visible scene and committed past

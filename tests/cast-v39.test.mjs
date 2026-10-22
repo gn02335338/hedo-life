@@ -36,7 +36,10 @@ test('the five additive public characters have thirty distinct playable work sce
    if(event.participants)assert.deepEqual(participants,event.participants,`${event.id}: only explicitly present people are selectable`);
   }
  }
- assert.match(PERSONAS.princess.about,/安妮林/);assert.match(PERSONAS.annie_yu.about,/安妮余/);assert.match(PERSONAS.joyce.about,/Joyce/);
+ assert.match(PERSONAS.princess.about,/海外資訊背景.*資料探勘工程師/);
+ assert.match(PERSONAS.annie_yu.about,/商務開發助理.*歐文/);
+ assert.match(PERSONAS.joyce.about,/業務總監.*914/);
+ for(const id of expected)assert.doesNotMatch(PERSONAS[id].about,/安妮林|多倫多|Joyce|同學|五千元|二十五個人/,'public introductions keep only broad occupational context');
 });
 
 test('all new guests share the third page, leave invitation costs uncharged and cannot be asked twice on the same workday',()=>{

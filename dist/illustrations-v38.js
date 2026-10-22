@@ -1,10 +1,12 @@
 // Artwork is a read-only presentation layer. Never pass a run's unchosen
 // choices, draw outcomes or future ending into this module.
-import {PERSONAS,displayText} from './persona.js';
+import {PERSONAS,displayPersona,displayText} from './persona.js';
+import {HIDDEN_PERSONAS_V45} from './hidden-encounter-v45.js';
 import {ENDINGS} from './endings.js';
 import {EVENT_SCENES_V38,DYNAMIC_SCENES_V38,SCENE_PLATES_V38,SCENE_ALIASES_V38} from './illustration-scenes-v38.js';
 
 const escape=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const illustrationPeople={...PERSONAS,...HIDDEN_PERSONAS_V45};
 const plateIds=new Set(SCENE_PLATES_V38);
 const endingRecords=new Map(ENDINGS.map(ending=>[ending.id,{roleId:ending.roleId,title:ending.title}]));
 const roleLabels=Object.freeze({system:'系統工程',ai:'AI工程',project:'專案管理',product:'產品管理',design:'設計',bd:'商務開發',sales:'業務',mis:'MIS',executive:'高階主管',finance:'財務',accounting:'會計',hr:'人資',admin:'行政'});
@@ -12,7 +14,7 @@ const uiScenes=Object.freeze({'role-selection':'onboarding','resume-roll':'onboa
 
 export function sceneIllustration(event,{roleId=null,people=[],reality=null}={}){
   const id=typeof event?.id==='string'?event.id:'';
-  let theme=event?.kind==='activity'&&plateIds.has(event.scene)?event.scene:EVENT_SCENES_V38[id]||DYNAMIC_SCENES_V38[id]||uiScenes[id]||'office_day';
+  let theme=(event?.kind==='activity'||event?.hiddenCharacter===true)&&plateIds.has(event.scene)?event.scene:EVENT_SCENES_V38[id]||DYNAMIC_SCENES_V38[id]||uiScenes[id]||'office_day';
   // `reality` must come from the already revealed current history row. A
   // previous imagined/real encounter cannot set this frame's visual mode.
   const mode=['imagined','real'].includes(reality)?reality:null;
@@ -24,7 +26,7 @@ export function sceneIllustration(event,{roleId=null,people=[],reality=null}={})
   theme=SCENE_ALIASES_V38[theme]||theme;
   if(!plateIds.has(theme))theme='office_day';
   const knownRole=Object.hasOwn(roleLabels,roleId)?roleId:null;
-  const members=[...new Set(people)].filter(id=>Object.hasOwn(PERSONAS,id)).slice(0,3);
+  const members=[...new Set(people)].filter(id=>Object.hasOwn(illustrationPeople,id)).slice(0,3);
   return {theme,mode,roleId:knownRole,roleLabel:knownRole?roleLabels[knownRole]:'',people:members,
     src:`./assets/scenes/${theme}.webp`,title:displayText(event?.title||'上班途中的一幕')};
 }
@@ -32,7 +34,7 @@ export function sceneIllustration(event,{roleId=null,people=[],reality=null}={})
 export function renderSceneIllustration(event,options={}){
   const art=sceneIllustration(event,options),compact=options.compact===true;
   const modeLabel=art.mode==='imagined'?'腦內夢境 · 現實沒有動手':art.mode==='real'?'現實失控 · 事情真的發生了':'';
-  return `<figure class="story-illustration${compact?' compact-illustration':''}${art.mode?` illustration-${art.mode}`:''}" data-scene-theme="${art.theme}"${art.roleId?` data-scene-role="${art.roleId}"`:''} aria-label="${escape(`場景插畫：${art.title}`)}"><div class="scene-image-frame"><img class="scene-environment" src="${art.src}" width="960" height="540" alt="" aria-hidden="true" loading="lazy" decoding="async" data-illustration="environment">${art.people.length?`<div class="scene-cast" aria-hidden="true">${art.people.map(id=>`<div class="scene-person"><img src="${PERSONAS[id].image}" width="180" height="180" alt="" loading="lazy" decoding="async" data-illustration="portrait"><span>${escape(PERSONAS[id].name)}</span></div>`).join('')}</div>`:''}${modeLabel?`<span class="scene-reality-label">${modeLabel}</span>`:''}</div><figcaption><span>${modeLabel||(event?.scope==='private'?'移動人生 · 私人場合':'移動人生 · 上班現場')}</span>${art.roleLabel?`<span>${escape(art.roleLabel)}</span>`:''}</figcaption></figure>`;
+  return `<figure class="story-illustration${compact?' compact-illustration':''}${art.mode?` illustration-${art.mode}`:''}" data-scene-theme="${art.theme}"${art.roleId?` data-scene-role="${art.roleId}"`:''} aria-label="${escape(`場景插畫：${art.title}`)}"><div class="scene-image-frame"><img class="scene-environment" src="${art.src}" width="960" height="540" alt="" aria-hidden="true" loading="lazy" decoding="async" data-illustration="environment">${art.people.length?`<div class="scene-cast" aria-hidden="true">${art.people.map(id=>`<div class="scene-person"><img src="${illustrationPeople[id].image}" width="180" height="180" alt="" loading="lazy" decoding="async" data-illustration="portrait"><span>${escape(displayText(illustrationPeople[id].name))}</span></div>`).join('')}</div>`:''}${modeLabel?`<span class="scene-reality-label">${modeLabel}</span>`:''}</div><figcaption><span>${modeLabel||(event?.hiddenCharacter?'移動人生 · 隱藏角色':event?.scope==='private'?'移動人生 · 私人場合':'移動人生 · 上班現場')}</span>${art.roleLabel?`<span>${escape(art.roleLabel)}</span>`:''}</figcaption></figure>`;
 }
 
 export function endingIllustrationPath(ending,{unlocked=false}={}){

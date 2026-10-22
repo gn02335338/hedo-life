@@ -84,7 +84,7 @@ test('published e16 histories retain canonical aliases while the current display
    const shown=displayText(h[field]);
    assert.doesNotMatch(shown,/Moon Dog|顧問教授|遊戲月薪/);
    if(h[field].includes('Moon Dog'))assert.ok(shown.includes('真真'));
-   if(h[field].includes('顧問教授'))assert.ok(shown.includes('林澤教授'));
+   if(h[field].includes('顧問教授'))assert.ok(shown.includes('林老師'));
    if(h[field].includes('遊戲月薪'))assert.ok(shown.includes('月薪'));
   }
  }

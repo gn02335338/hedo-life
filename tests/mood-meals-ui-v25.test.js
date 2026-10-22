@@ -233,7 +233,7 @@ for(const mobile of [false,true]){
  test(`${device}: all thirty natural professor scenes show the professor and hide outcomes until an actual reply`,async()=>{
   for(const route of professorRoutes.scenes){
    const app=await harness(mobile),run=engine.replayRun(route.roleId,route.seed,route.beforeActions),event=engine.getEvent(run),html=app.render(run);
-   assert.equal(event.speaker,'professor');assert.equal(engine.validRun(run),true);assert.ok(html.includes('林澤教授'));
+   assert.equal(event.speaker,'professor');assert.equal(engine.validRun(run),true);assert.ok(html.includes('林老師'));
    assert.ok(html.includes(`src="${persona.PERSONAS.professor.image}"`));hiddenOutcomes(html,event);
    const expected=engine.applyChoice(run,0);await app.doubleChoice(0);
    assert.deepEqual(plain(app.state()),plain(expected));assert.ok(app.html().includes(esc(expected.history.at(-1).result)));
@@ -244,7 +244,7 @@ for(const mobile of [false,true]){
  test(`${device}: all six natural professor dinner reactions reveal after payment and double clicks cannot charge twice`,async()=>{
   for(const route of professorRoutes.meals){
    const app=await harness(mobile),run=engine.replayRun(route.roleId,route.seed,route.beforeActions),event=engine.getEvent(run),html=app.render(run);
-   assert.equal(event.id,'meal-with-professor');assert.ok(html.includes('林澤教授'));assert.ok(html.includes(`src="${persona.PERSONAS.professor.image}"`));hiddenOutcomes(html,event);
+   assert.equal(event.id,'meal-with-professor');assert.ok(html.includes('林老師'));assert.ok(html.includes(`src="${persona.PERSONAS.professor.image}"`));hiddenOutcomes(html,event);
    for(const choice of event.choices)for(const outcome of choice.draw?.outcomes||[])assert.ok(!html.includes(esc(outcome.result)),'no table reaction is visible before a choice');
    const expected=engine.applyChoice(run,route.replyIndex);await app.doubleChoice(route.replyIndex);
    assert.deepEqual(plain(app.state()),plain(expected));assert.equal(app.state().stats.cash,run.stats.cash-18);

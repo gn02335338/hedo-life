@@ -1,5 +1,5 @@
 import { ROLE_MAP } from './roles.js';
-import { displayText } from './persona.js';
+import { publishedDisplayText as displayText } from './persona.js';
 
 // The engine opts new runs into this copy after computing checks and effects.
 // The three openings share choice indices, but describe different decisions.

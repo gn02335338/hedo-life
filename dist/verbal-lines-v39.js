@@ -1,4 +1,4 @@
-import {PERSONAS,displayText} from './persona.js';
+import {PERSONAS,publishedDisplayText as displayText} from './persona.js';
 import {castVerbalLineV39} from './verbal-cast-v39.js';
 
 const pair=(event,result)=>({event,result});

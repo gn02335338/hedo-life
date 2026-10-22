@@ -133,7 +133,7 @@ test('spoken professor insults have scene-specific lines and canonical target af
 test('the original spoken-action protocol also recognizes the professor without falling back to insulting air',()=>{
   const source=before(fixture.scenes[0]),pending=requestVerbal(source),row=pending.history.at(-1);
   assert.equal(validRun(pending),true);assert.equal(row.speaker,'professor');assert.equal(row.verbalOutcome.target,'professor');
-  assert.match(displayText(row.result),/林澤教授/);assert.doesNotMatch(row.result,/空氣沒有回覆|四周卻沒有你正在對話的人/);
+  assert.match(displayText(row.result),/林老師/);assert.doesNotMatch(row.result,/空氣沒有回覆|四周卻沒有你正在對話的人/);
   const run=advance(pending);assert.equal(validRun(run),true);assert.deepEqual(replayRun(run.roleId,run.seed,run.actions),run);
   assert.equal(stat(run).realHits+stat(run).imaginedHits,stat(source).realHits+stat(source).imaginedHits);
 });

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PERSONAS,displayName,displayText,replayText,applyPersonaCopy} from '../dist/persona.js';
+import {PERSONAS,displayName,displayPersona,displayText,publishedDisplayText,replayText,applyPersonaCopy} from '../dist/persona.js';
 import {ROLES} from '../dist/roles.js';
 import {ENDINGS} from '../dist/endings.js';
 import {LEGACY_ENDINGS} from '../dist/legacy.js';
@@ -10,7 +10,7 @@ import {getRageV20,rageTargetForV20} from '../dist/rage-v20.js';
 import {getRageV16} from '../dist/rage-v16.js';
 
 test('all named game characters have stable IDs, public aliases and original portrait paths',()=>{
- const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'瑞克',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友',sophie:'紅茶',jonathan:'強哥',owen:'歐文',sam:'山姆',cindy:'辛蒂',professor:'林澤教授',annie_yu:'安妮余',princess:'公主',joyce:'914',janet:'Janet',captain:'船長'};
+ const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'瑞克',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友',sophie:'紅茶',jonathan:'強哥',owen:'歐文',sam:'山姆',cindy:'辛蒂',professor:'林老師',annie_yu:'安妮余',princess:'公主',joyce:'914',janet:'Janet',captain:'船長'};
  assert.deepEqual(Object.fromEntries(Object.keys(PERSONAS).map(id=>[id,displayName(id)])),expected);
  for(const [id,person]of Object.entries(PERSONAS)){
   assert.equal(person.image,`./assets/${id}.png`);
@@ -26,11 +26,12 @@ test('all named game characters have stable IDs, public aliases and original por
 test('the five new character identities use supplied titles and display-only aliases without rewriting replay prose',()=>{
  const expected={sophie:'稽核主管',jonathan:'助理工程師',owen:'商務開發總監',sam:'資深資料探勘工程師',cindy:'資深專案管理師'};
  for(const [id,title]of Object.entries(expected)){assert.equal(PERSONAS[id].title,title);assert.equal(PERSONAS[id].portrait,true);assert.ok(PERSONAS[id].about);}
- assert.match(PERSONAS.sophie.about,/不是綠茶/);assert.match(PERSONAS.sophie.about,/戲稱為夫妻.*沒人能確認/);
- assert.match(PERSONAS.jonathan.about,/台大資工/);assert.match(PERSONAS.jonathan.about,/助理工程師能決定/);
- for(const trait of ['墨鏡','金項鏈','特斯拉','約跑'])assert.ok(PERSONAS.owen.about.includes(trait));
- for(const trait of ['成大學士加碩士','傑克的前主管','Netflix','午睡'])assert.ok(PERSONAS.sam.about.includes(trait));
- assert.match(PERSONAS.cindy.about,/曾經喜愛.*看不順眼/);
+ assert.match(PERSONAS.sophie.about,/自稱紅茶/);assert.doesNotMatch(PERSONAS.sophie.about,/夫妻|綠茶/);
+ assert.match(PERSONAS.jonathan.about,/頂大資訊相關科系/);assert.match(PERSONAS.jonathan.about,/職責和決定權/);
+ for(const trait of ['墨鏡','豪車'])assert.ok(PERSONAS.owen.about.includes(trait));
+ assert.doesNotMatch(PERSONAS.owen.about,/特斯拉|約跑|離職倒數/);
+ assert.match(PERSONAS.sam.about,/理工學士與碩士/);assert.doesNotMatch(PERSONAS.sam.about,/成大|Netflix|午睡|光頭|禿頭/);
+ assert.match(PERSONAS.cindy.about,/專案排程與跨部門協調/);assert.doesNotMatch(PERSONAS.cindy.about,/趕走|看不順眼|離場名單/);
  const text='Sophie／蘇菲和Jonathan找Owen，Sam跟Cindy在旁邊。';
  assert.equal(displayText(text),'紅茶／紅茶和強哥找歐文，山姆跟辛蒂在旁邊。');
  assert.equal(replayText(text),text,'new names remain presentation-only for historical proof text');
@@ -40,9 +41,19 @@ test('the five new character identities use supplied titles and display-only ali
  assert.deepEqual(applyPersonaCopy(event),event,'the new public names never rewrite committed engine prose');
 });
 
+test('every public character has a concise neutral introduction without precise schools, brands or private rumors',()=>{
+ const introductions=Object.values(PERSONAS).map(person=>person.about);
+ assert.equal(introductions.length,22);assert.equal(new Set(introductions).size,22);
+ for(const about of introductions){
+  assert.equal(typeof about,'string');assert.ok(about.length>=20&&about.length<=65);
+  assert.doesNotMatch(about,/台大|臺大|成大|多倫多|特斯拉|Tesla|Netflix|約跑|夫妻|小三|欠錢|歧視|趕走|幹走|睡覺|午睡|沒什麼在上班/);
+  assert.doesNotMatch(about,/成功率|機率|[+−-]\d|結局|成就條件/,'introductions do not reveal choice outcomes');
+ }
+});
+
 test('display aliases handle Chinese-adjacent names and existing nicknames without changing identifiers or URLs',()=>{
  assert.equal(displayText('Wing問Rick，Hope跟Erich／JenJen／Sonny在旁邊。Spencer叫Jack跟Kind過來。'),'翅膀問瑞克，希望跟法師／真真／阿福在旁邊。屎潘蛇叫傑克跟阿良過來。');
- assert.equal(displayText('阿良（Kind）、Rick（乾兒子）、Jack（傑克）、林澤教授。'),'阿良、瑞克、傑克、林澤教授。');
+ assert.equal(displayText('阿良（Kind）、Rick（乾兒子）、Jack（傑克）、林澤教授。'),'阿良、瑞克、傑克、林老師。');
  assert.equal(displayText('SPENCER / WING / RICK / HOPE'),'屎潘蛇 / 翅膀 / 瑞克 / 希望');
  const unchanged='kind hopeful Wingman Rickshaw wing rage_wing WingFeature ./assets/Wing.png https://example.test/Wing?Kind=Hope';
  assert.equal(displayText(unchanged),unchanged);
@@ -72,18 +83,23 @@ test('Zhen Zhen is a display rename while canonical replay prose and identifiers
 test('Professor Lin and monthly pay render current wording without changing canonical or saved history',()=>{
  const original='林澤教授與林澤來了，顧問教授留下建議。原本遊戲月薪35K，新的月薪28K。';
  const canonical='顧問教授與顧問教授來了，顧問教授留下建議。原本遊戲月薪35K，新的月薪28K。';
- const shown='林澤教授與林澤教授來了，林澤教授留下建議。原本月薪35K，新的月薪28K。';
+ const shown='林老師與林老師來了，林老師留下建議。原本月薪35K，新的月薪28K。';
  assert.equal(replayText(original),canonical,'frozen replay prose retains its published names and salary label');
+ assert.equal(publishedDisplayText(original),'林澤教授與林澤教授來了，林澤教授留下建議。原本月薪35K，新的月薪28K。','published engine display aliases stay frozen');
+ assert.equal(PERSONAS.professor.name,'林澤教授','canonical identity remains verifiable');
+ assert.equal(displayPersona('professor').name,'林老師');
+ assert.equal(displayPersona('professor').title,'電機領域教授／產學顧問');
+ assert.equal(displayPersona('unknown'),null);
  assert.equal(displayText(original),shown);
  assert.equal(displayText(canonical),shown,'saved history with the former alias renders the requested name');
- assert.equal(displayText(shown),shown,'displaying the restored name repeatedly does not duplicate 教授');
+ assert.equal(displayText(shown),shown,'displaying the current name repeatedly is stable');
  const event={id:'advisor-test',speaker:'wing',body:original,choices:[{text:'請顧問教授看薪資單',result:'遊戲月薪28K；林澤教授建議保留紀錄。',delta:{trust:3}}]};
  const before=JSON.stringify(event),next=applyPersonaCopy(event);
  assert.equal(next.body,canonical);
  assert.equal(next.choices[0].text,'請顧問教授看薪資單');
  assert.equal(next.choices[0].result,'遊戲月薪28K；顧問教授建議保留紀錄。');
- assert.equal(displayText(next.choices[0].text),'請林澤教授看薪資單');
- assert.equal(displayText(next.choices[0].result),'月薪28K；林澤教授建議保留紀錄。');
+ assert.equal(displayText(next.choices[0].text),'請林老師看薪資單');
+ assert.equal(displayText(next.choices[0].result),'月薪28K；林老師建議保留紀錄。');
  assert.equal(next.id,event.id);assert.equal(next.speaker,event.speaker);assert.deepEqual(next.choices[0].delta,event.choices[0].delta);
  assert.equal(JSON.stringify(event),before,'current display wording never mutates history or proof inputs');
  const protectedText='advisor-ties advisor_school ./assets/顧問教授.png ../archive/林澤教授-遊戲月薪.json https://example.test/顧問教授?salary=遊戲月薪#林澤';
@@ -129,7 +145,7 @@ test('all public collections can be displayed with aliases while original catalo
    const result=displayText(value);processed++;
    assert.equal(displayText(result),result,'display formatting is safe to apply twice');
    if(!/^(?:https?:\/\/|\.\/)/.test(value)&&!/^[-a-z0-9_/]+$/.test(value)){
-    assert.doesNotMatch(result,/(?<![A-Za-z0-9_])(?:Wing|WING|Spencer|Rick|Hope|Erich|JenJen|Sonny|Kind|Jack)(?![A-Za-z0-9_])|顧問教授|遊戲月薪|空降主管/);
+    assert.doesNotMatch(result,/(?<![A-Za-z0-9_])(?:Wing|WING|Spencer|Rick|Hope|Erich|JenJen|Sonny|Kind|Jack)(?![A-Za-z0-9_])|顧問教授|林澤教授|遊戲月薪|空降主管/);
    }
   }else if(Array.isArray(value))value.forEach(visit);
   else if(value&&typeof value==='object')Object.values(value).forEach(visit);

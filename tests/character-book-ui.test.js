@@ -37,7 +37,7 @@ function bookHarness(cloud,cache=null){
 test('the cast archive contains twenty-two public portraits and never lists locked endings',()=>{
  const html=characterBookHTML();
  assert.equal([...html.matchAll(/class="character-card"/g)].length,22);
- for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));assert.ok(html.includes(persona.PERSONAS[id].name));}
+ for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));assert.ok(html.includes(persona.displayName(id)));}
  assert.doesNotMatch(html,/Wing|Spencer|Erich|Sonny|JenJen|Rick|Hope|Kind|Jack|美美/);
  assert.doesNotMatch(html,/納斯達克幻想|自願離職陷阱|勉強通關|成功率/);
  assert.match(html,/不影響升遷或工作事件抽選/);
@@ -47,6 +47,20 @@ test('the cast archive contains twenty-two public portraits and never lists lock
  assert.ok(html.indexOf('class="character-card-grid"')<html.indexOf('class="character-book-help"'));
  assert.doesNotMatch(html, /id="character-ranking-details"\s+open/);
  assert.match(html, /<details class="character-book-help"><summary>統計怎麼記？<\/summary>/);
+});
+
+test('every public card shows its neutral introduction and current alias while the sealed identity stays hidden',()=>{
+ const html=characterBookHTML();
+ assert.equal([...html.matchAll(/class="character-bio"/g)].length,22);
+ for(const id of CHARACTER_IDS){
+  const person=persona.displayPersona(id);
+  assert.ok(html.includes(`<p class="character-bio">${person.about}</p>`),id);
+  const own=characterBookHTML({filter:id});
+  assert.equal([...own.matchAll(/class="character-bio"/g)].length,1);
+  assert.ok(own.includes(person.name));
+ }
+ assert.match(html,/林老師/);assert.doesNotMatch(html,/林澤|台大電機教授|特斯拉|約跑|多倫多/);
+ assert.match(html,/封存角色/);assert.doesNotMatch(html,/魚酥|Frans|小三/);
 });
 
 test('unavailable numbers remain dashes while genuine empty statistics show zero',()=>{

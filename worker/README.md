@@ -416,7 +416,7 @@ The six additional company families add seventy-eight role-specific ending IDs. 
 
 ## Optional private administrator archive
 
-The public character book may show a generic locked slot. Its actual identity, portrait and stories are **not** shipped in static assets, public source, game rules, replay proofs, player snapshots or aggregate statistics. The separate administrator API stores one private card and its image in SQLite; it is an archive/sandbox, not a dynamically fetched canonical game character. Merely hiding an imported static module or a public image URL would not protect this material.
+The public character book shows a generic locked slot. The complete administrator card, private notes and source photos are **not** shipped in static assets or fetched by the public game. The separate administrator API stores the full archive in SQLite. At the author’s request, the hidden visitor’s existing game illustration and eight already-authored fictional office scenes are also used for rare public encounters. Only that selected game content is shipped; there is no runtime dependency on administrator authentication or archived payloads. The public alias, illustration and scenes are inspectable with the game source, while the full private card remains protected. It is excluded from the public character book, filters, rankings, character snapshots and aggregate counters. Merely hiding an imported static module or a public image URL would not protect private material.
 
 | Method | Path | Behavior |
 | --- | --- | --- |
@@ -458,3 +458,30 @@ flags, history and RNG. Forged activity state without an authorized operation is
 rejected. No database migration, credential, account field or public identity is
 added; completion, character and achievement proofs retain their existing
 anonymous ownership and validation.
+
+## Rare hidden encounters (v45 action, e39 lives)
+
+`{type:'hidden-encounter',version:1,eventId}` is a strict three-key action.
+Canonical replay verifies the unanswered daily source, deterministic rarity gate,
+resources, context conflicts and once-per-life limit before opening it. Merely
+checking availability consumes no RNG; opening chooses a scene with one seeded
+draw. Stages use ordinary `choice` actions and a canonical
+`hiddenEncounterContext`. Each resolved choice records its actual deltas and
+`hiddenOutcome`; pending and continued JSON saves are compared with full replay.
+The final continuation restores the unanswered source without extra workday,
+income or PIP ticks. Client-created contexts, outcomes and invitations are not
+trusted. Existing action sequences retain their original behavior.
+
+The public hidden visitor reuses eight previously authored fictional scenes and
+the existing game illustration selected by the author. These selected assets
+are bundled for all players; there is no runtime access to private payloads,
+source photos, credentials or `/api/admin/*`. The full administrator archive
+remains separate. The visitor is intentionally outside `PERSONAS` and
+`CHARACTER_IDS`, so public character APIs, book filters, rankings and aggregate
+metrics remain at twenty-two entries. The local committed story can show the
+alias and rare-encounter frame after meeting the visitor. No new identity field,
+secret, database table or authentication permission is introduced.
+
+The professor’s new display alias is presentation-only. Canonical engine prose
+imports the frozen `publishedDisplayText` function, preserving old histories,
+queued proofs and seeds while current UI uses the new alias and short biographies.

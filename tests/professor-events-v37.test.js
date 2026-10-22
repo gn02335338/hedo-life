@@ -104,7 +104,7 @@ test('all thirty natural e37 prefixes preserve original choices through the real
       // Canonical replay aliases remain frozen; the UI uses displayText to
       // restore the current name. Compare what the player actually reads.
       for(const field of ['title','body','wing'])assert.equal(displayText(rendered[field]),displayText(authored[field]),`${route.id}: ${field}`);
-      assert.match(displayText(rendered.body),/林澤教授/);assert.doesNotMatch(displayText(rendered.body),/顧問教授/);
+      assert.match(displayText(rendered.body),/林老師/);assert.doesNotMatch(displayText(rendered.body),/顧問教授/);
       assert.deepEqual(rendered.sourceIds,authored.sourceIds);
       assert.deepEqual(rendered.choices.map(displayedChoice),authored.choices.map(displayedChoice),`${route.id}: choices`);
       assert.deepEqual(run,snapshot,'copy, persona, wild and gender overlays must not consume a draw or rewrite the run');

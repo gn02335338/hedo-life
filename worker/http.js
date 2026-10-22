@@ -120,6 +120,11 @@ export function validateCompletion(body, roleMap) {
       if (/^e(?:28|29|30|31|32|33|34|35|36|37|38|39)-/.test(body.seed)&&Object.keys(action).every(key=>key==='type')) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
+    if (action.type === 'hidden-encounter') {
+      if (/^e39-/.test(body.seed)&&Object.keys(action).sort().join(',')==='eventId,type,version'&&action.version===1
+          &&typeof action.eventId==='string'&&action.eventId.trim().length>0&&action.eventId.length<=100) continue;
+      throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
+    }
     if (action.type === 'activity') {
       if (/^e39-/.test(body.seed)&&Object.keys(action).sort().join(',')==='activityId,type,version'
           &&action.version===1&&ACTIVITY_IDS_V44.includes(action.activityId)) continue;

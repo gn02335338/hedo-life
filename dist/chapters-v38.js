@@ -1,4 +1,4 @@
-import {displayText,displayChronicleHistory} from './persona.js';
+import {publishedDisplayText as displayText,displayChronicleHistory} from './persona.js';
 
 // A solved argument is an episode, not a dismissal. These public ending IDs
 // remain available when the player later explicitly chooses to leave.

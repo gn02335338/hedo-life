@@ -111,7 +111,9 @@ test('e22 action envelopes support current interactions and reject forged raise 
 test('Helen has her own illustrated identity and starts with zero counters in old and new lives',()=>{
  assert.equal(PERSONAS.helen.name,'前女友');assert.equal(PERSONAS.helen.title,'產品開發總監');
  assert.equal(PERSONAS.helen.image,'./assets/helen.png');
- assert.match(PERSONAS.helen.about,/海倫/);assert.match(PERSONAS.sonny.about,/桑尼/);
+ assert.match(PERSONAS.helen.about,/產品開發總監.*前女友/);
+ assert.match(PERSONAS.helen.about,/產品規劃、工作分工與交接/);
+ assert.doesNotMatch(PERSONAS.helen.about,/海倫|實際交往|特權/);assert.match(PERSONAS.sonny.about,/桑尼/);
  assert.ok(CHARACTER_IDS.includes('helen'));
  for(const seed of ['e21-character-zero','e22-character-zero']){
   const run=createRun('system',seed),before=copy(run),row=deriveCharacterStats(run).find(item=>item.id==='helen');

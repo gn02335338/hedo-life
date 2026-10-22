@@ -1128,8 +1128,8 @@
       "path": "./assets/owen.png",
       "width": 600,
       "height": 722,
-      "bytes": 155157,
-      "sha256": "1dbfdf8d8e731e9ac7f1a3bf840e5b8b0be7277cdffea002e193185e2bc55088",
+      "bytes": 189305,
+      "sha256": "c5935aa347e320ed9ef0ed2fee36da704d1fd3be27aacf87281221b4eae3befc",
       "referenceRemake": true
     },
     {
@@ -16217,5 +16217,14 @@
         "accent": "#a08bb8"
       }
     }
-  ]
+  ],
+  "hiddenEncounterPortrait": {
+    "id": "hidden-visitor",
+    "path": "./assets/hidden-visitor.png",
+    "width": 600,
+    "height": 722,
+    "bytes": 123659,
+    "sha256": "8e1a4894772e0d630444b577714294657238dc8b06354b32a1359c2ed11ee924",
+    "referenceRemake": true
+  }
 }

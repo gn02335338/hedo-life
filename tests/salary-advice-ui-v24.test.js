@@ -67,24 +67,24 @@ async function harness(mobile,initialRun=null){
 for(const mobile of [false,true]){
  const device=mobile?'mobile':'desktop';
 
- test(`${device}: a professor work story restores 林澤教授 in the body without revealing choice results`,async()=>{
+ test(`${device}: a professor work story restores 林老師 in the body without revealing choice results`,async()=>{
   const index=oldAdvisor.actions.findIndex(action=>action.eventId?.startsWith('advisor-'));
   const run=engine.replayRun(oldAdvisor.roleId,oldAdvisor.seed,oldAdvisor.actions.slice(0,index));
   const event=engine.getEvent(run),canonical=JSON.stringify(run);assert.match(event.body,/顧問教授/);
   const app=await harness(mobile),html=app.render(run);
-  assert.match(html,/class="chapter-body">[^<]*林澤教授/);assert.doesNotMatch(html,/顧問教授|遊戲月薪/);
+  assert.match(html,/class="chapter-body">[^<]*林老師/);assert.doesNotMatch(html,/顧問教授|遊戲月薪/);
   for(const choice of event.choices){assert.ok(html.includes(esc(choice.text)));assert.ok(!html.includes(esc(choice.result)));}
   assert.equal(JSON.stringify(app.state()),canonical);assert.equal(app.calls.save,0);assert.equal(app.calls.proof,0);
  });
 
- test(`${device}: an old saved professor conversation displays 林澤教授 and 月薪 without changing canonical history`,async()=>{
+ test(`${device}: an old saved professor conversation displays 林老師 and 月薪 without changing canonical history`,async()=>{
   const {route,index}=oldProfessor,before=engine.replayRun(route.roleId,route.seed,route.actions.slice(0,index));
   const pending=engine.applyChoice(before,route.actions[index].index);
   assert.equal(engine.validRun(pending),true);assert.match(pending.history.at(-1).result,/顧問教授/);
   assert.match(JSON.stringify(pending.history),/遊戲月薪/);
   const app=await harness(mobile,pending),canonical=JSON.stringify(app.state()),saved=app.saved();
   const html=app.renderLoaded(),journal=app.journal();
-  assert.match(html,/林澤教授/);assert.match(journal,/林澤教授/);
+  assert.match(html,/林老師/);assert.match(journal,/林老師/);
   assert.match(html,/<div class="salary-line"><span>月薪<\/span>/);assert.match(journal,/· 月薪 \d+K/);
   assert.doesNotMatch(html+journal,/顧問教授|遊戲月薪/);
   await app.action('guide');const guide=app.dialogHTML();
@@ -99,7 +99,7 @@ for(const mobile of [false,true]){
   assert.equal(completed.completed,true);assert.match(JSON.stringify(completed.history),/遊戲月薪/);
   const app=await harness(mobile,completed),canonical=JSON.stringify(app.state()),saved=app.saved(),html=app.renderLoaded();
   assert.match(html,/ending-employment/);assert.match(html,/<span>月薪 <b>\d+K<\/b>/);
-  assert.match(html,/林澤教授/);assert.doesNotMatch(html,/遊戲月薪|顧問教授/);
+  assert.match(html,/林老師/);assert.doesNotMatch(html,/遊戲月薪|顧問教授/);
   await app.action('download');assert.equal(app.calls.blobs.length,1);assert.equal(app.calls.downloads.length,1);
   const svg=await app.calls.blobs[0].text();assert.match(svg,/月薪\d+K/);assert.doesNotMatch(svg,/遊戲月薪|顧問教授/);
   assert.match(app.calls.downloads[0].name,/^移動人生-.+\.svg$/);

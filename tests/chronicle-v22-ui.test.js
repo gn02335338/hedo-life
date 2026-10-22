@@ -157,8 +157,9 @@ test('the expanded archive preserves the eleven published IDs and presents Helen
   }
   assert.equal(persona.PERSONAS.helen.name, '前女友');
   assert.equal(persona.PERSONAS.helen.title, '產品開發總監');
-  assert.match(persona.PERSONAS.helen.about, /海倫/);
-  assert.match(persona.PERSONAS.helen.about, /不代表實際交往紀錄/);
+  assert.match(persona.PERSONAS.helen.about, /產品開發總監.*前女友/);
+  assert.match(persona.PERSONAS.helen.about, /產品規劃、工作分工與交接/);
+  assert.doesNotMatch(persona.PERSONAS.helen.about, /海倫|實際交往|特權/);
   assert.match(persona.PERSONAS.sonny.about, /桑尼/);
   assert.ok(html.includes(`<p class="character-bio">${persona.PERSONAS.helen.about}</p>`));
   assert.ok(html.includes(`<p class="character-bio">${persona.PERSONAS.sonny.about}</p>`));
@@ -171,12 +172,18 @@ test('optional archive biographies are escaped as text', async () => {
   const source = (await readFile(new URL('../dist/character-book.js', import.meta.url), 'utf8'))
     .replace(/^import .*;\n/gm, '').replaceAll('export function ', 'function ');
   const untrusted = '<img src=x onerror="alert(1)"><script>bad()</script>&';
+  const displayed=[];
   const context = vm.createContext({
-    PERSONAS: { ...persona.PERSONAS, helen: { ...persona.PERSONAS.helen, about: untrusted } },
+    displayName:persona.displayName,
+    displayPersona(id){
+      const person=persona.displayPersona(id);displayed.push(id);
+      return id==='helen'?{...person,about:untrusted}:person;
+    },
     ...characters,
   });
   vm.runInContext(source, context);
   const html = vm.runInContext('characterBookHTML({filter:"helen"})', context);
+  assert.deepEqual(displayed,['helen'],'the untrusted biography reaches the same display projection used by the real renderer');
   assert.ok(html.includes('&lt;img src=x onerror=&quot;alert(1)&quot;&gt;'));
   assert.ok(html.includes('&lt;script&gt;bad()&lt;/script&gt;&amp;'));
   assert.ok(!html.includes(untrusted));
