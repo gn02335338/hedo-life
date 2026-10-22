@@ -1,7 +1,8 @@
 import { PERSONAS, displayText, displayChronicleHistory } from './persona.js';
 import { polishVerbalHistoryV41 } from './verbal-presentation-v41.js';
+import { displayPlayerHistoryV42 } from './job-titles-v42.js';
 import { companyFinaleEmploymentV39 } from './company-v39.js';
-const shownHistory=row=>polishVerbalHistoryV41(displayChronicleHistory(row));
+const shownHistory=(row,run)=>displayPlayerHistoryV42(polishVerbalHistoryV41(displayChronicleHistory(row)),run);
 
 // A read-only explanation of an already committed ending. Do not use this
 // projection for probabilities, replay validation or employment decisions.
@@ -69,9 +70,9 @@ export function buildEndingTransition(run, ending) {
  const history=Array.isArray(run.history)?run.history:[],last=history.at(-1),family=ending.family;
  const relatedSpeech=family.startsWith('verbal_')||last?.verbalOutcome||/^verbal-/.test(last?.eventId||'');
  const speech=relatedSpeech?history.findLast(row=>row?.verbalOutcome):null;
- const current=last?shownHistory(last):null,spoken=speech?shownHistory(speech):null;
+ const current=last?shownHistory(last,run):null,spoken=speech?shownHistory(speech,run):null;
  const milestoneIndex=run.flags?.[`chapter38_${family}`]-1;
- const milestone=last?.eventId==='chapter-resolution'&&Number.isInteger(milestoneIndex)&&milestoneIndex>=0&&milestoneIndex<history.length-1?shownHistory(history[milestoneIndex]):null;
+ const milestone=last?.eventId==='chapter-resolution'&&Number.isInteger(milestoneIndex)&&milestoneIndex>=0&&milestoneIndex<history.length-1?shownHistory(history[milestoneIndex],run):null;
  return {
   family,employment:employmentStatus(run,family,last),legacyChapter:!/^e(?:38|39)-/.test(run.seed||'')&&['employed','dispute-open','aftermath-open','new-chapter'].includes(employmentStatus(run,family,last).kind),
   final:current?{title:current.title,choice:current.choiceText,result:current.result,target:last.speaker,targetName:name(last.speaker),turn:last.turn}:null,
