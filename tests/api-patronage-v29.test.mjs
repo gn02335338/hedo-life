@@ -20,6 +20,7 @@ const source=readFileSync(new URL('../worker/index.js',import.meta.url),'utf8')
  .replace('export class HedoArchive','globalThis.HedoArchive=class HedoArchive')
  .replace('export default','globalThis.worker=');
 const {routes}=JSON.parse(readFileSync(new URL('./fixtures/patronage-routes-v29.json',import.meta.url),'utf8'));
+const gatedRoutes=JSON.parse(readFileSync(new URL('./fixtures/patronage-routes-v49.json',import.meta.url),'utf8')).routes;
 const proof=(route,runId,actions=route.actions)=>({runId,roleId:route.roleId,seed:route.seed,actions});
 
 // The production Worker runs against isolated SQLite. Synthetic playthroughs
@@ -150,5 +151,36 @@ test('every co-present application or Rick scene target verifies independently w
    assert.equal(rejected.status,400);assert.equal(rejected.body.error,'invalid_replay');
   }
  }
+ assert.equal((await h.call('/api/stats')).body.totalRuns,0);
+});
+
+test('gated applications sync Rick jealousy from replay, deduplicate it and preserve anonymous player isolation',async t=>{
+ const h=harness(t),stranger=await h.register();
+ const selected=gatedRoutes.filter(route=>route.kind==='application');
+ assert.ok(selected.length>=10);
+ let expectedLoss=0,expectedDownEvents=0;
+ for(const route of selected){
+  const player=await h.register(),runId=randomUUID(),before=replayRun(route.roleId,route.seed,route.beforeActions),after=replayRun(route.roleId,route.seed,route.actions);
+  const application=after.history.findLast(row=>row.eventId==='patronage-application');
+  const initial=await h.call('/api/characters',{method:'POST',token:player.token,body:proof(route,runId,route.beforeActions)});
+  assert.equal(initial.status,200,route.id);
+  const response=await h.call('/api/characters',{method:'POST',token:player.token,body:{...proof(route,runId),patronageApplicationOutcome:{target:'rick',affinityDelta:100},characters:[{id:'rick',affinityGained:9999}]}});
+  assert.equal(response.status,200,route.id);assert.deepEqual(response.body.characters,deriveCharacterStats(after));
+  const baseline=deriveCharacterStats(before).find(row=>row.id==='rick'),rick=response.body.characters.find(row=>row.id==='rick');
+  const loss=rick.affinityLost-baseline.affinityLost;
+  if(route.index===2){assert.equal(application.patronageApplicationOutcome,undefined);assert.equal(loss,0);}
+  else{assert.ok(application.patronageApplicationOutcome);assert.ok(loss>=0);assert.equal(loss,Math.min(application.chanceOutcome==='success'?18:12,50+baseline.affinityGained-baseline.affinityLost));}
+  const duplicate=await h.call('/api/characters',{method:'POST',token:player.token,body:proof(route,runId)});
+  assert.equal(duplicate.status,200);assert.deepEqual(duplicate.body.characters,response.body.characters);
+  const delayed=await h.call('/api/characters',{method:'POST',token:player.token,body:proof(route,runId,route.beforeActions)});
+  assert.equal(delayed.status,200);assert.deepEqual(delayed.body.characters,response.body.characters);
+  assert.equal((await h.call('/api/characters',{method:'POST',token:stranger.token,body:proof(route,runId)})).status,409);
+  expectedLoss+=rick.affinityLost;expectedDownEvents+=rick.affinityDownEvents;
+ }
+ const global=await h.call('/api/characters'),rick=global.body.characters.find(row=>row.id==='rick');
+ assert.equal(rick.affinityLost,expectedLoss);assert.equal(rick.affinityDownEvents,expectedDownEvents);
+ assert.doesNotMatch(JSON.stringify(global.body),/patronageApplicationOutcome|playerId|runId|seed|actions|history/);
+ const other=await h.call('/api/me',{token:stranger.token});
+ assert.ok(other.body.characters.every(row=>CHARACTER_METRICS.every(key=>row[key]===0)));
  assert.equal((await h.call('/api/stats')).body.totalRuns,0);
 });

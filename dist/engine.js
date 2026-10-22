@@ -1,5 +1,6 @@
 import {HIDDEN_SCENE_COUNT_V45,getHiddenEncounterEventV45,resolveHiddenEncounterChoiceV45} from './hidden-encounter-v45.js';
 import {scheduledActivityV46,getActivityInvitationEventV46,invitationResultV46,calendarDailyAllowedV46} from './activity-schedule-v46.js';
+import {isPatronageV49,patronageEligibleV49,withPatronageEntryV49,getPatronageEventV49,patronageApplicationOutcomeV49,isPatronageApplicationOutcomeV49} from './patronage-v49.js';
 import {ACTIVITY_IDS_V44,getActivityEventV44,resolveActivityChoiceV44} from './activities-v44.js';
 import {getRageV39,rageTargetForV39} from './rage-cast-v39.js';
 import {MEAL_GUEST_IDS_V39,MEAL_EVENTS_V39,mealPageIdV39,getMealEventV39} from './meals-cast-v39.js';
@@ -49,7 +50,7 @@ import { selectWorkEventV35 } from './work-events-v35.js';
 import { getSalaryAdviceV24 } from './salary-advice-v24.js';
 import { getMoodCollapseV25, getMoodSelfDestructV25, moodCollapseProfileV25 } from './meltdown-v25.js';
 import { MEAL_GUEST_IDS_V25, MEAL_EVENTS_V25, withMealEntryV25, getMealV25, withMealRageCopyV25 } from './meals-v25.js';
-import { PATRONAGE_EVENT_V29, patronageTitleV29, canKindDarkInviteV29, patronageWorkCountV29, patronageEligibleV29, withPatronageEntryV29, getPatronageEventV29, withGenderContextV29 } from './patronage-v29.js';
+import { PATRONAGE_EVENT_V29, patronageTitleV29, canKindDarkInviteV29, patronageWorkCountV29, withGenderContextV29 } from './patronage-v29.js';
 import { WEALTH_EVENTS_V27, wealthEligibilityV27, getWealthEventV27, withWealthEntryV27 } from './wealth-exit-v27.js';
 export {raiseAvailability} from './salary-raise-v19.js';
 export const VERSION = 3;
@@ -115,7 +116,7 @@ function rawGetEvent(run){
  if(!run||run.completed)return null;
  if(contentRules(run)>=32&&COMPANY_EVENTS_V32.includes(run.eventId))return contentRules(run)>=39?getCompanyEventV39(run):getCompanyEventV32(run);
  if(contentRules(run)>=30&&VERBAL_EVENTS_V30.includes(run.eventId))return getVerbalEventV30(run);
- if(contentRules(run)>=29&&run.eventId===PATRONAGE_EVENT_V29)return getPatronageEventV29(run);
+ if(contentRules(run)>=29&&run.eventId===PATRONAGE_EVENT_V29)return getPatronageEventV49(run);
  if(WEALTH_EVENTS_V27.includes(run.eventId)){
   if(contentRules(run)<27||!run.wealthReturnEventId)throw new Error('Invalid wealth departure');
   return getWealthEventV27(run);
@@ -265,7 +266,7 @@ function getPublishedEvent(run){
  if(contentRules(run)>=20&&(PERSONNEL_SCENES.includes(event?.id)||WATCH_DAILY_IDS.includes(event?.id)||event?.id==='pip-passed'))return event;
  if(contentRules(run)>=19&&RAISE_EVENTS.includes(event?.id))return event;
  if(contentRules(run)>=18&&['mood-collapse','crisis-mood','self-care'].includes(event?.id))return event;
- if(contentRules(run)>=17&&(['career-review','rank-exit','career-step-down'].includes(event?.id)||event?.id.startsWith('career-duty-')))return withPatronageEntryV29(contentRules(run)>=27?withWealthEntryV27(event,run):event,run);
+ if(contentRules(run)>=17&&(['career-review','rank-exit','career-step-down'].includes(event?.id)||event?.id.startsWith('career-duty-')))return withPatronageEntryV49(contentRules(run)>=27?withWealthEntryV27(event,run):event,run);
  const edited=event&&contentRules(run)>=5?applyEventCopy(event,run,{jobTitle,educationLabel}):event;
  const wild=edited&&contentRules(run)>=12?applyWildOptions(edited,run):edited;
  const copied=contentRules(run)>=15?applyCopyV15(wild,run):wild;
@@ -458,7 +459,8 @@ export function applyChoice(run,index){
  if(event.id==='onboarding'&&index<2)result+=` 目前實際職稱：${jobTitle(next)}。遊戲月薪 ${next.pay}K。`;
  if(contentRules(run)>=5){result=polishEngineText(result);if(next.lastWeather)next.lastWeather.text=polishEngineText(next.lastWeather.text);}
  if(contentRules(run)>=16){result=replayText(result);if(next.lastWeather)next.lastWeather.text=replayText(next.lastWeather.text);}
- next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:scenarioRelease?run.verbalContext.sourceChoiceCount:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{}),...(contentRules(next)>=36&&choice.mealOutcome?{mealOutcome:{...choice.mealOutcome}}:{}),...(contentRules(next)>=30&&event.id==='verbal-release'?{verbalOutcome:{kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{}),...(scenarioRelease?{verbalOutcome:{version:2,kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{})});
+ const patronageApplicationOutcome=patronageApplicationOutcomeV49(run,effect);
+ next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:scenarioRelease?run.verbalContext.sourceChoiceCount:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{}),...(patronageApplicationOutcome?{patronageApplicationOutcome}:{}),...(contentRules(next)>=36&&choice.mealOutcome?{mealOutcome:{...choice.mealOutcome}}:{}),...(contentRules(next)>=30&&event.id==='verbal-release'?{verbalOutcome:{kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{}),...(scenarioRelease?{verbalOutcome:{version:2,kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{})});
  if(contentRules(next)>=24&&(!next.salaryAdvice||next.salaryAdvice.status==='queued')){
   if(next.pay>=30)next.salaryAdvice=null;
   else if(next.pay<run.pay)next.salaryAdvice={from:run.pay,to:next.pay,historyIndex:next.history.length-1,returnEventId:null,status:'queued'};
@@ -576,7 +578,7 @@ function advanceCore(run,options={}){
   }
  }
  if(contentRules(next)>=29&&effect==='patronageApply'){
-  if(last.eventId!=='career-review'||!patronageEligibleV29(next)||!next.resumeEventId)throw new Error('Invalid patronage entry');
+  if(last.eventId!=='career-review'||!patronageEligibleV49(next)||!next.resumeEventId)throw new Error('Invalid patronage entry');
   next.patronageContext={returnEventId:next.resumeEventId,origin:'career',historyLength:next.history.length};next.resumeEventId=null;
   flag(next,'patronage_offers');next.flags.patronage_last_offer_work=patronageWorkCountV29(next);next.eventId=PATRONAGE_EVENT_V29;return next;
  }
@@ -942,7 +944,7 @@ export function advance(run,options={}){
    if(eligibility.retirement)next.flags.wealth_retire_notice=1;
   }
  }
- if(run.pending&&contentRules(next)>=29&&!next.pending&&!next.completed&&['daily','fantasy'].includes(run.history.at(-1)?.kind)&&personnelSafe(next,getEvent(next))&&patronageEligibleV29(next)&&roll(next)<.2){
+ if(run.pending&&contentRules(next)>=29&&!next.pending&&!next.completed&&['daily','fantasy'].includes(run.history.at(-1)?.kind)&&personnelSafe(next,getEvent(next))&&patronageEligibleV49(next)&&roll(next)<.2){
   next.patronageContext={returnEventId:next.eventId,origin:'automatic',historyLength:next.history.length};flag(next,'patronage_offers');next.flags.patronage_last_offer_work=patronageWorkCountV29(next);next.eventId=PATRONAGE_EVENT_V29;
  }
  return next;
@@ -1129,6 +1131,7 @@ function replayActions(roleId,seed,actions,count=actions.length){
 export function replayRun(roleId,seed,actions){return replayActions(roleId,seed,actions);}
 export function validRun(run){
  try {
+  if(Array.isArray(run?.history)&&run.history.some(row=>isPatronageV49(run)&&row?.eventId===PATRONAGE_EVENT_V29&&[0,1].includes(row.choiceIndex)?!isPatronageApplicationOutcomeV49(run,row):row?.patronageApplicationOutcome!==undefined))return false;
   if(/^e39-cal46-/.test(run?.seed||'')&&run?.actions?.length){
    const first=run.actions[0];
    if(!first||Object.keys(first).sort().join(',')!=='type,version'||first.type!=='activity-schedule'||first.version!==1)return false;

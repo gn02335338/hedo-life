@@ -540,3 +540,28 @@ still replay canonical actions before recording unique player/achievement pairs;
 supplied badge IDs, flags and histories are discarded by the existing envelope.
 Only IDs and first-unlocked dates are added to stored collections. Source story
 text, action transcripts and seeds are not retained by the achievement store.
+
+## Gated patronage applications (v49, e39 lives)
+
+New browser lives use `e39-cal46-kin49-` plus sixteen random hexadecimal
+characters, retaining the 32-character seed limit and existing calendar rules.
+Automatic offers, career-review entry and the actual entry transition all require
+lick at least 70 and Wing mood at least 65, in addition to the published tenure,
+cooldown and offer-count restrictions. Both existing application checks remain
+random and capped below certainty. An opened application finishes normally even
+if rejection subsequently lowers Wing mood below the entry threshold.
+
+A submitted application records
+`patronageApplicationOutcome:{version:1,result,target:'rick',affinityDelta}` on its
+canonical career history row. Appointed and rejected outcomes respectively
+request -18 and -12 affinity; cancellation records no such evidence. The shared
+projection validates the target, check result, choice and exact evidence shape,
+then counts a separate Rick encounter and clamps his actual loss to the remaining
+score. Wing's own interaction remains separate. The browser shows the change
+only after resolution; verified player and global character totals use the same
+projection and existing idempotent replay commitments.
+
+All earlier seeds retain their original eligibility, text, draws and character
+totals. No new action type, anonymous identity field, database migration or secret
+is introduced. The Worker derives relationships from replayed actions, never
+from a submitted history or client-supplied affinity result.

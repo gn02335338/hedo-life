@@ -59,7 +59,7 @@ const STORE='hedo-life-v3', REPO='https://github.com/gn02335338/hedo-life';
 const feedbackUI=createFeedbackUI({dialog,openDialog,cloud,repo:REPO});
 const characterBookUI=createCharacterBook({dialog,openDialog,cloud,getRun:()=>run});
 const adminArchiveUI=typeof createAdminArchiveUI==='function'?createAdminArchiveUI({dialog,openDialog}):{open(){}};
-const pad=n=>String(n).padStart(2,'0'),randomSeed=()=>`e39-cal46-${crypto.randomUUID().replaceAll('-','').slice(0,22)}`;
+const pad=n=>String(n).padStart(2,'0'),randomSeed=()=>`e39-cal46-kin49-${crypto.randomUUID().replaceAll('-','').slice(0,16)}`;
 const ENTRY_ROLES=[...ROLES.filter(role=>role.id!=='executive'),{id:'random',name:'隨機職業',symbol:'?',subtitle:'職缺先別問，骰子說了算。',description:'把履歷交給命運。這次坐哪張椅子，擲完才知道。'}];
 const PEOPLE={...Object.fromEntries(Object.entries(PERSONAS).map(([id,p])=>[id,typeof displayPersona==='function'?displayPersona(id):p])),...(typeof HIDDEN_PERSONAS_V45==='object'?HIDDEN_PERSONAS_V45:{}),self:{name:'你',title:'今天的主角',initial:'我'},'exit-team':{name:'法師 · 真真 · 阿福',title:'法務／行政／MIS',members:['erich','jenjen','sonny']}};
 function careerTrack(){

@@ -17,6 +17,7 @@ import {polishDreamText} from '../dist/copy-v15.js';
 
 const appSource=(await readFile(new URL('../dist/app.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
 const {routes}=JSON.parse(await readFile(new URL('./fixtures/patronage-routes-v29.json',import.meta.url),'utf8'));
+const gatedRoutes=JSON.parse(await readFile(new URL('./fixtures/patronage-routes-v49.json',import.meta.url),'utf8')).routes;
 const plain=value=>JSON.parse(JSON.stringify(value));
 const esc=value=>persona.displayText(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
@@ -45,6 +46,26 @@ async function harness(mobile){
   action:action=>click({action}),
   async doubleChoice(index){const revision=vm.runInContext('gameViewRevision',context),dataset={choice:String(index),choiceView:String(revision)};await click(dataset,true,1);await click(dataset,true,2);},
  };
+}
+
+for(const mobile of [false,true]){
+ test(`${mobile?'mobile':'desktop'}: gated application jealousy is revealed only after a real submission and never on withdrawal`,async()=>{
+  for(const route of gatedRoutes.filter(route=>route.kind==='application')){
+   const app=await harness(mobile),run=engine.replayRun(route.roleId,route.seed,route.beforeActions),event=engine.getEvent(run),before=app.render(run);
+   for(const choice of event.choices)for(const result of [choice.check?.success?.result,choice.check?.failure?.result])if(result)assert.ok(!before.includes(esc(result)));
+   assert.ok(!before.includes('patronageApplicationOutcome'));
+   const expected=engine.applyChoice(run,route.index);
+   await app.doubleChoice(route.index);
+   assert.deepEqual(plain(app.state()),plain(expected));
+   const index=expected.history.length-1,change=characterStats.characterHistoryChanges(expected).find(change=>change.historyIndex===index&&change.id==='rick');
+   if(route.index===2){assert.equal(change,undefined);assert.ok(!app.html().includes('data-character-id="rick" class="character-change'));}
+   else{
+    assert.ok(change);assert.ok(change.affinityDelta<=0);
+    const label=change.affinityDelta?`好感 ${change.affinityDelta}`:'好感沒有改變';
+    assert.ok(app.html().includes(`<span>瑞克</span><b>${label}</b>`));
+   }
+  }
+ });
 }
 
 for(const mobile of [false,true]){

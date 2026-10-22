@@ -1,4 +1,5 @@
 import { PERSONAS } from './persona.js';
+import { isPatronageApplicationOutcomeV49 } from './patronage-v49.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
@@ -48,12 +49,18 @@ export function characterHistoryChanges(run){
   if(!row||!Number.isInteger(row.choiceIndex)||row.choiceIndex<0)continue;
   // The player's employment confirmation is not another NPC conversation.
   if(/^e(?:38|39)-/.test(run.seed||'')&&row.eventId==='chapter-resolution')continue;
+  let application=null;
+  if(Object.hasOwn(row,'patronageApplicationOutcome')||/^e39-cal46-kin49-/.test(run.seed||'')&&row.eventId==='patronage-application'&&[0,1].includes(row.choiceIndex)){
+   if(!isPatronageApplicationOutcomeV49(run,row))continue;
+   application=row.patronageApplicationOutcome;
+  }
   let patronage=null;
   if(row.eventId==='patronage-reply'||row.kind==='patronage'||Object.hasOwn(row,'patronageOutcome')){
    if(!isPatronageOutcomeV43(run,row))continue;
    patronage=row.patronageOutcome;
   }
   let ids=known(row.speaker)?[row.speaker]:row.speaker==='exit-team'?['erich','jenjen','sonny']:[];
+  if(application)ids.push('rick');
   if(!ids.length)continue;
   let mode=null,verbal=null,meal=null;
   if(row.mealOutcome!==undefined){
@@ -80,7 +87,7 @@ export function characterHistoryChanges(run){
    // Only the already resolved choice contributes. Neither incidental luck nor
    // daily weather is another character's opinion. Historical rows without a
    // choice ledger retain their encounters, without inventing an affinity delta.
-   const requested=patronage?patronage.affinityDelta:verbal?verbal.affinityDelta:meal?meal.affinityDelta:mode==='real'?-25:mode==='imagined'||row.kind==='rage-world'?0:clamp(Math.round(id==='wing'?delta.boss:delta.trust),-12,12);
+   const requested=application&&id==='rick'?application.affinityDelta:patronage?patronage.affinityDelta:verbal?verbal.affinityDelta:meal?meal.affinityDelta:mode==='real'?-25:mode==='imagined'||row.kind==='rage-world'?0:clamp(Math.round(id==='wing'?delta.boss:delta.trust),-12,12);
    const score=clamp(scores[id]+requested,0,100),affinityDelta=score-scores[id];scores[id]=score;
    changes.push({historyIndex,id,encounters:1,imaginedHits:mode==='imagined'?1:0,realHits:mode==='real'?1:0,affinityDelta});
   }
