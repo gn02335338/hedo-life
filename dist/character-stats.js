@@ -13,6 +13,23 @@ const choiceDelta=row=>{
  return parts.reduce((total,part)=>({boss:total.boss+(Number.isFinite(part.delta?.boss)?part.delta.boss:0),trust:total.trust+(Number.isFinite(part.delta?.trust)?part.delta.trust:0)}),{boss:0,trust:0});
 };
 
+// This is resolved evidence from the versioned patronage reply action, never
+// team trust, a spoken-outburst counter, or a hit. Canonical replay validates
+// the appointment and scene presence before the Worker projects these rows.
+export function isPatronageOutcomeV43(run,row){
+ const evidence=row?.patronageOutcome;
+ return /^e(?:29|30|31|32|33|34|35|36|37|38|39)-/.test(run?.seed||'')&&Boolean(evidence)&&typeof evidence==='object'&&!Array.isArray(evidence)
+  &&Object.keys(evidence).sort().join(',')==='affinityDelta,mode,origin,reaction,target,version'
+  &&evidence.version===1&&known(evidence.target)&&row.speaker===evidence.target
+  &&row.eventId==='patronage-reply'&&row.kind==='patronage'&&row.choiceIndex===0
+  &&!Object.hasOwn(row,'verbalOutcome')&&!Object.hasOwn(row,'mealOutcome')
+  &&typeof evidence.origin==='string'&&evidence.origin.trim().length>0&&evidence.origin.length<=100
+  &&evidence.mode===(['wing','spencer'].includes(evidence.target)?'flattery':'entitled')
+  &&['obliged','retort','reported','welcomed'].includes(evidence.reaction)
+  &&Number.isInteger(evidence.affinityDelta)&&evidence.affinityDelta>=-24&&evidence.affinityDelta<=12
+  &&row.eventOutcome?.label==='自己人發話之後'&&typeof row.eventOutcome.result==='string'&&row.eventOutcome.result.trim().length>0&&row.eventOutcome.result.length<=100;
+}
+
 export function isMealOutcomeV36(run,row){
  const evidence=row?.mealOutcome,labels={warm:'聊得很開',neutral:'平常吃飯',mine:'不小心踩雷'};
  return /^e(?:36|37|38|39)-/.test(run?.seed||'')&&Boolean(evidence)&&typeof evidence==='object'&&!Array.isArray(evidence)
@@ -31,6 +48,11 @@ export function characterHistoryChanges(run){
   if(!row||!Number.isInteger(row.choiceIndex)||row.choiceIndex<0)continue;
   // The player's employment confirmation is not another NPC conversation.
   if(/^e(?:38|39)-/.test(run.seed||'')&&row.eventId==='chapter-resolution')continue;
+  let patronage=null;
+  if(row.eventId==='patronage-reply'||row.kind==='patronage'||Object.hasOwn(row,'patronageOutcome')){
+   if(!isPatronageOutcomeV43(run,row))continue;
+   patronage=row.patronageOutcome;
+  }
   let ids=known(row.speaker)?[row.speaker]:row.speaker==='exit-team'?['erich','jenjen','sonny']:[];
   if(!ids.length)continue;
   let mode=null,verbal=null,meal=null;
@@ -58,7 +80,7 @@ export function characterHistoryChanges(run){
    // Only the already resolved choice contributes. Neither incidental luck nor
    // daily weather is another character's opinion. Historical rows without a
    // choice ledger retain their encounters, without inventing an affinity delta.
-   const requested=verbal?verbal.affinityDelta:meal?meal.affinityDelta:mode==='real'?-25:mode==='imagined'||row.kind==='rage-world'?0:clamp(Math.round(id==='wing'?delta.boss:delta.trust),-12,12);
+   const requested=patronage?patronage.affinityDelta:verbal?verbal.affinityDelta:meal?meal.affinityDelta:mode==='real'?-25:mode==='imagined'||row.kind==='rage-world'?0:clamp(Math.round(id==='wing'?delta.boss:delta.trust),-12,12);
    const score=clamp(scores[id]+requested,0,100),affinityDelta=score-scores[id];scores[id]=score;
    changes.push({historyIndex,id,encounters:1,imaginedHits:mode==='imagined'?1:0,realHits:mode==='real'?1:0,affinityDelta});
   }

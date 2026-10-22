@@ -7,7 +7,8 @@ import {needsChapterResolutionV38,getChapterResolutionV38,withDepartureChoicesV3
 import {getVerbalAftermathV33} from './verbal-outcomes-v33.js';
 import {withMealInvitationsV34} from './meal-invitations-v34.js';
 import {withMealReactionsV36} from './meal-reactions-v36.js';
-import {isMealOutcomeV36} from './character-stats.js';
+import {isMealOutcomeV36,characterAffinity} from './character-stats.js';
+import {PATRONAGE_REPLY_EVENT_V43,patronageReplyModeV43,patronageReplyLineV43,patronageReplyOutcomesV43} from './patronage-reply-v43.js';
 import {MEAL_GUEST_IDS_V37,MEAL_EVENTS_V37,mealPageIdV37,getMealEventV37} from './professor-v37.js';
 import {getRageV37,rageTargetForV37} from './rage-v37.js';
 import {VERBAL_OUTCOME_EVENTS_V32,getVerbalAftermathV32,withVerbalAftermathV32} from './verbal-outcomes-v32.js';
@@ -270,6 +271,10 @@ function getPublishedEvent(run){
  return contentRules(run)>=27?withWealthEntryV27(finalEvent,run):finalEvent;
 }
 export function getEvent(run){
+ if(run?.patronageReplyContext){
+  const row=run.history[run.patronageReplyContext.historyIndex];
+  return {id:PATRONAGE_REPLY_EVENT_V43,title:row.title,body:row.body,wing:'',speaker:row.speaker,kind:'patronage',era:'自己人發話',sourceIds:row.sourceIds,choices:[]};
+ }
  if(contentRules(run)>=38&&run.eventId==='chapter-resolution')return getChapterResolutionV38(run);
  const event=withDepartureChoicesV38(getPublishedEvent(run),run);
  return contentRules(run)>=39&&isPrivateSceneV39(event)?{...event,scope:'private'}:event;
@@ -720,6 +725,12 @@ function advanceCore(run,options={}){
  return next;
 }
 export function advance(run,options={}){
+ if(run?.patronageReplyContext){
+  if(!run.pending||run.completed)return run;
+  const next=structuredClone(run);next.eventId=next.patronageReplyContext.eventId;
+  delete next.patronageReplyContext;next.pending=false;next.pendingEffect=null;
+  return next;
+ }
  const privateV39=contentRules(run)>=39&&run.pending&&!run.rageContext&&!run.verbalContext&&isPrivateSceneV39(getEvent(run));
  const next=advanceCore(run,privateV39?{...options,privateV39:true}:options);
  // The new decision owns the screen until answered. Deferred exhaustion,
@@ -765,7 +776,42 @@ export function requestSalaryAdvice(run){
  next.salaryAdvice={from:run.history.find(row=>row.eventId==='onboarding').pay,to:run.pay,historyIndex:run.history.length-1,returnEventId:run.eventId,status:'open',origin:'starting-pay'};
  next.eventId='low-pay-tip';return next;
 }
+// This optional action leaves the original scene and its choice indices intact.
+// Published lives change only after explicitly choosing the new response.
+export function canRequestPatronageReply(run){
+ if(!run||contentRules(run)<29||!run.patronage||run.pending||run.completed||run.pendingFamily||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0||run.actions.length>=299||run.flags.patronage_reply_last_turn===run.turn+1)return false;
+ const event=getEvent(run);
+ return !!event&&!['rage','rage-world','verbal','patronage'].includes(event.kind)&&!['self-care','exit-menu','rank-exit','career-exit','story-exit',...WEALTH_EVENTS_V27].includes(event.id)&&!/^meal-guests-/.test(event.id)&&verbalTargetsV30(event).some(id=>Object.hasOwn(PERSONAS,id));
+}
+export function getPatronageReplyTargets(run){return canRequestPatronageReply(run)?verbalTargetsV30(getEvent(run)).filter(id=>Object.hasOwn(PERSONAS,id)):[];}
+export function getPatronageReplyLine(run,target){
+ const targets=getPatronageReplyTargets(run);
+ return targets.includes(target)?patronageReplyLineV43(run,getEvent(run),target):'';
+}
+export function requestPatronageReply(run,target){
+ if(!getPatronageReplyTargets(run).includes(target))return run;
+ const event=getEvent(run),next=structuredClone(run),before={...run.stats};
+ const outcomes=patronageReplyOutcomesV43(run,event,target,{affinity:characterAffinity(run,target).score});
+ let ticket=roll(next)*outcomes.reduce((total,outcome)=>total+outcome.weight,0);
+ const selected=outcomes.find(outcome=>(ticket-=outcome.weight)<0)||outcomes.at(-1),breakdown=[];
+ const change=(source,label,delta)=>{
+  const actual={};for(const [key,value]of Object.entries(delta)){
+   const previous=next.stats[key];next.stats[key]=['mood','energy'].includes(key)?Math.max(1,clamp(previous+value)):clamp(previous+value);
+   if(next.stats[key]!==previous)actual[key]=next.stats[key]-previous;
+  }
+  if(Object.keys(actual).length)breakdown.push({source,label,delta:actual});
+ };
+ change('choice',`自己人發話之後：${selected.label}`,selected.delta);
+ change('ability-budget','三頭馬車的取捨',abilityRebalanceV18(before,next.stats));
+ next.actions.push({type:'patronage-reply',version:1,eventId:event.id,target});
+ flag(next,'patronage_replies');next.flags.patronage_reply_last_turn=run.turn+1;
+ const mode=patronageReplyModeV43(target),title=mode==='flattery'?'自己人的名片，先往上遞。':'你把自己人的名片，放到話前面。';
+ next.history.push({eventId:PATRONAGE_REPLY_EVENT_V43,kind:'patronage',title,body:`你以${run.patronage.title}的身分向${PERSONAS[target].name}開口。這句話已經說出去了；原本的選擇還在，繼續後回到剛才的對話。`,wing:'',speaker:target,sourceIds:['characterFiction'],turn:run.turn,choiceIndex:0,choiceText:patronageReplyLineV43(run,event,target),result:selected.result,chanceOutcome:null,delta:Object.fromEntries(STAT_KEYS.map(key=>[key,next.stats[key]-before[key]])),weather:null,jobTitle:jobTitle(next),pay:next.pay,breakdown,eventOutcome:{label:'自己人發話之後',result:selected.label},patronageOutcome:{version:1,origin:event.id,target,mode,reaction:selected.reaction,affinityDelta:selected.affinityDelta}});
+ next.patronageReplyContext={version:1,eventId:event.id,historyIndex:next.history.length-1};
+ next.eventId=PATRONAGE_REPLY_EVENT_V43;next.pending=true;next.pendingEffect='patronageReplyReturn';return next;
+}
 export function canRequestVerbal(run){
+ if(run?.patronageReplyContext)return false;
  if(!run||run.chapterContext||run.companyContext||contentRules(run)<30||run.completed||run.verbalContext||run.rageContext||run.pendingFamily||run.lastVerbalTurn===run.turn||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0)return false;
  const event=getEvent(run);
  return !!event&&!VERBAL_EVENTS_V30.includes(event.id)&&!['rage','rage-world','verbal'].includes(event.kind);
@@ -802,6 +848,7 @@ export function requestVerbal(run,target,version){
  resolved.actions.pop();return resolved;
 }
 export function canRequestRage(run){
+ if(run?.patronageReplyContext)return false;
  if(!(run&&!run.chapterContext&&!run.companyContext&&contentRules(run)>=13&&!run.completed&&!run.rageContext&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pendingFamily))return false;
  if(contentRules(run)>=18&&run.stats.mood===0)return false;
  if(contentRules(run)>=14)return run.flags.rage_last_turn!==run.turn+1&&!!conversationalTarget(run,getEvent(run));
@@ -833,10 +880,10 @@ export function requestRage(run,target){
  next.rageContext={eventId:next.eventId,speaker:getEvent(next)?.speaker||'wing'};next.eventId='rage-menu';return next;
 }
 export function requestExit(run){if(run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
-export function replayRun(roleId,seed,actions){
+function replayActions(roleId,seed,actions,count=actions.length){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
- for(let actionIndex=0;actionIndex<actions.length;actionIndex++){
+ for(let actionIndex=0;actionIndex<count;actionIndex++){
   const action=actions[actionIndex],following=actions[actionIndex+1];
   if(!action||typeof action!=='object'||run.completed)throw new Error('Invalid replay action');
   if(action.type==='exit'){const next=requestExit(run);if(next===run)throw new Error('Duplicate exit');run=next;}
@@ -846,6 +893,10 @@ export function replayRun(roleId,seed,actions){
   else if(action.type==='salary-advice'){
    if(Object.keys(action).some(key=>key!=='type'))throw new Error('Invalid salary advice action');
    const next=requestSalaryAdvice(run);if(next===run)throw new Error('Unavailable salary advice');run=next;
+  }
+  else if(action.type==='patronage-reply'){
+   if(Object.keys(action).sort().join(',')!=='eventId,target,type,version'||action.version!==1||action.eventId!==run.eventId||typeof action.target!=='string')throw new Error('Patronage reply mismatch');
+   const next=requestPatronageReply(run,action.target);if(next===run)throw new Error('Unavailable patronage reply');run=advance(next);
   }
   else if(action.type==='verbal'){
    const selected=Object.hasOwn(action,'target');
@@ -868,8 +919,33 @@ export function replayRun(roleId,seed,actions){
  }
  return run;
 }
+export function replayRun(roleId,seed,actions){return replayActions(roleId,seed,actions);}
 export function validRun(run){
  try {
+  if(Array.isArray(run?.actions)&&run.actions.some(action=>action?.type==='patronage-reply')){
+   const last=run.actions.at(-1),prefix=run.pending?replayActions(run.roleId,run.seed,run.actions,run.actions.length-1):null;
+   let canonical;
+   if(!run.pending)canonical=replayRun(run.roleId,run.seed,run.actions);
+   else if(last.type==='patronage-reply')canonical=requestPatronageReply(prefix,last.target);
+   else if(last.type==='choice')canonical=applyChoice(prefix,last.index);
+   else if(last.type==='verbal')canonical=requestVerbal(prefix,last.target,last.version);
+   else if(last.type==='rage')canonical=requestRage(prefix,last.target);
+   else return false;
+   // Validate grammar and availability even when the final pending action is
+   // reconstructed without advancing its already committed result.
+   if(run.pending)replayRun(run.roleId,run.seed,run.actions);
+   const actual={...run};delete actual.runId;
+   const equal=(a,b)=>{
+    if(a===b)return true;
+    if(!a||!b||typeof a!=='object'||typeof b!=='object'||Array.isArray(a)!==Array.isArray(b)||Array.isArray(a)&&a.length!==b.length)return false;
+    // JSON storage omits optional undefined object fields; it must still
+    // preserve every actual value, array entry and committed reaction.
+    const left=Object.keys(a).filter(key=>a[key]!==undefined),right=Object.keys(b).filter(key=>b[key]!==undefined);
+    return left.length===right.length&&right.every(key=>Object.hasOwn(a,key)&&equal(a[key],b[key]));
+   };
+   return equal(actual,canonical);
+  }
+  if(run?.patronageReplyContext!==undefined||run?.eventId===PATRONAGE_REPLY_EVENT_V43||run?.history?.some(row=>row?.patronageOutcome!==undefined||row?.kind==='patronage'||row?.eventId===PATRONAGE_REPLY_EVENT_V43)||Object.keys(run?.flags||{}).some(key=>key.startsWith('patronage_reply_')||key==='patronage_replies'))return false;
   if(/^e(?:38|39)-/.test(run?.seed||'')&&run.chapterContext){
    const lastAction=run.actions?.at(-1),prefix=run.pending&&lastAction?.type==='choice'?replayRun(run.roleId,run.seed,run.actions.slice(0,-1)):null;
    const canonical=prefix?applyChoice(prefix,lastAction.index):replayRun(run.roleId,run.seed,run.actions),actual={...run};delete actual.runId;

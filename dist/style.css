@@ -186,3 +186,14 @@
 .private-sealed-symbol{font-size:90px;line-height:1;color:#c6b8cb;font-weight:800;margin:20px}.private-sealed-card h3{margin:12px 0 0}.private-sealed-card p{color:#8a8390}
 .private-archive{max-width:800px}.private-archive form{display:grid;gap:14px;max-width:500px}.private-archive input{width:100%;box-sizing:border-box;padding:15px;border:1px solid #d9cfdc;border-radius:10px;font:inherit;background:#fff}.private-archive input:focus{outline:2px solid #bd3975;outline-offset:2px}.private-heading{display:flex;gap:20px;justify-content:space-between;align-items:start}.private-character{display:grid;grid-template-columns:180px 1fr;gap:28px;align-items:center;padding:20px;background:#f8f4fa;border-radius:18px}.private-character img{width:100%;height:230px;object-fit:contain}.private-character h3{font-size:30px;margin:6px 0}.private-character p{white-space:pre-line;line-height:1.85}.private-session-note{color:#88818e;font-size:12px;line-height:1.8}.private-story-list details{padding:18px 0;border-top:1px solid #e8e1eb}.private-story-list summary{font-weight:700;cursor:pointer}.private-story-list p{line-height:1.9;white-space:pre-line}.private-story-choice{display:block;width:100%;text-align:left;padding:14px;margin:10px 0;border:1px solid #dcd3e0;background:#fff;border-radius:10px;font:inherit;cursor:pointer}.private-story-result{padding:14px;background:#f2ebf4;border-radius:10px}.private-message{padding:12px 15px;border-left:3px solid #bb4c85;background:#faf2f7;line-height:1.7}
 @media(max-width:600px){.private-character{grid-template-columns:1fr;gap:10px}.private-character img{height:210px}.private-heading{display:block}.private-archive h2{font-size:28px}}
+/* The appointed player's extra reply shares the existing choice layout. */
+.choice.patronage-trigger{border-color:#dac49e;background:#fffbf3;color:#785422;align-items:flex-start}
+.patronage-trigger:not(:disabled):hover{border-color:#a97a3c;background:#fff5e4}
+.patronage-icon{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border:1px solid #c49b5d;border-radius:50%;font-size:20px}
+.patronage-role{display:block;margin-top:5px;font-size:11px;letter-spacing:.08em;font-weight:500;color:#9c7a4c}
+.patronage-choice-line{display:block;margin-top:10px;font-size:14px;line-height:1.9;font-weight:500;overflow-wrap:anywhere}
+.patronage-trigger .choice-arrow{margin-left:auto}
+.patronage-person-card{border-color:#dac49e;background:#fffbf3}
+.patronage-person-card small{color:#927044}
+.patronage-person-card .patronage-choice-line{font-size:13px;text-align:left}
+@media(max-width:600px){.patronage-choice-line{font-size:13px}.patronage-trigger{gap:12px}.patronage-icon{width:27px;height:27px;flex-basis:27px}}

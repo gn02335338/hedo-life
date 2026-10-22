@@ -1,5 +1,6 @@
 // This is a read-only projection of committed results. It never rerolls a life
 // or changes the save/replay protocol. Row deltas already include 0/100 limits.
+import {isPatronageOutcomeV43} from './character-stats.js';
 const LABELS = Object.freeze({
  energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰',
  boss:'翅膀心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力'
@@ -12,6 +13,7 @@ function sampleLabel(row) {
  const id = typeof row?.eventId === 'string' ? row.eventId : '';
  if (id === 'mood-self-destruct') return '自爆';
  if (id === 'mood-collapse') return '崩潰';
+ if (id === 'patronage-reply' && row?.kind === 'patronage') return '自己人發話';
  if (id.startsWith('meal-')) return '飯局';
  if (id.startsWith('wealth-')) return '離職後規劃';
  if (id.startsWith('company-v32-')) return '公司未來';
@@ -40,12 +42,17 @@ function sampleLabel(row) {
 // source answer, rather than a row named after the decision wrapper.
 function historyMatchesActions(run, history) {
  if (!Array.isArray(run?.actions)) return true;
- const committed = run.actions.filter(action => action?.type === 'choice' ||
+ const committed = run.actions.filter(action => action?.type === 'choice' || action?.type === 'patronage-reply' ||
   (['rage','verbal'].includes(action?.type) && ['event','result'].includes(action.phase)));
  if (committed.length !== history.length) return false;
  let spokenSource = null;
  return committed.every((action, index) => {
   const row = history[index];
+  if (action.type === 'patronage-reply') {
+   spokenSource = null;
+   return action.version === 1 && isPatronageOutcomeV43(run,row) &&
+    row.patronageOutcome.origin === action.eventId && row.patronageOutcome.target === action.target;
+  }
   if (action.type === 'verbal') {
    const evidence = row?.verbalOutcome;
    spokenSource = action.version === 2 ? action : null;

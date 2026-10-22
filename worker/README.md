@@ -4,6 +4,18 @@ Cloudflare Workers serves `dist/` as Static Assets and routes `/api/*` to the Wo
 
 ## Endpoints
 
+Appointed e29–e39 lives also accept the optional versioned action
+`{type:'patronage-reply',version:1,eventId,target}`. All four fields are required;
+the target must be a public character physically present in the current scene.
+The engine verifies the appointment, timing and once-per-workday limit. Previewing
+or canceling does not draw RNG; committing draws once, records a separate
+`patronageOutcome` and affects only the chosen character's affinity. These replies
+do not count as insults or hits. They return to the unanswered source scene without
+spending another workday, PIP turn, income payment or meal cost. No new cohort or
+save version is required: existing actions and source choice indices remain intact.
+Lives containing this action are checked against full canonical replay at both
+pending and continued save boundaries; clients cannot submit a reaction or delta.
+
 | Method | Path | Input | Response |
 | --- | --- | --- | --- |
 | GET | `/api/health` | — | `{ok:true,version:3}` |
