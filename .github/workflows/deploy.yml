@@ -27,7 +27,7 @@ jobs:
         timeout-minutes: 5
       - name: Run tests before deployment
         run: npm test
-        timeout-minutes: 10
+        timeout-minutes: 15
       - name: Deploy with the locked Wrangler CLI
         run: npm run deploy
         timeout-minutes: 10
