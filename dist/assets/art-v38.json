@@ -989,10 +989,10 @@
     {
       "id": "jenjen",
       "path": "./assets/jenjen.png",
-      "width": 507,
+      "width": 559,
       "height": 760,
-      "bytes": 148410,
-      "sha256": "c8d5888d5d64bf41024a49c9873c59b01c8b2f90e1f3da9ced6bae2f6f76c2a0",
+      "bytes": 153734,
+      "sha256": "3b183f3cb5ddd80eaf4cf8774126dc1a6320fec8ad3296dbff7e07a173b3b3b5",
       "referenceRemake": true
     },
     {
@@ -1000,8 +1000,8 @@
       "path": "./assets/sonny.png",
       "width": 600,
       "height": 623,
-      "bytes": 114946,
-      "sha256": "962a9652c6c3365bb1244630d418daef42275346e7c77a6edb414826b71aedd3",
+      "bytes": 117577,
+      "sha256": "9d67fdf5c09525c3687e300b6cb5e2d29983d1200d9fdd48dcb22335212d221f",
       "referenceRemake": true
     },
     {
@@ -1027,26 +1027,26 @@
       "path": "./assets/meimei.png",
       "width": 600,
       "height": 657,
-      "bytes": 125655,
-      "sha256": "8559d9173d41e6f42f2bce452f1ce2839901892defb3e1fbec174c4d3ce4096c",
+      "bytes": 118107,
+      "sha256": "c5856195d251e36af0f41fc25e976b7c6e3031007e44b26b0420566624f71d03",
       "referenceRemake": true
     },
     {
       "id": "helen",
       "path": "./assets/helen.png",
-      "width": 570,
-      "height": 760,
-      "bytes": 142099,
-      "sha256": "2f4001aa53c8ea55349385ab2049487cec6d00cf18f495ab2693218b5ef62c2d",
+      "width": 600,
+      "height": 717,
+      "bytes": 139656,
+      "sha256": "2281f2638c446699dc4c30fd40018818397f536a24f762bc3744dc86e3c93ad6",
       "referenceRemake": true
     },
     {
       "id": "sophie",
       "path": "./assets/sophie.png",
       "width": 600,
-      "height": 720,
-      "bytes": 154063,
-      "sha256": "fa09d9e296c3c5e3738d7813513fab425c696f6368463561e9e22b7b0184a3b0",
+      "height": 661,
+      "bytes": 140623,
+      "sha256": "b917aed44286104041b381d1c5e4e6d782ad31a28c05fee65a28428d460559fc",
       "referenceRemake": true
     },
     {
@@ -1054,44 +1054,44 @@
       "path": "./assets/jonathan.png",
       "width": 600,
       "height": 657,
-      "bytes": 125593,
-      "sha256": "6582071ead714d6bbfcc9c6a34169c5fd6942a1dc1f37ade92bbf39ba4f2edd5",
+      "bytes": 120795,
+      "sha256": "171b16afe29a32e6af3aae657150080c81777c2e55c717c77b0c4ed20d832d86",
       "referenceRemake": true
     },
     {
       "id": "owen",
       "path": "./assets/owen.png",
       "width": 600,
-      "height": 721,
-      "bytes": 147787,
-      "sha256": "7d3288edb02e09fc72bbeee91b9ad9073f5262dd41a8e3f2ded037fd88aacad3",
+      "height": 722,
+      "bytes": 155157,
+      "sha256": "1dbfdf8d8e731e9ac7f1a3bf840e5b8b0be7277cdffea002e193185e2bc55088",
       "referenceRemake": true
     },
     {
       "id": "sam",
       "path": "./assets/sam.png",
       "width": 600,
-      "height": 708,
-      "bytes": 137545,
-      "sha256": "a227aa6ae7b3dec07a13aabb8d896663c37682a2af085fb8dc9d6a8caa9ff8c0",
+      "height": 657,
+      "bytes": 123405,
+      "sha256": "27f9a72a0cb5907870881dc9f9b2f2e21b8b4f40bf7b0e7bc2616edb9e120d13",
       "referenceRemake": true
     },
     {
       "id": "cindy",
       "path": "./assets/cindy.png",
-      "width": 507,
-      "height": 760,
-      "bytes": 130111,
-      "sha256": "7aad370591879fce5b15deb126dba5deb9705ccbb35e2c52a864fccf7489cc91",
+      "width": 600,
+      "height": 720,
+      "bytes": 131267,
+      "sha256": "3560090d13c3a2e927259a7af8d3eb141438ef3a0faf8cc55599738305e375a9",
       "referenceRemake": true
     },
     {
       "id": "professor",
       "path": "./assets/professor.png",
       "width": 600,
-      "height": 600,
-      "bytes": 96773,
-      "sha256": "6ba38a3f0c2b02a7e124fb1f2ed5e59e5874b1cfd28bf634784af644d1031409",
+      "height": 623,
+      "bytes": 121503,
+      "sha256": "6daed6f6afef2f6536ffe6b7d2db5a0dfbb8b3f515d86e32021d51b1ddcbbc5b",
       "referenceRemake": true
     }
   ],
