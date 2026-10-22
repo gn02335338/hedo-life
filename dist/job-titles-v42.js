@@ -12,11 +12,11 @@ const SYSTEM_TITLES=Object.freeze({
 const titles=Object.keys(SYSTEM_TITLES).sort((a,b)=>b.length-a.length).join('|');
 const titleEnd='(?=$|[「」『』，。,.;；：:！!？?\\s、→]|的(?:工作|正式職稱|名片|身分|位置)|又被放上桌)';
 const playerPrefix='(?:你目前仍是|你目前是|你仍是|你現在的職稱是|你的職稱是|你的職稱還是|你的職稱變更為|目前實際職稱[：:]\\s*|你正式成為|報到卻叫我做|報到改|我接受)';
-const careerPrefix='(?:目前職稱是|(?:^|[，。；])職稱是|職稱寫著|實際職稱是|實際職稱也是|報到後的職稱也是|改以|被改派為|職稱變更[：:]\\s*|→\\s*|(?:^|[，。；])正式成為|(?:^|[，。；])談到了|(?:^|[，。；])換到了|你得到|這次要談的是|這次想談|下一步想談|重新談|上回談|現在|又做了一段時間的|接下來先以|[，。；]留下)';
+const careerPrefix='(?:目前職稱是|(?:^|[，。；])職稱是|職稱寫著|實際職稱是|實際職稱也是|報到後的職稱也是|報到時的實際職稱卻被改成|改以|被改派為|職稱變更[：:]\\s*|職級維持|正式任用[：:]\\s*|第\\d+個工作回合，|→\\s*|(?:^|[，。；])正式成為|(?:^|[，。；])談到了|(?:^|[，。；])換到了|你得到|這次要談的是|這次想談|下一步想談|重新談|上回談|現在|又做了一段時間的|接下來先以|[，。；]留下)';
 const playerTitle=new RegExp(`(${playerPrefix}[「『]?)(?<title>${titles})${titleEnd}`,'gu');
 const careerTitle=new RegExp(`(${careerPrefix}[「『]?)(?<title>${titles})${titleEnd}`,'gu');
 const onboardingComparison=new RegExp(`(跟)(?<title>${titles})(?=不是換一張名片)`,'gu');
-const relevantEvent=id=>/^(?:onboarding$|career-|rank-|promotion-|education-|salary-|raise-|exit-menu$|story-exit$|chapter-resolution$|verbal-v2-decision$)/u.test(id||'');
+const relevantEvent=id=>/^(?:onboarding$|career-|rank-|promotion-|patronage-|education-|salary-|raise-|exit-menu$|story-exit$|chapter-resolution$|verbal-v2-decision$)/u.test(id||'');
 const assistantSystemOrigins=new Set(['system','project','mis']);
 
 export function displayPlayerTitleV42(title,actualRoleId){

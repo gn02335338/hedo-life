@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createRun,getEvent,getVerbalLine,requestVerbal,applyChoice,jobTitle,validRun} from '../dist/engine.js';
+import {createRun,getEvent,getVerbalLine,requestVerbal,requestExit,applyChoice,advance,jobTitle,validRun} from '../dist/engine.js';
 import {CAREER_LADDERS_V17} from '../dist/career-v17.js';
 import {ENDINGS} from '../dist/endings.js';
 import {displayPlayerTitleV42,displayPlayerCareerTextV42,displayPlayerEventV42,displayPlayerHistoryV42,displayPlayerVerbalLineV42,displayPlayerEndingV42} from '../dist/job-titles-v42.js';
@@ -94,4 +94,25 @@ test('system ending cards use the player profession while other ending roles, NP
  assert.equal(displayPlayerEndingV42(npc).body,'強哥的職稱是助理工程師，他是工程經理。你目前是系統工程師。');
  const shown=displayPlayerEndingV42(senior);assert.deepEqual(displayPlayerEndingV42(shown),shown);
  assert.equal(JSON.stringify(ENDINGS),before);assert.equal(displayPlayerEndingV42(null),null);
+});
+
+test('departure, raise, special appointment and original onboarding title slots keep the system profession explicit',()=>{
+ const working=advance(applyChoice(createRun('ai','e38-title-audit-0'),0)),leaving=requestExit(working),before=JSON.stringify(leaving);
+ assert.equal(leaving.eventId,'exit-menu');
+ assert.match(displayPlayerEventV42(getEvent(leaving),leaving).body,/第\d+個工作回合，(?:職稱是)?系統工程師，心情/);
+ assert.equal(JSON.stringify(leaving),before);assert.equal(validRun(leaving),true);
+ const cases=[
+  {eventId:'exit-menu',jobTitle:'工程師',body:'第2個工作回合，工程師，心情57。你不需要等到敲鐘，才有權把這段人生結束。',expected:'第2個工作回合，系統工程師，心情57。'},
+  {eventId:'raise-confirmation',jobTitle:'工程師',result:'書面調薪生效：遊戲月薪 50K → 56K。職級維持工程師，之後的薪資入帳會使用新月薪。',expected:'職級維持系統工程師，之後'},
+  {eventId:'patronage-application',jobTitle:'乾女兒',result:'正式任用：資深工程師 → 乾女兒；月薪 56K → 70K。',expected:'正式任用：資深系統工程師 → 乾女兒；'},
+  {eventId:'onboarding',jobTitle:'助理工程師',body:'你應徵的是「專案經理」，報到時的實際職稱卻被改成「助理工程師」。',expected:'實際職稱卻被改成「助理系統工程師」'},
+  {eventId:'onboarding',jobTitle:'工程師',body:'你應徵的是「系統工程師」，報到後的實際職稱也是「工程師」；這次沒有被改派。',expected:'報到後的實際職稱也是「系統工程師」'}
+ ];
+ for(const row of cases){
+  const canonical=JSON.stringify(row),shown=displayPlayerHistoryV42(row,{roleId:'project',actualRoleId:'ai'});
+  assert.ok((shown.result||shown.body).includes(row.expected));assert.equal(JSON.stringify(row),canonical);
+  if(row.jobTitle==='乾女兒')assert.equal(shown.jobTitle,'乾女兒','new special title is preserved');
+ }
+ const ai={id:'patronage-application',body:'正式任用：AI工程師 → 乾女兒；月薪 56K → 70K。',choices:[]};
+ assert.equal(displayPlayerEventV42(ai,{actualRoleId:'ai'}),ai);
 });
