@@ -565,3 +565,29 @@ All earlier seeds retain their original eligibility, text, draws and character
 totals. No new action type, anonymous identity field, database migration or secret
 is introduced. The Worker derives relationships from replayed actions, never
 from a submitted history or client-supplied affinity result.
+
+
+## Between-work rest (v50, e39 lives)
+
+New browser lives use `e39-cal46-kin49-g-` plus fourteen random hexadecimal
+characters, preserving the 32-character seed limit, calendar and patronage gates.
+A completed work/onboarding turn sets the replay-derived `work_gap_open` flag.
+Mandatory personnel, PIP reviews, salary notices and resource crises finish
+before the public event can become `work-gap-v50`. This placeholder reveals no
+selected next scene, actor, source or outcome.
+
+Only this safe interval accepts `break`; an unanswered event and its pending
+result cannot be interrupted by rest. Paid recovery, meals and cancellation
+return to the same interval, retaining the existing one-arrangement-per-turn
+limit. Career, raise and voluntary exit planning may also return to the interval.
+The sole gap choice records the existing `{type:'choice',eventId:'work-gap-v50',
+index:0}` envelope and starts the selected work scene without drawing RNG, adding
+history, advancing a workday, paying salary or ticking PIP. Activity/hidden
+encounter catch-up runs after this choice; NPC conflict actions are unavailable
+in the interval. Dream and conversation returns do not create a new interval
+before the suspended work is actually completed.
+
+Published earlier seeds retain their exact rest rules and replays. The flag,
+interval-start choice and underlying event are checked by canonical replay; a
+client cannot remove the interval or address the unrevealed scene directly. No
+new HTTP action, database field, anonymous identity or credential is introduced.
