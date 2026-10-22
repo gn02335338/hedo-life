@@ -133,6 +133,32 @@ export const cloud={
   if(!ready){status='pending';emit();await this.init();}else{emit();await flush();}
  },
  async stats(){return api('/api/stats');},
+ async leaderboard({metric='overall',role='all'}={}){
+  return api(`/api/leaderboard?metric=${encodeURIComponent(metric)}&role=${encodeURIComponent(role)}`);
+ },
+ async submitLeaderboard(run,nickname){
+  if(!run?.completed||!run.runId||!Array.isArray(run.actions))throw new Error('這一局尚未走到結局。');
+  if(!ready)await this.init();
+  if(!ready)throw new Error('排行榜暫時無法連線，尚未公開暱稱；恢復連線後請自行重試。');
+  // Publication is an explicit one-shot request, never part of the automatic
+  // completion queue. An offline retry cannot publish an old name by surprise.
+  return api('/api/leaderboard',{runId:run.runId,roleId:run.roleId,seed:run.seed,actions:structuredClone(run.actions),nickname});
+ },
+ async removeLeaderboard(runId){
+  if(!ready)await this.init();
+  if(!ready)throw new Error('排行榜暫時無法連線，這筆留名尚未撤下；恢復連線後請重試。');
+  return api(`/api/leaderboard/${encodeURIComponent(runId)}`,undefined,'DELETE');
+ },
+ async renameLeaderboard(runId,nickname){
+  if(!ready)await this.init();
+  if(!ready)throw new Error('排行榜暫時無法連線，暱稱尚未修改；恢復連線後請重試。');
+  return api(`/api/leaderboard/${encodeURIComponent(runId)}`,{nickname},'PATCH');
+ },
+ async myLeaderboard({after=null}={}){
+  if(!ready)await this.init();
+  if(!ready)throw new Error('暫時無法查詢自己的留名紀錄，請稍後重試。');
+  return api(`/api/leaderboard/mine${after===null?'':`?after=${encodeURIComponent(after)}`}`);
+ },
  async characters(){return api('/api/characters');},
  async characterProgress(run){return this.achievementProgress(run);},
  async achievementProgress(run){

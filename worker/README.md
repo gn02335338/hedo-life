@@ -718,3 +718,61 @@ minigame. A warning interval still waits until the complete activity has ended.
 Character/achievement/completion endpoints replay the same action, keep anonymous
 ownership and idempotent commitments, and ignore client statistics. No new player
 identifier, database migration, credential or public raw-control dataset is added.
+
+## Opt-in leaderboards (v56, score version 1)
+
+Ranking is independent of game rules and does not change seeds, actions, RNG,
+endings, anonymous credentials or existing archive tables. The shared
+`dist/leaderboard-score-v56.js` projects a completed canonical replay. Season 1
+accepts `e39-cal46-kin49-g-e-s-m-` lives; historical lives may preview a score but
+cannot enter this season under their different rules.
+
+The 10,000-point score uses abilities 30% (sum capped at the current 180-point
+budget), mood/energy 15%, cash 10%, trust/boss/belief 10%, actual completed work
+20%, and a static ending challenge tier 15%. Work counts distinct committed
+work turns from history, up to 23; onboarding, rest, activities, menu visits and
+shortfall jumps do not create work. Every current ending family has a reviewed
+fixed tier. Popularity and good/bad labels never determine challenge. Verbal,
+imagined-hit, actual-hit and promotion counters are separate single-metric
+boards, not extra overall-score bonuses.
+
+- `GET /api/leaderboard?metric=overall&role=all`: public top 50. Fixed metric and
+  actual-role allowlists; each anonymous owner contributes one best opted-in
+  life per metric/filter. Equal selected values receive equal competition ranks
+  (`1,1,3`), with total, first publication time and opaque entry ID resolving
+  display order.
+- `POST /api/leaderboard`: authenticated opt-in with the normal completion proof
+  plus `nickname`. Requires a completed replay, season eligibility and the exact
+  owner/role/seed/action commitment. An unsynced valid completion can be recorded
+  with its listing in the same completion transaction. A legacy completion
+  without its original commitment is never used to guess a score. Posted scores
+  or statistics are ignored.
+- `GET /api/leaderboard/mine?after=<entryId>`: authenticated own records, 100 per
+  page with `nextCursor`/`hasMore`; cursors must belong to that owner. Older
+  published entries remain manageable.
+- `PATCH /api/leaderboard/<runId>`: authenticated explicit nickname change only;
+  preserves scores, public entry ID and first publication time. Cannot republish
+  a withdrawn record.
+- `DELETE /api/leaderboard/<runId>`: authenticated idempotent withdrawal of an
+  owned listing. Completion receipts, collections, achievements and statistics
+  remain. Ordinary completion retries never republish a withdrawn listing.
+
+Nicknames are NFKC-normalized and limited to 2–16 Unicode code points; controls,
+bidi formatting, markup, URLs and contact-like strings are rejected. Mutations
+use the existing origin, bearer authentication, rate and 64 KiB body checks.
+Raw proof is replayed transiently. The additive `leaderboard_entries` table
+stores owner/run bindings, an opaque public entry ID, nickname, score version,
+actual/advertised roles, derived metric numbers and first publication time.
+No raw seed, action, dialogue or ending label is stored in this table.
+
+Public responses expose only nickname, advertised/actual roles, selected value,
+overall score, completed work turns, publication time and opaque entry ID; no
+player ID, run ID, ending identity, proof or difficulty hint. Private own-record
+responses include run IDs for management. Clearing the anonymous credential can
+lose management access; a nickname is not an account or recovery key.
+
+The browser asks for explicit public consent at the ending, supports skipping,
+renaming and withdrawal, and never automatically queues a public name for later
+posting. Network failures preserve an in-page draft and show an unconfirmed
+state; successful state is based on a canonical server receipt. Existing local
+collections and completion-sync queues continue independently.
