@@ -1,6 +1,7 @@
 // Artwork is a read-only presentation layer. Never pass a run's unchosen
 // choices, draw outcomes or future ending into this module.
-import {PERSONAS,displayPersona,displayText} from './persona.js';
+import {PERSONAS,displayPersona} from './persona.js';
+import {displayOccupationTextV47 as displayText} from './occupation-copy-v47.js';
 import {HIDDEN_PERSONAS_V45} from './hidden-encounter-v45.js';
 import {ENDINGS} from './endings.js';
 import {EVENT_SCENES_V38,DYNAMIC_SCENES_V38,SCENE_PLATES_V38,SCENE_ALIASES_V38} from './illustration-scenes-v38.js';
@@ -9,7 +10,7 @@ const escape=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<
 const illustrationPeople={...PERSONAS,...HIDDEN_PERSONAS_V45};
 const plateIds=new Set(SCENE_PLATES_V38);
 const endingRecords=new Map(ENDINGS.map(ending=>[ending.id,{roleId:ending.roleId,title:ending.title}]));
-const roleLabels=Object.freeze({system:'系統工程',ai:'AI工程',project:'專案管理',product:'產品管理',design:'設計',bd:'商務開發',sales:'業務',mis:'MIS',executive:'高階主管',finance:'財務',accounting:'會計',hr:'人資',admin:'行政'});
+const roleLabels=Object.freeze({system:'系統工程',ai:'AI工程',project:'專案管理',product:'產品管理',design:'產品設計',bd:'商務開發',sales:'業務',mis:'MIS',executive:'高階主管',finance:'財務',accounting:'會計',hr:'人資',admin:'行政'});
 const uiScenes=Object.freeze({'role-selection':'onboarding','resume-roll':'onboarding'});
 
 export function sceneIllustration(event,{roleId=null,people=[],reality=null}={}){

@@ -31,7 +31,7 @@ function bookHarness(cloud,cache=null){
     return null;
   },addEventListener(type,callback){handlers.set(type,callback);}};
   const book=createCharacterBook({dialog,cloud,getRun:()=>null,openDialog(value){html=value;dialog.open=true;dialog.scrollTop=0;},storage:{getItem:key=>store.get(key)||null,setItem:(key,value)=>store.set(key,value)}});
-  return {book,dialog,store,focus,get html(){return html;},replace(value){html=value;},change(id,value){handlers.get('change')({target:{id,value}});},retry(){handlers.get('click')({target:{closest:selector=>selector==='[data-character-retry]'?{}:null}});}};
+  return {book,dialog,store,focus,get html(){return html;},replace(value){html=value;},change(id,value){handlers.get('change')({target:{id,value}});},toggleRanking(open){handlers.get('toggle')({target:{id:'character-ranking-details',open}});},focusCharacter(id){handlers.get('click')({target:{closest:selector=>selector==='[data-character-focus]'?{dataset:{characterFocus:id}}:null}});},retry(){handlers.get('click')({target:{closest:selector=>selector==='[data-character-retry]'?{}:null}});}};
 }
 
 test('the cast archive contains twenty-two public portraits and never lists locked endings',()=>{
@@ -43,9 +43,14 @@ test('the cast archive contains twenty-two public portraits and never lists lock
  assert.match(html,/不影響升遷或工作事件抽選/);
  assert.match(html,/飯局邀約會參考這局的熟悉程度、好感與部門/);
  assert.match(html,/全站角色統計從上線後開始；舊版沒有逐步互動紀錄，不推算/);
- assert.ok(html.indexOf('class="character-card-grid"')<html.indexOf('class="character-ranking-details"'));
+ assert.ok(html.indexOf('class="character-book-heading"')<html.indexOf('class="character-ranking-details"'));
+ assert.ok(html.indexOf('class="character-ranking-details"')<html.indexOf('class="character-sync-state"'));
+ assert.ok(html.indexOf('class="character-ranking-details"')<html.indexOf('class="character-card-grid"'));
+ assert.ok(html.indexOf('id="character-metric"')<html.indexOf('id="character-filter"'));
+ assert.ok(html.indexOf('id="character-filter"')<html.indexOf('class="character-card-grid"'));
  assert.ok(html.indexOf('class="character-card-grid"')<html.indexOf('class="character-book-help"'));
- assert.doesNotMatch(html, /id="character-ranking-details"\s+open/);
+ assert.match(html, /id="character-ranking-details"\s+open/);
+ assert.doesNotMatch(characterBookHTML({rankingOpen:false}), /id="character-ranking-details"\s+open/);
  assert.match(html, /<details class="character-book-help"><summary>統計怎麼記？<\/summary>/);
 });
 
@@ -60,7 +65,8 @@ test('every public card shows its neutral introduction and current alias while t
   assert.ok(own.includes(person.name));
  }
  assert.match(html,/林老師/);assert.doesNotMatch(html,/林澤|台大電機教授|特斯拉|約跑|多倫多/);
- assert.match(html,/封存角色/);assert.doesNotMatch(html,/魚酥|Frans|小三/);
+ assert.match(html,/公司神秘人物/);assert.match(html,/<h3>公司神秘人物<\/h3>/);assert.match(html,/<div class="private-sealed-symbol" aria-hidden="true">\?<\/div>/);
+ assert.doesNotMatch(html,/魚酥|Frans|小三|SEALED ARCHIVE|封存|管理員登入|data-action="admin-archive"/);
 });
 
 test('unavailable numbers remain dashes while genuine empty statistics show zero',()=>{
@@ -103,6 +109,19 @@ test('opening shows loading, then real results; filters and ranking use only the
  assert.equal([...app.html.matchAll(/class="character-card"/g)].length,1);
  assert.match(app.html,/id="character-card-meimei"/);assert.ok(app.focus.includes('#character-filter'));
  assert.ok(app.store.has('hedo-character-public-v1'));
+ // An intentional collapse survives a personal snapshot, card filter and rank
+ // shortcut; changing the rank metric reopens the results, as does a fresh visit.
+ app.toggleRanking(false);app.book.onSnapshot({...state});
+ assert.doesNotMatch(app.html,/id="character-ranking-details" open/);
+ app.change('character-filter','wing');
+ assert.doesNotMatch(app.html,/id="character-ranking-details" open/);
+ app.focusCharacter('meimei');
+ assert.equal([...app.html.matchAll(/class="character-card"/g)].length,1);
+ assert.match(app.html,/id="character-card-meimei"/);
+ assert.doesNotMatch(app.html,/id="character-ranking-details" open/);
+ app.change('character-metric','realHits');assert.match(app.html,/id="character-ranking-details" open/);
+ app.toggleRanking(false);await app.book.open('wing');
+ assert.match(app.html,/id="character-ranking-details" open/);
 });
 
 test('public totals are fetched after personal pending-proof synchronization completes',async()=>{

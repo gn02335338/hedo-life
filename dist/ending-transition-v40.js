@@ -1,8 +1,10 @@
-import { PERSONAS, displayText, displayChronicleHistory } from './persona.js';
+import { PERSONAS, displayChronicleHistory } from './persona.js';
+import { displayOccupationTextV47 as displayText } from './occupation-copy-v47.js';
+import { displayPrincessHistoryV47 } from './princess-english-v47.js';
 import { polishVerbalHistoryV41 } from './verbal-presentation-v41.js';
 import { displayPlayerHistoryV42 } from './job-titles-v42.js';
 import { companyFinaleEmploymentV39 } from './company-v39.js';
-const shownHistory=(row,run)=>displayPlayerHistoryV42(polishVerbalHistoryV41(displayChronicleHistory(row)),run);
+const shownHistory=(row,run)=>displayPrincessHistoryV47(displayPlayerHistoryV42(polishVerbalHistoryV41(displayChronicleHistory(row)),run),run);
 
 // A read-only explanation of an already committed ending. Do not use this
 // projection for probabilities, replay validation or employment decisions.

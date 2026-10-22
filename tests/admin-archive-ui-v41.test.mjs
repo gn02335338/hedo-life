@@ -28,7 +28,9 @@ const authenticated=()=>harness(async(path)=>path==='/api/admin/session'?respons
 
 test('public character slot and sign-in HTML contain only a generic question mark, with no private image or prefilled credentials',()=>{
  const publicHTML=characterBookHTML(),slot=publicHTML.match(/<article class="character-card private-sealed-card"[\s\S]*?<\/article>/)?.[0];
- assert.ok(slot);assert.match(slot,/<h3>？？？<\/h3>/);assert.doesNotMatch(slot,/<img|\/api\/admin\/portrait|data-character-id|PRIVATE_DUMMY/);
+ assert.ok(slot);assert.match(slot,/<h3>公司神秘人物<\/h3>/);assert.match(slot,/<div class="private-sealed-symbol" aria-hidden="true">\?<\/div>/);
+ assert.doesNotMatch(slot,/<img|\/api\/admin\/portrait|data-character-id|PRIVATE_DUMMY|封存|SEALED ARCHIVE|管理員登入|admin-archive/);
+ assert.doesNotMatch(publicHTML,/data-action="admin-archive"/);
  const login=adminLoginHTML();assert.match(login,/type="password"/);assert.doesNotMatch(login,/value=|\/api\/admin\/portrait|PRIVATE_DUMMY|UNREVEALED/);
  const source=readFileSync(new URL('../dist/admin-archive-ui-v41.js',import.meta.url),'utf8');assert.doesNotMatch(source,/localStorage|sessionStorage|indexedDB|document\.cookie/);
  assert.doesNotMatch(source,/PRIVATE_DUMMY|test-only-ui-password/);
