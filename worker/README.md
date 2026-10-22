@@ -436,3 +436,25 @@ Provision `ADMIN_PASSWORD_VERIFIER` as a **Cloudflare Worker Secret**, never a W
 The import body is `{card:{name,title,alias,description,stories},portrait:{mime,base64}}`. Each story has `{title,body}` and optional `choices:[{text,result}]`. Unknown fields, control characters, SVG/HTML image types, mismatched image signatures and malformed base64 are rejected. The image limit is 1 MiB; normalized card JSON is at most 128 KiB, with at most eighty stories and five choices per story. A successful card response adds only the protected `portraitUrl`; it never returns the stored base64. Larger administrator uploads do not change the ordinary public API's 64 KiB request limit. Provisioning payloads and original portraits must remain outside the public checkout or in ignored private files.
 
 `tests/api-admin-private.test.mjs` exercises the actual Worker handlers with isolated SQLite and synthetic content only: authentication, durable rate limits, origin/CSRF checks, hashed sessions, restart/expiry/rotation/logout, protected images, atomic imports, input limits and absence of private content from public counters. No production player, administrator session or private identity is used by these tests.
+
+## Optional activity chapters (v44 action, e39 lives)
+
+The strict action `{type:'activity',version:1,activityId}` opens one of `arm`,
+`diet`, `roadshow`, `dinner`, `banquet`, `basketball`, or `review`. These are the
+only three accepted keys. It is available only in eligible unanswered e39 daily
+work scenes; the canonical engine checks resources, timing, conflicts, the
+per-activity lifetime limit and the two-workday cooldown. The original annual
+party and optional banquet share the same attendance guard. Reading an invitation
+or canceling the UI picker does not create an action or consume RNG.
+
+Stages use ordinary `choice` actions and versioned `activityContext` state. A
+committed stage draws exactly once, records the result and actual stat changes,
+and waits for Continue. Continuing advances the activity stage or returns to the
+unanswered source scene; it does not pay income or move a working/PIP day. Other
+side menus cannot be nested during the activity. Resource exhaustion gets an
+explicit aftermath instead of a silent departure. Each pending, continued and
+returned state is compared with canonical replay, including contexts, scores,
+flags, history and RNG. Forged activity state without an authorized operation is
+rejected. No database migration, credential, account field or public identity is
+added; completion, character and achievement proofs retain their existing
+anonymous ownership and validation.

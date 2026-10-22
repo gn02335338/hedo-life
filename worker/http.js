@@ -1,3 +1,5 @@
+import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
+
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
 const RAGE_TARGET_IDS=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain']);
@@ -116,6 +118,11 @@ export function validateCompletion(body, roleMap) {
     }
     if (action.type === 'salary-advice') {
       if (/^e(?:28|29|30|31|32|33|34|35|36|37|38|39)-/.test(body.seed)&&Object.keys(action).every(key=>key==='type')) continue;
+      throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
+    }
+    if (action.type === 'activity') {
+      if (/^e39-/.test(body.seed)&&Object.keys(action).sort().join(',')==='activityId,type,version'
+          &&action.version===1&&ACTIVITY_IDS_V44.includes(action.activityId)) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
     if (action.type === 'patronage-reply') {

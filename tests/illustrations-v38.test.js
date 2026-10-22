@@ -57,9 +57,9 @@ async function harness(mobile,{fetcher=async()=>imageResponse(),artTimeoutMs}={}
  };
 }
 
-test('all 865 authored events and 93 modal IDs map to the 41 produced plates, with a safe old-scene fallback',()=>{
- assert.equal(artMap.SCENE_PLATES_V38.length,41);
- assert.equal(new Set(artMap.SCENE_PLATES_V38).size,41);
+test('all 865 authored events and 93 modal IDs map to the 42 produced plates, with a safe old-scene fallback',()=>{
+ assert.equal(artMap.SCENE_PLATES_V38.length,42);
+ assert.equal(new Set(artMap.SCENE_PLATES_V38).size,42);
  assert.equal(Object.keys(artMap.EVENT_SCENES_V38).length,865);
  assert.equal(Object.keys(artMap.DYNAMIC_SCENES_V38).length,93);
  for(const event of [...allEvents,...Object.keys(artMap.DYNAMIC_SCENES_V38).map(id=>({id,title:'眼前的故事'}))]){

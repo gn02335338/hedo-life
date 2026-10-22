@@ -5,6 +5,7 @@
   "expected": 883,
   "found": 883,
   "sourceSha256": {
+    "activities-v44": "cef6dcb61ed95c780ba09b220232f8c512fc0ffc184d62812de306f43fbab40f",
     "patronage-reply-v43": "0a27a983933eb3e8762d118f49237507837b11f2c4a7860771c84b960d87f14e",
     "events-cast-v39": "fa292af8102bf81263a016f07b933df9ed2cc78e635bd75c92f924f0928b63b9",
     "events-cast-v39-annie": "1125d05f048ca52709d79fa6932eefb22062a7fd294ecd2c999711fa85660bad",
@@ -64,7 +65,7 @@
     "events-design-v21": "3185fb3eda2e942fa8741dfcafc1d7a612a5087cb6730946b82623ea362cb195",
     "events-professions-v21": "3525fb55585ea3256ef1388f6464eaa16dcf60b4dedb37cea8ec8788cb7c75c2",
     "work-events-v21": "bad5ba1b38278dbd39f1c1e9954c00a3dce18c58a3eb615838d5d0ba69c387ec",
-    "engine": "83954ad8d445c6c70f1369a675e7b3aca828d7842bc9349a082c18dc590a57bd",
+    "engine": "2187d5b6f78149e46e42266dfc09de7acdcae17838baa469b9efa7bc3cd83528",
     "persona": "204328389053d5b30424782542bb0bfeaa65410b45c82e72cfeea1bf7d4cc5ff",
     "rage-participants": "9a71f95f361953b45022a1ad1151d2ab20604ccfdb0fe8983f1db3004098b047",
     "rage-v16": "59924ccb4909e1218356f2fbe5508fa217f15f069a246697199d7237a2191bea",

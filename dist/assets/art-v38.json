@@ -5,7 +5,7 @@
   "counts": {
     "portraitRemakes": 20,
     "preservedPortraits": 2,
-    "scenePlates": 41,
+    "scenePlates": 42,
     "endingMasters": 68,
     "jobPropIllustrations": 13,
     "endingImages": 883
@@ -343,6 +343,14 @@
       "height": 720,
       "bytes": 104436,
       "sha256": "0dd538277536b5c78fd56af5bee943037e80a2258e4a42483140a1634e119b22"
+    },
+    {
+      "id": "basketball",
+      "path": "./assets/scenes/basketball.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 135680,
+      "sha256": "4a6c2b11776665393e8605a58743ad02b95ac543fcf3a6bd4ade7dfdbe952265"
     }
   ],
   "masters": [

@@ -21,6 +21,7 @@ function sampleLabel(row) {
  if (id.startsWith('pip-')) return 'PIP';
  if (row?.kind === 'self-care' || ['kind-break','kind-workday'].includes(id)) return '休整';
  if (row?.kind === 'banquet') return '尾牙';
+ if (row?.kind === 'activity') return '活動';
  if (id === 'rage-release') {
   if (row?.eventOutcome?.result === '腦內劇場') return '夢境';
   if (row?.eventOutcome?.result === '真的失控了') return '真實失控';

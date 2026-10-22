@@ -31,7 +31,7 @@ test('every ending has a distinct, decoded, bounded image matching the shipped m
  assert.equal(hashes.size,883,'no filename-only duplicate artwork');
 });
 
-test('all 41 neutral scenes, 68 narrative masters and 13 job illustrations ship with verified hashes',async()=>{
+test('all 42 neutral scenes, 68 narrative masters and 13 job illustrations ship with verified hashes',async()=>{
  assert.deepEqual(manifest.scenes.map(item=>item.id).sort(),[...SCENE_PLATES_V38].sort());
  assert.equal(manifest.masters.length,68);assert.equal(manifest.props.length,13);
  const records=[...manifest.scenes,...manifest.masters,...manifest.props];

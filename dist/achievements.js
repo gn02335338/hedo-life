@@ -116,10 +116,11 @@ export function deriveAchievements(run){
  // banquet/rage flags. Both resolved song draws participated in the duel.
  const resolved=history.filter(item=>Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0&&typeof item.result==='string'&&item.result.trim());
  add('ai-auto-increment',/^e(?:31|32|33|34|35|36|37|38|39)-/.test(run.seed||'')&&run.actualRoleId==='ai'&&resolved.some(item=>item.eventId==='ai31-auto-increment'&&item.kind==='daily'&&item.speaker==='rick'&&item.choiceIndex<=2));
- add('banquet-first-love',resolved.some(item=>item.eventId==='banquet-welcome'&&item.kind==='banquet'&&item.speaker==='rick'&&item.choiceIndex===1&&item.eventOutcome?.label==='尾牙點歌台'&&['成功搶麥','被夢想插播'].includes(item.eventOutcome.result)));
+ const activity44=resolved.filter(item=>/^e39-/.test(run.seed||'')&&item.kind==='activity'&&item.activityOutcome?.version===1&&item.eventId===`activity44-${item.activityOutcome.id}-${item.activityOutcome.stage}`);
+ add('banquet-first-love',activity44.some(item=>item.eventId==='activity44-banquet-0')||resolved.some(item=>item.eventId==='banquet-welcome'&&item.kind==='banquet'&&item.speaker==='rick'&&item.choiceIndex===1&&item.eventOutcome?.label==='尾牙點歌台'&&['成功搶麥','被夢想插播'].includes(item.eventOutcome.result)));
  const arm=resolved.filter(item=>item.eventId==='video-pizza-overtime'&&item.kind==='daily'&&item.speaker==='sonny');
- add('sonny-press-conference',arm.some(item=>item.choiceIndex===1));
- add('sonny-unplayed-champion',arm.some(item=>item.choiceIndex===2));
+ add('sonny-press-conference',arm.some(item=>item.choiceIndex===1)||activity44.some(item=>item.eventId==='activity44-arm-2'&&item.speaker==='sonny'&&item.choiceIndex===1));
+ add('sonny-unplayed-champion',arm.some(item=>item.choiceIndex===2)||activity44.some(item=>item.eventId==='activity44-arm-2'&&item.speaker==='sonny'&&item.choiceIndex===2&&item.activityOutcome.label==='尚未出賽世界冠軍'));
  for(const family of ['legal','defeated','coup'])add(`rage-${family}`,real.length>0&&run.completed===true&&typeof run.endingId==='string'&&run.endingId.startsWith(`rage_${family}-`));
  for(const id of deriveExtraAchievements(run))ids.add(id);
  for(const id of deriveWealthAchievements(run))ids.add(id);
