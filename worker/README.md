@@ -608,3 +608,30 @@ read-only correction. Only recognized historical wording is translated, with
 committed branch identifiers, reactions, numeric ledgers and unknown appended
 notes retained. Canonical histories, actions, RNG, targeting and Worker replay
 remain unchanged, so existing lives receive the display correction on reload.
+
+
+## Contextual dialogue and activity boundaries (v52)
+
+Client speech presentation now preserves explicit scene/participant replies
+before adding tone. Fifty-five editorial overrides cover consultant, social and
+other known mismatches. Otherwise the fallback addresses only the visible scene
+title and the selected speaker's actual quote; incidental body keywords cannot
+select a different profession or premise. Other participants do not inherit the
+main speaker's words. No unselected response or future draw is read for dialogue.
+
+A quoted history is projected using its original canonical action prefix,
+including the preceding pending choice for result-phase speech. This restores
+the actual onboarding, salary-advice and raise context rather than applying the
+final run's possibly-closed context. Lazy per-row weak caching and a bounded 64-entry exact-prefix cache avoid
+repeated replay across immutable later run states. Only visible copy context is
+cached, rather than full histories. Unknown or unverifiable historical evidence is kept as-is.
+Preview, committed quotation, journal and ending explanation share this renderer;
+canonical histories, actions, employment branches, RNG and Worker proofs remain
+unchanged. No new API action, storage schema or identity is introduced.
+
+All seven activities and the original three-scene banquet now identify start,
+progress, committed scene result and completion. Completion requires the last
+scene's own done outcome (or the legacy banquetFinish effect), never merely
+viewing the final prompt. A bounded notice at the immediate return explains that
+the activity ended; a new action, workday or mandatory interruption hides it.
+All captions are read-only and retain hidden choice outcomes and costs.

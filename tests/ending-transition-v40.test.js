@@ -17,6 +17,7 @@ import * as transition from '../dist/ending-transition-v40.js';
 import * as chapters from '../dist/chapters-v38.js';
 import {renderEndingReport} from '../dist/ending-report-view.js';
 import {polishDreamText} from '../dist/copy-v15.js';
+import {displayContextVerbalHistoryV52} from '../dist/verbal-context-v52.js';
 
 const appSource=(await readFile(new URL('../dist/app.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
 const {routes}=JSON.parse(await readFile(new URL('../research/reachability-v3.json',import.meta.url),'utf8'));
@@ -100,7 +101,8 @@ test('special spoken finales distinguish retained employment, withdrawn offer an
   const run=complete(family),model=transition.buildEndingTransition(run,endingFor(run));
   assert.equal(model.employment.kind,kind,family);assert.ok(model.speech?.line,family);assert.ok(model.speech?.targetName,family);
   const source=run.history.findLast(row=>row.verbalOutcome);assert.equal(model.speech.target,source.verbalOutcome.target);
-  assert.equal(model.speech.line,persona.displayChronicleHistory(source).choiceText);
+  const projected=displayContextVerbalHistoryV52(persona.displayChronicleHistory(source),{run,rawRow:source});
+  assert.equal(model.speech.line,persona.displayText(projected.choiceText));
  }
  assert.equal(transition.buildEndingTransition(complete('rage_truce'),endingFor(complete('rage_truce'))).employment.kind,'employed');
  assert.equal(transition.buildEndingTransition(complete('google_ousted'),endingFor(complete('google_ousted'))).employment.kind,'company-chapter','Wing losing authority does not fire the player');

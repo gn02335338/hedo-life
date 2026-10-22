@@ -1,14 +1,17 @@
-import {ACTIVITY_META_V44} from './activities-v44.js';
+import {activityPhaseV52,activityPhaseNoticeHTMLV52} from './activity-phases-v52.js';
 
 const escape=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 // Activity invitations now arrive as canonical story events. This view only
 // displays progress after the player has answered the invitation.
 export function activityProgressHTMLV44(run,event){
- const info=event?.activity;if(!info||!run.activityContext)return'';
+ const phase=activityPhaseV52(run,event);if(!phase)return'';
+ const info=event?.activity;
+ const phaseNotice=activityPhaseNoticeHTMLV52(run,event);
+ const steps=`<ol aria-label="活動階段">${Array.from({length:phase.total},(_,i)=>`<li class="${i<phase.stage||phase.phase==='end'?'done':i===phase.stage?'current':''}" ${i===phase.stage?'aria-current="step"':''}><span>${i<phase.stage||phase.phase==='end'?'✓':i+1}</span></li>`).join('')}</ol>`;
+ const heading=`<div class="activity-progress-heading"><span>${escape(phase.name)}</span><b>第 ${phase.stage+1} / ${phase.total} 幕</b></div>`;
+ if(phase.legacy)return `<section class="activity-progress" aria-label="目前活動進度">${phaseNotice}${heading}${steps}<small>${phase.phase==='end'?'本場已經結束。繼續後回到原本尚未處理的事。':'這場尾牙還在進行，先回應眼前這一幕。'}</small></section>`;
  const revealed=run.pending?run.history.at(-1)?.activityOutcome:null;
  const score=revealed?.score??info.score,pressure=revealed?.pressure??info.pressure;
- const total=info.total??ACTIVITY_META_V44[info.id]?.stages??1,stage=info.stage+1;
- const armPhase=info.id==='arm'?`<div class="activity-phase-notice" aria-label="腕力大賽狀態"><b>${run.pending?'腕力大賽・本幕結果':info.stage===0?'腕力大賽開始':'腕力大賽進行中'}</b><p>${run.pending?'剛才這一幕的回應已經發生，接著看下一步。':info.stage===0?'你來到比賽桌邊。先把規則講清楚，再進入下一幕。':'你仍在同一場腕力大賽裡，繼續回應眼前這一幕。'}</p></div>`:'';
  const meter=(label,value,max)=>`<div class="activity-meter"><span>${escape(label)} <b>${escape(value)}</b></span><div class="activity-meter-track"><i style="width:${Math.max(0,Math.min(100,(Number(value)||0)/(Number(max)||12)*100))}%"></i></div></div>`;
- return `<section class="activity-progress" aria-label="目前活動進度">${armPhase}<div class="activity-progress-heading"><span>${escape(ACTIVITY_META_V44[info.id]?.name||'活動進行中')}</span><b>第 ${stage} / ${total} 幕</b></div><ol aria-label="活動階段">${Array.from({length:total},(_,i)=>`<li class="${i<info.stage?'done':i===info.stage?'current':''}" ${i===info.stage?'aria-current="step"':''}><span>${i<info.stage?'✓':i+1}</span></li>`).join('')}</ol><p>${escape(info.mechanic)}</p><div class="activity-meters">${meter(info.scoreLabel,score,info.scoreMax)}${meter(info.pressureLabel,pressure,info.pressureMax)}</div><small>${run.pending?'這些是剛才已發生的變化。':'這些是本場已累積的狀態，下一個結果還沒揭曉。'} 本場先用這一幕的選項回應，結束後回到原本的工作。</small></section>`;
+ return `<section class="activity-progress" aria-label="目前活動進度">${phaseNotice}${heading}${steps}<p>${escape(info.mechanic)}</p><div class="activity-meters">${meter(info.scoreLabel,score,info.scoreMax)}${meter(info.pressureLabel,pressure,info.pressureMax)}</div><small>${run.pending?'這些是剛才已發生的變化。':'這些是本場已累積的狀態，下一個結果還沒揭曉。'} ${phase.phase==='end'?'本場已經結束。繼續後回到原本尚未處理的事；如果狀態已撐不住，會先處理。':'本場先用這一幕的選項回應，結束後回到原本的工作。'}</small></section>`;
 }
