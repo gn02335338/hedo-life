@@ -153,10 +153,10 @@ test('rage from a revealed result keeps that conversation and committed choice',
   assert.equal(app.calls.choice, 0);
 });
 
-test('new browser lives use e37 and the guide explains solo and group targets', () => {
+test('new browser lives use the e39 calendar and the guide explains solo and group targets', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e39-[a-f0-9]+$/);
+  assert.match(seed, /^e39-cal46-[a-f0-9]{22}$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;

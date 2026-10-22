@@ -50,6 +50,8 @@ async function harness(mobile){
  };
  return{context,calls,html:()=>node('#main').innerHTML,picker:()=>node('#dialog-content').innerHTML,dialog:()=>node('#dialog'),state:()=>vm.runInContext('run',context),
   render(run){context.testRun=run;vm.runInContext('run=testRun;game(true)',context);return node('#main').innerHTML;},
+  candidate(run){context.testCandidate=run;vm.runInContext('candidate=testCandidate',context);},
+  randomSeed:()=>vm.runInContext('randomSeed()',context),
   action:(action,activityId)=>click({action,activityId}),
   cancel(){for(const callback of dialogListeners.get('cancel')||[])callback({target:node('#dialog')});node('#dialog').close();},
   async doubleChoice(index){const revision=vm.runInContext('gameViewRevision',context),dataset={choice:String(index),choiceView:String(revision)};await click(dataset,true,1);await click(dataset,true,2);},
@@ -57,51 +59,132 @@ async function harness(mobile){
 }
 
 
-
-function sourceRun(role='sales'){
+function legacySourceRun(role='sales'){
  for(let i=0;i<100;i++){
   const run=engine.advance(engine.applyChoice(engine.createRun(role,`e39-activity-ui-${i}`),0));
   if(engine.canRequestActivity(run))return {...run,runId:webcrypto.randomUUID()};
  }
  throw new Error('No natural activity source');
 }
+
+// Find a real, uninterrupted work scene. New lives enable their calendar before
+// the first choice, exactly as Start does. Merely rendering that valid save must
+// leave the invitation unopened until the player continues.
+let cachedInvitationSource;
+function invitationSourceRun(){
+ if(cachedInvitationSource)return structuredClone(cachedInvitationSource);
+ for(let seed=0;seed<150;seed++){
+  let run=engine.enableActivitySchedule(engine.createRun('sales',`e39-cal46-ui-${seed}`));
+  for(let step=0;step<120&&!run.completed;step++){
+   if(engine.canRequestActivityInvitation(run)){
+    cachedInvitationSource={...run,runId:webcrypto.randomUUID()};
+    return structuredClone(cachedInvitationSource);
+   }
+   if(['daily','fantasy'].includes(engine.getEvent(run).kind)&&(run.stats.mood<55||run.stats.energy<55)&&engine.canRequestBreak(run))run=engine.requestBreak(run);
+   const options=engine.getEvent(run).choices.flatMap((choice,index)=>{
+    if(choice.available===false)return [];
+    const next=engine.applyChoice(run,index);
+    if(next===run)return [];
+    const {mood,energy,boss,cash}=next.stats;
+    return [{index,score:next.completed||next.pendingFamily?-1e6:Math.min(mood,energy)*3+(mood+energy)*.2+boss*.7+cash*.15+(next.pip?.active?-60:0)}];
+   }).sort((a,b)=>b.score-a.score);
+   if(!options.length)break;
+   run=engine.advance(engine.applyChoice(run,options[0].index));
+  }
+ }
+ throw new Error('No natural scheduled invitation source');
+}
+
+const noActivityPicker=html=>assert.doesNotMatch(html,/data-action="activity-(?:menu|start|cancel)"|data-activity-picker|data-activity-id=|今天還有這件事|這次，你想參加哪一場/);
 for(const mobile of [false,true]){
  const device=mobile?'mobile':'desktop';
- test(`${device}: browsing/canceling activities never commits a choice or reveals outcomes`,async()=>{
-  const source=sourceRun(),app=await harness(mobile);const initial=JSON.stringify(source);
-  const html=app.render(source);assert.match(html,/今天還有這件事/);assert.match(html,/data-action="activity-menu"/);
-  await app.action('activity-menu');const picker=app.picker();
-  for(const id of activities.ACTIVITY_IDS_V44)assert.ok(picker.includes(`data-activity-id="${id}"`));
-  assert.doesNotMatch(picker,/成功率|機率|好感[ +−-]\d|\d+(?:\.\d+)?[%％]/);
+ test(`${device}: rendering work never enables or opens activities, and removed picker actions do nothing`,async()=>{
+  const source=invitationSourceRun(),app=await harness(mobile),initial=JSON.stringify(source);
+  noActivityPicker(app.render(source));
   assert.equal(JSON.stringify(app.state()),initial);assert.equal(app.calls.save,0);
-  await app.action('activity-cancel');await app.action('activity-start','arm');
+  for(const action of ['activity-menu','activity-start','activity-cancel'])await app.action(action,'arm');
   assert.equal(JSON.stringify(app.state()),initial);assert.equal(app.calls.save,0);
+  assert.equal(app.dialog().open,false);
  });
- test(`${device}: seven distinct activities survive every selected result and return to unanswered work`,async()=>{
+ test(`${device}: continuing naturally delivers one specific invitation with accept and decline choices`,async()=>{
+  const source=invitationSourceRun(),app=await harness(mobile);app.render(source);
+  const expected=engine.requestActivityInvitation(engine.enableActivitySchedule(source));
+  await app.action('continue');
+  assert.deepEqual(plain(app.state()),plain(expected));
+  const event=engine.getEvent(expected),html=app.html();
+  assert.equal(event.kind,'activity-invitation');
+  assert.ok(expected.activityInvitationContext);
+  assert.match(html,/突發邀約|公司通知/);assert.ok(html.includes(esc(event.body)));
+  noActivityPicker(html);assert.doesNotMatch(html,/aria-label="目前活動進度"/);
+  assert.match(html,/先回覆眼前的活動邀約/);
+  for(const action of ['break','career','raise','exit'])assert.match(html,new RegExp(`data-action="${action}"[^>]*disabled`));
+  for(const index of [0,1,2])assert.ok(html.includes(`data-choice="${index}"`));
+  assert.doesNotMatch(html.replace(/<[^>]*>/g,''),/成功率|機率|\d+(?:\.\d+)?[%％]/);
+  const stable=JSON.stringify(app.state()),saves=app.calls.save;
+  app.render(plain(app.state()));await app.action('continue');
+  for(const id of activities.ACTIVITY_IDS_V44)await app.action('activity-start',id);
+  assert.equal(JSON.stringify(app.state()),stable);assert.equal(app.calls.save,saves);
+  assert.equal(engine.validRun(plain(app.state())),true);
+ });
+ test(`${device}: accepting an invitation reveals its result once, then starts that activity`,async()=>{
+  const source=invitationSourceRun(),app=await harness(mobile);app.render(source);await app.action('continue');
+  const invitation=plain(app.state()),id=invitation.activityInvitationContext.id;
+  const expected=engine.applyChoice(invitation,0),result=expected.history.at(-1).result;
+  assert.ok(!app.html().includes(esc(result)));
+  await app.doubleChoice(0);assert.deepEqual(plain(app.state()),plain(expected));
+  assert.equal(app.html().split(esc(result)).length-1,1);
+  assert.equal(engine.validRun(plain(app.state())),true);
+  const pending=plain(app.state());app.render(pending);await app.action('continue');
+  assert.deepEqual(plain(app.state()),pending);assert.equal(app.html().split(esc(result)).length-1,1);
+  await app.action('next');
+  assert.equal(app.state().activityContext.id,id);assert.ok(!app.state().activityInvitationContext);
+  assert.equal(app.state().turn,source.turn);assert.equal(app.state().pay,source.pay);
+  assert.match(app.html(),/aria-label="目前活動進度"/);noActivityPicker(app.html());
+  assert.equal(engine.validRun(plain(app.state())),true);
+ });
+ test(`${device}: both decline replies preserve the original unanswered job and consume no workday`,async()=>{
+  for(const index of [1,2]){
+   const source=invitationSourceRun(),app=await harness(mobile);app.render(source);await app.action('continue');
+   const invitation=plain(app.state()),expected=engine.applyChoice(invitation,index),result=expected.history.at(-1).result;
+   assert.ok(!app.html().includes(esc(result)));
+   await app.doubleChoice(index);assert.deepEqual(plain(app.state()),plain(expected));
+   assert.equal(app.html().split(esc(result)).length-1,1);
+   const pending=plain(app.state());app.render(pending);assert.deepEqual(plain(app.state()),pending);
+   await app.action('next');
+   assert.equal(app.state().eventId,source.eventId);assert.equal(app.state().turn,source.turn);assert.equal(app.state().pay,source.pay);
+   assert.equal(app.state().pending,false);assert.ok(!app.state().activityContext);assert.ok(!app.state().activityInvitationContext);
+   assert.match(app.html(),/data-choice="0"/);noActivityPicker(app.html());
+   assert.equal(engine.validRun(plain(app.state())),true);
+   const stable=JSON.stringify(app.state());await app.action('continue');assert.equal(JSON.stringify(app.state()),stable);
+  }
+ });
+ test(`${device}: all seven published multi-stage activities keep their saved progress and return to work`,async()=>{
+  // Published, unscheduled e39 action lists still replay their original opener.
+  // They are rendered directly here; no new invitation is forced into a save.
   for(const id of activities.ACTIVITY_IDS_V44){
-   const source=sourceRun(id==='review'?'design':'sales'),app=await harness(mobile);app.render(source);
-   await app.action('activity-menu');await app.action('activity-start',id);await app.action('activity-start',id);
-   assert.equal(app.state().actions.length,source.actions.length+1);
-   assert.match(app.html(),/aria-label="目前活動進度"/);
-   assert.match(app.html(),/先完成目前活動/);
+   const source=legacySourceRun(id==='review'?'design':'sales'),opened=engine.requestActivity(source,id),app=await harness(mobile);app.render(opened);
+   assert.equal(opened.actions.length,source.actions.length+1);
+   assert.match(app.html(),/aria-label="目前活動進度"/);assert.match(app.html(),/先完成目前活動/);noActivityPicker(app.html());
    for(let step=0;step<activities.ACTIVITY_META_V44[id].stages;step++){
-    const event=engine.getEvent(app.state()),expected=engine.applyChoice(app.state(),0),result=expected.history.at(-1).result;
+    const expected=engine.applyChoice(app.state(),0),result=expected.history.at(-1).result;
     assert.ok(!app.html().includes(esc(result)));
     await app.doubleChoice(0);assert.deepEqual(plain(app.state()),plain(expected));
-    assert.equal(app.html().split(esc(result)).length-1,1);
-    assert.match(app.html(),/這次實際變化/);
+    assert.equal(app.html().split(esc(result)).length-1,1);assert.match(app.html(),/這次實際變化/);
     assert.equal(engine.validRun(plain(app.state())),true);
+    const pending=plain(app.state());app.render(pending);assert.deepEqual(plain(app.state()),pending);
     await app.action('next');assert.equal(engine.validRun(plain(app.state())),true);
    }
    assert.equal(app.state().eventId,source.eventId);assert.equal(app.state().turn,source.turn);
    assert.equal(app.state().pending,false);assert.ok(!app.state().activityContext);
-   assert.match(app.html(),/data-choice="0"/);
-   assert.doesNotMatch(app.html(),/aria-label="目前活動進度"/);
+   assert.match(app.html(),/data-choice="0"/);assert.doesNotMatch(app.html(),/aria-label="目前活動進度"/);
   }
  });
- test(`${device}: a stale activity picker cannot start on a different save`,async()=>{
-  const source=sourceRun(),app=await harness(mobile);app.render(source);await app.action('activity-menu');
-  const different=sourceRun('bd');app.render(different);const before=JSON.stringify(app.state());
-  await app.action('activity-start','review');assert.equal(JSON.stringify(app.state()),before);assert.equal(app.calls.save,0);
+ test(`${device}: starting a new life enables the calendar before the first work transition`,async()=>{
+  const app=await harness(mobile),seed=app.randomSeed();assert.match(seed,/^e39-cal46-[a-f\d]{22}$/);assert.equal(seed.length,32);
+  const candidate=engine.createRun('sales',seed);app.candidate(candidate);await app.action('start');
+  const expected=engine.enableActivitySchedule(candidate),actual=plain(app.state());delete actual.runId;
+  assert.deepEqual(actual,plain(expected));assert.equal(actual.eventId,'onboarding');
+  assert.ok(!actual.activityInvitationContext);noActivityPicker(app.html());
+  assert.equal(engine.validRun(plain(app.state())),true);
  });
 }

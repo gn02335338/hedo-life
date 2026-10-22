@@ -1,30 +1,8 @@
-import {ACTIVITY_IDS_V44,ACTIVITY_META_V44} from './activities-v44.js';
+import {ACTIVITY_META_V44} from './activities-v44.js';
 
 const escape=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const icons={arm:'✊',diet:'◒',roadshow:'↗',dinner:'♨',banquet:'✦',basketball:'◉',review:'▤'};
-// Invitations are a presentation-only rotation. Looking, canceling or reloading
-// must never consume the canonical RNG used to resolve actual game choices.
-export function activitySuggestionV44(run){
- const ids=ACTIVITY_IDS_V44.filter(id=>!run.flags?.[`activity44_${id}`]&&!(id==='banquet'&&(run.flags?.banquet_attended||run.flags?.banquet_seen)));
- if(!ids.length)return null;
- let hash=2166136261;
- for(const char of `${run.seed}:${Math.floor(run.turn/2)}:${run.actualRoleId}`)hash=Math.imul(hash^char.charCodeAt(0),16777619)>>>0;
- return ids[hash%ids.length];
-}
-
-export function activityInvitationHTMLV44(run){
- const id=activitySuggestionV44(run);if(!id)return'';
- const activity=ACTIVITY_META_V44[id];
- return `<aside class="activity-invitation" aria-label="這回合的活動邀約"><span class="activity-symbol" aria-hidden="true">${icons[id]}</span><div><span class="eyebrow">OFF THE AGENDA / 今天還有這件事</span><b>${escape(activity.name)}</b><p>${escape(activity.teaser)}</p></div><button type="button" data-action="activity-menu">看看活動 <span aria-hidden="true">↗</span></button></aside>`;
-}
-
-export function activityPickerHTMLV44(run){
- return `<section data-activity-picker><span class="eyebrow">SIDE QUESTS / 不只有上班</span><h2 id="dialog-title">這次，你想參加哪一場？</h2><p class="dialog-lead">每場有自己的連續玩法。活動不另算工作日，也不重發薪水；每隔兩個工作回合可參加一場，同一場本局只玩一次。費用在花錢前列明，結果選完才揭曉。</p><div class="activity-picker-grid">${ACTIVITY_IDS_V44.map(id=>{
-  const item=ACTIVITY_META_V44[id],done=!!run.flags?.[`activity44_${id}`]||id==='banquet'&&!!(run.flags?.banquet_attended||run.flags?.banquet_seen);
-  return `<button type="button" class="activity-card" data-action="activity-start" data-activity-id="${id}" ${done?'disabled':''}><span class="activity-card-icon" aria-hidden="true">${icons[id]}</span><span class="activity-card-copy"><b>${escape(item.name)}</b><span>${escape(item.mechanic)}</span><small>${done?'這局已參加':`${item.stages} 幕活動`}</small></span><span aria-hidden="true">${done?'✓':'↗'}</span></button>`;
- }).join('')}</div><button type="button" class="text-button" data-action="activity-cancel">今天先不參加，回去工作</button></section>`;
-}
-
+// Activity invitations now arrive as canonical story events. This view only
+// displays progress after the player has answered the invitation.
 export function activityProgressHTMLV44(run,event){
  const info=event?.activity;if(!info||!run.activityContext)return'';
  const revealed=run.pending?run.history.at(-1)?.activityOutcome:null;

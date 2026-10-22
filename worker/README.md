@@ -437,7 +437,7 @@ The import body is `{card:{name,title,alias,description,stories},portrait:{mime,
 
 `tests/api-admin-private.test.mjs` exercises the actual Worker handlers with isolated SQLite and synthetic content only: authentication, durable rate limits, origin/CSRF checks, hashed sessions, restart/expiry/rotation/logout, protected images, atomic imports, input limits and absence of private content from public counters. No production player, administrator session or private identity is used by these tests.
 
-## Optional activity chapters (v44 action, e39 lives)
+## Published optional activity chapters (v44 action, historical e39 lives)
 
 The strict action `{type:'activity',version:1,activityId}` opens one of `arm`,
 `diet`, `roadshow`, `dinner`, `banquet`, `basketball`, or `review`. These are the
@@ -458,6 +458,44 @@ flags, history and RNG. Forged activity state without an authorized operation is
 rejected. No database migration, credential, account field or public identity is
 added; completion, character and achievement proofs retain their existing
 anonymous ownership and validation.
+
+## Scheduled activity invitations (v46, e39-cal46 lives)
+
+New lives use the `e39-cal46-` seed prefix within the existing e39 content cohort.
+Their first action must be `{type:'activity-schedule',version:1}`. It activates
+the versioned calendar without a draw, stat change, workday or income. The new
+calendar suppresses the historical automatic banquet trigger; older action lists
+and active v44 activities keep their original behavior.
+
+At safe unanswered daily boundaries, the UI requests the strict action
+`{type:'activity-invitation',version:1,eventId}`. The server recomputes which
+invitation is due from the seed, actual occupation, turn, seen flags and cooldown.
+Neither this request nor any other new input accepts a chosen activity ID.
+Historical `activity` actions are rejected for the new calendar prefix. PIP,
+personnel notices, watch duty, low resources and active interludes take priority.
+Reading or rendering never advances the RNG or opens another invitation.
+
+Each activity has a turn window; the year-end banquet appears only at turns
+16–19 (displayed DAY 17–20), with a seeded due turn and final-slot priority.
+This is compressed in-game progress, not a real-world month or device clock.
+At most three non-banquet invitations plus one banquet can appear per life.
+Invitations are marked seen when offered, including declined invitations; normal
+offers are separated by two actual work turns. The final banquet slot may
+override this cooldown so the year-end notice is not displaced past the year.
+
+Ordinary choice 0 accepts; choices 1 and 2 decline. RSVP history records
+`activityInvitationOutcome:{version:1,id,accepted}` and zero deltas. Continue
+opens the existing v44 activity context only after acceptance, or restores the
+unanswered source after declining. No RSVP changes RNG, income, PIP, time or
+fees, and private meal/year-end achievements still require actual attendance.
+Pending RSVP, context, flags, selected activity and all later stages must match
+canonical replay. The anonymous identity and aggregate schemas are unchanged.
+
+The new calendar also removes four explicit live banquet snippets from both
+ordinary work-pool passes so they cannot bypass an RSVP or stage a second party.
+Two next-day banquet recollections require completed attendance and late-year
+progress. Other daily events, including spring dinners and generic staffing,
+retain their eligibility; the historical deck is unchanged.
 
 ## Rare hidden encounters (v45 action, e39 lives)
 
