@@ -164,7 +164,7 @@ test('the UI disables mid-event rest with a reason and runs deferred notificatio
  const availability=app.slice(app.indexOf('function actionAvailability('),app.indexOf('function sidebarAction('));
  const chooseSource=app.slice(app.indexOf('function choose('),app.indexOf('function catchUpActivityInvitation('));
  const row=route('basic-loop'),idle=from(row,row.firstGapActions),active=choose(idle,0),calls=[];
- const context=vm.createContext({...E,run:idle,isPersonnelNotice:()=>false,usesWorkGap:state=>isWorkGapV50(state??context.run),workGapIsOpen:E.isWorkGapOpenV50,
+ const context=vm.createContext({...E,run:idle,isPersonnelNotice:()=>false,usesWorkGap:state=>isWorkGapV50(state??context.run),usesEnergyRest:state=>E.isEnergyRestV53(state??context.run),workGapIsOpen:E.isWorkGapOpenV50,
   screen:'game',dialog:{open:false},gameViewRevision:5,
   catchUpStartingSalaryAdvice:()=>calls.push('salary'),catchUpActivityInvitation:()=>calls.push('activity'),catchUpHiddenEncounter:()=>calls.push('hidden'),
   collectAchievements:()=>calls.push('achievements'),syncCharacterProof:()=>calls.push('proof'),save:()=>calls.push('save'),game:()=>calls.push('render')});

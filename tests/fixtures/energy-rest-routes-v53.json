@@ -1,0 +1,975 @@
+{
+  "method": "Natural createRun lives under e39-cal46-kin49-g-e-. Canonical public actions only; no injected resources, flags, events, history, workday or RNG.",
+  "required": [
+    "healthy-onboarding",
+    "healthy-work",
+    "warning-gap",
+    "paid-recovery",
+    "cancel-return",
+    "critical-gap",
+    "pip-warning-gap",
+    "pip-paid-recovery",
+    "exhaustion",
+    "mood-warning-only"
+  ],
+  "routes": [
+    {
+      "id": "healthy-onboarding",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-0000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        }
+      ],
+      "index": 1
+    },
+    {
+      "id": "healthy-work",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-0000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        }
+      ],
+      "index": 2
+    },
+    {
+      "id": "warning-gap",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-0000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "paid-recovery",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-0000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        }
+      ],
+      "purchaseIndex": 0
+    },
+    {
+      "id": "cancel-return",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-0000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 7
+        }
+      ],
+      "purchaseIndex": 7
+    },
+    {
+      "id": "critical-gap",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-0000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-office-wifi",
+          "index": 0
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "exhaustion",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-0000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-office-wifi",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-encoded-query",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-shopify-estimate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-packed-meeting",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-office-wifi",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-encoded-query",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 0
+        }
+      ],
+      "index": 0,
+      "pendingEnergy": 0
+    },
+    {
+      "id": "mood-warning-only",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-0000003proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-dual-calendar",
+          "index": 1
+        }
+      ],
+      "index": 1
+    },
+    {
+      "id": "pip-warning-gap",
+      "roleId": "ai",
+      "seed": "e39-cal46-kin49-g-e-1000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-metric-pedigree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-data-answer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-spare-time-qa",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-training-test-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-validation-mirror",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-keyword-quarantine",
+          "index": 0
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-metric-pedigree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-data-answer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-spare-time-qa",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-training-test-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-validation-mirror",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-keyword-quarantine",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        }
+      ],
+      "index": 2
+    },
+    {
+      "id": "pip-paid-recovery",
+      "roleId": "ai",
+      "seed": "e39-cal46-kin49-g-e-1000000proof",
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-metric-pedigree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-data-answer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-spare-time-qa",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-training-test-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-validation-mirror",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-keyword-quarantine",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        }
+      ],
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-metric-pedigree",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-data-answer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-spare-time-qa",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-training-test-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-ai-eval-answer",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-validation-mirror",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-keyword-quarantine",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        }
+      ],
+      "purchaseIndex": 1
+    }
+  ]
+}

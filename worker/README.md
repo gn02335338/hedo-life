@@ -635,3 +635,24 @@ scene's own done outcome (or the legacy banquetFinish effect), never merely
 viewing the final prompt. A bounded notice at the immediate return explains that
 the activity ended; a new action, workday or mandatory interruption hides it.
 All captions are read-only and retain hidden choice outcomes and costs.
+
+
+## Warning-triggered rest (v53, e39 lives)
+
+New browser lives use `e39-cal46-kin49-g-e-` plus twelve random hexadecimal
+characters, retaining the 32-character seed limit and the existing calendar,
+patronage and between-work rules. After an actual work/onboarding turn,
+`work_gap_open` is set only when energy is in the warning range (1–30). Healthy
+work continues directly to the next scene. Mood alone does not open this rest
+interval, and energy zero retains its mandatory exhaustion aftermath.
+
+A triggered interval stays queued behind mandatory notices and stays open after
+recovery, until the player chooses Continue. Returning from rest, a meal or a
+canceled plan does not recheck the threshold or manufacture another workday,
+paycheck or PIP tick. The existing once-per-work-turn rest allowance still
+applies. Unfinished activities and conversations cannot create another interval.
+
+Published seeds keep their original rest timing and canonical proofs. The new
+threshold is derived by the shared engine, and the existing full replay
+validation rejects a forged interval flag or an unauthorized rest action. No
+new action envelope, identifier, database field or credential is introduced.

@@ -1,4 +1,5 @@
 import {isWorkGapV50,workGapSurfaceSafeV50,getWorkGapEventV50} from './work-gap-v50.js';
+import {isEnergyRestV53,energyRestWarningV53,getEnergyRestEventV53} from './energy-rest-v53.js';
 import {HIDDEN_SCENE_COUNT_V45,getHiddenEncounterEventV45,resolveHiddenEncounterChoiceV45} from './hidden-encounter-v45.js';
 import {scheduledActivityV46,getActivityInvitationEventV46,invitationResultV46,calendarDailyAllowedV46} from './activity-schedule-v46.js';
 import {isPatronageV49,patronageEligibleV49,withPatronageEntryV49,getPatronageEventV49,patronageApplicationOutcomeV49,isPatronageApplicationOutcomeV49} from './patronage-v49.js';
@@ -55,6 +56,7 @@ import { PATRONAGE_EVENT_V29, patronageTitleV29, canKindDarkInviteV29, patronage
 import { WEALTH_EVENTS_V27, wealthEligibilityV27, getWealthEventV27, withWealthEntryV27 } from './wealth-exit-v27.js';
 export {raiseAvailability} from './salary-raise-v19.js';
 export {isWorkGapV50} from './work-gap-v50.js';
+export {isEnergyRestV53} from './energy-rest-v53.js';
 export const VERSION = 3;
 export const MAX_TURNS = 24;
 export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰', boss:'翅膀心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力' };
@@ -287,7 +289,7 @@ export function getEvent(run,skipWorkGap=false){
  }
  if(contentRules(run)>=38&&run.eventId==='chapter-resolution')return getChapterResolutionV38(run);
  const event=withDepartureChoicesV38(getPublishedEvent(run),run);
- if(!skipWorkGap&&workGapSurfaceSafeV50(run,event))return getWorkGapEventV50(run);
+ if(!skipWorkGap&&workGapSurfaceSafeV50(run,event))return isEnergyRestV53(run)?getEnergyRestEventV53(run):getWorkGapEventV50(run);
  return contentRules(run)>=39&&isPrivateSceneV39(event)?{...event,scope:'private'}:event;
 }
 // Engine transitions must inspect the selected work scene, never its gap UI.
@@ -931,7 +933,10 @@ export function advance(run,options={}){
  const next=advancePublishedV50(run,options);
  if(isWorkGapV50(run)&&next!==run){
   if(next.completed)next.flags.work_gap_open=0;
-  else if(next.turn>run.turn)next.flags.work_gap_open=1;
+  // Once triggered, the interval survives a no-turn interruption or paid
+  // recovery. Starting the next scene is the only way to close it. Healthy
+  // new lives proceed straight to work, without an extra continue screen.
+  else if(next.turn>run.turn)next.flags.work_gap_open=isEnergyRestV53(next)?Number(energyRestWarningV53(next)):1;
  }
  return next;
 }
