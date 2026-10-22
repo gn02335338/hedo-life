@@ -75,6 +75,11 @@ export function createLeaderboardUIV56({dialog,openDialog,cloud,getRun=()=>null,
   if(activeId&&endingRoot?.querySelector(`#${activeId}`))endingRoot.querySelector(`#${activeId}`).focus({preventScroll:true});
  }
  function renderAll(){renderBoard();renderEnding();}
+ function invalidateEarlierMineReads(){
+  // A mutation acknowledgement is newer than every read already in flight.
+  // Neither an old snapshot nor its finally block may replace that state.
+  mineRequest++;mineLoading=false;mineError='';
+ }
  async function loadMine({more=false}={}){
   if(more&&(!mineHasMore||!mineNextCursor||mineLoading))return false;
   const after=more?mineNextCursor:null,request=++mineRequest;mineLoading=true;mineError='';renderAll();
@@ -111,7 +116,7 @@ export function createLeaderboardUIV56({dialog,openDialog,cloud,getRun=()=>null,
    if(context.run)response=await cloud.submitLeaderboard(proof,draft.nickname);
    else{if(typeof cloud?.renameLeaderboard!=='function')throw new Error('offline');response=await cloud.renameLeaderboard(context.runId,draft.nickname);}
    const canonical=response?.entry,acknowledged=response?.version===1&&response?.published===true&&canonical?.runId===context.runId&&canonical?.nickname===draft.nickname;
-   if(acknowledged){mine=[...mine.filter(entry=>entry.runId!==context.runId),canonical];mineKnown=true;}
+   if(acknowledged){invalidateEarlierMineReads();mine=[...mine.filter(entry=>entry.runId!==context.runId),canonical];mineKnown=true;}
    const confirmed=acknowledged||await loadMine(),entry=listedEntry(context.runId);
    if(confirmed&&entry&&entry.nickname===draft.nickname){draft.message='留名已確認。各榜採每位匿名玩家的最佳一局，名字不一定出現在每張榜。';draft.kind='success';draft.consent=false;draft.skipped=false;draft.withdrawConfirm=false;}
    else{draft.message='送出已回應，但暫時還沒查到最新留名。請先查詢狀態，不必急著重複送出。';draft.kind='error';}
@@ -121,7 +126,7 @@ export function createLeaderboardUIV56({dialog,openDialog,cloud,getRun=()=>null,
  }
  async function withdraw(context){
   if(!context||context.draft.busy)return;const draft=context.draft;draft.busy=true;draft.message='正在撤下公開留名…';draft.kind='';renderAll();
-  try{if(typeof cloud?.removeLeaderboard!=='function')throw new Error('offline');const response=await cloud.removeLeaderboard(context.runId),acknowledged=response?.version===1&&response?.removed===true&&response?.runId===context.runId;if(acknowledged){const deletingCursor=listedEntry(context.runId)?.entryId===mineNextCursor;mine=mine.filter(entry=>entry.runId!==context.runId);if(deletingCursor){mineNextCursor=null;mineHasMore=false;void loadMine();}}const confirmed=acknowledged||await loadMine();
+  try{if(typeof cloud?.removeLeaderboard!=='function')throw new Error('offline');const response=await cloud.removeLeaderboard(context.runId),acknowledged=response?.version===1&&response?.removed===true&&response?.runId===context.runId;if(acknowledged){invalidateEarlierMineReads();const deletingCursor=listedEntry(context.runId)?.entryId===mineNextCursor;mine=mine.filter(entry=>entry.runId!==context.runId);if(deletingCursor){mineNextCursor=null;mineHasMore=false;void loadMine();}}const confirmed=acknowledged||await loadMine();
    if(confirmed&&!listedEntry(context.runId)){draft.message='已確認撤下這局留名。故事、成就與匿名統計仍保留。';draft.kind='success';draft.consent=false;draft.withdrawConfirm=false;draft.skipped=true;}
    else{draft.message='撤下操作已回應，但暫時還不能確認最新狀態。請稍後查詢。';draft.kind='error';}if(visible())void loadBoard();
   }catch(problem){draft.message=defaultError(problem);draft.kind='error';}

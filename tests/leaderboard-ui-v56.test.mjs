@@ -148,3 +148,17 @@ test('own-name management and score rules stay expanded through confirmation, mu
 test('ending score rules can remain expanded when its name status rerenders',()=>{
  const html=endingLeaderboardHTMLV56(baseRun,{rulesOpen:true,checking:true});assert.match(html,/<details class="lb-rules" open>/);assert.match(html,/正在確認這局是否已留名/);
 });
+
+test('a mine read begun before publication cannot remove an acknowledged new listing',async()=>{
+ let finishOldRead;const oldRead=new Promise(resolve=>{finishOldRead=resolve;});
+ const h=harness({cloud:{myLeaderboard:()=>oldRead,submitLeaderboard:async(run,nickname)=>({version:1,published:true,entry:{...entry,runId:run.runId,nickname}})}});
+ const opening=h.ui.open();h.dispatch('submit',h.form('ending',0,'新刊登的名字',true).node);await tick();assert.match(h.ending(),/這局已以/);
+ finishOldRead({entries:[]});await opening;await tick();assert.match(h.ending(),/這局已以/);assert.match(h.ending(),/新刊登的名字/);assert.doesNotMatch(h.ending(),/正在確認這局是否已留名/);
+});
+
+test('a mine read begun before withdrawal cannot resurrect a removed listing',async()=>{
+ let finishOldRead,queries=0;const oldRead=new Promise(resolve=>{finishOldRead=resolve;});
+ const h=harness({cloud:{myLeaderboard:()=>++queries===1?Promise.resolve({entries:[entry]}):oldRead,removeLeaderboard:async runId=>({version:1,removed:true,runId})}});
+ await h.ui.open();h.command('mine-refresh');h.command('withdraw','ending');h.command('withdraw-confirm','ending');await tick();assert.doesNotMatch(h.ending(),/這局已以/);assert.match(h.ending(),/已確認撤下/);
+ finishOldRead({entries:[entry]});await tick();assert.doesNotMatch(h.ending(),/這局已以/);assert.match(h.ending(),/已確認撤下/);assert.doesNotMatch(h.ending(),/正在確認這局是否已留名/);
+});
