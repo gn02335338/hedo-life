@@ -212,7 +212,7 @@ function timing(origin, phase) {
 }
 
 export function verbalVoiceV30(target, origin, phase, run) {
-  if(target==='professor'&&/^e37-/.test(run?.seed||''))return professorVerbalVoiceV37(origin,phase);
+  if(target==='professor'&&/^e(?:37|38)-/.test(run?.seed||''))return professorVerbalVoiceV37(origin,phase);
   const voice = VOICES[Object.hasOwn(VOICES, target) ? target : 'self'];
   const context = timing(origin, phase);
   return { ...voice, line: `${context.line}${voice.line}`, ignored: `${voice.ignored}${context.after}` };

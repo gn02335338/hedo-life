@@ -32,13 +32,13 @@ export function replayRoute(route, verify = () => {}) {
     }
     else if (action.type === 'rage') {
       run=Object.hasOwn(action,'target')?requestRage(run,action.target):requestRage(run);checkpoint();
-      if(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37)-/.test(route.seed))run=advance(run);
+      if(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38)-/.test(route.seed))run=advance(run);
     }
     else {
       if (run.eventId !== action.eventId) throw new Error(`Replay drift: ${route.ending} ${run.eventId} != ${action.eventId}`);
       run = applyChoice(run, action.index);
       checkpoint();
-      if(!(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37)-/.test(route.seed)&&['rage','verbal'].includes(route.actions[position+1]?.type)&&route.actions[position+1].phase==='result'))run = advance(run);
+      if(!(/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38)-/.test(route.seed)&&['rage','verbal'].includes(route.actions[position+1]?.type)&&route.actions[position+1].phase==='result'))run = advance(run);
     }
     checkpoint();
   }
@@ -98,14 +98,14 @@ function simulateRage(roleId,target,attempt,seedPrefix='e31') {
   let fallback=start;
   function search(run,depth){
     if(run.completed){fallback=run;return run.endingId===`${target}-${roleId}`?run:null;}
-    if(depth<=0||!run.eventId.startsWith('rage-'))return null;
+    if(depth<=0||!run.eventId.startsWith('rage-')&&run.eventId!=='chapter-resolution')return null;
     const event=getEvent(run);
     for(let index=0;index<event.choices.length;index++)if(event.choices[index].available!==false){
       const found=search(advance(applyChoice(run,index)),depth-1);if(found)return found;
     }
     return null;
   }
-  const run=search(start,4)||fallback;
+  const run=search(start,seedPrefix==='e38'?5:4)||fallback;
   return {run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}};
 }
 
@@ -115,7 +115,7 @@ function simulateVerbalV32(roleId,target,attempt,seedPrefix='e37'){
  const packageRun=()=>({run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}});
  const choose=index=>{run=advance(applyChoice(run,index));};
  const guest={verbal_wing_concession:'wing',verbal_boardroom:'spencer',verbal_rick_awake:'rick',verbal_hr_rewrite:'hope',verbal_legal_letter:'erich',verbal_sonny_statement:'sonny',verbal_kind_ghost:'kind',verbal_colleague_solidarity:'jack',verbal_viral:'wing',verbal_mutual_mute:'wing',verbal_apology:'wing'}[target];
- const speech=()=>{const spoken=advance(requestVerbal(run,undefined,2));if(spoken===run)return false;run=spoken;if(run.eventId!=='verbal-v32-aftermath')return false;const event=getEvent(run),exact=event.choices.findIndex((choice,index)=>index<3&&applyChoice(run,index).pendingFamily===target);choose(exact>=0?exact:0);return true;};
+ const speech=()=>{const spoken=advance(requestVerbal(run,undefined,2));if(spoken===run)return false;run=spoken;if(run.eventId!=='verbal-v32-aftermath')return false;const event=getEvent(run),exact=event.choices.findIndex((choice,index)=>index<3&&applyChoice(run,index).pendingFamily===target);choose(exact>=0?exact:0);if(run.chapterContext)choose(1);return true;};
  if(target==='verbal_onboarding'){speech();return packageRun();}
  const onboard=getEvent(run).choices.map((choice,index)=>({choice,index})).filter(({choice,index})=>index<2&&choice.available!==false).sort((a,b)=>utility(applyChoice(run,b.index),'taiwan')-utility(applyChoice(run,a.index),'taiwan'))[0];choose(onboard.index);
  for(let step=0;step<30&&!run.completed;step++){
@@ -148,8 +148,8 @@ function simulateVerbalV32(roleId,target,attempt,seedPrefix='e37'){
 }
 
 export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}) {
-  if(VERBAL_ENDING_IDS_V32.includes(target))return simulateVerbalV32(roleId,target,attempt,['e32','e33','e34','e35','e36','e37'].includes(seedPrefix)?seedPrefix:'e37');
-  if(COMPANY_ENDING_IDS_V32.includes(target)&&!['nasdaq','taiwan'].includes(target)&&!['e32','e33','e34','e35','e36','e37'].includes(seedPrefix))seedPrefix='e37';
+  if(VERBAL_ENDING_IDS_V32.includes(target))return simulateVerbalV32(roleId,target,attempt,['e32','e33','e34','e35','e36','e37','e38'].includes(seedPrefix)?seedPrefix:'e37');
+  if(COMPANY_ENDING_IDS_V32.includes(target)&&!['nasdaq','taiwan'].includes(target)&&!['e32','e33','e34','e35','e36','e37','e38'].includes(seedPrefix))seedPrefix='e37';
   if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt,seedPrefix);
   const seed=`${seedPrefix}-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
   let run=createRun(roleId,seed),actions=[],openedRaise=false;
@@ -191,6 +191,7 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}
       if(careerReadiness(run).ready||canApply||usefulTraining){actions.push({type:'career'});run=menu;continue;}
     }
     const ev=getEvent(run);
+    if(ev.id==='chapter-resolution'){choose(run.chapterContext.family===target||ev.choices[0].effect==='chapterExit'?1:0);continue;}
     if(seedPrefix==='e32'&&COMPANY_ENDING_IDS_V32.includes(target)){
       if(ev.id===FANTASY_EVENTS[3].id){choose(target.startsWith('nasdaq')||target.startsWith('taiwan')?0:target.startsWith('vietnam')?2:1);continue;}
       if(ev.kind==='company'){
@@ -349,7 +350,7 @@ export function findRoutes({maxAttempts=3000,onProgress=()=>{}}={}) {
   return {
     method:'Target-guided deterministic route search; every witness begins at createRun(roleId, seed), uses only applyChoice/advance/requestExit/requestBreak/requestCareer/requestRage, and is replayed with JSON-compatible save validation. No stats, roles, flags, events, rank or RNG state are injected.',
     choiceIndexBase:0,complete:found.size===ENDINGS.length,expected:ENDINGS.length,found:found.size,
-    sourceSha256:Object.fromEntries(['events-professor-v37','professor-v37','rage-v37','verbal-professor-v37','meal-reactions-v36','meal-flavor-v36','events-cast-v35-a','events-cast-v35-b','events-cast-v35-legal','work-events-v35','meal-invitations-v34','verbal-outcomes-v33','achievements-v32','company-v32','verbal-outcomes-v32','endings-company-v32','endings-verbal-v32','verbal-scenario-v2','verbal-scene-copy','events-ai-v31','verbal-v30','verbal-copy-v30','character-stats','patronage-v29','events-gender-v29','events-backoffice-v28','roles-v28','endings-backoffice-v28','wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
+    sourceSha256:Object.fromEntries(['chapters-v38','events-professor-v37','professor-v37','rage-v37','verbal-professor-v37','meal-reactions-v36','meal-flavor-v36','events-cast-v35-a','events-cast-v35-b','events-cast-v35-legal','work-events-v35','meal-invitations-v34','verbal-outcomes-v33','achievements-v32','company-v32','verbal-outcomes-v32','endings-company-v32','endings-verbal-v32','verbal-scenario-v2','verbal-scene-copy','events-ai-v31','verbal-v30','verbal-copy-v30','character-stats','patronage-v29','events-gender-v29','events-backoffice-v28','roles-v28','endings-backoffice-v28','wealth-exit-v27','endings-wealth-v27','events-quiz26-a','events-quiz26-b','meltdown-v25','meals-v25','salary-advice-v24','events-colleagues-v23','rage-v23','events-chronicle-v22','rage-v22','events-commercial-v21','events-design-v21','events-professions-v21','work-events-v21','engine','persona','rage-participants','rage-v16','rage-v20','events-jack','events-meimei-v20','copy-v15','events-advisor','rage','rage-v14','endings-rage','banquet','roles','education','education-risk','events','events-images','image-scenes-wing','events-video','copy-edits','engine-copy','wild-options','wild-base','wild-expanded','kind-break','career','career-api','career-v17','onboarding-v17','story-career','endings','endings-career','endings-career-v17','endings-personnel-v20','endings-stories','events-departures','resources-v18','relationships-v18','meltdown-v18','achievements-v18','salary-raise-v19','personnel-v20'].map(x=>[x,hash(x)])),
     missing:ENDINGS.filter(e=>!found.has(e.id)).map(e=>e.id),attempts,
     routes:ENDINGS.filter(e=>found.has(e.id)).map(e=>found.get(e.id))
   };

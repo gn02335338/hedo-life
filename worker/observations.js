@@ -1,6 +1,6 @@
 import {ENDINGS} from '../dist/endings.js';
 import {fullCareer} from '../dist/career-api.js';
-import {departureWays} from './departures.js';
+import {departureWays,deriveDepartureWay,DEPARTURE_WAYS} from './departures.js';
 
 const endingTypes=new Map(ENDINGS.map(ending=>[ending.id,ending.type]));
 const count=value=>Number.isSafeInteger(value)&&value>=0?value:0;
@@ -10,7 +10,7 @@ const bins=(ids,counts)=>ids.map(id=>({id,count:counts[id]||0}));
 // body. It stores only rule/rank classifications and small derived counters.
 export function deriveObservation(run){
  if(!run?.completed||!endingTypes.has(run.endingId))return null;
- const match=/^e([2-9]|[12]\d|3[01234567])-/.exec(run.seed),cohort=match?Number(match[1]):1;
+ const match=/^e([2-9]|[12]\d|3[012345678])-/.exec(run.seed),cohort=match?Number(match[1]):1;
  const history=run.history||[];
  const payCuts=history.reduce((total,row,index)=>total+Number(index>0&&Number.isFinite(row.pay)&&Number.isFinite(history[index-1]?.pay)&&row.pay<history[index-1].pay),0);
  const title=run.patronage?.title;
@@ -37,6 +37,11 @@ export class ObservationStore{
    mood_collapses INTEGER NOT NULL CHECK (mood_collapses >= 0),
    created_at TEXT NOT NULL
   )`);
+  sql.exec(`CREATE TABLE IF NOT EXISTS run_departures (
+   run_id TEXT PRIMARY KEY REFERENCES runs(id),
+   way TEXT NOT NULL CHECK (way IN (${DEPARTURE_WAYS.map(id=>`'${id}'`).join(',')})),
+   created_at TEXT NOT NULL
+  )`);
  }
 
  record(runId,run,now=new Date().toISOString()){
@@ -48,6 +53,8 @@ export class ObservationStore{
   this.sql.exec(`INSERT OR IGNORE INTO run_observations
    (run_id,rule_cohort,career_scheme,final_rank,appointment,pip_count,promotions,pay_cuts,mood_collapses,created_at)
    VALUES (?,?,?,?,?,?,?,?,?,?)`,runId,observed.rule_cohort,observed.career_scheme,observed.final_rank,observed.appointment,observed.pip_count,observed.promotions,observed.pay_cuts,observed.mood_collapses,now);
+  const way=deriveDepartureWay(run);
+  if(way)this.sql.exec('INSERT OR IGNORE INTO run_departures (run_id,way,created_at) VALUES (?,?,?)',runId,way,now);
   return true;
  }
 
@@ -76,7 +83,9 @@ export class ObservationStore{
    actualRoles:sql.exec('SELECT actual_role_id AS id,COUNT(*) AS count FROM runs GROUP BY actual_role_id ORDER BY count DESC,id').toArray(),
    reassignments:sql.exec('SELECT COUNT(*) AS n FROM runs WHERE role_id != actual_role_id').one().n,
    endingTypes:bins(['good','normal','bad','secret'],types),
-   departureWays:departureWays(endingCounts),
+   departureWays:departureWays(sql.exec(`SELECT r.ending_id AS id,d.way,COUNT(*) AS count
+    FROM runs r LEFT JOIN run_departures d ON d.run_id = r.id
+    GROUP BY r.ending_id,d.way`).toArray()),
    tenure:bins(['1-3','4-7','8-12','13-19','20-24'],tenure),
    salary:{average:Math.round(average*10)/10,bands:bins(['under30','30-49','50-79','80-119','120plus'],salaries)},
    experiences:{pip:observations.pip,promoted:observations.promoted,payCut:observations.payCut,collapse:observations.collapse,appointed:observations.appointed},

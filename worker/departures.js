@@ -24,11 +24,26 @@ const groups={
 export const DEPARTURE_WAYS=Object.freeze([...Object.keys(groups),'unclassified']);
 const familyWays=new Map(Object.entries(groups).flatMap(([way,families])=>families.map(family=>[family,way])));
 const endingWays=new Map(ENDINGS.map(ending=>[ending.id,familyWays.get(ending.family)||'unclassified']));
+const endingFamilies=new Map(ENDINGS.map(ending=>[ending.id,ending.family]));
+
+// Only a canonical e38 replay can establish the explicit departure from a
+// previously nonterminal chapter. Historical completions keep their fallback.
+export function deriveDepartureWay(run){
+ if(!run?.completed||!/^e38-/.test(run.seed||'')||!endingWays.has(run.endingId))return null;
+ const family=endingFamilies.get(run.endingId);
+ const choseDeparture=run.flags?.departure38_voluntary===1&&run.history?.some(row=>row.eventId==='chapter-resolution'&&row.choiceIndex===1);
+ if(choseDeparture&&!['burnout','broke'].includes(family))return 'voluntary';
+ return endingWays.get(run.endingId);
+}
 
 // Grouped SQL rows include every archived completion, including lives that
 // predate observation tracking. Never return unknown IDs or narrative strings.
 export function departureWays(rows){
  const counts=Object.fromEntries(DEPARTURE_WAYS.map(id=>[id,0]));
- for(const row of rows)counts[endingWays.get(row.id)||'unclassified']+=row.count;
+ for(const row of rows){
+  const fallback=endingWays.get(row.id)||'unclassified';
+  const way=endingWays.has(row.id)&&DEPARTURE_WAYS.includes(row.way)?row.way:fallback;
+  counts[way]+=row.count;
+ }
  return DEPARTURE_WAYS.map(id=>({id,count:counts[id]}));
 }

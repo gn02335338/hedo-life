@@ -63,7 +63,7 @@ function legal(run){
  ]);
 }
 export function getVerbalEventV30(run){
- if(!/^e(?:30|31|32|33|34|35|36|37)-/.test(run?.seed||'')||!run.verbalContext||!VERBAL_EVENTS_V30.includes(run.eventId))throw new Error('Invalid verbal scene');
+ if(!/^e(?:30|31|32|33|34|35|36|37|38)-/.test(run?.seed||'')||!run.verbalContext||!VERBAL_EVENTS_V30.includes(run.eventId))throw new Error('Invalid verbal scene');
  const context=run.verbalContext,voice=verbalVoiceV30(context.target,context.eventId,context.phase,run);
  if(run.eventId==='verbal-release')return release(run);
  if(run.eventId==='verbal-warning')return scene('verbal-warning','回嘴的事，被做成一份書面提醒。',`${voice.name}把剛才的對話交給希望。希望請你確認收到提醒，不是讓你承認上面的每一句話，也沒有因此開始另一輪PIP。原本的工作還停在剛才那一幕。`,'hope',[

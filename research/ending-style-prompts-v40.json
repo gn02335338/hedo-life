@@ -1,0 +1,673 @@
+{
+  "version": 40,
+  "mode": "Built-in image_gen",
+  "style": "Bold navy outline, geometric adult cartoon faces, flat cel shading matched to current character portraits",
+  "count": 62,
+  "composition": "62 narrative masters with 13 illustrated profession overlays are exported as 805 distinct ending images.",
+  "records": [
+    {
+      "id": "acquired",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: Two office buildings connect through a warm glass bridge; employee receives a sane new desk with a clock showing home time while old paperwork stays across the bridge. Essential motif: glass bridge between offices. ONLY the teal-cardigan protagonist crossing to a welcoming new desk via a glass bridge. No named managers.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/acquired.webp",
+      "qa": "Inspected: single teal protagonist traverses transparent bridge from overwhelming paper office to sane warm desk/clock. Clear path, coherent limbs and simple flat cartoon lighting."
+    },
+    {
+      "id": "alumni_network",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for a satirical adult office life game. Generate ONE full composed image, no grid.\nStyle reference images 1 and 2 are STYLE ONLY, do not include these people unless requested below. Match very bold uniform dark NAVY outlines, geometric expressive simple faces, oversized adult cartoon heads, chunky simplified hair, clean FLAT color regions, ONLY two or three hard-edge cel tones per object. No realistic rendering, tiny hair detail, skin texture, watercolor or painterly lighting. Simplified rich office/world scenery, same animation style for every person.\nScene to illustrate: Former coworkers gather around a welcoming after-work table, thin warm threads join their phones and shared notebooks; office building small and distant outside.\nRequired distinguishing motif: warm phone threads joining ex-colleagues.\nOrdinary employee protagonist: a young adult with short rounded dark brown hair, soft oval face, teal cardigan over cream shirt, dark trousers; must be DIFFERENT from references: never pink polo, spiky hair, crown, Wing face or Hope glasses. Generic supporting coworkers use varied hair/outfits; no recognizable NPC identity unless listed.\nNo named game NPCs appear in this scene.\nWide landscape 16:10 framing, important scene action centered in upper 80 percent, leave lower 15 percent quiet uncluttered for later job props. Visible clear acting and emotional reaction, pleasant readable saturated colors. Exactly two arms per person, anatomically connected hands. No text, lettering, logos, UI, watermark, labels or tiny pseudo-writing.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/alumni_network.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "assistant",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing. Scene: A promised grand professional chair is replaced by a small rolling stool; employee carries a towering stack of miscellaneous office errands and a visibly longer blank job badge. Essential motif: tiny stool and abnormally long blank badge. Wing is present smirking in hot pink polo, angular long triangular nose, spiky swept dark hair, NO glasses. Teal protagonist has tiny stool and absurd errands stack. No HR lady.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/assistant.webp",
+      "qa": "Inspected: tiny rolling stool and abnormally long blank badge beside overloaded teal protagonist; Wing accurately spiky hair/sharp nose/no glasses/hot pink polo, distinct from protagonist."
+    },
+    {
+      "id": "broke",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: Empty wallet beside a tiny lunch box and large unpaid blank envelopes; a fantastically huge cardboard pancake outside the office window provides no actual food. Essential motif: empty wallet against giant cardboard pancake. ONLY protagonist looking at empty open wallet. The huge pancake is clearly flat cardboard, a hollow corporate promise.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/broke.webp",
+      "qa": "Inspected: empty wallet, tiny lunch, unpaid blank envelopes and giant obviously cardboard pancake. Two hands coherent; no readable lettering."
+    },
+    {
+      "id": "burnout",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: A drained employee slumps gently at an endless desk, loose task sheets form a grey paper blizzard, battery-shaped window nearly dark; exhaustion, no death or self-harm. Essential motif: paper snowstorm and depleted battery window. ONLY protagonist slumped at desk. Convey exhaustion, no injury/death. The battery is a visual icon only without writing.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/burnout.webp",
+      "qa": "Inspected: exhausted protagonist among paper storm with nearly depleted battery icon; coherent hands, no injury/death imagery, navy outlines and flat cel colors."
+    },
+    {
+      "id": "buyer_board",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: An ordinary practical buyer renovates the office, pink executive remains in one clearly bounded board seat while employee reads a new written work agreement.\nDistinct visual motif: ordinary buyer and pink executive bounded board seat.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nWing: angular face, huge long triangular nose, spiky black-brown hair, no glasses, hot pink polo.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/buyer_board.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "buyer_ousted",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: A modest new owner changes the office key and governance chart, old pink executive carries a personal box out, team resumes work under a calmer wall clock.\nDistinct visual motif: modest new key and departing executive box.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nWing: angular face, huge long triangular nose, spiky black-brown hair, no glasses, hot pink polo.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. Exactly ONE Wing leaving right carrying personal box. New owner is a distinct SILVER-HAIRED WOMAN in a teal tailored jacket holding new keys at left. Do not give Wing the new keys. Ordinary teal player in middle.\nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/buyer_ousted.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "career_assistant",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: An assistant tidies the last small desk, closes a solid handover folder and takes their own bag; modest competent ending with no oversized executive signs.\nDISTINCT REQUIRED VISUAL MOTIF: modest completed small desk.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/career_assistant.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "career_chief",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: At the highest office window, employee pauses over a final approval stamp and chooses which papers to sign; city skyline, clear personal boundaries, power with consequence. Essential motif: final approval stamp beside highest window. ONLY teal protagonist at highest office window considering a stamp and papers. Person is not Wing: no spiky hair, no pink polo, no sharp triangular face.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/career_chief.webp",
+      "qa": "Inspected: single teal protagonist considers final approval stamp and unsigned piles at highest city-window office. Calm serious consequence, two coherent arms/hands, no named NPC identity or text."
+    },
+    {
+      "id": "career_deputy",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: Small team around a shared desk; employee holds a modest umbrella shielding colleagues from a rain of incoming tasks while pointing at a realistic calendar. Essential motif: small umbrella shielding a team. Teal protagonist holds umbrella shielding exactly two generic colleagues from cartoon task-paper rain. Generic colleagues distinct from all named NPCs, no pink polos.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/career_deputy.webp",
+      "qa": "Inspected: teal protagonist holds umbrella and points calendar, protecting exactly two distinct generic colleagues from paper rain. Two coherent arms per person; department planning motif clear."
+    },
+    {
+      "id": "career_director",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: Employee stands between different office departments connected by bridges, drawing clear boundaries on a large transparent planning board; broad architecture and calm competence. Essential motif: bridges joining departments. ONLY teal protagonist stands among department bridges with a large transparent planning board; clarity of boundary and responsibility, no named NPCs.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/career_director.webp",
+      "qa": "Inspected: teal protagonist marks transparent planning board among four department islands linked by bridges. Tiny generic teams are abstract department vignettes, no named NPC or extra main character; two coherent hands."
+    },
+    {
+      "id": "career_manager",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: Employee balances a scale carrying team members on one side and budget folders on the other, a manageable office team behind; difficult resource decisions, no superhero halo. Essential motif: human-resource balance scale. Teal protagonist balances a large symbolic scale, with TWO tiny generic blue-clothed office staff on one pan and budget folders on the other; proportional symbolic toy-like figures, coherent hands.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/career_manager.webp",
+      "qa": "Inspected: teal protagonist balances large gold scale with two small generic office colleagues on one pan and budget folders on the other. Correct symbolic scale, two coherent arms, no named NPC clone."
+    },
+    {
+      "id": "career_principal",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Senior specialist points to a clear route through an intricate technical maze on a glass board, colleagues understand the reasoning; specialist authority rather than people management.\nDISTINCT REQUIRED VISUAL MOTIF: clear path through technical maze.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/career_principal.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "career_senior",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImage1: STYLE ONLY, do NOT include this boss character. Everyone is fully dressed in ordinary office clothes. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Experienced employee shows a robust completed prototype to a coworker at a practical workstation, quiet earned confidence and useful documentation.\nDISTINCT REQUIRED VISUAL MOTIF: robust prototype and useful documentation.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/career_senior.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "career_staff",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: A grounded professional finishes a clean, tangible piece of work at an organized desk; one completed project and open evening window, no management throne. Essential motif: one tangible completed work. ONLY teal-cardigan protagonist completing one solid project at tidy desk with evening window. Calm competent practical scene.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/career_staff.webp",
+      "qa": "Inspected: one teal professional celebrates completed bound project at organized desk, evening window and simple success check icon. Coherent arms, no management throne or NPC clone present."
+    },
+    {
+      "id": "cold_storage",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Lonely third-floor guard desk and empty corridor, elevator indicator separates upper office from employee below; employee secretly has a packed next-career bag and bright exit view.\nDISTINCT REQUIRED VISUAL MOTIF: third-floor guard desk with bright next-career bag.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/cold_storage.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "consultant",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Create one wide landscape office-satire ending illustration. Images1–2 are STYLE ONLY, not cast. Match chunky uniform DARK NAVY outlines, expressive geometric simplified faces, oversized adult cartoon heads and chunky hair, clean FLAT color shapes with ONLY2–3 hard-edge cel tones. No realism, skin texture, tiny individual hair, watercolor or painterly atmosphere.\nSCENE: A comfortable independent consultant desk outside the main office, contract with a clearly drawn boundary line and a half-day clock; old company visible through a window.\nDistinct motif: contract boundary and half-day clock.\nOrdinary employee protagonist wears a teal cardigan, cream shirt, dark trousers, has soft oval face and rounded short brown hair; distinctly unlike any referenced NPC (no pink polo/spiky Wing face). No named game characters. Rich but simplified animated scenery. Clear acting and meaningful props. Wide16:10 composition important action centered in upper80%, bottom15% quiet space for later job props. Exactly two naturally connected arms per person. No text, letters, logos, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/consultant.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "fired_refused",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the supplied latest game portraits. Image 1 Wing and Image 2 Hope are STYLE GUIDES ONLY unless the scene explicitly calls for them. Any later reference images supply the exact named NPC identities, with consistent hair, glasses, outfit and age. The ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over a cream shirt, no pink polo, no crown, no Wing spiky face. Only include named people required by this scene plus protagonist; no unexplained doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Scene: Employee stands up from the meeting table with both hands open, a blank unsigned form stays on the desk, door leads to daylight; firm composure, three anonymous management silhouettes remain seated. Essential motif: open palms and blank refusal sheet. NPC reference identities after style images: erich, jenjen, sonny. For these first-person-dismissal scenes, management are Erich (navy suit round spectacles/red folder), Jenjen (shoulder bob, charcoal blazer/keys), Sonny (messy fringe, rectangular black spectacles/tan tee). Protagonist must remain teal-clothed and clearly separate from all three. Show the three management as fully drawn cartoon people rather than anonymous realistic shadows. Wing and Hope are NOT in this scene.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png",
+        "./assets/erich.png",
+        "./assets/jenjen.png",
+        "./assets/sonny.png"
+      ],
+      "output": "./assets/ending-scenes/fired_refused.webp",
+      "qa": "Inspected: protagonist stands with two open hands; form remains unsigned; distinct Erich/Jenjen/Sonny seated with accurate glasses/outfits. No Hope or Wing identity leaked into scene."
+    },
+    {
+      "id": "fired_signed",
+      "method": "built-in image_gen",
+      "prompt": "Use case: identity-preserve. Image1 is the ending cartoon illustration to edit. Image2 is Jenjen's exact latest game portrait, identity reference. Change ONLY the woman standing behind the seated teal-clothed employee: she must match Image2, with NO eyeglasses at all, shoulder-length asymmetrical dark bob, same angular playful eyes and charcoal blazer, holding the keys. Remove her eyeglasses completely; do not replace with another eyewear. Retain the exact scene/composition, other three people, pen trap, unsigned paper, outfits and crisp bold dark navy cartoon linework. The suited man with round eyeglasses is Erich and must KEEP his glasses. The tan-shirt man with rectangular glasses is Sonny and must KEEP his glasses. Do not alter their identities. No words, lettering, logos or watermark. Keep the lower desk foreground quiet. Wide landscape illustration.",
+      "references": [
+        "Generated illustration draft (private; used only for style or a targeted revision)",
+        "./assets/jenjen.png"
+      ],
+      "initialPrompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the supplied latest game portraits. Image 1 Wing and Image 2 Hope are STYLE GUIDES ONLY unless the scene explicitly calls for them. Any later reference images supply the exact named NPC identities, with consistent hair, glasses, outfit and age. The ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over a cream shirt, no pink polo, no crown, no Wing spiky face. Only include named people required by this scene plus protagonist; no unexplained doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Scene: A pink-sleeved executive hand slides a deceptively blank resignation sheet across an intimidating desk; an employee signs with a pen whose cord curls into a trap, office ID set aside. Uneasy deadpan comedy. Essential motif: trap-like pen cord and unsigned form. NPC reference identities after style images: erich, jenjen, sonny. For these first-person-dismissal scenes, management are Erich (navy suit round spectacles/red folder), Jenjen (shoulder bob, charcoal blazer/keys), Sonny (messy fringe, rectangular black spectacles/tan tee). Protagonist must remain teal-clothed and clearly separate from all three. Show the three management as fully drawn cartoon people rather than anonymous realistic shadows. Wing and Hope are NOT in this scene.",
+      "output": "./assets/ending-scenes/fired_signed.webp",
+      "qa": "Targeted identity correction inspected: Jenjen has correct asymmetrical dark bob and NO eyeglasses; Erich round glasses/red folder and Sonny rectangular glasses/tan tee retained. Teal protagonist signs trap-cord form. Coherent hands; no lettering."
+    },
+    {
+      "id": "google_board",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Fantasy giant technology campus acquires the office, a pink executive keeps a smaller boardroom chair while employee receives real resources; abstract four-color windows, no logo.\nDistinct visual motif: large abstract tech campus and retained bounded board chair.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nWing: angular face, huge long triangular nose, spiky black-brown hair, no glasses, hot pink polo.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/google_board.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "google_ousted",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Fantasy giant technology campus opens new doors for the team while a pink former executive quietly returns an access badge outside; team continues inside, no humiliation violence.\nDistinct visual motif: badge returned outside team new campus.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nWing: angular face, huge long triangular nose, spiky black-brown hair, no glasses, hot pink polo.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. Exactly ONE Wing, OUTSIDE at far right returning access badge and leaving. Inside are diverse ordinary staff in teal/cream/navy, NO OTHER pink shirt executive or Wing-like face.\nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/google_ousted.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "handover_author",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for a satirical adult office life game. Generate ONE full composed image, no grid.\nStyle reference images 1 and 2 are STYLE ONLY, do not include these people unless requested below. Match very bold uniform dark NAVY outlines, geometric expressive simple faces, oversized adult cartoon heads, chunky simplified hair, clean FLAT color regions, ONLY two or three hard-edge cel tones per object. No realistic rendering, tiny hair detail, skin texture, watercolor or painterly lighting. Simplified rich office/world scenery, same animation style for every person.\nScene to illustrate: Employee hands over a neatly indexed operations binder beside an empty desk; replacement coworker understands the diagram, packed personal box waits by the door.\nRequired distinguishing motif: indexed handover binder.\nOrdinary employee protagonist: a young adult with short rounded dark brown hair, soft oval face, teal cardigan over cream shirt, dark trousers; must be DIFFERENT from references: never pink polo, spiky hair, crown, Wing face or Hope glasses. Generic supporting coworkers use varied hair/outfits; no recognizable NPC identity unless listed.\nNo named game NPCs appear in this scene.\nWide landscape 16:10 framing, important scene action centered in upper 80 percent, leave lower 15 percent quiet uncluttered for later job props. Visible clear acting and emotional reaction, pleasant readable saturated colors. Exactly two arms per person, anatomically connected hands. No text, lettering, logos, UI, watermark, labels or tiny pseudo-writing.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/handover_author.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "historian",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: Employee archives time-stamped folders into a luminous library shelf; ordinary office evidence becomes an illuminated chronicle, a pen and small desk lamp protect the memory. Essential motif: illuminated chronicle archive. ONLY teal-cardigan protagonist preserving folders in glowing archive shelves. Flat warm cream blocks for light, not painterly fantasy mist.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/historian.webp",
+      "qa": "Inspected: single teal protagonist shelves records in a warm archive, pen/lamp in foreground, no invented readable timestamps or named NPC duplicates. Two coherent arms and consistent flat cartoon style."
+    },
+    {
+      "id": "layoff",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the supplied latest game portraits. Image 1 Wing and Image 2 Hope are STYLE GUIDES ONLY unless the scene explicitly calls for them. Any later reference images supply the exact named NPC identities, with consistent hair, glasses, outfit and age. The ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over a cream shirt, no pink polo, no crown, no Wing spiky face. Only include named people required by this scene plus protagonist; no unexplained doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Scene: Office turnstile shows a red access lamp, employee carries a cardboard box beside the elevator, three management shadows wait behind frosted glass; abruptness without injury. Essential motif: red access light and packed box. NPC reference identities after style images: erich, jenjen, sonny. For these first-person-dismissal scenes, management are Erich (navy suit round spectacles/red folder), Jenjen (shoulder bob, charcoal blazer/keys), Sonny (messy fringe, rectangular black spectacles/tan tee). Protagonist must remain teal-clothed and clearly separate from all three. Show the three management as fully drawn cartoon people rather than anonymous realistic shadows. Wing and Hope are NOT in this scene.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png",
+        "./assets/erich.png",
+        "./assets/jenjen.png",
+        "./assets/sonny.png"
+      ],
+      "output": "./assets/ending-scenes/layoff.webp",
+      "qa": "Inspected: red denied access light, packed box and elevator clearly show abrupt dismissal. Erich/Jenjen/Sonny correct and protagonist distinct. Coherent two hands on box."
+    },
+    {
+      "id": "mediation_pending",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Two sets of documents remain apart on a neutral meeting table, calendar and carefully organized evidence kept by the employee, an open path beyond the unresolved room.\nDISTINCT REQUIRED VISUAL MOTIF: separated documents with open next path.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/mediation_pending.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "mediation_settled",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImage1: STYLE ONLY, do NOT include this boss character. Everyone is fully dressed in ordinary office clothes. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: A neutral mediation table with two sets of blank terms finally aligned, all parties compare the same pages, employee calmly files the agreed copy; no guaranteed legal victory.\nDISTINCT REQUIRED VISUAL MOTIF: two aligned written terms.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/mediation_settled.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "merged_out",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: An office organizational chart has one square removed, while the remaining desk is buried in the removed employee tasks; departing employee walks beyond the frame.\nDISTINCT REQUIRED VISUAL MOTIF: removed org-chart square with tasks left behind.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/merged_out.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "nasdaq",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing; Image2: spencer. Scene: Fantasy New York exchange stage with a giant ceremonial golden bell, confetti and luminous skyscraper windows, small celebratory office team; no exchange logo or invented ticker lettering. Essential motif: giant golden bell and New York windows. Exactly THREE main adults: Wing with sharp spiky hair and triangular nose/no glasses/hot pink polo, Spencer with ROUND glasses and round face/dark teal hair/hot pink polo, and distinct teal-cardigan protagonist. Wing and Spencer celebrating with player, NOT one duplicate manager. Huge ceremonial golden bell and stylized New York windows.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/spencer.png"
+      ],
+      "output": "./assets/ending-scenes/nasdaq.webp",
+      "qa": "Inspected: three distinct adults only—round-glasses teal-hair Spencer, sharp spiky Wing, teal player—giant ceremonial gold bell and New York skyline. Coherent arms, no exchange logo/text."
+    },
+    {
+      "id": "nasdaq_failed",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Fantasy exchange trip stalls behind a closed velvet rope, ceremonial bell remains behind glass and confetti stays inside an unopened box; employee keeps the unused ticket.\nDistinct visual motif: bell behind closed velvet rope.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\n\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp"
+      ],
+      "output": "./assets/ending-scenes/nasdaq_failed.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "pip_exit",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene; Image2: hope. Scene: Employee crosses a finish tape made of stamped review sheets, then calmly takes the exit door rather than another desk; warm outside light and neatly filed proof. Essential motif: completed review tape and exit door. Hope watches in her BLUE blazer and ROUND glasses from beside completed files while protagonist calmly exits beyond a finish tape. One bureaucrat only.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/pip_exit.webp",
+      "qa": "Inspected: completed review-sheet finish tape, teal protagonist leaving through sunlit door, Hope round glasses/blue blazer watches. Coherent limbs; actual passing-then-leaving metaphor."
+    },
+    {
+      "id": "pip_fail",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene; Image2: hope. Scene: Impossible improvement plan unfurls from a high office desk like a steep staircase; employee carries completed folders while the final step moves away. Absurd bureaucratic perspective. Essential motif: moving staircase made of checklists. Hope must appear holding the moving final review step at the top: female shoulder-length dark hair, ROUND GLASSES, blue blazer, purple clipboard. Protagonist is struggling UPWARD, completed folders in arms, not falling.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/pip_fail.webp",
+      "qa": "Inspected: Hope has round glasses/blue blazer/purple clipboard and moves final checklist step away; protagonist climbing completed review stairs. Two coherent arms each; no lettering."
+    },
+    {
+      "id": "promotion",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing. Scene: Employee sits on a slightly higher office chair beneath an avalanche of responsibility folders; a glorious blank nameplate rises while the desk remains too small. Essential motif: higher chair under many more folders. Wing is present at side, sharp spiky hair/long triangular nose/NO glasses/hot pink polo, adding folders onto the distinct teal protagonist's higher chair. The promotion is a responsibility trap, not an actual victory.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/promotion.webp",
+      "qa": "Inspected: player on higher chair crushed by many folders, Wing adds more files with exactly two coherent arms. Distinct player face/outfit, recognizable Wing, ironic responsibility motif."
+    },
+    {
+      "id": "rage_coup",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Create ONE wide landscape satirical cartoon boardroom succession scene. Full composition, no panels.\nReference Image1 is the CHAIRMAN ONLY: enormous round dark glasses, round cheeky face, blue-black swept hair, pink polo. Reference Image2 shows the PLAYER identity and flat cartoon scenery style: ordinary young adult man with short rounded brown hair, small oval dark eyes WITHOUT ANY GLASSES, oval face, teal cardigan over cream shirt. Do not swap their identities.\nCAST EXACTLY FOUR FULLY CLOTHED ADULTS: center, the ordinary PLAYER with NO GLASSES sits bewildered in an absurdly oversized burgundy executive chair, his two hands on the two armrests. Far LEFT of the chair, the CHAIRMAN from Image1 stands in his PINK POLO and ROUND GLASSES handing the player a ceremonial large red rubber stamp. Two generic older board members in tan or gray jackets applaud in the background, no blue blazer, no glasses. The chairman is NOT in the large chair. There is only ONE round-glasses character, the pink-shirt chairman at left. PLAYER is NOT the chairman. No blue-blazer HR character.\nScene: absurd imaginary succession, rolling organizational chart with empty colored boxes behind chair, paper crown lying on desk (not worn), amused board reacting. Important scene action and faces within upper80%; lower15% simple uncluttered table area.\nStyle: chunky uniform dark NAVY outlines, geometric simplified faces, large adult cartoon heads, chunky hair shapes, FLAT color regions, ONLY2–3 hard-edge cel tone regions per object. Bright pink-teal-cream palette, simplified rich office scenery. No realistic rendering, soft painterly texture or fine hair detail. Exactly two naturally connected arms each. No text, lettering, logos, UI or watermark.",
+      "references": [
+        "./assets/spencer.png",
+        "Generated illustration draft (private; used only for style or a targeted revision)"
+      ],
+      "output": "./assets/ending-scenes/rage_coup.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "rage_defeated",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Employee sits sheepishly on a waiting-room stool holding an ice pack while intact office opponent stands at a distance; exaggerated failed bravado, no blood or impact.\nDISTINCT REQUIRED VISUAL MOTIF: sheepish waiting-room ice pack.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/rage_defeated.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "rage_legal",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Two separated office parties sit at a neutral legal meeting table; recorder, evidence folders, blank signed statements and a sober scale motif; consequences, no triumphant courtroom guarantee.\nDISTINCT REQUIRED VISUAL MOTIF: neutral divided evidence table.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/rage_legal.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "rage_meme",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. ONE wide flat cartoon ending scene for a funny office game. Image1 is STYLE ONLY. Draw a fully clothed ordinary office worker (teal cardigan over cream shirt, navy trousers, soft oval face, short rounded brown hair, no glasses) in the center reacting with comical surprise to a wall of large generic smartphones. The phones show only silly thumbnail cartoons of the same fully clothed employee standing with hands on hips in an office, plus simple heart/thumb-up reaction icons. The employee has suddenly become a harmless internet meme. No aggression or injury. Rich but simplified blue-and-pink cartoon office background. Match chunky NAVY outlines, simple geometric faces and oversized adult cartoon heads, chunky hair, FLAT colors, only2–3 hard-edge cel tones per object. No realism or painterly shading. Wide16:10, main action upper80%, lower15% quiet table space reserved for later props. Exactly two connected arms and hands per person. No text, letters, logos, UI or watermark. Do not draw the spiky-haired pink-polo boss from reference.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/rage_meme.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "rage_truce",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Two office parties sit on opposite sides of a freshly drawn boundary, a small potted plant and written agreement between them; handshake optional, cautious quiet.\nDISTINCT REQUIRED VISUAL MOTIF: agreement and plant between two desks.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/rage_truce.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "rage_walkaway",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Employee puts a raised hand gently back into a pocket, collects a folder of consequences and walks toward a clear street; tension cooling, self-possession.\nDISTINCT REQUIRED VISUAL MOTIF: hand returned to pocket beside collected folder.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/rage_walkaway.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "ragequit",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: An exhausted employee sets an office badge on a desk and strides through an open door, a muted phone and unoccupied chair behind, airy street beyond. Essential motif: badge left on desk. ONLY protagonist, badge and open office door. No managers.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/ragequit.webp",
+      "qa": "Inspected: protagonist leaves badge on desk and exits; vacant chair and muted phone remain. No named NPC accidentally drawn. Two hands, clear open doorway, crisp flat cartoon."
+    },
+    {
+      "id": "retired_flexible",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Independent occasional consultant chooses one small interesting project at a bright home desk, calendar has large blank days, walking shoes by an open door.\nDISTINCT REQUIRED VISUAL MOTIF: calendar with only one chosen task.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/retired_flexible.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "retired_free",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Former employee enjoys a slow sunlit morning at home or seaside balcony, switched-off alarm, tea, comfortable savings jar and an unhurried open day.\nDISTINCT REQUIRED VISUAL MOTIF: switched-off alarm and slow morning tea.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/retired_free.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "second_offer",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for a satirical adult office life game. Generate ONE full composed image, no grid.\nStyle reference images 1 and 2 are STYLE ONLY, do not include these people unless requested below. Match very bold uniform dark NAVY outlines, geometric expressive simple faces, oversized adult cartoon heads, chunky simplified hair, clean FLAT color regions, ONLY two or three hard-edge cel tones per object. No realistic rendering, tiny hair detail, skin texture, watercolor or painterly lighting. Simplified rich office/world scenery, same animation style for every person.\nScene to illustrate: Employee reads a fresh blank offer letter in a sunny cafe while the old office badge lies turned over; another door stands open, hopeful without lavish fantasy.\nRequired distinguishing motif: fresh offer in sunny cafe.\nOrdinary employee protagonist: a young adult with short rounded dark brown hair, soft oval face, teal cardigan over cream shirt, dark trousers; must be DIFFERENT from references: never pink polo, spiky hair, crown, Wing face or Hope glasses. Generic supporting coworkers use varied hair/outfits; no recognizable NPC identity unless listed.\nNo named game NPCs appear in this scene.\nWide landscape 16:10 framing, important scene action centered in upper 80 percent, leave lower 15 percent quiet uncluttered for later job props. Visible clear acting and emotional reaction, pleasant readable saturated colors. Exactly two arms per person, anatomically connected hands. No text, lettering, logos, UI, watermark, labels or tiny pseudo-writing.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/second_offer.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "slacker",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing STYLE ONLY; NOT present in this scene. Scene: Employee calmly relaxes in a tidy office nook while automated monitors do the repetitive work; steaming tea, closed calendar blocks, sunbeam and strategically placed plant. Essential motif: automated monitors and warm tea. ONLY teal protagonist resting beside automated monitors with tea; tranquil cheeky humor, plants and a flat graphic sunbeam.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/slacker.webp",
+      "qa": "Inspected: relaxed teal player with tea and exactly two coherent arms; two small generic automation robots manage monitors in background, no named NPC. Correct plants/sunbeam/automated-work motif; no lettering."
+    },
+    {
+      "id": "sycophant",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing; Image2: rick. Scene: A long red carpet curls from the employee desk toward a pink executive throne; floating approval stars follow a flattering speech bubble without text, coworkers look sideways. Essential motif: red carpet curving into executive throne. Exactly THREE people: Wing sits on executive throne (sharp triangular nose, spiky dark hair, NO glasses, hot pink polo). Rick waits nearby with rectangular dark glasses, short brown hair, tiny golden crown and pink polo, holding smartphone. Teal protagonist flatters Wing with empty speech bubble and stars. Player must not become Rick or Wing.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/rick.png"
+      ],
+      "output": "./assets/ending-scenes/sycophant.webp",
+      "qa": "Inspected: Wing on pink throne, Rick with rectangular glasses/brown hair/small crown/phone, teal protagonist flatters with empty bubble. Exactly three distinct people, correct current NPC identities, coherent limbs."
+    },
+    {
+      "id": "taiwan",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset type: ending scene for a satirical office game. Create one complete wide landscape illustration (about 16:10), main action centered in upper 80%, lower 15% a simple quiet foreground reserved for later occupational props. Match the supplied character drawings: BOLD UNIFORM DARK NAVY INK outlines, angular geometric expressive simple faces, large animated adult heads, chunky hair masses, flat graphic shapes, ONLY 2–3 hard-edge cel-shading tones per object, saturated pink/teal/cream palette with light flat backgrounds. NO painterly rendering, soft airbrushing, realistic anatomy, photographic textures, individual hair strands, gradients or cinematic fog. It must look like the same animated world as the latest game portraits. Image1 is Wing and is ONLY an overall style guide UNLESS scene explicitly requires Wing. Later reference images supply exact named NPC identities. Ordinary player protagonist is always a DISTINCT adult with simple short dark hair, NO glasses, teal cardigan over cream shirt, no pink polo, no crown, no Wing spiky face. Only include the people required by scene. If an ordinary small office team is necessary, use at most two visibly distinct generic supporting adults in muted blue or beige, never NPC doubles. Anatomically coherent poses, exactly two arms/hands per visible person. No words, lettering, logos, watermark, numerical labels or UI. Reinterpret conceptual mood in simple crisp cartoon forms. Input images: Image1: wing; Image2: spencer. Scene: Fantasy Taiwan market listing ceremony, bright gold ceremonial gong against an urban Taipei skyline, jubilant office team, plum and coral confetti; no official logos. Essential motif: golden gong and Taipei skyline. Exactly THREE main adults: Wing with sharp spiky hair and triangular nose/no glasses/hot pink polo, Spencer with ROUND glasses and round face/dark teal hair/hot pink polo, and distinct teal-cardigan protagonist. Large ceremonial gong, clearly different from a hanging church bell; stylized Taipei skyline.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/spencer.png"
+      ],
+      "output": "./assets/ending-scenes/taiwan.webp",
+      "qa": "Inspected: three distinct adults—Wing, Spencer, teal player—large struck golden gong and Taipei101 skyline. Correct NPC facial silhouette/glasses/outfit, no exchange branding."
+    },
+    {
+      "id": "taiwan_failed",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: A planned market gong ceremony remains a taped-off rehearsal stage, unlit board and neatly stacked cancelled event decorations; ordinary work desk visible behind.\nDistinct visual motif: taped-off gong rehearsal stage.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\n\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp"
+      ],
+      "output": "./assets/ending-scenes/taiwan_failed.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "venture_independent",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImages 1–2: STYLE ONLY, do NOT include either person. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: A modest independent studio opens its small shutters to morning light; employee works for their own real customers, balanced cash jar and useful tools, toy goose optional only for matching story.\nDISTINCT REQUIRED VISUAL MOTIF: small shutters opening on independent studio.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/venture_independent.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "venture_restart",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Asset: wide landscape ending illustration for an adult satirical office life game. One full composed image, no grid.\nImage1: STYLE ONLY, do NOT include this boss character. Everyone is fully dressed in ordinary office clothes. No named NPCs in this scene.\nStyle must match the current game portraits: CHUNKY uniform dark NAVY outlines, geometric simple expressive faces, oversized adult cartoon heads, chunky hair shapes, ONLY2–3 FLAT hard-edge cel tone areas per object. NO realism, painterly atmosphere, skin texture, wispy individual hair or soft shaded renderings. Rich but simplified cartoon scenery.\nSTORY SCENE: Employee calmly closes a small shop for the evening and places saved tools and a remaining coin reserve into a box; new plan sketches wait beneath the box, setback with room to restart.\nDISTINCT REQUIRED VISUAL MOTIF: closing shop while preserving tools and reserve.\nOrdinary employee protagonist distinct from all named characters: teal cardigan over cream shirt, dark trousers, soft oval face, short rounded brown hairstyle; no pink polo, crown or spiky Wing face. Varied generic supporting adults if needed, no duplicated named NPCs.\nWide landscape16:10 composition, important story and faces centered within upper80%, quiet bottom15% reserved for later job-specific props. Strong visual storytelling, clear emotional reactions. Exactly two arms per adult with connected natural hands; avoid complicated crossed limbs. No text, letters, pseudo-writing, numbers, logo, UI or watermark.",
+      "references": [
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/venture_restart.webp",
+      "qa": "Generated output visually inspected for flat navy-outline style, scene motif, two connected arms per person, no text or unintended NPC duplicate; accepted."
+    },
+    {
+      "id": "verbal_apology",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Employee lowers a speech-bubble storm, offers a small apology note while keeping a separate work-issue folder open; neither groveling nor erasing the original question.\nDistinct visual motif: apology note separated from retained work dispute.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\n\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp"
+      ],
+      "output": "./assets/ending-scenes/verbal_apology.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_boardroom",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Boardroom microphones finally point toward an ordinary employee, senior seats listen in surprise, an audio waveform becomes a clean meeting record; office satire.\nDistinct visual motif: microphones finally point at employee.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nSpencer: round face, huge ROUND glasses, swept teal-black hair, hot pink polo.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. The teal ordinary employee speaks into microphones at center. Spencer is a SEPARATE listening chairman at far right with pink polo and round glasses, mouth closed. Do NOT place Spencer at microphone.\nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/spencer.png"
+      ],
+      "output": "./assets/ending-scenes/verbal_boardroom.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_colleague_solidarity",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Several coworkers stand shoulder to shoulder at a meeting table, each adds one documented note, the employee no longer isolated; warm mutual support.\nDistinct visual motif: coworkers each add one factual note.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\n\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp"
+      ],
+      "output": "./assets/ending-scenes/verbal_colleague_solidarity.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_hr_rewrite",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: HR chief erases an impossible improvement checklist and rewrites measurable blank boxes with the employee present; crossed-out old paper curls aside.\nDistinct visual motif: erased impossible checklist and new checkboxes.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nHope: woman shoulder-length brown hair, ROUND glasses, blue blazer, lavender clipboard.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/hope.png"
+      ],
+      "output": "./assets/ending-scenes/verbal_hr_rewrite.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_kind_ghost",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: A cheerful message invitation glows on the employee phone beside an entirely empty chair and abandoned jacket; late-night restaurant doorway and no host in sight.\nDistinct visual motif: empty host chair next to invitation phone.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\n\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. Kind is entirely ABSENT. Only teal ordinary employee waiting at restaurant, phone invitation, empty host chair. NO purple-shirted host.\nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp"
+      ],
+      "output": "./assets/ending-scenes/verbal_kind_ghost.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_legal_letter",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Two hands exchange clearly separated official-looking blank letters over a legal desk, talk bubbles replaced by clean envelopes and a recording folder.\nDistinct visual motif: clean letters replace speech bubbles.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nErich: man receding forehead, round glasses, navy suit, mauve tie, burgundy legal folder.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/erich.png"
+      ],
+      "output": "./assets/ending-scenes/verbal_legal_letter.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_mutual_mute",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Two office desks communicate through a transparent mailbox bridge while phone sound icons are muted; neutral professional distance and written boundaries.\nDistinct visual motif: two desks joined by written-mail bridge.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\n\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp"
+      ],
+      "output": "./assets/ending-scenes/verbal_mutual_mute.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_onboarding",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: A fresh office ID stays on the reception desk as the new hire turns back toward the entrance; halted registration papers, stunned receptionist silhouettes, no violence.\nDistinct visual motif: new office ID never handed over.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nWing: angular face, huge long triangular nose, spiky black-brown hair, no glasses, hot pink polo.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. Exactly TWO principal figures: ordinary teal employee at left leaving reception, Wing stays behind desk at right. The unsigned ID remains on desk. Player never looks like Wing.\nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/verbal_onboarding.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_rick_awake",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: A sleepy favored manager puts down a ringing phone and faces a real task board for the first time; coffee cup, startled eyes, coworkers quietly watch.\nDistinct visual motif: ringing phone set down before actual task board.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nRick: short black hair, thick RECTANGULAR glasses, hot pink polo, tiny crown, phone.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/rick.png"
+      ],
+      "output": "./assets/ending-scenes/verbal_rick_awake.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_sonny_statement",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: An office excuse-maker holds a tiny press conference with microphones made of staplers and a pizza-box podium; several conflicting blank diagram cards, deadpan audience.\nDistinct visual motif: pizza-box podium and stapler microphones.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nSonny: tousled black fringe, thick RECTANGULAR glasses, tan T-shirt, turquoise noodle cup.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/sonny.png"
+      ],
+      "output": "./assets/ending-scenes/verbal_sonny_statement.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_viral",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Employee takes a small comedy stage telling an original office story; empty office chair used as a prop and amused silhouette audience, not a defamatory real-person poster.\nDistinct visual motif: comedy stage with empty chair as prop.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\n\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp"
+      ],
+      "output": "./assets/ending-scenes/verbal_viral.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "verbal_wing_concession",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: A pink-clad executive reluctantly writes terms onto a blank sheet while employee points to a documented work item; overheated speech bubbles settle into straight written lines.\nDistinct visual motif: heated bubbles settle into written terms.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nWing: angular face, huge long triangular nose, spiky black-brown hair, no glasses, hot pink polo.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/wing.png"
+      ],
+      "output": "./assets/ending-scenes/verbal_wing_concession.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "vietnam_afterdark",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Absurd fantasy Vietnam nightlife company listing: a grand piano with four gloved hands, empty host chair, gold ceremonial gong and neon city skyline; playful mysterious late-night business, fully clothed adults, no explicit sexual imagery.\nDistinct visual motif: four gloved hands on grand piano with empty host chair.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\nKind: short black hair, rectangular glasses, plum-purple shirt, purple invitation card.\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. Absurd fictional fantasy; Kind purple shirt is a fully clothed project host at left presenting the giant piano business, ceremonial exchange gong at right, four gloved stage hands playing piano. No sexual content or innuendo depiction.\nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp",
+        "./assets/kind.png"
+      ],
+      "output": "./assets/ending-scenes/vietnam_afterdark.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    },
+    {
+      "id": "vietnam_core",
+      "method": "built-in image_gen",
+      "prompt": "Use case: illustration-story. Generate a full landscape 16:10 ending-family illustration for a fictional Taiwanese office satire game.\nScene: Fantasy Vietnam listing ceremony unites two engineering offices through a glowing network bridge, Ho Chi Minh City-inspired skyline, software terminals and gold gong, no national stereotype.\nDistinct visual motif: two engineering offices with Vietnam exchange gong.\nSTYLE strictly match reference 1's clean bold navy uniform outlines, geometric adult cartoon faces, large heads, chunky flat hair shapes, 2-3 hard cel-shaded tones, vivid teal/cream/coral/gold. Graphic architectural backdrop. No painterly brush texture, no photo-real faces, no soft anime airbrush, no 3D.\nReference 1 is STYLE + ordinary player wardrobe only (teal cardigan/cream shirt); create new scene and composition, never copy cafe setting. Remaining references are exact NPC character identity/outfit only.\n\nPLAYER is separate ordinary employee in teal cardigan/cream top with ordinary short brown hair and small nose, no crown, not any pink-shirted boss. \nComposition: principal story action in upper 80%; lower 15% quiet tabletop/floor for later profession prop overlay. Coherent anatomy, 2 hands per person, distinct silhouettes. All adults fully clothed. No legible text, letters, logos, company marks or watermarks. The picture shows the pivotal scene retrospectively; do not invent dismissal when not requested.",
+      "references": [
+        "./assets/ending-scenes/second_offer.webp"
+      ],
+      "output": "./assets/ending-scenes/vietnam_core.webp",
+      "qa": "Visually inspected individually in contact sheet: unified bold navy-outline cel cartoon; ordinary teal protagonist distinct from named NPC; actual character outfit/glasses preserved; no invented exit or duplicate executive."
+    }
+  ]
+}

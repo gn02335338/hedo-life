@@ -86,7 +86,7 @@ test('legacy versionless proofs retain their published branch while explicit ver
  for(const version of [null,1,0,3,'2',true,{},[]]){
   const response=await h.post(player,route,randomUUID(),[...prefix,{...action,version}]);assert.equal(response.status,400,JSON.stringify(version));assert.equal(response.body.error,'invalid_actions');
  }
- for(const seed of ['e29-scene-forged','e38-scene-forged']){
+ for(const seed of ['e29-scene-forged','e39-scene-forged']){
   const response=await h.call('/api/achievements',{method:'POST',token:player.token,body:{runId:randomUUID(),roleId:'system',seed,actions:[{type:'verbal',phase:'event',eventId:'onboarding',version:2}]}});
   assert.equal(response.status,400);assert.equal(response.body.error,'invalid_actions');
  }

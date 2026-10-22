@@ -130,7 +130,7 @@ test('the solo fallback is guaranteed, affordable and distinct from a shared din
 });
 
 test('legacy menus and every non-menu event retain their exact object and RNG-free behavior',()=>{
- for(const seed of ['e25-frozen','e29-frozen','e33-frozen','e38-future','legacy']){
+ for(const seed of ['e25-frozen','e29-frozen','e33-frozen','e39-future','legacy']){
   const run=base({seed}),source=getMealV25(run),before=structuredClone(source);
   assert.equal(withMealInvitationsV34(source,run),source);assert.deepEqual(source,before);assert.ok(source.choices.every(choice=>choice.draw===undefined));
  }

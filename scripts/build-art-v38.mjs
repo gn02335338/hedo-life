@@ -54,7 +54,7 @@ const masters=await Promise.all(families.map(async id=>({id,...await record(`end
 const props=await Promise.all(Object.keys(roles).map(async id=>({id,...await record(`role-props/${id}.webp`)})));
 const characterIds=['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor'];
 const portraits=await Promise.all(characterIds.map(async id=>({id,...await record(`${id}.png`),referenceRemake:!['wing','spencer'].includes(id)})));
-const manifest={version:38,method:'Built-in image_gen illustrations, composed and optimized with Sharp',
+const manifest={version:38,styleRevision:40,method:'Built-in image_gen illustrations, composed and optimized with Sharp',
  counts:{portraitRemakes:15,preservedPortraits:2,scenePlates:scenes.length,endingMasters:masters.length,jobPropIllustrations:props.length,endingImages:endings.length},
  dimensions:{width,height},privacy:'No original reference photos are included. Locked ending artwork is never rendered or requested by the UI.',
  scenes,masters,props,portraits,endings};

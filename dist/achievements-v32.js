@@ -64,7 +64,7 @@ function spokenProof(history,index){
 }
 
 export function hasCompanyFinaleV32(run,family){
- if(!/^e(?:32|33|34|35|36|37)-/.test(run?.seed||'')||run.completed!==true||typeof run.roleId!=='string'||!run.roleId||run.endingId!==`${family}-${run.roleId}`||!Object.hasOwn(companyScenes,family))return false;
+ if(!/^e(?:32|33|34|35|36|37|38)-/.test(run?.seed||'')||run.completed!==true||typeof run.roleId!=='string'||!run.roleId||run.endingId!==`${family}-${run.roleId}`||!Object.hasOwn(companyScenes,family))return false;
  const row=Array.isArray(run.history)?run.history.at(-1):null;
  return Boolean(resolved(row)&&row.choiceIndex<=2&&row.kind==='company'&&row.eventId===companyScenes[family]&&sameOutcome(row,COMPANY_FINALE_LABELS_V32[family],'計畫落地之後')&&row.speaker===({'company-v32-market':'wing','company-v32-buyer':'spencer','company-v32-vietnam':'kind'}[row.eventId]));
 }
@@ -73,7 +73,7 @@ export function hasCompanyFinaleV32(run,family){
 // nearest spoken response binds target and timing to that same attempt; a
 // different person's earlier speech cannot lend its proof to this finale.
 export function deriveAchievementsV32(run){
- if(!/^e(?:32|33|34|35|36|37)-/.test(run?.seed||''))return [];
+ if(!/^e(?:32|33|34|35|36|37|38)-/.test(run?.seed||''))return [];
  const history=Array.isArray(run.history)?run.history:[],ids=new Set(),targets=new Set();
  const speechActions=(Array.isArray(run.actions)?run.actions:[]).filter(action=>action?.type==='verbal');
  let lastSpeech=-1,speechCount=0;
@@ -89,8 +89,10 @@ export function deriveAchievementsV32(run){
    if(/^pip-(?:review|passed|pressure)$/.test(proof.origin))ids.add('verbal-pip-microphone');
    if(['crisis-boss','paperwork','dismissal-final'].includes(proof.origin)&&['erich','jenjen','sonny'].includes(proof.target)&&action?.version===2&&action.eventId===proof.origin&&action.phase===proof.phase&&Object.hasOwn(action,'target')&&action.target===proof.target)ids.add('verbal-exit-team');
   }
-  if(run.completed!==true||typeof run.endingId!=='string'||typeof run.roleId!=='string'||!run.roleId||!resolved(row)||row.choiceIndex>2||index!==history.length-1)continue;
-  const family=run.endingId.endsWith(`-${run.roleId}`)?run.endingId.slice(0,-run.roleId.length-1):'';
+  const milestone=/^e38-/.test(run.seed)&&row.eventId==='verbal-v32-aftermath'&&resolved(row)&&row.choiceIndex<=2
+   ?Object.keys(verbalFamilies).find(family=>family!=='verbal_onboarding'&&sameOutcome(row,VERBAL_FINALE_LABELS_V32[family],'這場口角接著怎麼收尾')):null;
+  if(!milestone&&(run.completed!==true||typeof run.endingId!=='string'||typeof run.roleId!=='string'||!run.roleId||!resolved(row)||row.choiceIndex>2||index!==history.length-1))continue;
+  const family=milestone||(run.endingId.endsWith(`-${run.roleId}`)?run.endingId.slice(0,-run.roleId.length-1):'');
   if(row.eventId==='verbal-v32-aftermath'&&row.kind==='verbal'&&Object.hasOwn(verbalFamilies,family)&&sameOutcome(row,VERBAL_FINALE_LABELS_V32[family],'這場口角接著怎麼收尾')){
    const proof=spokenProof(history,lastSpeech);
    if(!proof||row.speaker!==proof.target||lastSpeech<0||lastSpeech>=index)continue;

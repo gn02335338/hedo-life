@@ -125,7 +125,7 @@ export class HedoArchive extends DurableObject {
         const commitment = this.characters.progress(runId);
         if (replay.completed && commitment?.completed && commitment.action_count === actions.length &&
             commitment.action_hash === await tokenHash(JSON.stringify(actions))) {
-          this.observations.record(runId, replay);
+          this.ctx.storage.transactionSync(() => this.observations.record(runId, replay));
         }
       }
       return this.completedResponse(playerId, existing, true);
@@ -151,8 +151,8 @@ export class HedoArchive extends DurableObject {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         runId, playerId, run.endingId, run.roleId, run.actualRoleId, run.rank, run.pay, Math.min(run.turn + 1, MAX_TURNS), VERSION, now);
       this.sql.exec('INSERT OR IGNORE INTO player_endings (player_id, ending_id, first_seen_at) VALUES (?, ?, ?)', playerId, run.endingId, now);
+      this.observations.record(runId, run, now);
     });
-    this.observations.record(runId, run, now);
     return this.completedResponse(playerId, { id: runId, ending_id: run.endingId }, duplicate);
   }
 

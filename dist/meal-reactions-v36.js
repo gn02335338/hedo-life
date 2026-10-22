@@ -28,7 +28,7 @@ export function mealChatProfileV36(run,id,replyIndex){
 }
 
 export function withMealReactionsV36(event,run){
- if(!/^e(?:36|37)-/.test(run?.seed||'')||event?.kind!=='self-care'||!run.mealContext?.guest)return event;
+ if(!/^e(?:36|37|38)-/.test(run?.seed||'')||event?.kind!=='self-care'||!run.mealContext?.guest)return event;
  const id=run.mealContext.guest,persona=MEAL_FLAVOR_V36[id];
  if(!persona||event.id!==`meal-with-${id}`||event.speaker!==id)return event;
  return {...event,choices:event.choices.map((choice,replyIndex)=>{

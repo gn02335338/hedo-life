@@ -23,7 +23,7 @@ function release(run,source){
   personnel:source.id==='onboarding'?'翅膀把尚未填完的報到資料抽回去：「不用辦了。」你今天的工作當場沒了，這不是你自己提出離職。':`${who}把這句話交給人事窗口，接下來談的已經不只是原本那件事。`,
   legal:`${who}要求把原話留下來，這句話進入正式說明；對方的解讀與你的意思都還沒有被判定。`
  };
- if(target==='professor'&&/^e37-/.test(run?.seed||''))Object.assign(reactions,professorVerbalReactionsV37());
+ if(target==='professor'&&/^e(?:37|38)-/.test(run?.seed||''))Object.assign(reactions,professorVerbalReactionsV37());
  const affinity=self?[0,0,0,0,0,0]:[0,-32,-15,-5,-25,-28],boss=target==='wing';
  const deltas=[{mood:hot?12:7,energy:-1},{mood:3,energy:-2,boss:boss?-15:0},{mood:-10,energy:-4,boss:boss?-12:0},{mood:12,energy:-2},{mood:-10,energy:-3,boss:boss?-24:0},{mood:-9,energy:-3}];
  const outcomes=kinds.map((kind,index)=>({weight:weights[index],label:{ignored:'對方沒有接招',relationship:'關係當場冷掉',retort:'原話反嗆回來',support:'有人補上前情',personnel:'人事接手',legal:'進入正式說明'}[kind],
