@@ -591,3 +591,20 @@ Published earlier seeds retain their exact rest rules and replays. The flag,
 interval-start choice and underlying event are checked by canonical replay; a
 client cannot remove the interval or address the unrevealed scene directly. No
 new HTTP action, database field, anonymous identity or credential is introduced.
+
+
+## Arm-scene presentation (v51)
+
+The client distinguishes nine existing single-scene arm-wrestling recollections
+from the accepted, three-stage `arm` activity. The former receive a passing-scene,
+scheduling or replay caption; the latter announces its first unanswered stage,
+ongoing stages and already-resolved result separately. No caption opens an
+activity, spends a day or supplies a new participant.
+
+The referee-committee scene's known self-directed speech is displayed as a
+complaint about competing referees rather than an unrelated work schedule.
+Preview, spoken quotation, result, journal and ending explanation share this
+read-only correction. Only recognized historical wording is translated, with
+committed branch identifiers, reactions, numeric ledgers and unknown appended
+notes retained. Canonical histories, actions, RNG, targeting and Worker replay
+remain unchanged, so existing lives receive the display correction on reload.

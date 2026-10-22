@@ -15,6 +15,9 @@ import * as persona from '../dist/persona.js';
 import * as characterStats from '../dist/character-stats.js';
 import {renderEndingReport} from '../dist/ending-report-view.js';
 import {polishDreamText} from '../dist/copy-v15.js';
+import * as armScene from '../dist/arm-scene-ui-v51.js';
+import * as armVerbal from '../dist/arm-verbal-copy-v51.js';
+import {polishVerbalHistoryV41} from '../dist/verbal-presentation-v41.js';
 
 const appSource=(await readFile(new URL('../dist/app.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
 const {routes}=JSON.parse(await readFile(new URL('./fixtures/verbal-scene-routes.json',import.meta.url),'utf8'));
@@ -35,7 +38,7 @@ async function harness(mobile){
    showModal(){this.open=true;},close(){this.open=false;for(const callback of dialogListeners.get('close')||[])callback({target:this});},
   });return nodes.get(selector);
  };
- const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,polishDreamText,renderEndingReport,
+ const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,...armScene,...armVerbal,polishVerbalHistoryV41,polishDreamText,renderEndingReport,
   requestVerbal(...args){calls.verbal.push({argsLength:args.length,target:args[1],phase:args[0].pending?'result':'event'});return engine.requestVerbal(...args);},
   advance(run){calls.advance++;return engine.advance(run);},
   createFeedbackUI:()=>({open(){}}),createCharacterBook:()=>({open(){},onSnapshot(){},onRunChanged(){}}),
@@ -94,3 +97,27 @@ for(const mobile of [false,true]){
   assert.notEqual(another.state().eventId,atWork.eventId);assert.equal(another.state().turn,atWork.turn+1);assert.equal(engine.validRun(another.state()),true);
  });
 }
+
+const armRoutes=JSON.parse(await readFile(new URL('./fixtures/company-e39-routes.json',import.meta.url),'utf8')).routes;
+function refereeSource(){
+ for(const route of armRoutes){
+  const at=route.actions.findIndex(action=>action.eventId==='video-referee-committee');if(at<0)continue;
+  const source=engine.replayRun(route.roleId,route.seed,route.actions.slice(0,at));
+  if(engine.canRequestVerbal(source))return {...source,runId:webcrypto.randomUUID()};
+ }
+ throw new Error('No natural referee scene');
+}
+for(const mobile of [false,true])test(`${mobile?'mobile':'desktop'}: the referee interruption previews and records the same scene-specific speech without rewriting its proof`,async()=>{
+ const source=refereeSource(),before=JSON.stringify(source),app=await harness(mobile),raw=engine.getVerbalLine(source,'self');
+ const line=armVerbal.displayArmVerbalLineV51(raw,{eventId:source.eventId,target:'self',phase:'event'});
+ assert.notEqual(raw,line);assert.match(line,/裁判|腕力/);
+ const html=app.render(source);
+ assert.match(html,/腕力賽場邊插曲/);assert.ok(html.includes(esc(line)));assert.doesNotMatch(html,/少開一場廢會/);
+ assert.doesNotMatch(html,/腕力大賽開始/);assert.equal(JSON.stringify(app.state()),before);
+ const expected=engine.requestVerbal(source,undefined,2);
+ await app.action('verbal');assert.deepEqual(plain(app.state()),plain(expected));assert.equal(engine.validRun(app.state()),true);
+ const result=app.html();assert.equal(result.split(esc(line)).length-1,1,'the displayed speech appears once');
+ assert.doesNotMatch(result,/少開一場廢會|早上那場|腕力大賽開始/);
+ await app.action('journal');assert.ok(app.picker().includes(esc(line)));assert.doesNotMatch(app.picker(),/少開一場廢會/);
+ assert.deepEqual(plain(app.state()),plain(expected),'journal presentation does not rewrite the committed record');
+});
