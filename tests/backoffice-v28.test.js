@@ -93,14 +93,14 @@ test('all 96 backoffice responses have natural save-safe histories, actual-role 
 
 test('the 168 new role endings append after all original377 and each family retains an attainable current proof',()=>{
  const old=JSON.parse(readFileSync(new URL('./fixtures/legacy-e27-routes.json',import.meta.url),'utf8'));
- assert.equal(ENDINGS.length,805);assert.equal(FAMILIES.length,62);
+ assert.equal(ENDINGS.length,883);assert.equal(FAMILIES.length,68);
  assert.deepEqual(ENDINGS.slice(0,377).map(ending=>ending.id),old.map(route=>route.ending));
  const appended=ENDINGS.slice(377,545);assert.equal(appended.length,168);
  assert.ok(appended.every(ending=>ending.minRules===28&&BACKOFFICE_ROLE_IDS_V28.includes(ending.roleId)));
  const report=JSON.parse(readFileSync(new URL('../research/reachability-v3.json',import.meta.url),'utf8'));
- assert.equal(report.complete,true);assert.equal(report.found,805);assert.deepEqual(report.missing,[]);
+ assert.equal(report.complete,true);assert.equal(report.found,883);assert.deepEqual(report.missing,[]);
  for(const roleId of BACKOFFICE_ROLE_IDS_V28){
-  const routes=report.routes.filter(route=>route.roleId===roleId);assert.equal(routes.length,62);
+  const routes=report.routes.filter(route=>route.roleId===roleId);assert.equal(routes.length,68);
   assert.deepEqual(new Set(routes.map(route=>route.ending.slice(0,route.ending.lastIndexOf('-')))),new Set(FAMILIES.map(family=>family.id)));
   for(const route of routes){
    const run=replayRun(roleId,route.seed,route.actions);assert.equal(run.endingId,route.ending);assert.equal(validRun(copy(run)),true);

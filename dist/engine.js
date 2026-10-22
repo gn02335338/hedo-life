@@ -1,3 +1,8 @@
+import {getRageV39,rageTargetForV39} from './rage-cast-v39.js';
+import {MEAL_GUEST_IDS_V39,MEAL_EVENTS_V39,mealPageIdV39,getMealEventV39} from './meals-cast-v39.js';
+import {strongVerbalLineV39} from './verbal-lines-v39.js';
+import {getCompanyEventV39} from './company-v39.js';
+import {isPrivateSceneV39,privateReturnEffectV39,getPrivateRageV39,getPrivateVerbalScenarioV39} from './private-scenes-v39.js';
 import {needsChapterResolutionV38,getChapterResolutionV38,withDepartureChoicesV38} from './chapters-v38.js';
 import {getVerbalAftermathV33} from './verbal-outcomes-v33.js';
 import {withMealInvitationsV34} from './meal-invitations-v34.js';
@@ -49,10 +54,10 @@ export const STAT_LABELS = { energy:'體力', cash:'存款', trust:'同事情義
 export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
-const contentRules = run => run.seed.startsWith('e38-')?38:run.seed.startsWith('e37-')?37:run.seed.startsWith('e36-')?36:run.seed.startsWith('e35-')?35:run.seed.startsWith('e34-')?34:run.seed.startsWith('e33-')?33:run.seed.startsWith('e32-')?32:run.seed.startsWith('e31-')?31:run.seed.startsWith('e30-')?30:run.seed.startsWith('e29-')?29:run.seed.startsWith('e28-')?28:run.seed.startsWith('e27-')?27:run.seed.startsWith('e26-')?26:run.seed.startsWith('e25-')?25:run.seed.startsWith('e24-')?24:run.seed.startsWith('e23-')?23:run.seed.startsWith('e22-')?22:run.seed.startsWith('e21-')?21:run.seed.startsWith('e20-')?20:run.seed.startsWith('e19-')?19:run.seed.startsWith('e18-')?18:run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
-const mealEventIds=run=>contentRules(run)>=37?MEAL_EVENTS_V37:MEAL_EVENTS_V25;
-const mealGuestIds=run=>contentRules(run)>=37?MEAL_GUEST_IDS_V37:MEAL_GUEST_IDS_V25;
-const mealPageId=(run,page)=>contentRules(run)>=37?mealPageIdV37(page):page===0?'meal-guests-a':'meal-guests-b';
+const contentRules = run => run.seed.startsWith('e39-')?39:run.seed.startsWith('e38-')?38:run.seed.startsWith('e37-')?37:run.seed.startsWith('e36-')?36:run.seed.startsWith('e35-')?35:run.seed.startsWith('e34-')?34:run.seed.startsWith('e33-')?33:run.seed.startsWith('e32-')?32:run.seed.startsWith('e31-')?31:run.seed.startsWith('e30-')?30:run.seed.startsWith('e29-')?29:run.seed.startsWith('e28-')?28:run.seed.startsWith('e27-')?27:run.seed.startsWith('e26-')?26:run.seed.startsWith('e25-')?25:run.seed.startsWith('e24-')?24:run.seed.startsWith('e23-')?23:run.seed.startsWith('e22-')?22:run.seed.startsWith('e21-')?21:run.seed.startsWith('e20-')?20:run.seed.startsWith('e19-')?19:run.seed.startsWith('e18-')?18:run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
+const mealEventIds=run=>contentRules(run)>=39?MEAL_EVENTS_V39:contentRules(run)>=37?MEAL_EVENTS_V37:MEAL_EVENTS_V25;
+const mealGuestIds=run=>contentRules(run)>=39?MEAL_GUEST_IDS_V39:contentRules(run)>=37?MEAL_GUEST_IDS_V37:MEAL_GUEST_IDS_V25;
+const mealPageId=(run,page)=>contentRules(run)>=39?mealPageIdV39(page):contentRules(run)>=37?mealPageIdV37(page):page===0?'meal-guests-a':'meal-guests-b';
 const rules2 = run => contentRules(run)>=2;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
 // Leave three full work scenes for improvement, then review before the finale.
@@ -63,7 +68,7 @@ function flag(run,name,n=1){run.flags[name]=(run.flags[name]||0)+n;}
 function salaryCutTarget(run,percent){return contentRules(run)>=25?Math.max(1,Math.min(run.pay-1,Math.round(run.pay*(1-percent/100)))):Math.max(20,Math.round(run.pay*(1-percent/100)));}
 const c=(text,detail,result,delta={},effect=null,flags=[])=>({text,detail,result,delta,effect,flags});
 const e=(id,title,body,wing,choices,kind='crisis',speaker=null)=>({id,title,body,wing,speaker:speaker||({'crisis-boss':'exit-team',paperwork:'exit-team','pip-review':'hope','pip-passed':'hope','salary-cut':'hope','salary-final':'hope'}[id]||'wing'),choices,kind,era:kind==='onboarding'?'入職報到':kind==='career'?'人事異動':'突發人事事件',sourceIds:[]});
-const conversationalTarget=(run,event)=>contentRules(run)>=37?rageTargetForV37(event):contentRules(run)>=23?rageTargetForV23(event):contentRules(run)>=22?rageTargetForV22(event):contentRules(run)>=20?rageTargetForV20(event):contentRules(run)>=16?rageTargetForV16(event):rageTargetFor(event);
+const conversationalTarget=(run,event)=>contentRules(run)>=39?rageTargetForV39(event):contentRules(run)>=37?rageTargetForV37(event):contentRules(run)>=23?rageTargetForV23(event):contentRules(run)>=22?rageTargetForV22(event):contentRules(run)>=20?rageTargetForV20(event):contentRules(run)>=16?rageTargetForV16(event):rageTargetFor(event);
 export function jobTitle(run){if(contentRules(run)>=29&&patronageTitleV29(run))return patronageTitleV29(run);if(contentRules(run)>=16)return displayText(careerTitle(run));if(contentRules(run)>=8)return careerTitle(run);const role=ROLE_MAP[run.actualRoleId];return run.assignment==='assistant'?role.assistantTitle:role.ladder[Math.min(run.rank,role.ladder.length-1)];}
 export function bossLabel(n){return n<=12?'準備找你談談':n<30?'看誰都不順眼':n<60?'今天還算陰天':n<85?'龍心尚可':'聖眷正濃';}
 export function createRun(roleId,seed=Date.now()){
@@ -104,7 +109,7 @@ function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta
 }
 function rawGetEvent(run){
  if(!run||run.completed)return null;
- if(contentRules(run)>=32&&COMPANY_EVENTS_V32.includes(run.eventId))return getCompanyEventV32(run);
+ if(contentRules(run)>=32&&COMPANY_EVENTS_V32.includes(run.eventId))return contentRules(run)>=39?getCompanyEventV39(run):getCompanyEventV32(run);
  if(contentRules(run)>=30&&VERBAL_EVENTS_V30.includes(run.eventId))return getVerbalEventV30(run);
  if(contentRules(run)>=29&&run.eventId===PATRONAGE_EVENT_V29)return getPatronageEventV29(run);
  if(WEALTH_EVENTS_V27.includes(run.eventId)){
@@ -117,14 +122,16 @@ function rawGetEvent(run){
  }
  const role=ROLE_MAP[run.roleId],actual=ROLE_MAP[run.actualRoleId],s=run.stats,f=run.flags,modern=rules2(run);
  switch(run.eventId){
- case 'meal-guests-c':case 'meal-with-professor':if(contentRules(run)<37||!run.mealContext)throw new Error('Invalid professor meal');return getMealEventV37(run);
+ case 'meal-guests-c':case 'meal-with-professor':if(contentRules(run)<37||!run.mealContext)throw new Error('Invalid professor meal');return contentRules(run)>=39?getMealEventV39(run):getMealEventV37(run);
  case 'meal-guests-a':case 'meal-guests-b':
- case 'meal-with-wing':case 'meal-with-spencer':case 'meal-with-erich':case 'meal-with-sonny':case 'meal-with-jenjen':case 'meal-with-rick':case 'meal-with-kind':case 'meal-with-hope':case 'meal-with-jack':case 'meal-with-meimei':case 'meal-with-helen':case 'meal-with-sophie':case 'meal-with-jonathan':case 'meal-with-owen':case 'meal-with-sam':case 'meal-with-cindy':if(contentRules(run)<25||!run.mealContext)throw new Error('Invalid meal');return contentRules(run)>=37?getMealEventV37(run):withMealReactionsV36(withMealInvitationsV34(getMealV25(run),run),run);
+ case 'meal-with-annie_yu':case 'meal-with-princess':case 'meal-with-joyce':case 'meal-with-janet':case 'meal-with-captain':
+ case 'meal-with-wing':case 'meal-with-spencer':case 'meal-with-erich':case 'meal-with-sonny':case 'meal-with-jenjen':case 'meal-with-rick':case 'meal-with-kind':case 'meal-with-hope':case 'meal-with-jack':case 'meal-with-meimei':case 'meal-with-helen':case 'meal-with-sophie':case 'meal-with-jonathan':case 'meal-with-owen':case 'meal-with-sam':case 'meal-with-cindy':if(contentRules(run)<25||!run.mealContext)throw new Error('Invalid meal');return contentRules(run)>=39?getMealEventV39(run):contentRules(run)>=37?getMealEventV37(run):withMealReactionsV36(withMealInvitationsV34(getMealV25(run),run),run);
  case 'low-pay-tip':if(contentRules(run)<24)throw new Error('Unknown salary advice');return getSalaryAdviceV24(run);
  case 'raise-request':case 'raise-response':case 'raise-confirmation':if(contentRules(run)<19)throw new Error('Unknown raise event');return getRaiseEvent(run);
  case 'rage-release':case 'rage-aftermath':case 'rage-legal':case 'rage-showdown':case 'rage-public':{
   if(contentRules(run)<14||!run.rageContext)throw new Error('Invalid rage world');
-  const event=contentRules(run)>=37?getRageV37(run):contentRules(run)>=23?getRageV23(run):contentRules(run)>=22?getRageV22(run):contentRules(run)>=20?getRageV20(run):contentRules(run)>=16?getRageV16(run):getRageV14(run);
+  if(contentRules(run)>=39&&isPrivateSceneV39(getEvent({...run,eventId:run.rageContext.eventId,rageContext:null})))return getPrivateRageV39(run);
+  const event=contentRules(run)>=39?getRageV39(run):contentRules(run)>=37?getRageV37(run):contentRules(run)>=23?getRageV23(run):contentRules(run)>=22?getRageV22(run):contentRules(run)>=20?getRageV20(run):contentRules(run)>=16?getRageV16(run):getRageV14(run);
   return contentRules(run)>=25?withMealRageCopyV25(event,run):event;
  }
  case 'rage-menu':if(contentRules(run)<13||!run.rageContext)throw new Error('Invalid rage scene');return getRage(run);
@@ -243,7 +250,7 @@ function rawGetEvent(run){
  return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':'daily'};
 }
 function getPublishedEvent(run){
- if(run?.verbalContext?.version===2&&(run.eventId===run.verbalContext.eventId||VERBAL_V2_EVENTS.includes(run.eventId)||contentRules(run)>=32&&VERBAL_OUTCOME_EVENTS_V32.includes(run.eventId))){const context=run.verbalContext;if(contentRules(run)>=32&&context.stage==='aftermath')return contentRules(run)>=33?getVerbalAftermathV33(run):getVerbalAftermathV32(run);const source=getEvent({...run,eventId:context.eventId,verbalContext:null}),event=getVerbalScenarioV2(run,source);return contentRules(run)>=32&&context.stage==='release'?withVerbalAftermathV32(event):event;}
+ if(run?.verbalContext?.version===2&&(run.eventId===run.verbalContext.eventId||VERBAL_V2_EVENTS.includes(run.eventId)||contentRules(run)>=32&&VERBAL_OUTCOME_EVENTS_V32.includes(run.eventId))){const context=run.verbalContext;if(contentRules(run)>=32&&context.stage==='aftermath')return contentRules(run)>=33?getVerbalAftermathV33(run):getVerbalAftermathV32(run);const source=getEvent({...run,eventId:context.eventId,verbalContext:null});if(contentRules(run)>=39&&isPrivateSceneV39(source))return getPrivateVerbalScenarioV39(run,source);const event=getVerbalScenarioV2(run,source);return contentRules(run)>=32&&context.stage==='release'?withVerbalAftermathV32(event):event;}
  const base=withGenderContextV29(rawGetEvent(run),run),event=contentRules(run)>=32?withCompanyEntryV32(base,run,FANTASY_EVENTS[3].id):base;
  if(contentRules(run)>=32&&(COMPANY_EVENTS_V32.includes(event?.id)||event?.id===FANTASY_EVENTS[3].id))return event;
  if(contentRules(run)>=30&&VERBAL_EVENTS_V30.includes(event?.id))return event;
@@ -264,7 +271,8 @@ function getPublishedEvent(run){
 }
 export function getEvent(run){
  if(contentRules(run)>=38&&run.eventId==='chapter-resolution')return getChapterResolutionV38(run);
- return withDepartureChoicesV38(getPublishedEvent(run),run);
+ const event=withDepartureChoicesV38(getPublishedEvent(run),run);
+ return contentRules(run)>=39&&isPrivateSceneV39(event)?{...event,scope:'private'}:event;
 }
 const WEATHER=[{text:'Wing看完官網英文，決定對全世界不爽。',delta:-9},{text:'他剛開完別人的會，你負責承受餘震。',delta:-7},{text:'今天不知道誰先拍對馬屁，辦公室暫時放晴。',delta:6},{text:'Wing想到掛牌願景，暫時看誰都像未來股東。',delta:7},{text:'公司沒發生什麼事，老闆也先沒有。',delta:0},{text:'一個未回覆的訊息，讓今天變成臨時考核。',delta:-5}];
 function nextNormal(run){
@@ -313,7 +321,7 @@ export function applyChoice(run,index){
  if(choice.check){const passed=roll(next)<choice.check.chance;choice={...choice,...choice.check[passed?'success':'failure']};chanceOutcome=passed?'success':'setback';}
  const choiceDelta=Object.fromEntries(STAT_KEYS.map(k=>[k,choice.delta[k]||0]));
  if(contentRules(next)>=18){choiceDelta.boss=scopedBossDeltaV18(event,choiceDelta.boss,{source:'choice',target:run.rageContext?.target,effect:choice.effect,result:choice.result});if(!['self-care','rage','rage-world',...(contentRules(next)>=30?['verbal']:[])].includes(event.kind)&&!['mood-collapse','crisis-mood',...(contentRules(next)>=25?['mood-self-destruct']:[])].includes(event.id))for(const key of ['mood','energy'])choiceDelta[key]=Math.round(choiceDelta[key]*1.35);}
- if(contentRules(next)>=20&&!scenarioRelease&&!(contentRules(next)>=30&&event.kind==='verbal')){const provocation=freshPersonnelProvocation(run,event,choiceDelta);if(provocation&&(!next.personnelPending||provocation.reason==='post-pip'))next.personnelPending=provocation;}
+ if(contentRules(next)>=20&&!scenarioRelease&&!(contentRules(next)>=30&&event.kind==='verbal')&&!(contentRules(next)>=39&&isPrivateSceneV39(event))){const provocation=freshPersonnelProvocation(run,event,choiceDelta);if(provocation&&(!next.personnelPending||provocation.reason==='post-pip'))next.personnelPending=provocation;}
  change('choice',eventOutcome?`${eventOutcome.label}：${eventOutcome.result}`:'選擇結果',choiceDelta);
  for(const name of choice.flags||[])flag(next,name);
  if(contentRules(next)>=13&&event.kind==='rage'&&originalChoice.rageTarget){flag(next,'rage_attempts');flag(next,`rage_target_${originalChoice.rageTarget}`);next.flags.rage_last_turn=next.turn+1;}
@@ -477,6 +485,14 @@ function advanceVerbalScenarioV2(run,next,last,effect){
   context.stage='warning';next.eventId='verbal-v2-warning';return next;
  }
  if(effect!=='verbalV2Resolve')throw new Error('Invalid verbal scenario transition');
+ if(contentRules(next)>=39&&context.phase==='event'){
+  const source=getEvent({...next,eventId:context.eventId,verbalContext:null});
+  if(isPrivateSceneV39(source)){
+   const close=privateReturnEffectV39(source,next);next.verbalContext=null;next.eventId=context.eventId;
+   if(close){next.pending=true;next.pendingEffect=close;next.pendingFamily=null;return advance(next);}
+   return next;
+  }
+ }
  if(context.phase==='result')return finishVerbalSourceV2(next,context);
  if(['daily','fantasy'].includes(context.sourceKind)||context.eventId==='onboarding'&&next.assignment==='honest')return finishVerbalSourceV2(next,context);
  if(context.eventId==='low-pay-tip')return finishVerbalSourceV2(next,context,'salaryAdviceReturn');
@@ -626,6 +642,7 @@ function advanceCore(run,options={}){
  if(contentRules(next)>=18&&['moodRecover','moodUnpaidLeave'].includes(effect)){next.eventId=next.meltdownReturnEventId;next.meltdownReturnEventId=null;return next;}
  if(contentRules(next)>=14&&effect==='rageReturn'){
   const context=next.rageContext;next.eventId=context.eventId;next.rageContext=null;
+  if(contentRules(next)>=39&&context.phase==='event'){const source=getEvent(next),close=isPrivateSceneV39(source)?privateReturnEffectV39(source,next):null;if(close){next.pending=true;next.pendingEffect=close;next.pendingFamily=null;return advance(next);}}
   if(context.phase==='result'){
    // Resume the already committed choice using its own history entry. The
    // intervening rage result must not replace the original transition kind.
@@ -664,6 +681,9 @@ function advanceCore(run,options={}){
  if(normal&&!occasionalEducation(next)&&!next.educationReviewed){next.resumeEventId=next.eventId;next.eventId='education-review';return next;}
  if(next.pip?.active&&next.pip.remaining===0){next.resumeEventId=next.eventId;next.eventId='pip-review';return next;}
  if(next.stats.mood<=12&&(contentRules(next)<18||next.stats.mood>0)&&next.eventId!=='crisis-mood'){next.resumeEventId=next.eventId;next.eventId='crisis-mood';return next;}
+ // A private daily scene can consume its own scheduled turn, but its closing
+ // conversation is not an extra trigger for a workplace personnel review.
+ if(options.privateV39)return next;
  // One early assessment, never on onboarding or inside a modal/PIP. If the
  // ordinary boss dispute is already imminent, expose its specific cause first.
  if(contentRules(next)>=11&&last.kind==='daily'&&!next.flags.education_risk_checked){
@@ -700,14 +720,15 @@ function advanceCore(run,options={}){
  return next;
 }
 export function advance(run,options={}){
- const next=advanceCore(run,options);
+ const privateV39=contentRules(run)>=39&&run.pending&&!run.rageContext&&!run.verbalContext&&isPrivateSceneV39(getEvent(run));
+ const next=advanceCore(run,privateV39?{...options,privateV39:true}:options);
  // The new decision owns the screen until answered. Deferred exhaustion,
  // mood and personnel transitions run only after a real continuation.
  if(contentRules(next)>=38&&next.chapterContext)return next;
  if(run.verbalContext?.version===2)return next;
  if(contentRules(next)>=30&&next.verbalContext)return next;
  if(contentRules(next)>=18&&run.pending&&!next.pending&&!next.completed&&next.stats.mood===0&&!next.rageContext&&!next.meltdownReturnEventId&&next.eventId!=='mood-collapse'){next.meltdownReturnEventId=next.eventId;next.eventId='mood-collapse';flag(next,'mood_crash_count');}
- if(!options.verbalV2&&run.pending&&contentRules(next)>=20&&next.personnelPending&&!next.pip?.active&&personnelSafe(next,getEvent(next))){const pending=next.personnelPending;next.personnelPending=null;const decision=personnelDecision(next,pending.reason,pending.strength,roll(next));if(decision)openPersonnel(next,decision);}
+ if(!options.verbalV2&&!privateV39&&run.pending&&contentRules(next)>=20&&next.personnelPending&&!next.pip?.active&&personnelSafe(next,getEvent(next))){const pending=next.personnelPending;next.personnelPending=null;const decision=personnelDecision(next,pending.reason,pending.strength,roll(next));if(decision)openPersonnel(next,decision);}
  if(run.pending&&contentRules(next)>=24&&next.salaryAdvice?.status==='queued'&&personnelSafe(next,getEvent(next))){
   if(next.pay>=30)next.salaryAdvice=null;
   else{next.salaryAdvice.returnEventId=next.eventId;next.salaryAdvice.status='open';next.eventId='low-pay-tip';}
@@ -750,19 +771,21 @@ export function canRequestVerbal(run){
  return !!event&&!VERBAL_EVENTS_V30.includes(event.id)&&!['rage','rage-world','verbal'].includes(event.kind);
 }
 export function getVerbalTargets(run){return canRequestVerbal(run)?verbalTargetsV30(getEvent(run)):[];}
+const spokenLine=(run,event,target,phase)=>contentRules(run)>=39?strongVerbalLineV39({event,target,run,phase,base:verbalLineV2(run,event,target,phase)}):verbalLineV2(run,event,target,phase);
 export function getVerbalLine(run,target){
  if(!canRequestVerbal(run))return '';
  const event=getEvent(run),targets=getVerbalTargets(run),selected=target??targets[0];
- return targets.includes(selected)?verbalLineV2(run,event,selected,run.pending?'result':'event'):'';
+ return targets.includes(selected)?spokenLine(run,event,selected,run.pending?'result':'event'):'';
 }
 export function requestVerbal(run,target,version){
  if(version!==undefined&&version!==2)return run;
  if(!canRequestVerbal(run))return run;
+ if(contentRules(run)>=39&&version!==2&&isPrivateSceneV39(getEvent(run)))return run;
  if(version===2){
   const targets=getVerbalTargets(run);if(target!==undefined&&(targets.length<2||!targets.includes(target)))return run;
   const next=structuredClone(run),source=getEvent(run),phase=run.pending?'result':'event',selected=target??targets[0];
   const action={type:'verbal',phase,eventId:source.id,version:2};if(target!==undefined)action.target=target;next.actions.push(action);
-  next.verbalContext={version:2,eventId:source.id,speaker:source.speaker||'wing',target:selected,phase,historyLength:run.history.length,pendingEffect:run.pendingEffect??null,pendingFamily:null,outcome:null,legalResult:null,line:verbalLineV2(run,source,selected,phase),sourceKind:source.kind,sourceChoiceCount:source.choices.length,stage:'release'};
+  next.verbalContext={version:2,eventId:source.id,speaker:source.speaker||'wing',target:selected,phase,historyLength:run.history.length,pendingEffect:run.pendingEffect??null,pendingFamily:null,outcome:null,legalResult:null,line:spokenLine(run,source,selected,phase),sourceKind:source.kind,sourceChoiceCount:source.choices.length,stage:'release'};
   next.pending=false;next.pendingEffect=null;next.pendingFamily=null;
   const resolved=applyChoice(next,0);resolved.actions.pop();return resolved;
  }
@@ -847,7 +870,7 @@ export function replayRun(roleId,seed,actions){
 }
 export function validRun(run){
  try {
-  if(run?.seed?.startsWith('e38-')&&run.chapterContext){
+  if(/^e(?:38|39)-/.test(run?.seed||'')&&run.chapterContext){
    const lastAction=run.actions?.at(-1),prefix=run.pending&&lastAction?.type==='choice'?replayRun(run.roleId,run.seed,run.actions.slice(0,-1)):null;
    const canonical=prefix?applyChoice(prefix,lastAction.index):replayRun(run.roleId,run.seed,run.actions),actual={...run};delete actual.runId;
    const equal=(a,b)=>a===b||Boolean(a&&b&&typeof a==='object'&&typeof b==='object'&&Array.isArray(a)===Array.isArray(b)&&Object.keys(a).length===Object.keys(b).length&&Object.keys(b).every(key=>Object.hasOwn(a,key)&&equal(a[key],b[key])));
@@ -878,6 +901,7 @@ export function validRun(run){
     if(!Number.isInteger(context.historyLength)||context.historyLength<0||context.historyLength>=run.history.length||!Number.isInteger(context.sourceChoiceCount)||context.sourceChoiceCount<1||context.sourceChoiceCount>12||!(context.pendingEffect===null||typeof context.pendingEffect==='string'))return false;
     const source=getEvent({...run,eventId:context.eventId,verbalContext:null}),action=run.actions.findLast(item=>item.type==='verbal'),selected=action&&Object.hasOwn(action,'target');
     if(!source||(source.speaker||'wing')!==context.speaker||source.kind!==context.sourceKind||['rage','rage-world','verbal'].includes(source.kind)||!action||action.version!==2||action.eventId!==context.eventId||action.phase!==context.phase)return false;
+    if(contentRules(run)>=39&&isPrivateSceneV39(source)&&(context.outcome==='personnel'||!['release','legal','legal-result'].includes(context.stage)))return false;
     const targets=verbalTargetsV30(source);if(selected?(targets.length<2||!targets.includes(action.target)||context.target!==action.target):context.target!==targets[0])return false;
     if(context.phase==='result'&&(context.historyLength===0||run.history[context.historyLength-1]?.eventId!==context.eventId))return false;
     const row=run.history[context.historyLength],evidence=row?.verbalOutcome;
@@ -890,6 +914,7 @@ export function validRun(run){
     if(!Number.isInteger(context.historyLength)||context.historyLength<0||context.historyLength>=run.history.length||!(context.pendingEffect===null||typeof context.pendingEffect==='string'))return false;
     const source=getEvent({...run,eventId:context.eventId,verbalContext:null});
     if(!source||(source.speaker||'wing')!==context.speaker||['rage','rage-world','verbal'].includes(source.kind))return false;
+    if(contentRules(run)>=39&&isPrivateSceneV39(source))return false;
     const targets=verbalTargetsV30(source),action=run.actions.findLast(item=>item.type==='verbal'),selected=action&&Object.hasOwn(action,'target');
     if(!action||action.eventId!==context.eventId||action.phase!==context.phase)return false;
     if(selected?(targets.length<2||!targets.includes(action.target)||context.target!==action.target):context.target!==targets[0])return false;
@@ -1016,6 +1041,7 @@ export function validRun(run){
      if(!context||typeof context!=='object'||!RAGE_WORLD_EVENTS.includes(run.eventId)||typeof context.eventId!=='string'||RAGE_WORLD_EVENTS.includes(context.eventId)||context.eventId==='rage-menu'||!['event','result'].includes(context.phase)||!['imagined','real'].includes(context.mode)||!Number.isInteger(context.historyLength)||context.historyLength<0||context.historyLength>=run.history.length||!(context.pendingEffect===null||typeof context.pendingEffect==='string')||context.pendingFamily!==null)return false;
      const source=getEvent({...run,eventId:context.eventId});
      if(!source||source.speaker!==context.speaker)return false;
+     if(contentRules(run)>=39&&isPrivateSceneV39(source)&&run.pendingFamily!==null)return false;
      const action=run.actions.findLast(a=>a.type==='rage'),selected=action&&Object.hasOwn(action,'target');
      if(!action||action.eventId!==context.eventId||action.phase!==context.phase)return false;
      const defaultTarget=conversationalTarget(run,source),targets=rageParticipantsFor(source,defaultTarget);

@@ -57,11 +57,11 @@ async function harness(mobile,{fetcher=async()=>imageResponse(),artTimeoutMs}={}
  };
 }
 
-test('all 715 authored events and 88 modal IDs map to the 40 produced plates, with a safe old-scene fallback',()=>{
- assert.equal(artMap.SCENE_PLATES_V38.length,40);
- assert.equal(new Set(artMap.SCENE_PLATES_V38).size,40);
- assert.equal(Object.keys(artMap.EVENT_SCENES_V38).length,715);
- assert.equal(Object.keys(artMap.DYNAMIC_SCENES_V38).length,88);
+test('all 865 authored events and 93 modal IDs map to the 41 produced plates, with a safe old-scene fallback',()=>{
+ assert.equal(artMap.SCENE_PLATES_V38.length,41);
+ assert.equal(new Set(artMap.SCENE_PLATES_V38).size,41);
+ assert.equal(Object.keys(artMap.EVENT_SCENES_V38).length,865);
+ assert.equal(Object.keys(artMap.DYNAMIC_SCENES_V38).length,93);
  for(const event of [...allEvents,...Object.keys(artMap.DYNAMIC_SCENES_V38).map(id=>({id,title:'眼前的故事'}))]){
   const before=JSON.stringify(event),item=art.sceneIllustration(event,{roleId:'design',people:['wing']});
   assert.ok(artMap.SCENE_PLATES_V38.includes(item.theme),event.id);
@@ -95,8 +95,17 @@ test('dream and reality are explicit current-result inputs, with no inference fr
  assert.doesNotMatch(art.renderSceneIllustration(event),/illustration-imagined|illustration-real|現實沒有動手|事情真的發生了/);
 });
 
-test('all 805 ending images require an explicit unlock and use the existing ending role',()=>{
- assert.equal(endings.ENDINGS.length,805);
+test('private aftermath uses a police room only once the current scene reaches the station',()=>{
+ assert.equal(art.sceneIllustration({id:'rage-legal',scope:'private'}).theme,'police_station');
+ assert.equal(art.sceneIllustration({id:'rage-legal',scope:'private'},{reality:'real'}).theme,'police_station');
+ assert.equal(art.sceneIllustration({id:'rage-legal',scope:'private'},{reality:'imagined'}).theme,'dream_rage');
+ assert.equal(art.sceneIllustration({id:'kind-break',scope:'private'}).theme,'dark_invite');
+ for(const id of ['rage-aftermath','rage-showdown','rage-public'])assert.equal(art.sceneIllustration({id,scope:'private'}).theme,'dinner');
+ assert.equal(art.sceneIllustration({id:'rage-legal'}).theme,'legal');
+});
+
+test('all 883 ending images require an explicit unlock and use the existing ending role',()=>{
+ assert.equal(endings.ENDINGS.length,883);
  const paths=new Set();
  for(const ending of endings.ENDINGS){
   assert.equal(art.renderEndingIllustration(ending),'');
@@ -108,7 +117,7 @@ test('all 805 ending images require an explicit unlock and use the existing endi
   assert.ok(html.includes(path));assert.match(html,/loading="lazy" decoding="async"/);
   assert.equal(art.endingIllustrationPath({...ending,roleId:'invalid'},{unlocked:true}),null);
  }
- assert.equal(paths.size,805);
+ assert.equal(paths.size,883);
  assert.equal(art.renderEndingIllustration({id:'../../private',title:'secret',roleId:'system'},{unlocked:true}),'');
 });
 
@@ -117,7 +126,7 @@ for(const mobile of [false,true]){
  test(`${device}: every authored scene renders an original environment and current cast without altering the life`,async()=>{
   const app=await harness(mobile);
   for(const event of allEvents){
-   const roleId=event.roles?.[0]||'system',run=engine.createRun(roleId,`e37-art-${event.id}`);
+   const roleId=event.roles?.[0]||'system',cohort=event.minRules>=39?'e39':'e37',run=engine.createRun(roleId,`${cohort}-art-${event.id}`);
    run.actualRoleId=roleId;run.eventId=event.id;run.turn=12;
    if(event.requireGender)run.characterGender=event.requireGender;
    const before=JSON.stringify(run),html=app.render(run);
@@ -130,10 +139,10 @@ for(const mobile of [false,true]){
  });
  test(`${device}: locked cards have no spoiler image URL, alt, title or hidden background; all unlocked cards have their image`,async()=>{
   const app=await harness(mobile),locked=app.collection([]);
-  assert.equal([...locked.matchAll(/ending-card locked/g)].length,805);
+  assert.equal([...locked.matchAll(/ending-card locked/g)].length,883);
   assert.doesNotMatch(locked,/<img|assets\/endings|background|\balt=|\btitle=/);
   const unlocked=app.collection(endings.ENDINGS.map(ending=>ending.id));
-  assert.equal([...unlocked.matchAll(/data-illustration="ending"/g)].length,805);
+  assert.equal([...unlocked.matchAll(/data-illustration="ending"/g)].length,883);
   for(const ending of endings.ENDINGS)assert.ok(unlocked.includes(`./assets/endings/${ending.id}.webp`));
   const one=endings.ENDINGS.find(ending=>ending.id==='vietnam_afterdark-hr'),mixed=app.collection([one.id]);
   assert.equal([...mixed.matchAll(/data-illustration="ending"/g)].length,1);
@@ -191,7 +200,7 @@ test('completed-life download includes its image, falls back offline, and captur
  const before=JSON.stringify(run);await app.download();
  assert.equal(app.calls.downloads.length,1);
  const svg=await app.calls.blobs[0].text();assert.match(svg,/<image href="data:image\/png;base64,/);
- assert.doesNotMatch(svg,/<image href="\.\//);assert.equal(JSON.stringify(run),before);
+ assert.doesNotMatch(svg,/<image href="\.\//);assert.match(svg,/回合收尾/);assert.doesNotMatch(svg,/回合離場/);assert.equal(JSON.stringify(run),before);
  const offline=await harness(true,{fetcher:async()=>{throw new Error('offline');}});offline.render(run);await offline.download();
  assert.equal(offline.calls.downloads.length,1);assert.doesNotMatch(await offline.calls.blobs[0].text(),/<image/);
  let release;const racing=await harness(false,{fetcher:()=>new Promise(resolve=>{release=resolve;})});racing.render(run);

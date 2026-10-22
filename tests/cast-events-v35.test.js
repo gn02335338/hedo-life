@@ -8,18 +8,20 @@ import {CAST_EVENTS_V35_A} from '../dist/events-cast-v35-a.js';
 import {CAST_EVENTS_V35_B} from '../dist/events-cast-v35-b.js';
 import {verbalSceneLine} from '../dist/verbal-scene-copy.js';
 import {rageParticipantsFor} from '../dist/rage-participants.js';
+import {ORIGINAL_CHARACTER_IDS_V37} from './character-compat.mjs';
 
 const added=[...CAST_EVENTS_V35_A,...CAST_EVENTS_V35_B];
+const published=EVENTS.filter(event=>(event.minRules||1)<39);
 const deficits={hope:3,spencer:14,sophie:18,helen:21,cindy:22,owen:23,meimei:7,jenjen:10,sam:23,jonathan:24,erich:25,kind:28};
 const rawNames=/\b(?:Wing|Spencer|Rick|Sonny|Hope|Kind|JenJen|Erich|Jack|Jonathan|Owen|Sam|Cindy|Sophie|Helen)\b/;
 
 test('218 original scenes bring every underrepresented main speaker to thirty, preserving the entire published daily catalogue',()=>{
  assert.equal(CAST_EVENTS_V35_A.length,101);assert.equal(CAST_EVENTS_V35_B.length,117);
- assert.equal(EVENTS.length,711);assert.equal(EVENTS.filter(event=>(event.minRules||1)<35).length,463);
- assert.equal(new Set(EVENTS.map(event=>event.id)).size,711);
+ assert.equal(published.length,711);assert.equal(EVENTS.filter(event=>(event.minRules||1)<35).length,463);
+ assert.equal(new Set(published.map(event=>event.id)).size,711);
  for(const [id,amount]of Object.entries(deficits))assert.equal(added.filter(event=>event.speaker===id).length,amount,id);
- for(const id of Object.keys(PERSONAS)){
-  const total=EVENTS.filter(event=>(event.speaker||'wing')===id).length;
+ for(const id of ORIGINAL_CHARACTER_IDS_V37){
+  const total=published.filter(event=>(event.speaker||'wing')===id).length;
   assert.ok(total>=30,`${id} has only ${total}`);
   if(Object.hasOwn(deficits,id))assert.equal(total,30,id);
  }

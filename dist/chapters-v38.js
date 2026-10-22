@@ -36,7 +36,7 @@ export function getChapterResolutionV38(run){
 // Existing career menus already are departure decisions. State that in the
 // committed text instead of silently treating a completed work goal as an exit.
 export function withDepartureChoicesV38(event,run){
- if(!/^e38-/.test(run?.seed||'')||!event||!['exit-menu','career-exit','rank-exit','story-exit','final-shortfall'].includes(event.id))return event;
+ if(!/^e(?:38|39)-/.test(run?.seed||'')||!event||!['exit-menu','career-exit','rank-exit','story-exit','final-shortfall'].includes(event.id))return event;
  return {...event,body:`${event.body} 確認下方的離場選擇就會正式結束這份工作；只看清單不算離職。`,choices:event.choices.map(choice=>{
   if(!VOLUNTARY_FAMILIES_V38.includes(choice.effect))return choice;
   if(choice.effect==='consultant')return {...choice,text:'確認離職、結束原全職任用，再談外部顧問合約。',result:`${choice.result} 你確認離職與交接，結束原本的全職任用；後續只依另外寫明範圍、時數與費用的外部顧問合約合作。`,flags:[...(choice.flags||[]),'departure38_voluntary']};
@@ -45,7 +45,7 @@ export function withDepartureChoicesV38(event,run){
 }
 
 export function chapterDepartureCopyV38(run,ending){
- if(!/^e38-/.test(run?.seed||'')||!run.completed||!ending||run.endingId!==ending.id||!run.flags?.departure38_voluntary)return ending;
+ if(!/^e(?:38|39)-/.test(run?.seed||'')||!run.completed||!ending||run.endingId!==ending.id||!run.flags?.departure38_voluntary)return ending;
  const milestone=CHAPTER_FAMILIES_V38.includes(ending.family);
  if(milestone){
   const memory={

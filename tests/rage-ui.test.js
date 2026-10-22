@@ -156,7 +156,7 @@ test('rage from a revealed result keeps that conversation and committed choice',
 test('new browser lives use e37 and the guide explains solo and group targets', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e38-[a-f0-9]+$/);
+  assert.match(seed, /^e39-[a-f0-9]+$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;

@@ -9,7 +9,7 @@ export function rageTargetForV37(event){
 }
 
 export function getRageV37(run){
-  if(!/^e(?:37|38)-/.test(run?.seed||'')||run.rageContext?.target!=='professor')return getRageV23(run);
+  if(!/^e(?:37|38|39)-/.test(run?.seed||'')||run.rageContext?.target!=='professor')return getRageV23(run);
   if(run.eventId!=='rage-release')return getRageV14(run,Object.fromEntries(Object.entries(PERSONAS).map(([id,p])=>[id,p.name])));
   const context=run.rageContext,hot=run.stats.mood<=25,calm=run.stats.mood>=65;
   const realWeight=Math.max(12,Math.min(64,28+(hot?23:calm?-12:0)));

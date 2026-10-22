@@ -87,7 +87,7 @@ function professorMenu(run){
 }
 
 export function getMealEventV37(run){
-  if(!/^e(?:37|38)-/.test(run?.seed||'')||!['self-care','crisis-mood'].includes(run.mealContext?.origin))throw new Error('Invalid v37 meal context');
+  if(!/^e(?:37|38|39)-/.test(run?.seed||'')||!['self-care','crisis-mood'].includes(run.mealContext?.origin))throw new Error('Invalid v37 meal context');
   if(run.eventId==='meal-guests-c')return professorMenu(run);
   if(run.eventId==='meal-with-professor')return professorDinner(run);
   const event=withMealReactionsV36(withMealInvitationsV34(getMealV25(run),run),run);

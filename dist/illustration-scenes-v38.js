@@ -1,6 +1,7 @@
+import {CAST_SCENES_V39} from './illustration-cast-v39.js';
 // Presentation-only scene map. These IDs never participate in replay or RNG.
 // Known current events share an original environment plate; private photo inputs stay outside this repository.
-export const SCENE_PLATES_V38=Object.freeze(["office_day","meeting","cloud_files","bug_debug","server_room","printer","client_call","bd_partner","brand_studio","finance_budget","accounting","recruiting","admin_coffee","product_planning","project_schedule","academic_lab","learning","banquet","karaoke","arm_wrestling","riddle_festival","hallway_gate","hr_review","salary","exit_paper","archive","rest_cafe","dinner","dark_invite","collapse","dream_rage","real_rage","legal","public_stage","company_market","company_buyout","company_vietnam","startup","retirement","onboarding"]);
+export const SCENE_PLATES_V38=Object.freeze(["office_day","meeting","cloud_files","bug_debug","server_room","printer","client_call","bd_partner","brand_studio","finance_budget","accounting","recruiting","admin_coffee","product_planning","project_schedule","academic_lab","learning","banquet","karaoke","arm_wrestling","riddle_festival","hallway_gate","hr_review","salary","exit_paper","archive","rest_cafe","dinner","dark_invite","collapse","dream_rage","real_rage","legal","public_stage","company_market","company_buyout","company_vietnam","startup","retirement","onboarding","police_station"]);
 export const SCENE_ALIASES_V38=Object.freeze({"sales_pitch":"client_call","management":"meeting","study_circle":"learning","banquet_afterparty":"dark_invite","labor_mediation":"legal","weekend":"retirement","job_choice":"onboarding","raffle":"banquet"});
 const groups={
  "office_day": [
@@ -783,7 +784,7 @@ const groups={
   "road"
  ]
 };
-export const EVENT_SCENES_V38=Object.freeze(Object.fromEntries(Object.entries(groups).flatMap(([theme,ids])=>ids.map(id=>[id,theme]))));
+export const EVENT_SCENES_V38=Object.freeze({...Object.fromEntries(Object.entries(groups).flatMap(([theme,ids])=>ids.map(id=>[id,theme]))),...CAST_SCENES_V39});
 export const DYNAMIC_SCENES_V38=Object.freeze({
  "banquet-afterparty": "banquet_afterparty",
  "banquet-draw": "raffle",
@@ -817,6 +818,11 @@ export const DYNAMIC_SCENES_V38=Object.freeze({
  "meal-guests-a": "rest_cafe",
  "meal-guests-b": "rest_cafe",
  "meal-guests-c": "rest_cafe",
+ "meal-with-annie_yu": "dinner",
+ "meal-with-princess": "dinner",
+ "meal-with-joyce": "dinner",
+ "meal-with-janet": "dinner",
+ "meal-with-captain": "dinner",
  "meal-with-cindy": "dinner",
  "meal-with-erich": "dinner",
  "meal-with-helen": "dinner",

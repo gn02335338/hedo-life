@@ -1,0 +1,133 @@
+{
+  "version": 41,
+  "mode": "Built-in image_gen",
+  "count": 12,
+  "portraits": 5,
+  "companyMasters": 6,
+  "records": [
+    {
+      "id": "annie_yu",
+      "prompt": "Use case: illustration-story. Asset: transparent half-body character sprite for a fictional office satire game. Reference 1 is only the subject's hair, glasses, wardrobe and general adult likeness; simplify heavily into an ORIGINAL ANIMATED CHARACTER, not a realistic tracing. Reference2 (Wing) and reference3 (Jenjen) are STYLE references only; do not copy their gender, identity, clothes or props. Style must strictly match these game sprites: thick uniform dark NAVY contours, exaggerated geometric face, large head, chunky angular hair masses, 2-3 hard cel tones, no painterly rendering, no photo texture, no soft anime airbrush. Adult woman, shoulder-length side-part straight dark-brown hair, no eyeglasses, friendly rounded cheeks; cream chunky-knit sweater, dark trousers; holds teal partnership folder and a tiny blank contact card. Business-development assistant with practical, slightly exasperated expression. Three-quarter forward pose, head and hands fully inside frame, cropped at hips, isolated on a genuinely transparent background. Vivid teal/cream/coral palette with specified wardrobe. No text, letters, logos, watermark or outside scenery. Exactly two coherent hands. Fully clothed adult.",
+      "references": [
+        "User-provided photo reference (not published)",
+        "./assets/wing.png",
+        "./assets/jenjen.png"
+      ],
+      "output": "assets/annie_yu.png",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "captain",
+      "prompt": "Use case: illustration-story. Asset: transparent half-body character sprite for a fictional office satire game. Reference 1 is only the subject's hair, glasses, wardrobe and general adult likeness; simplify heavily into an ORIGINAL ANIMATED CHARACTER, not a realistic tracing. Reference2 (Wing) and reference3 (Jenjen) are STYLE references only; do not copy their gender, identity, clothes or props. Style must strictly match these game sprites: thick uniform dark NAVY contours, exaggerated geometric face, large head, chunky angular hair masses, 2-3 hard cel tones, no painterly rendering, no photo texture, no soft anime airbrush. Adult woman with straight long black hair and blunt fringe bangs, no glasses, white office blouse; holds navy employee-onboarding binder and a tiny paper boat, tired but determined expression, HR/administration. Three-quarter forward pose, head and hands fully inside frame, cropped at hips, isolated on a genuinely transparent background. Vivid teal/cream/coral palette with specified wardrobe. No text, letters, logos, watermark or outside scenery. Exactly two coherent hands. Fully clothed adult.",
+      "references": [
+        "User-provided photo reference (not published)",
+        "./assets/wing.png",
+        "./assets/jenjen.png"
+      ],
+      "output": "assets/captain.png",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "company_closed",
+      "prompt": "Use case: illustration-story. One new 16:10 landscape ending-family master for a fictional office satire game. The office is closing for good: shuttered entrance, disconnected monitors, ordinary teal/cream employee at left with a personal cardboard box and returned badge on desk. A SINGLE Wing in hot pink polo stands behind an empty reception counter holding a blank closure notice, no cheerful celebration. Twilight and unplugged cables, poignant satirical final day. Match the first reference exactly in visual language: thick uniform DARK NAVY outlines, geometric expressive adult cartoon faces, large heads, chunky hair, only 2-3 flat hard-edge cel tones; teal/cream/coral/pink/gold palette, clean graphic architectural background. The first reference defines ordinary teal employee wardrobe and STYLE only; redraw a distinct scene. When shown, Wing in second reference MUST match his angular jaw, huge triangular nose, spiky dark-brown hair, NO glasses, hot pink polo. Ordinary employees are NOT Wing; no duplicate Wing and no boardroom pink glasses boss. Main story action in upper80%; lower15% quiet floor/table reserved for profession artwork overlay. Fully clothed adults, coherent anatomy/two hands per person. No readable lettering, logos, watermark, real company marks, flags or national stereotypes. These are fictional future routes, not real news.",
+      "references": [
+        "./assets/ending-scenes/career_staff.webp",
+        "./assets/wing.png"
+      ],
+      "output": "assets/ending-scenes/company_closed.webp",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "company_restructured",
+      "prompt": "Use case: illustration-story. One new 16:10 landscape ending-family master for a fictional office satire game. A reduced surviving team continues work: teal employee at one desk now surrounded by 4 unplugged empty workstations, shared lamp, tiny budget calculator and a stack of tasks; SINGLE Wing hot pink polo cuts a decorative ribbon over a much smaller resource cabinet, corporate 'lean' absurdity. Mixed bittersweet mood, employee visibly still working. No severance box in player's hands. Match the first reference exactly in visual language: thick uniform DARK NAVY outlines, geometric expressive adult cartoon faces, large heads, chunky hair, only 2-3 flat hard-edge cel tones; teal/cream/coral/pink/gold palette, clean graphic architectural background. The first reference defines ordinary teal employee wardrobe and STYLE only; redraw a distinct scene. When shown, Wing in second reference MUST match his angular jaw, huge triangular nose, spiky dark-brown hair, NO glasses, hot pink polo. Ordinary employees are NOT Wing; no duplicate Wing and no boardroom pink glasses boss. Main story action in upper80%; lower15% quiet floor/table reserved for profession artwork overlay. Fully clothed adults, coherent anatomy/two hands per person. No readable lettering, logos, watermark, real company marks, flags or national stereotypes. These are fictional future routes, not real news.",
+      "references": [
+        "./assets/ending-scenes/career_staff.webp",
+        "./assets/wing.png"
+      ],
+      "output": "assets/ending-scenes/company_restructured.webp",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "company_shell_brand",
+      "prompt": "Use case: illustration-story. One new 16:10 landscape ending-family master for a fictional office satire game. A brightly lit polished blank corporate sign outside an almost-empty office, dusty vacated desks and 3 ordinary staff leaving with personal boxes. A separate generic external contractor in slate blazer answers support calls on a screen next to a tiny outsourced service desk. The public brand facade stays cheerful, original team has been removed. Teal player leaves at left with badge in box; no named hidden characters, no logos. Match the first reference exactly in visual language: thick uniform DARK NAVY outlines, geometric expressive adult cartoon faces, large heads, chunky hair, only 2-3 flat hard-edge cel tones; teal/cream/coral/pink/gold palette, clean graphic architectural background. The first reference defines ordinary teal employee wardrobe and STYLE only; redraw a distinct scene. When shown, Wing in second reference MUST match his angular jaw, huge triangular nose, spiky dark-brown hair, NO glasses, hot pink polo. Ordinary employees are NOT Wing; no duplicate Wing and no boardroom pink glasses boss. Main story action in upper80%; lower15% quiet floor/table reserved for profession artwork overlay. Fully clothed adults, coherent anatomy/two hands per person. No readable lettering, logos, watermark, real company marks, flags or national stereotypes. These are fictional future routes, not real news.",
+      "references": [
+        "./assets/ending-scenes/career_staff.webp"
+      ],
+      "output": "assets/ending-scenes/company_shell_brand.webp",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "company_stagnation",
+      "prompt": "Use case: illustration-story. One new 16:10 landscape ending-family master for a fictional office satire game. The same cramped office still operates, years of ambitious plans shown as untouched blank poster frames and one tiny potted plant that has outgrown its pot. Ordinary teal employee sits wearily on a floating office chair among gentle paperwork waves while SINGLE pink-shirt Wing proudly points to an entirely flat graph, absurd corporate stagnation, work continues. Warm muted daylight. Match the first reference exactly in visual language: thick uniform DARK NAVY outlines, geometric expressive adult cartoon faces, large heads, chunky hair, only 2-3 flat hard-edge cel tones; teal/cream/coral/pink/gold palette, clean graphic architectural background. The first reference defines ordinary teal employee wardrobe and STYLE only; redraw a distinct scene. When shown, Wing in second reference MUST match his angular jaw, huge triangular nose, spiky dark-brown hair, NO glasses, hot pink polo. Ordinary employees are NOT Wing; no duplicate Wing and no boardroom pink glasses boss. Main story action in upper80%; lower15% quiet floor/table reserved for profession artwork overlay. Fully clothed adults, coherent anatomy/two hands per person. No readable lettering, logos, watermark, real company marks, flags or national stereotypes. These are fictional future routes, not real news.",
+      "references": [
+        "./assets/ending-scenes/career_staff.webp",
+        "./assets/wing.png"
+      ],
+      "output": "assets/ending-scenes/company_stagnation.webp",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "company_taiwan_exit",
+      "prompt": "Use case: illustration-story. One new 16:10 landscape ending-family master for a fictional office satire game. A two-location handover, Taiwan office at foreground with 3 ordinary employees holding personal boxes and turning over blank handover binders; behind a video wall a diverse Vietnam-based remote engineering team is working professionally at laptops. Show the company's cost-cutting decision through one empty local desk row and a remote network link, no caricatures or national stereotypes, no hostility between coworkers. Main teal employee holds severance papers; SINGLE Wing at side points at a budget calculator. Match the first reference exactly in visual language: thick uniform DARK NAVY outlines, geometric expressive adult cartoon faces, large heads, chunky hair, only 2-3 flat hard-edge cel tones; teal/cream/coral/pink/gold palette, clean graphic architectural background. The first reference defines ordinary teal employee wardrobe and STYLE only; redraw a distinct scene. When shown, Wing in second reference MUST match his angular jaw, huge triangular nose, spiky dark-brown hair, NO glasses, hot pink polo. Ordinary employees are NOT Wing; no duplicate Wing and no boardroom pink glasses boss. Main story action in upper80%; lower15% quiet floor/table reserved for profession artwork overlay. Fully clothed adults, coherent anatomy/two hands per person. No readable lettering, logos, watermark, real company marks, flags or national stereotypes. These are fictional future routes, not real news.",
+      "references": [
+        "./assets/ending-scenes/career_staff.webp",
+        "./assets/wing.png"
+      ],
+      "output": "assets/ending-scenes/company_taiwan_exit.webp",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "company_wage_arrears",
+      "prompt": "Use case: illustration-story. One new 16:10 landscape ending-family master for a fictional office satire game. An ordinary teal employee at an office desk opens an EMPTY pay envelope and records calendar dates in a notebook, worried adult expression, unfinished coffee and waiting coworkers. SINGLE Wing at background in hot pink polo points toward a distant gold ceremonial bell kept in a locked display case, prioritizing vague dreams over overdue pay. Restrained office satire, no money theft or crime symbols, work and wage dispute remain unresolved. Match the first reference exactly in visual language: thick uniform DARK NAVY outlines, geometric expressive adult cartoon faces, large heads, chunky hair, only 2-3 flat hard-edge cel tones; teal/cream/coral/pink/gold palette, clean graphic architectural background. The first reference defines ordinary teal employee wardrobe and STYLE only; redraw a distinct scene. When shown, Wing in second reference MUST match his angular jaw, huge triangular nose, spiky dark-brown hair, NO glasses, hot pink polo. Ordinary employees are NOT Wing; no duplicate Wing and no boardroom pink glasses boss. Main story action in upper80%; lower15% quiet floor/table reserved for profession artwork overlay. Fully clothed adults, coherent anatomy/two hands per person. No readable lettering, logos, watermark, real company marks, flags or national stereotypes. These are fictional future routes, not real news.",
+      "references": [
+        "./assets/ending-scenes/career_staff.webp",
+        "./assets/wing.png"
+      ],
+      "output": "assets/ending-scenes/company_wage_arrears.webp",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "janet",
+      "prompt": "Use case: illustration-story. Asset: transparent half-body character sprite for a fictional office satire game. Reference 1 is only the subject's hair, glasses, wardrobe and general adult likeness; simplify heavily into an ORIGINAL ANIMATED CHARACTER, not a realistic tracing. Reference2 (Wing) and reference3 (Jenjen) are STYLE references only; do not copy their gender, identity, clothes or props. Style must strictly match these game sprites: thick uniform dark NAVY contours, exaggerated geometric face, large head, chunky angular hair masses, 2-3 hard cel tones, no painterly rendering, no photo texture, no soft anime airbrush. Adult woman, long straight black hair, rectangular thin eyeglasses, dark green checked poncho over brick-red long-sleeve top; holds calculator and white-team budget envelope, skeptical and procedural expression. No theft symbolism. Three-quarter forward pose, head and hands fully inside frame, cropped at hips, isolated on a genuinely transparent background. Vivid teal/cream/coral palette with specified wardrobe. No text, letters, logos, watermark or outside scenery. Exactly two coherent hands. Fully clothed adult.",
+      "references": [
+        "User-provided photo reference (not published)",
+        "./assets/wing.png",
+        "./assets/jenjen.png"
+      ],
+      "output": "assets/janet.png",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "joyce",
+      "prompt": "Use case: illustration-story. Asset: transparent half-body character sprite for a fictional office satire game. Reference 1 is only the subject's hair, glasses, wardrobe and general adult likeness; simplify heavily into an ORIGINAL ANIMATED CHARACTER, not a realistic tracing. Reference2 (Wing) and reference3 (Jenjen) are STYLE references only; do not copy their gender, identity, clothes or props. Style must strictly match these game sprites: thick uniform dark NAVY contours, exaggerated geometric face, large head, chunky angular hair masses, 2-3 hard cel tones, no painterly rendering, no photo texture, no soft anime airbrush. Adult woman, long straight black hair, no eyeglasses, white blouse with black bow collar, mustard pencil skirt; holds a microphone and gold sales target clipboard, confident aloof executive expression. Three-quarter forward pose, head and hands fully inside frame, cropped at hips, isolated on a genuinely transparent background. Vivid teal/cream/coral palette with specified wardrobe. No text, letters, logos, watermark or outside scenery. Exactly two coherent hands. Fully clothed adult.",
+      "references": [
+        "User-provided photo reference (not published)",
+        "./assets/wing.png",
+        "./assets/jenjen.png"
+      ],
+      "output": "assets/joyce.png",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "princess",
+      "prompt": "Use case: illustration-story. Asset: transparent half-body character sprite for a fictional office satire game. Reference 1 is only the subject's hair, glasses, wardrobe and general adult likeness; simplify heavily into an ORIGINAL ANIMATED CHARACTER, not a realistic tracing. Reference2 (Wing) and reference3 (Jenjen) are STYLE references only; do not copy their gender, identity, clothes or props. Style must strictly match these game sprites: thick uniform dark NAVY contours, exaggerated geometric face, large head, chunky angular hair masses, 2-3 hard cel tones, no painterly rendering, no photo texture, no soft anime airbrush. Adult woman with long straight center/side-part black hair, no eyeglasses, round cheeks; dark plum high-neck sweater, small necklace; one hand casually makes a V sign, other hand holds a data-mining laptop with simple scatterplot dots; relaxed distracted expression. No literal crown. Three-quarter forward pose, head and hands fully inside frame, cropped at hips, isolated on a genuinely transparent background. Vivid teal/cream/coral palette with specified wardrobe. No text, letters, logos, watermark or outside scenery. Exactly two coherent hands. Fully clothed adult.",
+      "references": [
+        "User-provided photo reference (not published)",
+        "./assets/wing.png",
+        "./assets/jenjen.png"
+      ],
+      "output": "assets/princess.png",
+      "qa": "Visually inspected"
+    },
+    {
+      "id": "police_station",
+      "prompt": "Use case: illustration-story. Asset: 16:9 empty environment plate for a fictional Taiwanese office-satire game, NO PEOPLE or faces. A small neighborhood police station reception room late at night, two separate visitor chairs facing a modest statement-taking desk, blank statement forms, paper water cups, desk lamp, clock, coat rack and an illuminated glass entry door showing the quiet street. Ordinary realistic room layout but rendered as clean graphic adult cartoon scenery, bold dark navy contours, simple teal/cream/gold/indigo cel-shaded shapes, consistent with the reference game's illustrated environment. Calm awkward aftermath, no jail cell, weapons, violence, crime scene or readable writing. Keep right lower third clear for a separate NPC portrait overlay. No legible letters, police insignia, logos or watermark.",
+      "references": [
+        "./assets/scenes/legal.webp"
+      ],
+      "output": "assets/scenes/police_station.webp",
+      "qa": "Visually inspected"
+    }
+  ],
+  "scenePlates": 1
+}

@@ -1,4 +1,7 @@
 import { PERSONAS, displayText, displayChronicleHistory } from './persona.js';
+import { polishVerbalHistoryV41 } from './verbal-presentation-v41.js';
+import { companyFinaleEmploymentV39 } from './company-v39.js';
+const shownHistory=row=>polishVerbalHistoryV41(displayChronicleHistory(row));
 
 // A read-only explanation of an already committed ending. Do not use this
 // projection for probabilities, replay validation or employment decisions.
@@ -53,7 +56,8 @@ const name = id => id==='self'?'自己':id==='exit-team'?'法師、真真與阿�
 function employmentStatus(run, family, last) {
  const finalSpeech=run.history?.findLast(row=>row.verbalOutcome);
  if(family==='layoff'&&finalSpeech?.verbalOutcome?.origin==='onboarding'&&finalSpeech.verbalOutcome.phase==='event'&&finalSpeech.verbalOutcome.kind==='personnel'&&!run.history.some(row=>row.eventId==='onboarding'&&!row.verbalOutcome))return STATUSES.verbal_onboarding;
- if(/^e38-/.test(run.seed||'')&&run.flags?.departure38_voluntary)return status('voluntary','你已明確提出離職，結束這份工作','先前的成果與風波仍留在紀錄裡。這次離開是你親自確認的決定，不是公司另外要求你走。');
+ if(/^e(?:38|39)-/.test(run.seed||'')&&run.flags?.departure38_voluntary)return status('voluntary','你已明確提出離職，結束這份工作','先前的成果與風波仍留在紀錄裡。這次離開是你親自確認的決定，不是公司另外要求你走。');
+ const company=companyFinaleEmploymentV39(family);if(company)return company;
  if(STATUSES[family])return STATUSES[family];
  if(COMPANY_FAMILIES.has(family))return status('company-chapter','公司走向已定，沒有你的離場通知','這次結算的是公司的平行未來；翅膀是否留任不等於你被開除，這段沒有另外記下你的離職或資遣。');
  if(VOLUNTARY_FAMILIES.has(family)&&EXPLICIT_EXIT_SCENES.has(last?.eventId))return status('voluntary','你選好這段職涯的收尾，主動離職','你從離場清單確認這個選擇，工作在這裡結束；不是公司另發一張資遣通知。');
@@ -65,11 +69,11 @@ export function buildEndingTransition(run, ending) {
  const history=Array.isArray(run.history)?run.history:[],last=history.at(-1),family=ending.family;
  const relatedSpeech=family.startsWith('verbal_')||last?.verbalOutcome||/^verbal-/.test(last?.eventId||'');
  const speech=relatedSpeech?history.findLast(row=>row?.verbalOutcome):null;
- const current=last?displayChronicleHistory(last):null,spoken=speech?displayChronicleHistory(speech):null;
+ const current=last?shownHistory(last):null,spoken=speech?shownHistory(speech):null;
  const milestoneIndex=run.flags?.[`chapter38_${family}`]-1;
- const milestone=last?.eventId==='chapter-resolution'&&Number.isInteger(milestoneIndex)&&milestoneIndex>=0&&milestoneIndex<history.length-1?displayChronicleHistory(history[milestoneIndex]):null;
+ const milestone=last?.eventId==='chapter-resolution'&&Number.isInteger(milestoneIndex)&&milestoneIndex>=0&&milestoneIndex<history.length-1?shownHistory(history[milestoneIndex]):null;
  return {
-  family,employment:employmentStatus(run,family,last),legacyChapter:!/^e38-/.test(run.seed||'')&&['employed','dispute-open','aftermath-open','new-chapter'].includes(employmentStatus(run,family,last).kind),
+  family,employment:employmentStatus(run,family,last),legacyChapter:!/^e(?:38|39)-/.test(run.seed||'')&&['employed','dispute-open','aftermath-open','new-chapter'].includes(employmentStatus(run,family,last).kind),
   final:current?{title:current.title,choice:current.choiceText,result:current.result,target:last.speaker,targetName:name(last.speaker),turn:last.turn}:null,
   speech:spoken?{line:spoken.choiceText,result:spoken.result,target:speech.verbalOutcome.target,targetName:name(speech.verbalOutcome.target),origin:speech.verbalOutcome.origin,phase:speech.verbalOutcome.phase,turn:speech.turn}:null,
   milestone:milestone?{title:milestone.title,choice:milestone.choiceText,result:milestone.result}:null

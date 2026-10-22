@@ -8,6 +8,7 @@ import { FeedbackStore } from './feedback-store.js';
 import { AchievementStore } from './achievements.js';
 import { CharacterStore } from './characters.js';
 import { ObservationStore } from './observations.js';
+import { AdminPrivateStore } from './admin-private.js';
 
 const ENDING_IDS = new Set(ENDINGS.map(ending => ending.id));
 
@@ -17,6 +18,7 @@ export class HedoArchive extends DurableObject {
     this.sql = ctx.storage.sql;
     this.rate = new RateGuard();
     this.feedbackEnv = env;
+    this.adminPrivate = null;
     this.sql.exec(`
       CREATE TABLE IF NOT EXISTS players (
         id TEXT PRIMARY KEY,
@@ -196,6 +198,10 @@ export class HedoArchive extends DurableObject {
   async fetch(request) {
     try {
       const path = new URL(request.url).pathname;
+      if (path.startsWith('/api/admin/')) {
+        this.adminPrivate ||= new AdminPrivateStore(this.sql, this.feedbackEnv);
+        return await this.adminPrivate.fetch(request);
+      }
       if (request.method === 'POST') assertSameOrigin(request);
       if (path.startsWith('/api/feedback-publisher/')) {
         const token = /^Bearer (\S+)$/i.exec(request.headers.get('Authorization') || '')?.[1];

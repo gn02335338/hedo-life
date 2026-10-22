@@ -11,7 +11,7 @@ import {getBanquet} from '../dist/banquet.js';
 
 const phases=['event','result'];
 const copy=value=>JSON.parse(JSON.stringify(value));
-const sample=createRun('ai','e31-verbal-scene-copy');
+const sample=createRun('ai','e39-verbal-scene-copy');
 const rendered=event=>({...event,speaker:event.speaker||'wing'});
 const source=id=>{const event=EVENTS.find(row=>row.id===id);assert.ok(event,id);return rendered(event);};
 const quote=(event,target,run=sample,phase='event')=>verbalSceneLine({event,target,run,phase});
@@ -21,8 +21,8 @@ const validLine=(line,id)=>{
  assert.doesNotMatch(line,/undefined|null|NaN|https?:\/\/|\/Users\/|\/private\//,id);
 };
 
-test('all 711 daily and four fantasy scenes have distinct, deterministic speech in both phases',()=>{
- assert.equal(EVENTS.length,711);assert.equal(FANTASY_EVENTS.length,4);
+test('all 861 daily and four fantasy scenes have distinct, deterministic speech in both phases',()=>{
+ assert.equal(EVENTS.length,861);assert.equal(FANTASY_EVENTS.length,4);
  const events=[...EVENTS,...FANTASY_EVENTS].map(rendered),targets=new Set();
  for(const phase of phases){
   const lines=[];
@@ -127,13 +127,13 @@ test('First Love remains Jack versus Meimei, armwrestling remains Sonny’s excu
  assert.notEqual(quote(arm,'sonny'),quote(arm,'sonny',sample,'result'));
 });
 
-test('all sixteen meal guests get individual, meal-specific replies in both phases',()=>{
+test('all twenty-one non-professor meal guests get individual, meal-specific replies in both phases',()=>{
  const lines=[];
  for(const target of Object.keys(PERSONAS).filter(id=>id!=='professor')){
   const [event,result]=both(`meal-with-${target}`,target);validLine(event,target);validLine(result,target);
   assert.match(`${event} ${result}`,/飯|餐|湯|麵|菜|筷|吃|點|鍋|甜點|砂鍋|結帳|收銀|便當/);assert.notEqual(event,result,target);lines.push(event,result);
  }
- assert.equal(new Set(lines).size,32);
+ assert.equal(new Set(lines).size,42);
  const event={id:'banquet-afterparty',speaker:'kind',body:'阿良問要不要一起吃甜點。'};
  for(const phase of phases){assert.doesNotMatch(quote(event,'kind',{...sample,characterGender:'female'},phase),/暗黑|四手|鋼琴/);}
  assert.match(quote({...event,body:'阿良又提起私房暗黑行程。'},'kind'),/暗黑/);

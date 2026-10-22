@@ -64,7 +64,7 @@ for(const mobile of [false,true]){
   const html=app.render({...ready,runId:webcrypto.randomUUID()});assert.match(html,/口舌風波/);
   for(const ending of endings.ENDINGS.slice(545))assert.ok(!html.includes(esc(ending.title)),ending.id);
   await app.action('achievements');for(const item of ACHIEVEMENTS_V32)hidden(app.picker(),item);app.dialog().close();
-  await app.action('collection');for(let page=0;page<Math.ceil(endings.ENDINGS.length/24);page++)await app.action('more-endings');assert.equal([...app.grid().matchAll(/class="ending-card locked"/g)].length,805);for(const ending of endings.ENDINGS.slice(545))assert.ok(!app.grid().includes(`<h3>${esc(ending.title)}</h3>`),ending.id);app.dialog().close();
+  await app.action('collection');for(let page=0;page<Math.ceil(endings.ENDINGS.length/24);page++)await app.action('more-endings');assert.equal([...app.grid().matchAll(/class="ending-card locked"/g)].length,883);for(const ending of endings.ENDINGS.slice(545))assert.ok(!app.grid().includes(`<h3>${esc(ending.title)}</h3>`),ending.id);app.dialog().close();
   // Return to the same untouched source, then commit the chosen consequence.
   app.render({...ready,runId:webcrypto.randomUUID()});await app.doubleChoice(route.actions.at(-1).index);
   assert.equal(app.state().pending,true);assert.equal(app.state().actions.length,ready.actions.length+1,'double click cannot choose twice');

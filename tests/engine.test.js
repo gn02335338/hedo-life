@@ -28,10 +28,10 @@ const checkOutcome=(eventId,index,extras={},wanted='promote')=>{
  throw new Error(`No ${wanted} check result`);
 };
 
-test('thirteen careers retain the published 377 endings and expand to a 805-card catalog with eight career stages',()=>{
+test('thirteen careers retain the published 377 endings and expand to an 883-card catalog with eight career stages',()=>{
  assert.equal(VERSION,3);assert.equal(ROLES.length,13);assert.equal(STAT_KEYS.length,9);
  assert.equal(FAMILIES.slice(0,16).length,16);assert.equal(ENDINGS.slice(0,144).length,144);
- assert.equal(FAMILIES.length,62);assert.equal(ENDINGS.length,805);
+ assert.equal(FAMILIES.length,68);assert.equal(ENDINGS.length,883);
  for(const list of [ROLES,EVENTS,FANTASY_EVENTS,ENDINGS])assert.equal(new Set(list.map(x=>x.id)).size,list.length);
  assert.equal(EVENTS.filter(event=>(event.minRules||1)<26).length,323);assert.equal(EVENTS.length,323+EVENTS.filter(event=>event.minRules>=26).length);assert.equal(FANTASY_EVENTS.length,4);
  for(const role of ROLES){
@@ -39,7 +39,7 @@ test('thirteen careers retain the published 377 endings and expand to a 805-card
   assert.equal(role.ladder.length,(role.minRules||1)<28?5:8);assert.ok(role.assistantTitle);
   assert.ok(role.payRange[1]>role.payRange[0]);
   assert.equal(ENDINGS.slice(0,144).filter(e=>e.roleId===role.id).length,(role.minRules||1)<28?16:0);
-  assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,role.id==='executive'?61:62);
+  assert.equal(ENDINGS.filter(e=>e.roleId===role.id).length,role.id==='executive'?67:68);
  }
  assert.equal(new Set(ENDINGS.map(e=>e.title)).size,ENDINGS.length);
  assert.equal(new Set(ENDINGS.map(e=>e.body)).size,ENDINGS.length);

@@ -16,7 +16,11 @@ export function sceneIllustration(event,{roleId=null,people=[],reality=null}={})
   // `reality` must come from the already revealed current history row. A
   // previous imagined/real encounter cannot set this frame's visual mode.
   const mode=['imagined','real'].includes(reality)?reality:null;
-  if(mode)theme=mode==='imagined'?'dream_rage':'real_rage';
+  if(mode)theme=mode==='imagined'?'dream_rage':event?.scope==='private'?'dinner':'real_rage';
+  if(event?.scope==='private'&&mode!=='imagined'){
+    if(id==='rage-legal')theme='police_station';
+    else if(['rage-aftermath','rage-showdown','rage-public'].includes(id))theme='dinner';
+  }
   theme=SCENE_ALIASES_V38[theme]||theme;
   if(!plateIds.has(theme))theme='office_day';
   const knownRole=Object.hasOwn(roleLabels,roleId)?roleId:null;
@@ -28,7 +32,7 @@ export function sceneIllustration(event,{roleId=null,people=[],reality=null}={})
 export function renderSceneIllustration(event,options={}){
   const art=sceneIllustration(event,options),compact=options.compact===true;
   const modeLabel=art.mode==='imagined'?'腦內夢境 · 現實沒有動手':art.mode==='real'?'現實失控 · 事情真的發生了':'';
-  return `<figure class="story-illustration${compact?' compact-illustration':''}${art.mode?` illustration-${art.mode}`:''}" data-scene-theme="${art.theme}"${art.roleId?` data-scene-role="${art.roleId}"`:''} aria-label="${escape(`場景插畫：${art.title}`)}"><div class="scene-image-frame"><img class="scene-environment" src="${art.src}" width="960" height="540" alt="" aria-hidden="true" loading="lazy" decoding="async" data-illustration="environment">${art.people.length?`<div class="scene-cast" aria-hidden="true">${art.people.map(id=>`<div class="scene-person"><img src="${PERSONAS[id].image}" width="180" height="180" alt="" loading="lazy" decoding="async" data-illustration="portrait"><span>${escape(PERSONAS[id].name)}</span></div>`).join('')}</div>`:''}${modeLabel?`<span class="scene-reality-label">${modeLabel}</span>`:''}</div><figcaption><span>${modeLabel||'移動人生 · 上班現場'}</span>${art.roleLabel?`<span>${escape(art.roleLabel)}</span>`:''}</figcaption></figure>`;
+  return `<figure class="story-illustration${compact?' compact-illustration':''}${art.mode?` illustration-${art.mode}`:''}" data-scene-theme="${art.theme}"${art.roleId?` data-scene-role="${art.roleId}"`:''} aria-label="${escape(`場景插畫：${art.title}`)}"><div class="scene-image-frame"><img class="scene-environment" src="${art.src}" width="960" height="540" alt="" aria-hidden="true" loading="lazy" decoding="async" data-illustration="environment">${art.people.length?`<div class="scene-cast" aria-hidden="true">${art.people.map(id=>`<div class="scene-person"><img src="${PERSONAS[id].image}" width="180" height="180" alt="" loading="lazy" decoding="async" data-illustration="portrait"><span>${escape(PERSONAS[id].name)}</span></div>`).join('')}</div>`:''}${modeLabel?`<span class="scene-reality-label">${modeLabel}</span>`:''}</div><figcaption><span>${modeLabel||(event?.scope==='private'?'移動人生 · 私人場合':'移動人生 · 上班現場')}</span>${art.roleLabel?`<span>${escape(art.roleLabel)}</span>`:''}</figcaption></figure>`;
 }
 
 export function endingIllustrationPath(ending,{unlocked=false}={}){

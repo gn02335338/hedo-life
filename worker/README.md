@@ -1,6 +1,6 @@
 # Anonymous archive API
 
-Cloudflare Workers serves `dist/` as Static Assets and routes `/api/*` to the Worker first. One `HedoArchive` Durable Object (`global-v3`) owns the SQLite archive. The application does not require D1, KV, external databases, or API secrets.
+Cloudflare Workers serves `dist/` as Static Assets and routes `/api/*` to the Worker first. One `HedoArchive` Durable Object (`global-v3`) owns the SQLite archive. The public game does not require D1, KV, external databases, or API secrets. The optional private administrator archive below requires its own Worker secret.
 
 ## Endpoints
 
@@ -395,3 +395,32 @@ New lives inherit the e37 occupational, professor, meal and relationship rules. 
 The chosen resignation records `departure38_voluntary` in the replayed flags and only then completes the existing thematic ending ID. Speech milestones derive their achievements from the resolved source conversation while the life is still active. Existing career exits state their departure intent in the actual choice/result; an external consultancy starts only after ending the old full-time employment. Company future finales, including the absurd boardroom takeover, remain valid non-departure grand finales. All 805 ending IDs, original ending objects and earlier-cohort replay boundaries are retained.
 
 The ending transition and retrospective copy are display-only. They read the committed final history and milestone reference; acknowledging the final scene does not save or re-submit the life. Reloaded completed lives remain navigable, older workplace chapters are not rewritten into resignations, and a collection containing only ending IDs is never treated as departure evidence. The additional departure classification described above stores only a server-derived coarse category; anonymous ownership, idempotent completion and existing aggregate totals are unchanged.
+
+## e39 public proof and company classifications
+
+The HTTP action envelope also accepts e39 for all existing actions and the five additional public participant IDs. This is only an input envelope: canonical replay still verifies cohort availability, actual scene presence, the selected target and each action's timing. The private administrator card is never an accepted replay participant. Observation rows retain cohort 39 and the inherited eight-stage career scheme; confirmed workplace departures use the same server-derived classification as e38.
+
+The six additional company families add seventy-eight role-specific ending IDs. Closure, Taiwan-team removal and retained-brand/outsourced-service outcomes use `company_exit`; unpaid-wage disputes use `labor_dispute`, with no invented resignation; stagnation and restructuring with continued employment remain `other`. All thirteen aggregate group IDs and the original 805 ending classifications keep their published meaning. A company finale may end the game while the player remains employed; that is separate from a personal workplace chapter, which requires an explicit departure before collection.
+
+## Optional private administrator archive
+
+The public character book may show a generic locked slot. Its actual identity, portrait and stories are **not** shipped in static assets, public source, game rules, replay proofs, player snapshots or aggregate statistics. The separate administrator API stores one private card and its image in SQLite; it is an archive/sandbox, not a dynamically fetched canonical game character. Merely hiding an imported static module or a public image URL would not protect this material.
+
+| Method | Path | Behavior |
+| --- | --- | --- |
+| POST | `/api/admin/login` | `{password}`; exact same-origin `Origin`, JSON and `X-Admin-Intent: private-archive` required |
+| GET | `/api/admin/session` | Authenticated status, session expiry and session-bound `csrfToken`; 401 when signed out |
+| POST | `/api/admin/logout` | Same-origin request with `X-CSRF-Token`; revokes this session and expires its cookie |
+| GET | `/api/admin/archive` | Authenticated `{version:1,updatedAt,card}`; `card:null` until imported |
+| PUT | `/api/admin/archive` | Authenticated, same-origin, CSRF-checked replacement of the card and portrait in one SQLite statement |
+| GET | `/api/admin/portrait` | Authenticated PNG/WebP bytes; no static image URL, redirect or public-cache copy |
+
+Login returns `{authenticated:true,csrfToken,expiresAt}` and a host-only `__Host-private_archive` cookie with `HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=14400`. Sessions last at most four hours, including across restarts. SQLite holds only the random cookie token's SHA-256 hash, a CSRF-token hash, a verifier rotation tag and expiry. The CSRF value can be reconstructed server-side using HMAC and the HttpOnly session cookie, so a reloaded administrator page can request `/session` without storing credentials in localStorage. Changing the verifier invalidates old sessions. Logout revokes the server record as well as the cookie.
+
+Login allows five attempts per client and thirty overall in fifteen minutes, including successful attempts. Durable rate-limit records contain HMAC-derived buckets, counts and expiry, never a raw IP address or password. All private responses, including errors and images, use `Cache-Control: private, no-store`, `Vary: Cookie`, `nosniff` and same-origin resource policy. Foreign/null/missing write origins and cross-site Fetch Metadata are rejected. There is no CORS credential grant; password errors are generic and no raw request, password, cookie or card is logged.
+
+Provision `ADMIN_PASSWORD_VERIFIER` as a **Cloudflare Worker Secret**, never a Wrangler variable, committed file, log or documentation value. Its JSON structure is `{v,iterations,salt,hash}` with version 1, 100000 PBKDF2-SHA256 iterations, a random 16-byte lowercase-hex salt and a 32-byte lowercase-hex derived key. Generate from the exact UTF-8 password bytes offline, and pipe the JSON directly to `wrangler secret put ADMIN_PASSWORD_VERIFIER`; do not print the verifier or password. The chosen iteration count respects the Workers PBKDF2 limit. See [Cloudflare Web Crypto](https://developers.cloudflare.com/workers/runtime-apis/web-crypto/) and [the workerd PBKDF2 limit](https://github.com/cloudflare/workerd/issues/1346). Without a valid server secret all private endpoints fail closed. Existing anonymous-player credentials and storage are separate.
+
+The import body is `{card:{name,title,alias,description,stories},portrait:{mime,base64}}`. Each story has `{title,body}` and optional `choices:[{text,result}]`. Unknown fields, control characters, SVG/HTML image types, mismatched image signatures and malformed base64 are rejected. The image limit is 1 MiB; normalized card JSON is at most 128 KiB, with at most eighty stories and five choices per story. A successful card response adds only the protected `portraitUrl`; it never returns the stored base64. Larger administrator uploads do not change the ordinary public API's 64 KiB request limit. Provisioning payloads and original portraits must remain outside the public checkout or in ignored private files.
+
+`tests/api-admin-private.test.mjs` exercises the actual Worker handlers with isolated SQLite and synthetic content only: authentication, durable rate limits, origin/CSRF checks, hashed sessions, restart/expiry/rotation/logout, protected images, atomic imports, input limits and absence of private content from public counters. No production player, administrator session or private identity is used by these tests.

@@ -7,17 +7,17 @@ const groups={
   'career_assistant','career_staff','career_senior','career_principal','career_deputy','career_manager','career_director','career_chief',
   'second_offer','handover_author','alumni_network','consultant','rage_walkaway'],
  forced_signed:['fired_signed'],
- company_exit:['fired_refused','layoff','merged_out','verbal_onboarding'],
+ company_exit:['fired_refused','layoff','merged_out','verbal_onboarding','company_closed','company_taiwan_exit','company_shell_brand'],
  pip_failed:['pip_fail'],
  pip_passed_exit:['pip_exit'],
  cold_storage:['cold_storage'],
- labor_dispute:['mediation_settled','mediation_pending'],
+ labor_dispute:['mediation_settled','mediation_pending','company_wage_arrears'],
  burnout:['burnout'],
  cash_exhausted:['broke'],
  startup:['venture_independent','venture_restart'],
  retirement:['retired_free','retired_flexible'],
  other:['nasdaq','taiwan','acquired','rage_legal','rage_defeated','rage_coup','rage_truce','rage_meme',
-  'nasdaq_failed','taiwan_failed','google_board','google_ousted','buyer_board','buyer_ousted','vietnam_core','vietnam_afterdark',
+  'nasdaq_failed','taiwan_failed','google_board','google_ousted','buyer_board','buyer_ousted','vietnam_core','vietnam_afterdark','company_stagnation','company_restructured',
   'verbal_wing_concession','verbal_boardroom','verbal_rick_awake','verbal_hr_rewrite','verbal_legal_letter','verbal_sonny_statement','verbal_kind_ghost','verbal_colleague_solidarity','verbal_viral','verbal_mutual_mute','verbal_apology'],
 };
 
@@ -26,10 +26,10 @@ const familyWays=new Map(Object.entries(groups).flatMap(([way,families])=>famili
 const endingWays=new Map(ENDINGS.map(ending=>[ending.id,familyWays.get(ending.family)||'unclassified']));
 const endingFamilies=new Map(ENDINGS.map(ending=>[ending.id,ending.family]));
 
-// Only a canonical e38 replay can establish the explicit departure from a
+// Only a canonical e38/e39 replay can establish the explicit departure from a
 // previously nonterminal chapter. Historical completions keep their fallback.
 export function deriveDepartureWay(run){
- if(!run?.completed||!/^e38-/.test(run.seed||'')||!endingWays.has(run.endingId))return null;
+ if(!run?.completed||!/^e(?:38|39)-/.test(run.seed||'')||!endingWays.has(run.endingId))return null;
  const family=endingFamilies.get(run.endingId);
  const choseDeparture=run.flags?.departure38_voluntary===1&&run.history?.some(row=>row.eventId==='chapter-resolution'&&row.choiceIndex===1);
  if(choseDeparture&&!['burnout','broke'].includes(family))return 'voluntary';

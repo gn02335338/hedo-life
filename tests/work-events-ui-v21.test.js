@@ -89,7 +89,7 @@ const button=(html,action)=>html.match(new RegExp(`<button\\b(?=[^>]*\\bdata-act
 
 test('new UI candidates use e37 and retain the full eight-rank ladder and original portraits',async()=>{
  const app=appHarness();await tick();await app.action('roll');
- const candidate=vm.runInContext('candidate',app.context);assert.match(candidate.seed,/^e38-/);
+ const candidate=vm.runInContext('candidate',app.context);assert.match(candidate.seed,/^e39-/);
  await app.action('start');const html=app.html();
  assert.equal(app.state().seed,candidate.seed);assert.equal(career.careerLevels(app.state()).length,8);
  assert.match(html,/aria-label="八階職涯"/);assert.equal([...html.matchAll(/<small>LV\.\d<\/small>/g)].length,8);

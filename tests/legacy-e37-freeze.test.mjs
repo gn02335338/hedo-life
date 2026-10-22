@@ -6,13 +6,14 @@ import {replayRoute} from './find-routes-v3.mjs';
 import {validRun} from '../dist/engine.js';
 import {deriveAchievements} from '../dist/achievements.js';
 import {deriveCharacterStats} from '../dist/character-stats.js';
+import {frozenCharacterProjection,ORIGINAL_CHARACTER_IDS_V37} from './character-compat.mjs';
 
 const fixture=JSON.parse(readFileSync(new URL('./fixtures/legacy-e37-routes.json',import.meta.url),'utf8'));
 // One digest covers every saved engine field, earned-badge order and all
 // seventeen character projections. The expected hashes came from the
 // isolated published commit, never from the current e38 implementation.
 const hash=state=>createHash('sha256').update(JSON.stringify({
- engine:state,achievements:deriveAchievements(state),characters:deriveCharacterStats(state)
+ engine:state,achievements:deriveAchievements(state),characters:frozenCharacterProjection(deriveCharacterStats(state),ORIGINAL_CHARACTER_IDS_V37)
 })).digest('hex');
 
 test('published e37 keeps all 16105 saved boundaries, achievements and seventeen-character counters unchanged',()=>{

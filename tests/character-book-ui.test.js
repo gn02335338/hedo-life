@@ -34,9 +34,9 @@ function bookHarness(cloud,cache=null){
   return {book,dialog,store,focus,get html(){return html;},replace(value){html=value;},change(id,value){handlers.get('change')({target:{id,value}});},retry(){handlers.get('click')({target:{closest:selector=>selector==='[data-character-retry]'?{}:null}});}};
 }
 
-test('the cast archive contains sixteen alias-only portraits and never lists locked endings',()=>{
+test('the cast archive contains twenty-two public portraits and never lists locked endings',()=>{
  const html=characterBookHTML();
- assert.equal([...html.matchAll(/class="character-card"/g)].length,17);
+ assert.equal([...html.matchAll(/class="character-card"/g)].length,22);
  for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));assert.ok(html.includes(persona.PERSONAS[id].name));}
  assert.doesNotMatch(html,/Wing|Spencer|Erich|Sonny|JenJen|Rick|Hope|Kind|Jack|美美/);
  assert.doesNotMatch(html,/納斯達克幻想|自願離職陷阱|勉強通關|成功率/);

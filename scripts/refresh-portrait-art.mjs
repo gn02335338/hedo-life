@@ -1,4 +1,4 @@
-// Refresh the seventeen committed portrait files without rebuilding ending art.
+// Refresh the committed public portrait files without rebuilding ending art.
 // Paths are fixed to public assets; no original reference photos are consulted.
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -10,7 +10,7 @@ const assets=new URL('../dist/assets/',import.meta.url);
 const manifestURL=new URL('art-v38.json',assets);
 const raw=await fs.readFile(manifestURL,'utf8');
 const previous=JSON.parse(raw);
-const ids=['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor'];
+const ids=['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain'];
 assert.deepEqual(previous.portraits.map(item=>item.id),ids,'Unexpected portrait roster or order');
 
 const portraits=await Promise.all(previous.portraits.map(async record=>{
@@ -30,7 +30,7 @@ const portraits=await Promise.all(previous.portraits.map(async record=>{
 }));
 
 // Replace just the top-level portrait array. Everything before and after this
-// array, including all 805 ending records, stays byte-for-byte unchanged.
+// array, including all ending records, stays byte-for-byte unchanged.
 const matches=[...raw.matchAll(/^([ \t]*)"portraits": (\[)/gm)];
 assert.equal(matches.length,1,'Expected exactly one top-level portrait array');
 const match=matches[0];

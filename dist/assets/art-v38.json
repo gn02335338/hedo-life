@@ -1,14 +1,14 @@
 {
   "version": 38,
-  "styleRevision": 40,
+  "styleRevision": 41,
   "method": "Built-in image_gen illustrations, composed and optimized with Sharp",
   "counts": {
-    "portraitRemakes": 15,
+    "portraitRemakes": 20,
     "preservedPortraits": 2,
-    "scenePlates": 40,
-    "endingMasters": 62,
+    "scenePlates": 41,
+    "endingMasters": 68,
     "jobPropIllustrations": 13,
-    "endingImages": 805
+    "endingImages": 883
   },
   "dimensions": {
     "width": 960,
@@ -335,6 +335,14 @@
       "height": 720,
       "bytes": 144710,
       "sha256": "73eaa6e7b0509825bdbf5d7906d397e901f14f875a1c7589eb7ec227a20830f0"
+    },
+    {
+      "id": "police_station",
+      "path": "./assets/scenes/police_station.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 104436,
+      "sha256": "0dd538277536b5c78fd56af5bee943037e80a2258e4a42483140a1634e119b22"
     }
   ],
   "masters": [
@@ -833,6 +841,54 @@
       "height": 800,
       "bytes": 192242,
       "sha256": "cd3c2a6a0abd8d090ec18ed9456df82c6c14f006ad0cc704910926d040dbc167"
+    },
+    {
+      "id": "company_closed",
+      "path": "./assets/ending-scenes/company_closed.webp",
+      "width": 1280,
+      "height": 800,
+      "bytes": 80286,
+      "sha256": "5e8ba32cf010515729b6f3fc12fa86cfb1e589a5afbf963a639c6e84cd1f47ff"
+    },
+    {
+      "id": "company_stagnation",
+      "path": "./assets/ending-scenes/company_stagnation.webp",
+      "width": 1280,
+      "height": 800,
+      "bytes": 107012,
+      "sha256": "8bd79bbfb4c59ea89b7977927e1f5e3c46679cd62a48681f783e67f119cf37fe"
+    },
+    {
+      "id": "company_taiwan_exit",
+      "path": "./assets/ending-scenes/company_taiwan_exit.webp",
+      "width": 1280,
+      "height": 800,
+      "bytes": 129958,
+      "sha256": "26c7fa1dbfea5dc4425579e02171d5a45b54ab91db9955fb5f55a80f1226b99d"
+    },
+    {
+      "id": "company_wage_arrears",
+      "path": "./assets/ending-scenes/company_wage_arrears.webp",
+      "width": 1280,
+      "height": 800,
+      "bytes": 113166,
+      "sha256": "7a79fc57acab81470420ed67a390094e1b010fff9cea21f8463ff1220c9ad0e3"
+    },
+    {
+      "id": "company_shell_brand",
+      "path": "./assets/ending-scenes/company_shell_brand.webp",
+      "width": 1280,
+      "height": 800,
+      "bytes": 98608,
+      "sha256": "899bb825deb9108cf6ee774261485fb123b805ba4172b1ae5d56fcacd74bc51c"
+    },
+    {
+      "id": "company_restructured",
+      "path": "./assets/ending-scenes/company_restructured.webp",
+      "width": 1280,
+      "height": 800,
+      "bytes": 95494,
+      "sha256": "7548dd6c67fae6ac4d21011cf1c16c40a075a11c1fd39c51b5c0889f60f5e772"
     }
   ],
   "props": [
@@ -1093,6 +1149,51 @@
       "height": 623,
       "bytes": 121503,
       "sha256": "6daed6f6afef2f6536ffe6b7d2db5a0dfbb8b3f515d86e32021d51b1ddcbbc5b",
+      "referenceRemake": true
+    },
+    {
+      "id": "annie_yu",
+      "path": "./assets/annie_yu.png",
+      "width": 600,
+      "height": 750,
+      "bytes": 159233,
+      "sha256": "9f9645d23612dafe89aa5001675bd5668c17c2bcf32875e2a697f81d3729006e",
+      "referenceRemake": true
+    },
+    {
+      "id": "princess",
+      "path": "./assets/princess.png",
+      "width": 600,
+      "height": 725,
+      "bytes": 136179,
+      "sha256": "737aa29514437f1595d2d3582f9e9a59f8065391ab2c19b0f86286b38b98feea",
+      "referenceRemake": true
+    },
+    {
+      "id": "joyce",
+      "path": "./assets/joyce.png",
+      "width": 600,
+      "height": 720,
+      "bytes": 149329,
+      "sha256": "f6a2d968b6956ac200f9045f7c5eb45ecc6eba17fb184a75e4b3fcb914f115ca",
+      "referenceRemake": true
+    },
+    {
+      "id": "janet",
+      "path": "./assets/janet.png",
+      "width": 600,
+      "height": 665,
+      "bytes": 122325,
+      "sha256": "2eea02434957560ac3d1726c21b9c4b3bbc18baae0112e39179b9943e01c006f",
+      "referenceRemake": true
+    },
+    {
+      "id": "captain",
+      "path": "./assets/captain.png",
+      "width": 558,
+      "height": 760,
+      "bytes": 154349,
+      "sha256": "3adf054ebdfb93771aedc076373a337d63b363b413612260a44a545cfdce2838",
       "referenceRemake": true
     }
   ],
@@ -14776,6 +14877,1332 @@
       "sha256": "8c96184856fba7510132690b6de615ab83f2171e19a4264994db37a926b3573a",
       "composition": {
         "scene": "./assets/ending-scenes/vietnam_afterdark.webp",
+        "props": "./assets/role-props/admin.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#a08bb8"
+      }
+    },
+    {
+      "id": "company_closed-system",
+      "family": "company_closed",
+      "roleId": "system",
+      "path": "./assets/endings/company_closed-system.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 53102,
+      "sha256": "237f1ff08b12f866b01294a7d4bca3ce92ec96d84e8277b914de59296260b710",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/system.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#228d8b"
+      }
+    },
+    {
+      "id": "company_closed-ai",
+      "family": "company_closed",
+      "roleId": "ai",
+      "path": "./assets/endings/company_closed-ai.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 52374,
+      "sha256": "0e9f72946732bf3c14496b4a034089041472e9d22c125e8c8586a470e2d1dd18",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/ai.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#8b65bd"
+      }
+    },
+    {
+      "id": "company_closed-project",
+      "family": "company_closed",
+      "roleId": "project",
+      "path": "./assets/endings/company_closed-project.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 53276,
+      "sha256": "5f21f825c38ddec8d45da37a8c14d885d356d89ea96d7d3b4703cd356eb04d27",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/project.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#d7776b"
+      }
+    },
+    {
+      "id": "company_closed-product",
+      "family": "company_closed",
+      "roleId": "product",
+      "path": "./assets/endings/company_closed-product.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 53880,
+      "sha256": "69a6401bf81f26c37920363b0da9dce914ffba360032ee88832b36da5e0829fd",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/product.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#ce688a"
+      }
+    },
+    {
+      "id": "company_closed-design",
+      "family": "company_closed",
+      "roleId": "design",
+      "path": "./assets/endings/company_closed-design.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 52644,
+      "sha256": "27ecade2d85b8a41584bb34740a1159cf7610929a87454a3eb8488292c18d8e0",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/design.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#c14591"
+      }
+    },
+    {
+      "id": "company_closed-bd",
+      "family": "company_closed",
+      "roleId": "bd",
+      "path": "./assets/endings/company_closed-bd.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 52586,
+      "sha256": "987f41aab4083400492acccf793206350b7a58a96c444c845a46aa0ffcc39fd2",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/bd.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#c69a3e"
+      }
+    },
+    {
+      "id": "company_closed-sales",
+      "family": "company_closed",
+      "roleId": "sales",
+      "path": "./assets/endings/company_closed-sales.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 52584,
+      "sha256": "406dc29b3da27c0b9a32f88a420f971577c12e950faf3f651a1a1eb3319b10a0",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/sales.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#db8c46"
+      }
+    },
+    {
+      "id": "company_closed-mis",
+      "family": "company_closed",
+      "roleId": "mis",
+      "path": "./assets/endings/company_closed-mis.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 51114,
+      "sha256": "cc784b5c78ae2bb5482c44dba7b5dd00269cbb39e51a0238953049c77c22f0a1",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/mis.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#48a3b9"
+      }
+    },
+    {
+      "id": "company_closed-executive",
+      "family": "company_closed",
+      "roleId": "executive",
+      "path": "./assets/endings/company_closed-executive.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 54480,
+      "sha256": "3d28fd4ce019ab577e95011624a3f7fb5c060fc829ab83b82d07f7e7008f8ef3",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/executive.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#6560a2"
+      }
+    },
+    {
+      "id": "company_closed-finance",
+      "family": "company_closed",
+      "roleId": "finance",
+      "path": "./assets/endings/company_closed-finance.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 53472,
+      "sha256": "716a325ebfd1bbb5d31ab221180abf09a6b191686a5f049951d84e7016215472",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/finance.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#b5a04b"
+      }
+    },
+    {
+      "id": "company_closed-accounting",
+      "family": "company_closed",
+      "roleId": "accounting",
+      "path": "./assets/endings/company_closed-accounting.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 58218,
+      "sha256": "9d0e2764e3aefe25b2d553663baadc98b1d27124c8148d1ecba8d66f2f17cc0c",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/accounting.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#68a68a"
+      }
+    },
+    {
+      "id": "company_closed-hr",
+      "family": "company_closed",
+      "roleId": "hr",
+      "path": "./assets/endings/company_closed-hr.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 52630,
+      "sha256": "33c805a9814651fb71be4c6865b8a9e933b6751fb0ad583448b449f105745fe9",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/hr.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#ce7d7c"
+      }
+    },
+    {
+      "id": "company_closed-admin",
+      "family": "company_closed",
+      "roleId": "admin",
+      "path": "./assets/endings/company_closed-admin.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 56306,
+      "sha256": "24f2c680030f62eaf32d37b9274111874afe458e51464c13b89d4e0c1a22ccec",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_closed.webp",
+        "props": "./assets/role-props/admin.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#a08bb8"
+      }
+    },
+    {
+      "id": "company_stagnation-system",
+      "family": "company_stagnation",
+      "roleId": "system",
+      "path": "./assets/endings/company_stagnation-system.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 60652,
+      "sha256": "6e433cd45cf5c23fa254699a149a92a8a38c029438a9158fb717c0e4be126e30",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/system.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#228d8b"
+      }
+    },
+    {
+      "id": "company_stagnation-ai",
+      "family": "company_stagnation",
+      "roleId": "ai",
+      "path": "./assets/endings/company_stagnation-ai.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 63812,
+      "sha256": "d65a885016ac7589d15e70532ac646f6305d0433704b31bdcd6bad402ffaaed4",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/ai.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#8b65bd"
+      }
+    },
+    {
+      "id": "company_stagnation-project",
+      "family": "company_stagnation",
+      "roleId": "project",
+      "path": "./assets/endings/company_stagnation-project.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 62166,
+      "sha256": "fa1c9a3aa2e0edfb8d545ac764f46abb7e88c75a07a3869b5bd13ae2e56922bc",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/project.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#d7776b"
+      }
+    },
+    {
+      "id": "company_stagnation-product",
+      "family": "company_stagnation",
+      "roleId": "product",
+      "path": "./assets/endings/company_stagnation-product.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 65610,
+      "sha256": "d340048c43d00ce992aeb23a788b4a0997f462e50d9dec9af61dad5bdb0a0d6b",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/product.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#ce688a"
+      }
+    },
+    {
+      "id": "company_stagnation-design",
+      "family": "company_stagnation",
+      "roleId": "design",
+      "path": "./assets/endings/company_stagnation-design.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 60612,
+      "sha256": "ef75b6c54d8772777b0d030e66af3b9e20386806176cc3a51fe2a01059acbf9d",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/design.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#c14591"
+      }
+    },
+    {
+      "id": "company_stagnation-bd",
+      "family": "company_stagnation",
+      "roleId": "bd",
+      "path": "./assets/endings/company_stagnation-bd.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 64398,
+      "sha256": "ed3116ad046180566b4c14d5ba91adf54b20ec7f4710f74c0e4da1064bc82eb3",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/bd.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#c69a3e"
+      }
+    },
+    {
+      "id": "company_stagnation-sales",
+      "family": "company_stagnation",
+      "roleId": "sales",
+      "path": "./assets/endings/company_stagnation-sales.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 61630,
+      "sha256": "b9955e4207ef83111edeee92f7c2b8ec9c53fd784ad51ed68bdc0f00761fd6dc",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/sales.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#db8c46"
+      }
+    },
+    {
+      "id": "company_stagnation-mis",
+      "family": "company_stagnation",
+      "roleId": "mis",
+      "path": "./assets/endings/company_stagnation-mis.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 63512,
+      "sha256": "17f6937e07ba94e848ed1fe7a2347bc66ca79338d3fa2167e50fe49d6f858323",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/mis.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#48a3b9"
+      }
+    },
+    {
+      "id": "company_stagnation-executive",
+      "family": "company_stagnation",
+      "roleId": "executive",
+      "path": "./assets/endings/company_stagnation-executive.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 62762,
+      "sha256": "1ce067185d37512fa50b6589f2c96ac6332a1653d58c93b42b08d8fdedce3a88",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/executive.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#6560a2"
+      }
+    },
+    {
+      "id": "company_stagnation-finance",
+      "family": "company_stagnation",
+      "roleId": "finance",
+      "path": "./assets/endings/company_stagnation-finance.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 65114,
+      "sha256": "fcf11a4e5a4b1727d6561a5ca643e3ff6e432e03075b393c27a8be5eb2bca47e",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/finance.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#b5a04b"
+      }
+    },
+    {
+      "id": "company_stagnation-accounting",
+      "family": "company_stagnation",
+      "roleId": "accounting",
+      "path": "./assets/endings/company_stagnation-accounting.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 65100,
+      "sha256": "c9605404e1feed93c3c35d1faf5f9dc1e58a4cb5695cc1d4c035c30b56f92c90",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/accounting.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#68a68a"
+      }
+    },
+    {
+      "id": "company_stagnation-hr",
+      "family": "company_stagnation",
+      "roleId": "hr",
+      "path": "./assets/endings/company_stagnation-hr.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 64540,
+      "sha256": "0edd38c26b51188d711e824ba4eaf71d18c7869180ae19f02c261417a20384ec",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/hr.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#ce7d7c"
+      }
+    },
+    {
+      "id": "company_stagnation-admin",
+      "family": "company_stagnation",
+      "roleId": "admin",
+      "path": "./assets/endings/company_stagnation-admin.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 64702,
+      "sha256": "2dc1e8aee27b18d479497c4edc8974f11cf6e41968a6228747de8f1a5e316e6f",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_stagnation.webp",
+        "props": "./assets/role-props/admin.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#a08bb8"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-system",
+      "family": "company_taiwan_exit",
+      "roleId": "system",
+      "path": "./assets/endings/company_taiwan_exit-system.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 74904,
+      "sha256": "72bb83d3292a9b616ee3dc2084b4fb9b7945be6ba4db0a0839cc769da06b5bea",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/system.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#228d8b"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-ai",
+      "family": "company_taiwan_exit",
+      "roleId": "ai",
+      "path": "./assets/endings/company_taiwan_exit-ai.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 77168,
+      "sha256": "bea559d63a6d8a2b534000e96cba5a07b494b3ca590180b40a7411135639e96b",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/ai.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#8b65bd"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-project",
+      "family": "company_taiwan_exit",
+      "roleId": "project",
+      "path": "./assets/endings/company_taiwan_exit-project.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 75830,
+      "sha256": "9a43d157e3d52e203d671942786a426e3ffb471a3b25c866d7db032846fff175",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/project.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#d7776b"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-product",
+      "family": "company_taiwan_exit",
+      "roleId": "product",
+      "path": "./assets/endings/company_taiwan_exit-product.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 79378,
+      "sha256": "cea2c46c7bc0cfce36f82b2cbd88618b8e08e72291a2bf1ba1ad48171138a35f",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/product.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#ce688a"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-design",
+      "family": "company_taiwan_exit",
+      "roleId": "design",
+      "path": "./assets/endings/company_taiwan_exit-design.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 75092,
+      "sha256": "b6396ae1bcac7ae0613722bcc1e7e00934035944dc589aea8277da181a9b5989",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/design.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#c14591"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-bd",
+      "family": "company_taiwan_exit",
+      "roleId": "bd",
+      "path": "./assets/endings/company_taiwan_exit-bd.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 77742,
+      "sha256": "ccd247a7d6fa97c8d7f13317bb593fe772218556db253bdc59166dd2f8de01dc",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/bd.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#c69a3e"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-sales",
+      "family": "company_taiwan_exit",
+      "roleId": "sales",
+      "path": "./assets/endings/company_taiwan_exit-sales.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 74684,
+      "sha256": "71a2420dd1c37913d3467f18a67447fab1f1d07ba5decb559d07f314155aa3aa",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/sales.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#db8c46"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-mis",
+      "family": "company_taiwan_exit",
+      "roleId": "mis",
+      "path": "./assets/endings/company_taiwan_exit-mis.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 76054,
+      "sha256": "3d66bdd9c1a112d356472121278a78bdf011b8a53e3e854fd632f5131b96bef2",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/mis.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#48a3b9"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-executive",
+      "family": "company_taiwan_exit",
+      "roleId": "executive",
+      "path": "./assets/endings/company_taiwan_exit-executive.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 76670,
+      "sha256": "b250e702c396d5ed973a2474ee03c839d4091138de95d95e1adfdaf0df9e25b1",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/executive.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#6560a2"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-finance",
+      "family": "company_taiwan_exit",
+      "roleId": "finance",
+      "path": "./assets/endings/company_taiwan_exit-finance.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 78596,
+      "sha256": "0b4f41353974a714f8604afef864c16ceb28de45abf42650c4889633f40aed4d",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/finance.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#b5a04b"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-accounting",
+      "family": "company_taiwan_exit",
+      "roleId": "accounting",
+      "path": "./assets/endings/company_taiwan_exit-accounting.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 79328,
+      "sha256": "785c2263ec5b51d03726f5ded235459a7cd37bdb6f8857aeba40e62b2c8c1e78",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/accounting.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#68a68a"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-hr",
+      "family": "company_taiwan_exit",
+      "roleId": "hr",
+      "path": "./assets/endings/company_taiwan_exit-hr.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 77472,
+      "sha256": "1af7ccfec48abb7ff76efc4bd1a1ca8854d4c82dee2f4e95808631d19dba31ae",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/hr.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#ce7d7c"
+      }
+    },
+    {
+      "id": "company_taiwan_exit-admin",
+      "family": "company_taiwan_exit",
+      "roleId": "admin",
+      "path": "./assets/endings/company_taiwan_exit-admin.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 79256,
+      "sha256": "bea8f681c6d484a140366f2ecb980618d2ea74f6ff0b939ad0dd08478f5f6b12",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_taiwan_exit.webp",
+        "props": "./assets/role-props/admin.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#a08bb8"
+      }
+    },
+    {
+      "id": "company_wage_arrears-system",
+      "family": "company_wage_arrears",
+      "roleId": "system",
+      "path": "./assets/endings/company_wage_arrears-system.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 70870,
+      "sha256": "b8f6ea4110a9b24a8112b319c6d1054917728b77c6b46a6d148c67b8c3f03ade",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/system.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#228d8b"
+      }
+    },
+    {
+      "id": "company_wage_arrears-ai",
+      "family": "company_wage_arrears",
+      "roleId": "ai",
+      "path": "./assets/endings/company_wage_arrears-ai.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 70404,
+      "sha256": "20741ba1026b67719ea2fc0791a0f16924df3a3d96d3cab04fd7e6cd0692586e",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/ai.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#8b65bd"
+      }
+    },
+    {
+      "id": "company_wage_arrears-project",
+      "family": "company_wage_arrears",
+      "roleId": "project",
+      "path": "./assets/endings/company_wage_arrears-project.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 71650,
+      "sha256": "8db4a0359777f1c53a8854e7a4e5f890cbf050606a0645b478c5cea9bbf7d43f",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/project.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#d7776b"
+      }
+    },
+    {
+      "id": "company_wage_arrears-product",
+      "family": "company_wage_arrears",
+      "roleId": "product",
+      "path": "./assets/endings/company_wage_arrears-product.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 72596,
+      "sha256": "8d31a68b81686ddeea5a3905b325250b73593733056878c5fada0f770edc3fe5",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/product.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#ce688a"
+      }
+    },
+    {
+      "id": "company_wage_arrears-design",
+      "family": "company_wage_arrears",
+      "roleId": "design",
+      "path": "./assets/endings/company_wage_arrears-design.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 70534,
+      "sha256": "6515a3483a804928798522a3af2f31edd0d82cb7ee3d50c2c1e5282bbfb1ba40",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/design.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#c14591"
+      }
+    },
+    {
+      "id": "company_wage_arrears-bd",
+      "family": "company_wage_arrears",
+      "roleId": "bd",
+      "path": "./assets/endings/company_wage_arrears-bd.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 71284,
+      "sha256": "a4a55a3e7c38208cd1bc677618cb4f2d047d6044dcaf5c34dd4f8825f8d95595",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/bd.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#c69a3e"
+      }
+    },
+    {
+      "id": "company_wage_arrears-sales",
+      "family": "company_wage_arrears",
+      "roleId": "sales",
+      "path": "./assets/endings/company_wage_arrears-sales.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 70028,
+      "sha256": "12cfac35a9e5f1eeb544da403b542feda1eb8906ad8811cecafb6753a3f8604d",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/sales.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#db8c46"
+      }
+    },
+    {
+      "id": "company_wage_arrears-mis",
+      "family": "company_wage_arrears",
+      "roleId": "mis",
+      "path": "./assets/endings/company_wage_arrears-mis.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 69934,
+      "sha256": "c8e6fb447cbf8e167b3feefdf1e9f4abb83b1dfc0e32f2623181070548243aac",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/mis.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#48a3b9"
+      }
+    },
+    {
+      "id": "company_wage_arrears-executive",
+      "family": "company_wage_arrears",
+      "roleId": "executive",
+      "path": "./assets/endings/company_wage_arrears-executive.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 72468,
+      "sha256": "3bbb513858cc5c9d1b79512d15b61bca0a4afe813bfd0c520c8f599d4e0f41de",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/executive.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#6560a2"
+      }
+    },
+    {
+      "id": "company_wage_arrears-finance",
+      "family": "company_wage_arrears",
+      "roleId": "finance",
+      "path": "./assets/endings/company_wage_arrears-finance.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 71942,
+      "sha256": "ca6b83438bf6be224aecbcd869fa034e9663d378ecf2a85a59c6b622fb5fe0c9",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/finance.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#b5a04b"
+      }
+    },
+    {
+      "id": "company_wage_arrears-accounting",
+      "family": "company_wage_arrears",
+      "roleId": "accounting",
+      "path": "./assets/endings/company_wage_arrears-accounting.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 75020,
+      "sha256": "5e718bdffbfa4c963a04abf11c9113db8a4c9d500400679d7e0607899426f862",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/accounting.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#68a68a"
+      }
+    },
+    {
+      "id": "company_wage_arrears-hr",
+      "family": "company_wage_arrears",
+      "roleId": "hr",
+      "path": "./assets/endings/company_wage_arrears-hr.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 71282,
+      "sha256": "aa4dcf625b1a704d65f77df3b65bd6901f8546a4d86ee6a169cafc2c20f2531f",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/hr.webp",
+        "propSide": "right",
+        "propWidth": 330,
+        "accent": "#ce7d7c"
+      }
+    },
+    {
+      "id": "company_wage_arrears-admin",
+      "family": "company_wage_arrears",
+      "roleId": "admin",
+      "path": "./assets/endings/company_wage_arrears-admin.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 74742,
+      "sha256": "62bc2db1436cd6c0c913870dc37bda0fb3a7c1b336577bd974c7280c10c419ed",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_wage_arrears.webp",
+        "props": "./assets/role-props/admin.webp",
+        "propSide": "left",
+        "propWidth": 330,
+        "accent": "#a08bb8"
+      }
+    },
+    {
+      "id": "company_shell_brand-system",
+      "family": "company_shell_brand",
+      "roleId": "system",
+      "path": "./assets/endings/company_shell_brand-system.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 59346,
+      "sha256": "0aef2743069c06a27a81b015ee5df7807afdeb0b4b222e7137133531bd42dcdf",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/system.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#228d8b"
+      }
+    },
+    {
+      "id": "company_shell_brand-ai",
+      "family": "company_shell_brand",
+      "roleId": "ai",
+      "path": "./assets/endings/company_shell_brand-ai.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 59702,
+      "sha256": "bb8c3b1060a705a7c3b6ca8351aae1a60a1e917a8bef68797a869e4caad20711",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/ai.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#8b65bd"
+      }
+    },
+    {
+      "id": "company_shell_brand-project",
+      "family": "company_shell_brand",
+      "roleId": "project",
+      "path": "./assets/endings/company_shell_brand-project.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 61358,
+      "sha256": "d0715b42f9ebd935b7b981b3f71233bba0581caa17e694d83ce2f5c5a5ba51a2",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/project.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#d7776b"
+      }
+    },
+    {
+      "id": "company_shell_brand-product",
+      "family": "company_shell_brand",
+      "roleId": "product",
+      "path": "./assets/endings/company_shell_brand-product.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 61490,
+      "sha256": "c28cfdf42e03e7ef30b7342925fc91b622b683539b43a493a4021e98bb303553",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/product.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#ce688a"
+      }
+    },
+    {
+      "id": "company_shell_brand-design",
+      "family": "company_shell_brand",
+      "roleId": "design",
+      "path": "./assets/endings/company_shell_brand-design.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 60942,
+      "sha256": "f20a1209fa55540f85d1193dac9d5687364d271de6a7f2e1299caae22672a345",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/design.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#c14591"
+      }
+    },
+    {
+      "id": "company_shell_brand-bd",
+      "family": "company_shell_brand",
+      "roleId": "bd",
+      "path": "./assets/endings/company_shell_brand-bd.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 59710,
+      "sha256": "a2f0a9faba39e45aaf73bd187ae8485c9ad26a88ff6e83247ef5eac4283e6254",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/bd.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#c69a3e"
+      }
+    },
+    {
+      "id": "company_shell_brand-sales",
+      "family": "company_shell_brand",
+      "roleId": "sales",
+      "path": "./assets/endings/company_shell_brand-sales.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 60788,
+      "sha256": "cf56cd81cb72033142e269045d91249cb378dce02530b921ff4173467f21a321",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/sales.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#db8c46"
+      }
+    },
+    {
+      "id": "company_shell_brand-mis",
+      "family": "company_shell_brand",
+      "roleId": "mis",
+      "path": "./assets/endings/company_shell_brand-mis.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 58732,
+      "sha256": "66934ace65168abb220fd7f0607fc796b8da9751023e8c8ec2c7725fd117393f",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/mis.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#48a3b9"
+      }
+    },
+    {
+      "id": "company_shell_brand-executive",
+      "family": "company_shell_brand",
+      "roleId": "executive",
+      "path": "./assets/endings/company_shell_brand-executive.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 62232,
+      "sha256": "6b41644245b6a2723459da1add52ff8b627d96ab0b1f25a9a23eeb3a0283e54d",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/executive.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#6560a2"
+      }
+    },
+    {
+      "id": "company_shell_brand-finance",
+      "family": "company_shell_brand",
+      "roleId": "finance",
+      "path": "./assets/endings/company_shell_brand-finance.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 61668,
+      "sha256": "03caacca5f09df48646f9c91e11bbe64cbe2e6150eb5a605b8e901cfd837c3dc",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/finance.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#b5a04b"
+      }
+    },
+    {
+      "id": "company_shell_brand-accounting",
+      "family": "company_shell_brand",
+      "roleId": "accounting",
+      "path": "./assets/endings/company_shell_brand-accounting.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 65330,
+      "sha256": "2ef6bc69fe8cf45231983464f505d24309986f44b8eff7d81a22dc44171a88fc",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/accounting.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#68a68a"
+      }
+    },
+    {
+      "id": "company_shell_brand-hr",
+      "family": "company_shell_brand",
+      "roleId": "hr",
+      "path": "./assets/endings/company_shell_brand-hr.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 60344,
+      "sha256": "6e36258d108b3ae5824a3472bbf3c22996dfaacc82019d74c69756010ced9c49",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/hr.webp",
+        "propSide": "left",
+        "propWidth": 310,
+        "accent": "#ce7d7c"
+      }
+    },
+    {
+      "id": "company_shell_brand-admin",
+      "family": "company_shell_brand",
+      "roleId": "admin",
+      "path": "./assets/endings/company_shell_brand-admin.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 63900,
+      "sha256": "6907129f040b7f926dc53e4433bea9b0ad4adbcad7df31ae94fa65b35dfdd714",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_shell_brand.webp",
+        "props": "./assets/role-props/admin.webp",
+        "propSide": "right",
+        "propWidth": 310,
+        "accent": "#a08bb8"
+      }
+    },
+    {
+      "id": "company_restructured-system",
+      "family": "company_restructured",
+      "roleId": "system",
+      "path": "./assets/endings/company_restructured-system.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 60626,
+      "sha256": "95ed7bcf1c5a1ef77e4a8ec11e9a72ebc2b47152a5391d67ce80355bf4837ac3",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/system.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#228d8b"
+      }
+    },
+    {
+      "id": "company_restructured-ai",
+      "family": "company_restructured",
+      "roleId": "ai",
+      "path": "./assets/endings/company_restructured-ai.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 62618,
+      "sha256": "ce94105b6e6c306609a6da7684566fdd6831ac97e4ab6dd5a5c1368c6f9879f7",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/ai.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#8b65bd"
+      }
+    },
+    {
+      "id": "company_restructured-project",
+      "family": "company_restructured",
+      "roleId": "project",
+      "path": "./assets/endings/company_restructured-project.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 61230,
+      "sha256": "d0a5049493dcbb9f06ec02e69642bf8fa5c6f66d243c760e7bcb1e7ef2764767",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/project.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#d7776b"
+      }
+    },
+    {
+      "id": "company_restructured-product",
+      "family": "company_restructured",
+      "roleId": "product",
+      "path": "./assets/endings/company_restructured-product.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 64666,
+      "sha256": "bf65c8e5203ba971be97047927284c136bf33de8ad972f240c9c11008dcc6625",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/product.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#ce688a"
+      }
+    },
+    {
+      "id": "company_restructured-design",
+      "family": "company_restructured",
+      "roleId": "design",
+      "path": "./assets/endings/company_restructured-design.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 60378,
+      "sha256": "0c256348e684d41c61400a3f5b2a35727e385b5924ee585ccf8ce878e85c8ebe",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/design.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#c14591"
+      }
+    },
+    {
+      "id": "company_restructured-bd",
+      "family": "company_restructured",
+      "roleId": "bd",
+      "path": "./assets/endings/company_restructured-bd.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 62860,
+      "sha256": "cb3f47ef3ca2c07ac4708ebe56f834dff7f14423199bd97beed10f03fb2cdeb0",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/bd.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#c69a3e"
+      }
+    },
+    {
+      "id": "company_restructured-sales",
+      "family": "company_restructured",
+      "roleId": "sales",
+      "path": "./assets/endings/company_restructured-sales.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 60074,
+      "sha256": "926e860d36790a904a49fe7ddbf8972e43119eb76c0929b7da87ec75ea20d3a0",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/sales.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#db8c46"
+      }
+    },
+    {
+      "id": "company_restructured-mis",
+      "family": "company_restructured",
+      "roleId": "mis",
+      "path": "./assets/endings/company_restructured-mis.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 62704,
+      "sha256": "6238d3ee2ee8adf385c4b2b23ba021139ad6ea3b70bf9117f767775684441567",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/mis.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#48a3b9"
+      }
+    },
+    {
+      "id": "company_restructured-executive",
+      "family": "company_restructured",
+      "roleId": "executive",
+      "path": "./assets/endings/company_restructured-executive.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 62098,
+      "sha256": "fb8fb9ce068ab19a63332f3a0be6e26a1a598eb9c7909a445fca508bfb4053d0",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/executive.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#6560a2"
+      }
+    },
+    {
+      "id": "company_restructured-finance",
+      "family": "company_restructured",
+      "roleId": "finance",
+      "path": "./assets/endings/company_restructured-finance.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 64452,
+      "sha256": "40bec8c6e1eb5d4593f32d288fed4bbd1c016dde8e27423f48226faf84a3fb79",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/finance.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#b5a04b"
+      }
+    },
+    {
+      "id": "company_restructured-accounting",
+      "family": "company_restructured",
+      "roleId": "accounting",
+      "path": "./assets/endings/company_restructured-accounting.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 64712,
+      "sha256": "e921ee3ff81cb1011d3416f425c09b535e799cd444c32d7073471741b23fad1f",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/accounting.webp",
+        "propSide": "left",
+        "propWidth": 320,
+        "accent": "#68a68a"
+      }
+    },
+    {
+      "id": "company_restructured-hr",
+      "family": "company_restructured",
+      "roleId": "hr",
+      "path": "./assets/endings/company_restructured-hr.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 63510,
+      "sha256": "f9a84d1ecf7bb7e5b48d9374d995f2c09adc497ca5f36d4afac271d3ed0cf804",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
+        "props": "./assets/role-props/hr.webp",
+        "propSide": "right",
+        "propWidth": 320,
+        "accent": "#ce7d7c"
+      }
+    },
+    {
+      "id": "company_restructured-admin",
+      "family": "company_restructured",
+      "roleId": "admin",
+      "path": "./assets/endings/company_restructured-admin.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 64444,
+      "sha256": "75ed7035fc083a676d512158364f5fdc2a0ee2a4e74968ccd9c9751397896381",
+      "composition": {
+        "scene": "./assets/ending-scenes/company_restructured.webp",
         "props": "./assets/role-props/admin.webp",
         "propSide": "left",
         "propWidth": 320,

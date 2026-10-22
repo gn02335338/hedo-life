@@ -52,10 +52,10 @@ if(new Set(endings.map(image=>image.sha256)).size!==ENDINGS.length)throw new Err
 const scenes=await Promise.all(SCENE_PLATES_V38.map(async id=>({id,...await record(`scenes/${id}.webp`)})));
 const masters=await Promise.all(families.map(async id=>({id,...await record(`ending-scenes/${id}.webp`)})));
 const props=await Promise.all(Object.keys(roles).map(async id=>({id,...await record(`role-props/${id}.webp`)})));
-const characterIds=['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor'];
+const characterIds=['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain'];
 const portraits=await Promise.all(characterIds.map(async id=>({id,...await record(`${id}.png`),referenceRemake:!['wing','spencer'].includes(id)})));
-const manifest={version:38,styleRevision:40,method:'Built-in image_gen illustrations, composed and optimized with Sharp',
- counts:{portraitRemakes:15,preservedPortraits:2,scenePlates:scenes.length,endingMasters:masters.length,jobPropIllustrations:props.length,endingImages:endings.length},
+const manifest={version:38,styleRevision:41,method:'Built-in image_gen illustrations, composed and optimized with Sharp',
+ counts:{portraitRemakes:20,preservedPortraits:2,scenePlates:scenes.length,endingMasters:masters.length,jobPropIllustrations:props.length,endingImages:endings.length},
  dimensions:{width,height},privacy:'No original reference photos are included. Locked ending artwork is never rendered or requested by the UI.',
  scenes,masters,props,portraits,endings};
 await fs.writeFile(asset('art-v38.json'),JSON.stringify(manifest,null,2)+'\n');

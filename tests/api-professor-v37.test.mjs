@@ -47,13 +47,13 @@ test('the anonymous server replays all thirty professor scenes, six meal reactio
     const run=engine.replayRun(route.roleId,route.seed,route.actions),player=await h.register(),runId=randomUUID();
     assert.equal(engine.validRun(run),true,route.id);
     const extra={characters:[{id:'professor',realHits:9999,affinityGained:9999}],history:[{speaker:'professor',mealOutcome:{affinityDelta:99}}],stats:{boss:100},flags:{meal_guest_professor:99},mealContext:{guest:'professor',page:2},reaction:'warm'};
-    const first=await h.post(player,route,runId,{extra});assertProjection(first,run);assert.equal(first.body.characters.length,17);assert.equal(first.body.totalRuns,0);
+    const first=await h.post(player,route,runId,{extra});assertProjection(first,run);assert.equal(first.body.characters.length,22);assert.equal(first.body.totalRuns,0);
     const again=await h.post(player,route,runId);assertProjection(again,run);assert.deepEqual(again.body.characters,first.body.characters);
     const badges=await h.post(player,route,runId,{path:'/api/achievements',extra});assertProjection(badges,run,true);
     assert.equal(again.body.characters.find(row=>row.id==='professor').realHits,deriveCharacterStats(run).find(row=>row.id==='professor').realHits);
   }
   assert.equal((await h.call('/api/stats')).body.totalRuns,0);
-  const aggregate=await h.call('/api/characters');assert.equal(aggregate.status,200);assert.equal(aggregate.body.characters.length,17);
+  const aggregate=await h.call('/api/characters');assert.equal(aggregate.status,200);assert.equal(aggregate.body.characters.length,22);
   assert.doesNotMatch(JSON.stringify(aggregate.body),/seed|actions|playerId|runId|mealContext/);
 });
 
@@ -69,7 +69,7 @@ test('professor dinner choice commitments are immutable and absent or legacy-coh
   const untouched=await h.call('/api/me',{token:other.token});assert.ok(untouched.body.characters.every(row=>CHARACTER_METRICS.every(metric=>row[metric]===0)));
 });
 
-test('professor meal lives complete with canonical 17-character totals and idempotent e37 observations',async t=>{
+test('professor meal lives complete with the expanded public totals and idempotent e37 observations',async t=>{
   const h=harness(t);let count=0;
   for(const route of fixture.meals){
     const run=engine.replayRun(route.roleId,route.seed,route.actions),exit=engine.requestExit(run);assert.notEqual(exit,run);

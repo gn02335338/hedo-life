@@ -13,7 +13,7 @@ const file=relative=>new URL(relative.replace(/^\.\/assets\//,''),assets);
 
 test('every ending has a distinct, decoded, bounded image matching the shipped manifest',async()=>{
  assert.equal(manifest.endings.length,ENDINGS.length);
- assert.equal(manifest.endings.length,805);
+ assert.equal(manifest.endings.length,883);
  const disk=(await readdir(new URL('endings/',assets))).filter(name=>name.endsWith('.webp')).sort();
  assert.deepEqual(disk,ENDINGS.map(ending=>`${ending.id}.webp`).sort());
  const records=new Map(manifest.endings.map(item=>[item.id,item])),hashes=new Set();
@@ -28,12 +28,12 @@ test('every ending has a distinct, decoded, bounded image matching the shipped m
   assert.equal(bytes.length,record.bytes);assert.ok(bytes.length<240000,ending.id);
   assert.equal(hash(bytes),record.sha256);hashes.add(record.sha256);
  }
- assert.equal(hashes.size,805,'no filename-only duplicate artwork');
+ assert.equal(hashes.size,883,'no filename-only duplicate artwork');
 });
 
-test('all 40 neutral scenes, 62 narrative masters and 13 job illustrations ship with verified hashes',async()=>{
+test('all 41 neutral scenes, 68 narrative masters and 13 job illustrations ship with verified hashes',async()=>{
  assert.deepEqual(manifest.scenes.map(item=>item.id).sort(),[...SCENE_PLATES_V38].sort());
- assert.equal(manifest.masters.length,62);assert.equal(manifest.props.length,13);
+ assert.equal(manifest.masters.length,68);assert.equal(manifest.props.length,13);
  const records=[...manifest.scenes,...manifest.masters,...manifest.props];
  for(const record of records){
   const bytes=await readFile(file(record.path)),meta=await sharp(bytes).metadata();
@@ -45,9 +45,9 @@ test('all 40 neutral scenes, 62 narrative masters and 13 job illustrations ship 
  assert.equal(new Set(records.map(record=>record.sha256)).size,records.length);
 });
 
-test('15 supplied-photo remakes have alpha and bounded size; the 2 original executive portraits stay unchanged',async()=>{
- assert.equal(manifest.portraits.length,17);
- assert.equal(manifest.portraits.filter(item=>item.referenceRemake).length,15);
+test('20 supplied-photo remakes have alpha and bounded size; the 2 original executive portraits stay unchanged',async()=>{
+ assert.equal(manifest.portraits.length,22);
+ assert.equal(manifest.portraits.filter(item=>item.referenceRemake).length,20);
  const originals={wing:'970d74ebddbfee57276abce482f93a80f021556f3a7c6a76b5a2ace37b4d3082',spencer:'3bccde30cfac000dd3e30c1789c30f01f75e266e90b7cabbd4289e7819537dc3'};
  for(const record of manifest.portraits){
   const bytes=await readFile(file(record.path)),meta=await sharp(bytes).metadata();
@@ -60,5 +60,5 @@ test('15 supplied-photo remakes have alpha and bounded size; the 2 original exec
 test('public artwork metadata contains no original local reference paths or embedded image payloads',async()=>{
  const raw=await readFile(new URL('art-v38.json',assets),'utf8');
  assert.doesNotMatch(raw,/\/Users\/|Downloads|portraits-v38-originals|data:image|base64|圖片\.zip/);
- assert.equal(manifest.counts.endingImages,805);
+ assert.equal(manifest.counts.endingImages,883);
 });

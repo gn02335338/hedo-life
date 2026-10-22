@@ -12,6 +12,7 @@ const expectedFamilies={
  other:'nasdaq taiwan acquired rage_legal rage_defeated rage_coup rage_truce rage_meme nasdaq_failed taiwan_failed google_board google_ousted buyer_board buyer_ousted vietnam_core vietnam_afterdark verbal_wing_concession verbal_boardroom verbal_rick_awake verbal_hr_rewrite verbal_legal_letter verbal_sonny_statement verbal_kind_ghost verbal_colleague_solidarity verbal_viral verbal_mutual_mute verbal_apology',
 };
 const ids=['voluntary','forced_signed','company_exit','pip_failed','pip_passed_exit','cold_storage','labor_dispute','burnout','cash_exhausted','startup','retirement','other','unclassified'];
+const published=ENDINGS.filter(ending=>(ending.minRules??1)<39);
 
 test('departure contract always exposes all thirteen anonymous groups in stable order, including zero counts',()=>{
  assert.deepEqual(DEPARTURE_WAYS,ids);
@@ -19,19 +20,19 @@ test('departure contract always exposes all thirteen anonymous groups in stable 
 });
 
 test('all 805 published endings belong to exactly one departure group without treating career or fantasy endings as dismissals',()=>{
- assert.equal(ENDINGS.length,805);
+ assert.equal(published.length,805);
  const classifiedFamilies=Object.values(expectedFamilies).flatMap(value=>value.split(' '));
  assert.equal(new Set(classifiedFamilies).size,classifiedFamilies.length,'group families must be mutually exclusive');
- assert.deepEqual([...new Set(ENDINGS.map(ending=>ending.family))].sort(),[...classifiedFamilies].sort(),'all published families are explicitly classified');
+ assert.deepEqual([...new Set(published.map(ending=>ending.family))].sort(),[...classifiedFamilies].sort(),'all published families are explicitly classified');
  const expected=Object.fromEntries(ids.map(id=>[id,0]));
- for(const ending of ENDINGS){
+ for(const ending of published){
   const matches=Object.entries(expectedFamilies).filter(([,families])=>families.split(' ').includes(ending.family));
   assert.equal(matches.length,1,ending.id);const group=matches[0][0];expected[group]++;
   assert.deepEqual(departureWays([{id:ending.id,count:1}]),ids.map(id=>({id,count:Number(id===group)})),ending.id);
  }
- const actual=departureWays(ENDINGS.map(ending=>({id:ending.id,count:1})));
+ const actual=departureWays(published.map(ending=>({id:ending.id,count:1})));
  assert.deepEqual(actual,ids.map(id=>({id,count:expected[id]})));
- assert.equal(actual.reduce((total,row)=>total+row.count,0),ENDINGS.length);
+ assert.equal(actual.reduce((total,row)=>total+row.count,0),published.length);
  assert.equal(actual.find(row=>row.id==='unclassified').count,0);
 });
 

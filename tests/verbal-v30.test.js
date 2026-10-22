@@ -6,6 +6,7 @@ import {VERBAL_EVENTS_V30,VERBAL_KINDS_V30} from '../dist/verbal-v30.js';
 import {CHARACTER_IDS,deriveCharacterStats,characterAffinity} from '../dist/character-stats.js';
 import {deriveAchievements} from '../dist/achievements.js';
 import {replayRoute} from './find-routes-v3.mjs';
+import {ORIGINAL_CHARACTER_IDS_V37,frozenCharacterProjection} from './character-compat.mjs';
 
 const {routes}=JSON.parse(readFileSync(new URL('./fixtures/verbal-routes-v30.json',import.meta.url),'utf8'));
 const copy=value=>JSON.parse(JSON.stringify(value));
@@ -29,12 +30,13 @@ test('verbal actions belong only to e30 lives and do not introduce another chara
   const old=createRun('sales',seed);assert.equal(Object.hasOwn(old,'verbalContext'),false);assert.equal(Object.hasOwn(old,'lastVerbalTurn'),false);
   assert.equal(canRequestVerbal(old),false);assert.deepEqual(getVerbalTargets(old),[]);assert.equal(requestVerbal(old),old);
  }
- assert.equal(CHARACTER_IDS.length,17);
+ assert.deepEqual(CHARACTER_IDS.slice(0,17),ORIGINAL_CHARACTER_IDS_V37);
+ assert.equal(frozenCharacterProjection(deriveCharacterStats(run),ORIGINAL_CHARACTER_IDS_V37).length,17);
 });
 
 test('natural verbal witnesses cover every NPC and self in both phases, every outcome and every legal response/result',()=>{
  const targets=routes.filter(route=>route.kind==='target');assert.equal(targets.length,34);
- assert.deepEqual(targets.map(route=>route.id).sort(),['event','result'].flatMap(phase=>[...CHARACTER_IDS.filter(id=>id!=='professor'),'self'].map(id=>`target-${phase}-${id}`)).sort());
+ assert.deepEqual(targets.map(route=>route.id).sort(),['event','result'].flatMap(phase=>[...ORIGINAL_CHARACTER_IDS_V37.filter(id=>id!=='professor'),'self'].map(id=>`target-${phase}-${id}`)).sort());
  assert.deepEqual(routes.filter(route=>route.kind==='outcome').map(route=>route.branch).sort(),[...VERBAL_KINDS_V30].sort());
  assert.deepEqual(routes.filter(route=>route.kind==='legal').map(route=>route.id).sort(),[0,1,2].flatMap(index=>['withdrawn','settled','pending'].map(result=>`legal-${index}-${result}`)).sort());
  let checkpoints=0;

@@ -149,8 +149,8 @@ test('the expanded archive preserves the eleven published IDs and presents Helen
   const oldIds = ['wing', 'spencer', 'erich', 'sonny', 'jenjen', 'rick', 'kind', 'hope', 'jack', 'meimei'];
   assert.deepEqual(characters.CHARACTER_IDS.slice(0, 11), [...oldIds, 'helen']);
   const html = characterBookHTML();
-  assert.equal([...html.matchAll(/class="character-card"/g)].length, 17);
-  assert.match(html, /17<small>位遊戲角色/);
+  assert.equal([...html.matchAll(/class="character-card"/g)].length, 22);
+  assert.match(html, /22<small>位遊戲角色/);
   for (const id of characters.CHARACTER_IDS) {
     assert.ok(html.includes(`id="character-card-${id}"`));
     assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));

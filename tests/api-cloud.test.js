@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import { randomUUID, webcrypto } from 'node:crypto';
 import { createRun, applyChoice, advance, validRun } from '../dist/engine.js';
 import { deriveCharacterStats } from '../dist/character-stats.js';
+import { ORIGINAL_CHARACTER_IDS_V37 } from './character-compat.mjs';
 
 const source = (await readFile(new URL('../dist/cloud.js', import.meta.url), 'utf8')).replace('export const cloud=', 'globalThis.cloud=');
 const item = (id = randomUUID()) => ({ runId: id, roleId: 'ai', seed: 'test', actions: [{ type: 'choice', eventId: 'onboarding', index: 2 }] });
@@ -258,7 +259,7 @@ test('invalid supplied Helen rows cannot replace verified totals or be accepted 
  }
 });
 
-test('an eleven-character verified cache survives offline until all five new counters are actually supplied',async()=>{
+test('an eleven-character verified cache survives offline until the expanded counters are actually supplied',async()=>{
  const legacy=characterRows().slice(0,11),original=client([],()=>withCharacters(legacy));await original.cloud.init();
  const saved=original.saved.get('hedo-character-cache-v1'),ownerHash=JSON.parse(saved).ownerHash;
  let online=false;
@@ -267,10 +268,10 @@ test('an eleven-character verified cache survives offline until all five new cou
  await c.cloud.init();
  assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),legacy);
  assert.equal(c.saved.get('hedo-character-cache-v1'),saved,'offline loading preserves the actual old snapshot');
- for(const id of ['sophie','jonathan','owen','sam','cindy'])assert.ok(!c.cloud.state.characters.some(row=>row.id===id),'missing counters are unknown, not zero');
+ for(const {id} of fresh.slice(11))assert.ok(!c.cloud.state.characters.some(row=>row.id===id),'missing counters are unknown, not zero');
  online=true;await c.cloud.retry();
  assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),fresh);
- const verified=JSON.parse(c.saved.get('hedo-character-cache-v1'));assert.equal(verified.characters.length,17);assert.equal(verified.ownerHash,ownerHash);
+ const verified=JSON.parse(c.saved.get('hedo-character-cache-v1'));assert.equal(verified.characters.length,22);assert.equal(verified.ownerHash,ownerHash);
  const reloaded=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved]});await reloaded.cloud.init();
  assert.deepEqual(JSON.parse(JSON.stringify(reloaded.cloud.state.characters)),fresh);
  assert.equal(reloaded.cloud.state.charactersVerifiedAt,verified.verifiedAt);
@@ -280,7 +281,7 @@ test('an eleven-character verified cache survives offline until all five new cou
 test('an explicitly malformed new character never masquerades as an older missing row',async()=>{
  const good=characterRows(),c=client([],()=>withCharacters(good));await c.cloud.init();
  const saved=c.saved.get('hedo-character-cache-v1'),verifiedAt=c.cloud.state.charactersVerifiedAt;
- for(const id of ['sophie','jonathan','owen','sam','cindy','professor']){
+ for(const {id} of good.slice(11)){
   const row=good.find(row=>row.id===id),missing={...row};delete missing.affinityUpEvents;
   for(const bad of [{...row,realHits:-1},{...row,encounters:1.5},missing]){
    const invalid=good.map(item=>item.id===id?bad:item),cached={...JSON.parse(saved),characters:invalid};
@@ -296,7 +297,7 @@ test('an explicitly malformed new character never masquerades as an older missin
 
 
 test('a sixteen-character verified cache stays intact offline and gains real professor counters only from the authenticated snapshot',async()=>{
- const legacy=characterRows().filter(row=>row.id!=='professor');
+ const legacy=characterRows().filter(row=>row.id!=='professor'&&ORIGINAL_CHARACTER_IDS_V37.includes(row.id));assert.equal(legacy.length,16);
  const original=client([],()=>withCharacters(legacy));await original.cloud.init();
  const saved=original.saved.get('hedo-character-cache-v1');
  const oldOwner=JSON.parse(saved).ownerHash;let online=false;
