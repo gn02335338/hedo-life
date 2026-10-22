@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="rage-truce-return-title rage-truce-return-desc" data-art-version="48">
+ <title id="rage-truce-return-title">停火後，居然還要上班。</title>
+ <desc id="rage-truce-return-desc">現實拳頭旁有停火後保留的工作證與幸運草；後續仍要處理，上班也仍繼續。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-34 30v-38q0-9 9-9v-10q0-12 11-12 10 0 10 12v-5q0-12 11-12 10 0 10 12v5q0-10 10-10 10 0 10 10v13q0-9 9-9 9 0 9 9v30q0 17-15 25v14h-51V30z" fill="#a987cf"/><path d="M-25-16v26m21-37V5m21-32V5m20-15V8M-35 4q15-7 23 3l9 11m-26 28h49" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#f7f1ff" stroke="#9c7db5" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M0 2c-38 6-39-39-15-38q16-1 15 23 1-24 17-23 24 0 22 22C36 4 15 4 0 2c25-4 37 17 21 32C3 51-4 24 0 2c-1 23-26 37-37 18C-48 1-19-5 0 2z" fill="#a987cf"/><path d="M0 6q-5 26 15 43" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#a987cf"/><path d="M-19 33q2-17 19-17t19 17" fill="#a987cf"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

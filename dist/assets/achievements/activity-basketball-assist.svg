@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="activity-basketball-assist-title activity-basketball-assist-desc" data-art-version="48">
+ <title id="activity-basketball-assist-title">助攻不用等主管簽核。</title>
+ <desc id="activity-basketball-assist-desc">籃球傳向空檔隊友的聯絡點，這次交付有人接，助攻也有人看見。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><circle r="42" fill="#ed6995"/><path d="M-42 0h84M0-42v84M-28-31q42 31 0 62m56-62q-42 31 0 62" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><circle r="14" fill="#ed6995"/><path d="m-9-11-21-22m39 22 21-22m-39 44-21 22m39-22 21 22M-14 0h-28m56 0h28" fill="none"/><circle cx="-35" cy="-38" r="9" fill="#fffaf4"/><circle cx="35" cy="-38" r="9" fill="#fffaf4"/><circle cx="-35" cy="38" r="9" fill="#fffaf4"/><circle cx="35" cy="38" r="9" fill="#fffaf4"/><circle cx="-49" r="7" fill="#fffaf4"/><circle cx="49" r="7" fill="#fffaf4"/></g><g transform="translate(52 142) scale(0.36)"><path d="M0 39C-73-6-30-56 0-22 30-56 73-6 0 39z" fill="#ed6995"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

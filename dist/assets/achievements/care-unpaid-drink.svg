@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="care-unpaid-drink-title care-unpaid-drink-desc" data-art-version="48">
+ <title id="care-unpaid-drink-title">無薪假後，飲料還是我的。</title>
+ <desc id="care-unpaid-drink-desc">無薪假日曆後仍有一杯自己挑的飲料，口味不在公司的扣薪範圍內。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><rect x="-39" y="-37" width="78" height="80" rx="8" fill="#fffaf4"/><path d="M-39-14h78m-59-36v25m40-25v25" fill="none"/><path d="M-23 0h13m8 0h13m8 0h8M-23 15h13m8 0h13m8 0h8M-23 30h13m8 0h13" fill="none" stroke="#d9b657"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-30-15h55v43q0 17-28 17t-27-17z" fill="#fffaf4"/><path d="M25-8h12q18 20-12 29M-43 49h82M-16-31q-10-10 1-20m16 20q-10-10 1-20m15 20q-10-10 1-20" fill="none"/><path d="M-30 8h55" stroke="#d9b657"/></g><g transform="translate(52 142) scale(0.36)"><rect x="-43" y="-29" width="86" height="65" rx="9" fill="#d9b657"/><path d="M-36-29v-12l65-7v19" fill="#fffaf4"/><path d="M17-11h31v29H17q-12-14 0-29z" fill="#fffaf4"/><circle cx="29" cy="4" r="3" stroke="none" fill="#273144"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

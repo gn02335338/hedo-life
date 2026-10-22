@@ -25,7 +25,7 @@ test('twenty-six illustrated goals join the catalogue in a dedicated verbal coll
  assert.equal(VERBAL_ACHIEVEMENTS_V32.length,17);assert.equal(COMPANY_ACHIEVEMENTS_V32.length,9);
  assert.equal(ACHIEVEMENT_GROUPS.verbal,'口舌風波');
  assert.equal(new Set(ids).size,26);
- assert.deepEqual(ACHIEVEMENTS.slice(-26),ACHIEVEMENTS_V32);
+ assert.deepEqual(ACHIEVEMENTS.slice(123,149),ACHIEVEMENTS_V32);
  for(const item of ACHIEVEMENTS_V32){
   assert.equal(ACHIEVEMENT_MAP[item.id],item);
   assert.equal(item.image,`./assets/achievements/${item.id}.svg`);

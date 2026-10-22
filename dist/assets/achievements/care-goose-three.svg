@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="care-goose-three-title care-goose-three-desc" data-art-version="48">
+ <title id="care-goose-three-title">這位主管連任三次。</title>
+ <desc id="care-goose-three-desc">玩具鵝戴上續任主管的小皇冠，第三次主持的績效檢討仍沒有追加需求。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-43 20q-11-30 15-38 22-7 32 12L14 6V-19q-1-24 20-24 17 0 17 17 0 10-13 15l-1 29q-1 29-34 29-31 0-46-27z" fill="#fffaf4"/><path d="m47-30 16 9-18 3" fill="#d9b657"/><circle cx="33" cy="-30" r="2.5" fill="#273144" stroke="none"/><path d="M-21 7q12 24 31 10M-16 47v8m24-8v8" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="m-40-30 21 20 19-34 19 34 21-20-8 65h-64z" fill="#d9b657"/><path d="M-32 18h64" fill="none"/><circle cx="-40" cy="-34" r="5" fill="#fffaf4"/><circle cy="-48" r="5" fill="#fffaf4"/><circle cx="40" cy="-34" r="5" fill="#fffaf4"/></g><circle cx="183" cy="48" r="20" fill="#fffaf4" stroke="#b79537" stroke-width="3"/><text x="183" y="55" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="19">3</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

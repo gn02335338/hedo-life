@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="meal-first-love-break-title meal-first-love-break-desc" data-art-version="48">
+ <title id="meal-first-love-break-title">兩位主唱都先吃飯。</title>
+ <desc id="meal-first-love-break-desc">一碗主餐旁放著兩支麥克風，兩位主唱都先坐下吃飯。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f6d5c7"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#ba806d" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-44-4h88q-5 44-44 44T-44-4z" fill="#e99775"/><path d="M-22 46h44M-30-20l77-22m-75 33 77-22M-12-4v-27m10 27v-29m10 29v-32" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff4f0" stroke="#ba806d" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#e99775"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#e99775"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#e99775" stroke-width="3" stroke-linecap="round"/>
+</svg>

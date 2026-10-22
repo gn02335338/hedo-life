@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="rage-private-return-title rage-private-return-desc" data-art-version="48">
+ <title id="rage-private-return-title">這晚失控，隔天還有班。</title>
+ <desc id="rage-private-return-desc">私人場合失控的拳套放在咖啡旁，工作證表示隔天仍有班。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-24 40v-11q-16-9-16-30v-22q0-16 17-16h35q26 0 26 25v17q0 19-20 27v10z" fill="#a987cf"/><path d="M-21 2q-21-8-24 9-4 15 17 20m7-15V2q0-10 10-10h13M-24 40h42v13h-42z" fill="#fffaf4"/></g><circle cx="177" cy="139" r="27" fill="#f7f1ff" stroke="#9c7db5" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-30-15h55v43q0 17-28 17t-27-17z" fill="#fffaf4"/><path d="M25-8h12q18 20-12 29M-43 49h82M-16-31q-10-10 1-20m16 20q-10-10 1-20m15 20q-10-10 1-20" fill="none"/><path d="M-30 8h55" stroke="#a987cf"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#a987cf"/><path d="M-19 33q2-17 19-17t19 17" fill="#a987cf"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

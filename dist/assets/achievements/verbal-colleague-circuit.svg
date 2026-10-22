@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-colleague-circuit-title verbal-colleague-circuit-desc" data-art-version="48">
+ <title id="verbal-colleague-circuit-title">跨部門音量測試</title>
+ <desc id="verbal-colleague-circuit-desc">跨部門聯絡網接上一支麥克風，三位同事各自收到一份現場發言。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><circle r="14" fill="#ed6995"/><path d="m-9-11-21-22m39 22 21-22m-39 44-21 22m39-22 21 22M-14 0h-28m56 0h28" fill="none"/><circle cx="-35" cy="-38" r="9" fill="#fffaf4"/><circle cx="35" cy="-38" r="9" fill="#fffaf4"/><circle cx="-35" cy="38" r="9" fill="#fffaf4"/><circle cx="35" cy="38" r="9" fill="#fffaf4"/><circle cx="-49" r="7" fill="#fffaf4"/><circle cx="49" r="7" fill="#fffaf4"/></g><circle cx="177" cy="139" r="27" fill="#fff4f0" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#ed6995"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g><circle cx="183" cy="48" r="20" fill="#fffaf4" stroke="#c67898" stroke-width="3"/><text x="183" y="55" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="19">3</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

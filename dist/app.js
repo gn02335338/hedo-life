@@ -101,7 +101,7 @@ function collectAchievements(notify=true){
  const unlockedAt=new Date().toISOString();for(const id of ids)achievements[id]={unlockedAt,source:'local'};
  recentAchievements={key:achievementProgressKey(),ids};if(notify)showAchievementToast(ids);syncAchievementProof();
 }
-function achievementModeLabel(item){return item.mode==='real'?'現實出手':item.mode==='imagined'?'腦內夢境':'';}
+function achievementModeLabel(item){return item.mode==='real'?'現實出手':item.mode==='imagined'?'腦內夢境':item.mode==='mixed'?'夢境＋現實':'';}
 function achievementModeHTML(item){const label=achievementModeLabel(item);return label?`<span class="achievement-mode ${item.mode}">${label}</span>`:'';}
 function showAchievementToast(ids){
  const first=ACHIEVEMENT_MAP[ids[0]],panel=$('#achievement-toast');if(!first||!panel)return;clearTimeout(achievementToastTimer);panel.innerHTML=`<img src="${first.image}" alt=""><div><span>成就解鎖${ids.length>1?` · 共 ${ids.length} 枚`:''}${first.mode?` · ${achievementModeLabel(first)}`:''}</span><b>${esc(first.title)}</b></div><button data-action="achievements">翻開成就簿 ↗</button>`;panel.classList.add('visible');achievementToastTimer=setTimeout(()=>panel.classList.remove('visible'),6500);

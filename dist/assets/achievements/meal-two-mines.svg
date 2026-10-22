@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="meal-two-mines-title meal-two-mines-desc" data-art-version="48">
+ <title id="meal-two-mines-title">餐廳沒有標雷區。</title>
+ <desc id="meal-two-mines-desc">飯碗旁冒出聊天警示，兩次踩雷都不在菜單的辣度標示內。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-44-4h88q-5 44-44 44T-44-4z" fill="#d9b657"/><path d="M-22 46h44M-30-20l77-22m-75 33 77-22M-12-4v-27m10 27v-29m10 29v-32" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M0-46 49 39h-98z" fill="#d9b657"/><path d="M0-18V9m0 13v2" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><path d="m-35-15 55-23V30l-55-22z" fill="#d9b657"/><path d="M-35-15h-12V8h12m15 6 5 28h17L-2 20M31-14l15-6m-15 22h19m-19 16 15 6" fill="#fffaf4"/></g><circle cx="183" cy="48" r="20" fill="#fffaf4" stroke="#b79537" stroke-width="3"/><text x="183" y="55" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="19">2</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

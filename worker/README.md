@@ -523,3 +523,20 @@ secret, database table or authentication permission is introduced.
 The professor’s new display alias is presentation-only. Canonical engine prose
 imports the frozen `publishedDisplayText` function, preserving old histories,
 queued proofs and seeds while current UI uses the new alias and short biographies.
+
+## Expanded achievement projection (v48)
+
+The catalogue appends sixty illustrated achievements after the existing 149 IDs.
+New goals are read-only projections of committed e39 histories, including ongoing
+and completed e39 lives. Older cohorts retain their previous award derivation.
+No new rule cohort, game action, random draw, anonymous identifier, API field or
+database migration is introduced.
+
+Repeated verbal-survival goals require completed work after the qualifying
+speech. A safe return after actual violence requires the same attempt's resolved
+follow-up and subsequent work; an unfinished conflict or an imagined attempt is
+insufficient. The browser and Worker import the same derivation. Progress proofs
+still replay canonical actions before recording unique player/achievement pairs;
+supplied badge IDs, flags and histories are discarded by the existing envelope.
+Only IDs and first-unlocked dates are added to stored collections. Source story
+text, action transcripts and seeds are not retained by the achievement store.

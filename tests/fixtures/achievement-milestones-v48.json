@@ -1,0 +1,4132 @@
+{
+  "method": "Natural e39 createRun games and canonical actions only. Every witness is independently replayed; no stats, flags, history, context or RNG state is injected. Goals require their resolved actions and later work where applicable.",
+  "routes": [
+    {
+      "id": "verbal-still-here-three",
+      "roleId": "system",
+      "seed": "e39-cal46-badges-5",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "cast39-princess-support-night",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 6
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "quiz26-mac-level",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-warning",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-kind-attendance-deposit"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "cast35-kind-attendance-deposit",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "cast39-annie_yu-leaving-question",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "job-system-phone-monitor",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "cast35-erich-legal-labor-representative",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-research-service-shift"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-research-service-shift",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "job-system-schema",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "cast35-cindy-pm-technical-boundary",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-legal",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-legal-result",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "quiz26-forty-questions",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "jonathan-today-release"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "jonathan-today-release",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "system-printer",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "cast35-helen-meal-cutoff",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-warning",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "system-weekend",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-warning",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-still-here-three",
+        "verbal-still-here-five",
+        "verbal-still-here-eight",
+        "verbal-no-audience",
+        "verbal-echo-office",
+        "verbal-witnesses",
+        "verbal-three-agendas",
+        "verbal-legal-return",
+        "verbal-warning-return",
+        "verbal-colleague-circuit",
+        "care-sixty",
+        "career-cut-care"
+      ]
+    },
+    {
+      "id": "verbal-onboard-return",
+      "roleId": "system",
+      "seed": "e39-cal46-mixed48-1",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "onboarding",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "job-system-rollback"
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "job-system-rollback",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "jonathan-today-release"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "chapter-resolution",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-notebook-server"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "professor37-notebook-server"
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-notebook-server",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "job-system-schema"
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "job-system-schema",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "cast39-princess-copilot-choice"
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "cast39-princess-copilot-choice",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-legal",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-legal-result",
+          "index": 0
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "professor37-research-service-shift"
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-research-service-shift",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "owen-tesla-run"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "owen-tesla-run"
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "owen-tesla-run",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "job-system-phone-monitor"
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-onboard-return",
+        "verbal-dream-to-words",
+        "verbal-words-to-dream",
+        "rage-truce-return",
+        "dream-trilogy",
+        "dream-three-cast",
+        "rage-dream-then-real",
+        "career-cut-care"
+      ]
+    },
+    {
+      "id": "meal-two-mines",
+      "roleId": "sales",
+      "seed": "e39-cal46-meal48-5",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-introduction-role",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "sales21-demo-operator"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-last-minute-question",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-group-message",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-currency-quote"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 1
+        }
+      ],
+      "expectedAchievements": [
+        "meal-two-mines",
+        "meal-same-person-weather",
+        "meal-read-three",
+        "meal-rain-check",
+        "meal-three-guests",
+        "care-sixty"
+      ]
+    },
+    {
+      "id": "rage-private-return",
+      "roleId": "sales",
+      "seed": "e39-badges-rage-1",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "kind-break"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-demo-operator",
+          "index": 2
+        }
+      ],
+      "expectedAchievements": [
+        "rage-private-return",
+        "rage-police-return",
+        "rage-private-mediation"
+      ]
+    },
+    {
+      "id": "activity-arm-whitepaper",
+      "roleId": "system",
+      "seed": "e39-cal46-test-0",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-jenjen-name-card-history"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jenjen-name-card-history",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-support-night"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-door-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-name-check",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-late-forward",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-pm-technical-boundary",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-readonly-approval"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-readonly-approval",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-sample-family",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-copilot-choice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-pm-transfer",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "dp-production-file"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-banquet-3",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 1
+        }
+      ],
+      "expectedAchievements": [
+        "activity-arm-whitepaper",
+        "activity-diet-prize",
+        "activity-banquet-ghost-return"
+      ]
+    },
+    {
+      "id": "care-evidence-then-words",
+      "roleId": "system",
+      "seed": "e39-cal46-wallet2-1",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-notebook-server",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-system-rollback"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        }
+      ],
+      "expectedAchievements": [
+        "care-evidence-then-words",
+        "care-words-then-evidence"
+      ]
+    },
+    {
+      "id": "activity-diet-withdraw",
+      "roleId": "system",
+      "seed": "e39-cal46-test-0",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-jenjen-name-card-history"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jenjen-name-card-history",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-support-night"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 1
+        }
+      ],
+      "expectedAchievements": [
+        "activity-diet-withdraw",
+        "activity-fish-share"
+      ]
+    },
+    {
+      "id": "verbal-private-return",
+      "roleId": "system",
+      "seed": "e39-cal46-table1-15",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "meal-with-jonathan",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-system-schema"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-private-return",
+        "meal-same-person-weather",
+        "meal-after-insult"
+      ]
+    },
+    {
+      "id": "activity-roadshow-limits",
+      "roleId": "system",
+      "seed": "e39-cal46-test-1",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-patent-pm",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-notebook-server"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-breakfast-ban",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-avatar-badge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "dp-production-file"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-pm-technical-boundary",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-support-night"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "career-cut-care",
+        "activity-roadshow-limits",
+        "activity-basketball-assist"
+      ]
+    },
+    {
+      "id": "rage-onboard-truce",
+      "roleId": "sales",
+      "seed": "e39-badges-rage-2",
+      "actions": [
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "chapter-resolution",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-cash-is-not-contract",
+          "index": 2
+        }
+      ],
+      "expectedAchievements": [
+        "rage-truce-return",
+        "rage-onboard-truce"
+      ]
+    },
+    {
+      "id": "verbal-salary-return",
+      "roleId": "system",
+      "seed": "e39-system-9-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "salary-cut",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-decision",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-data-contract-shape",
+          "index": 2
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-salary-return"
+      ]
+    },
+    {
+      "id": "rage-real-then-dream",
+      "roleId": "system",
+      "seed": "e39-cal46-mixed48-20",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "onboarding"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "chapter-resolution",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "system-printer"
+        }
+      ],
+      "expectedAchievements": [
+        "rage-real-then-dream"
+      ]
+    },
+    {
+      "id": "care-goose-three",
+      "roleId": "system",
+      "seed": "e39-cal46-wallet3-1",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 6
+        }
+      ],
+      "expectedAchievements": [
+        "care-sixty",
+        "care-goose-three"
+      ]
+    },
+    {
+      "id": "care-unpaid-drink",
+      "roleId": "system",
+      "seed": "e39-cal46-unpaid48-0",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-local-path",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "care-unpaid-drink"
+      ]
+    },
+    {
+      "id": "meal-after-dream",
+      "roleId": "system",
+      "seed": "e39-cal46-table2-7",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "meal-with-jonathan"
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-data-contract-shape",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "meal-after-dream"
+      ]
+    },
+    {
+      "id": "meal-wing-warm",
+      "roleId": "sales",
+      "seed": "e39-cal46-meal48-2",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-sonny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-sales-professor-question",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-wing",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "meal-wing-warm",
+        "meal-read-three",
+        "meal-rain-check"
+      ]
+    },
+    {
+      "id": "career-cut-raise",
+      "roleId": "system",
+      "seed": "e39-system-z-b",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-pm-technical-boundary",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-copilot-choice",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-confirmation",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "career-cut-raise",
+        "career-cut-care"
+      ]
+    },
+    {
+      "id": "rage-salary-truce",
+      "roleId": "system",
+      "seed": "e39-system-1l-7",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-local-path",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-lunch-reset",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "salary-cut"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-legal",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "chapter-resolution",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        }
+      ],
+      "expectedAchievements": [
+        "rage-truce-return",
+        "rage-salary-truce",
+        "career-cut-care"
+      ]
+    },
+    {
+      "id": "meal-first-love-break",
+      "roleId": "system",
+      "seed": "e39-cal46-table0-3",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jack",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-soft-heart-sales"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-meimei",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "meal-first-love-break"
+      ]
+    },
+    {
+      "id": "care-second-repair",
+      "roleId": "system",
+      "seed": "e39-cal46-wallet0-0",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-egg-tart-competition",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-calendar-white"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-calendar-white",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "dp-production-file"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-two-company-badge",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "mood-collapse",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-soft-heart-sales",
+          "index": 1
+        }
+      ],
+      "expectedAchievements": [
+        "care-second-repair"
+      ]
+    },
+    {
+      "id": "care-raise-party",
+      "roleId": "system",
+      "seed": "e39-system-z-4",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 2
+        },
+        {
+          "type": "raise"
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-request",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "raise-response",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        }
+      ],
+      "expectedAchievements": [
+        "care-raise-party"
+      ]
+    },
+    {
+      "id": "activity-diet-special",
+      "roleId": "system",
+      "seed": "e39-cal46-test-0",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-jenjen-name-card-history"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-dinner-2",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jenjen-name-card-history",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-support-night"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-diet-2",
+          "index": 2
+        }
+      ],
+      "expectedAchievements": [
+        "activity-diet-special"
+      ]
+    },
+    {
+      "id": "activity-review-evidence",
+      "roleId": "system",
+      "seed": "e39-cal46-test-5",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-soft-heart-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-white-team-budget",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-cdp-ticket-king",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-successor-check",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-code-confidence-exit",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sam-ranking-breakfast"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-review-2",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "activity-review-evidence"
+      ]
+    },
+    {
+      "id": "verbal-cold-shoulder",
+      "roleId": "system",
+      "seed": "e39-cal46-badges-0",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "cast39-princess-handoff-window",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "professor37-research-service-shift",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "system-printer",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "gratitude-admission"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "gratitude-admission",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "job-system-rollback",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "jonathan-today-release",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "quiz-snake-origin",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-warning",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "dp-last-day-pizza"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-last-day-pizza",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-still-here-three",
+        "verbal-still-here-five",
+        "verbal-witnesses",
+        "verbal-three-agendas",
+        "verbal-warning-return",
+        "verbal-colleague-circuit",
+        "verbal-cold-shoulder"
+      ]
+    },
+    {
+      "id": "rage-medical-receipt",
+      "roleId": "system",
+      "seed": "e39-system-9-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-data-contract-shape",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-hallway-approval",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jenjen-desk-tape",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-copilot-choice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 3
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "banquet-afterparty"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-showdown",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-toast-rule",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "rage-private-return",
+        "rage-medical-receipt"
+      ]
+    },
+    {
+      "id": "rage-cup-off-duty",
+      "roleId": "system",
+      "seed": "e39-system-9-3",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-data-contract-shape",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-hallway-approval",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jenjen-desk-tape",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "system-weekend",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-copilot-choice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 3
+        },
+        {
+          "type": "rage",
+          "phase": "event",
+          "eventId": "banquet-afterparty"
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-aftermath",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rage-public",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-toast-rule",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "rage-private-return",
+        "rage-cup-off-duty"
+      ]
+    },
+    {
+      "id": "verbal-both-bosses",
+      "roleId": "system",
+      "seed": "e39-cal46-boss48-0",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "onboarding",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-decision",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-status-stage",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-hypothesis-acceptance"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-volume-relay",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-vendor-hello"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-vendor-hello",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cindy-favor-temperature"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-favor-temperature",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-two-company-badge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-handover-horizon",
+          "index": 2
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "spencer-menu-freedom",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-tesla-sample-load",
+          "index": 2
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-both-bosses",
+        "verbal-onboard-return"
+      ]
+    },
+    {
+      "id": "activity-basketball-rest",
+      "roleId": "system",
+      "seed": "e39-cal46-test-1",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-patent-pm",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-notebook-server"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-arm-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-breakfast-ban",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-avatar-badge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "dp-production-file"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-roadshow-2",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage-application",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-pm-technical-boundary",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-princess-support-night"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "activity44-basketball-2",
+          "index": 1
+        }
+      ],
+      "expectedAchievements": [
+        "career-cut-care",
+        "activity-basketball-rest"
+      ]
+    },
+    {
+      "id": "verbal-pip-return",
+      "roleId": "product",
+      "seed": "e39-product-1q-x",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-two-slots-one-test",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-interview-curtain",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-group-message",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-sales-review",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-model-license",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-production-file",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-name-card-experiment",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-plugin-passport",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-price-ladder",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-piano-calendar",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-scope-amulet",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-approval-source",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-feature-off-switch",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "pip-passed",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v32-aftermath",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-legal",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-legal-result",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "verbal-v2-decision",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-dragon-seasick",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-pip-return",
+        "verbal-legal-return"
+      ]
+    },
+    {
+      "id": "care-pip-two-ways",
+      "roleId": "ai",
+      "seed": "e39-ai-1i-12",
+      "actions": [
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-same-name",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-service-shift",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-today-release",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-printer-undead",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-sql-row-fanout",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-welcome",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-draw",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "banquet-afterparty",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-schema",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meimei-product-loop",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-audit-tea",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-data-contract-shape",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-origin-count",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-pm-technical-boundary",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-handoff-window",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        }
+      ],
+      "expectedAchievements": [
+        "care-pip-two-ways",
+        "care-sixty"
+      ]
+    },
+    {
+      "id": "meal-three-warm",
+      "roleId": "sales",
+      "seed": "e39-cal46-meal48-3",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "verbal",
+          "phase": "event",
+          "eventId": "meal-with-sophie",
+          "version": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-team-credit",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 7
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 8
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-b",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-jonathan",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-name-card-experiment",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-erich-legal-sales-review"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-sales-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-resume-name-drop",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-erich",
+          "index": 1
+        }
+      ],
+      "expectedAchievements": [
+        "verbal-private-return",
+        "meal-three-warm",
+        "meal-read-three",
+        "meal-rain-check"
+      ]
+    }
+  ]
+}

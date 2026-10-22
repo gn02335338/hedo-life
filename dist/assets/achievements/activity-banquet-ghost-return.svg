@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="activity-banquet-ghost-return-title activity-banquet-ghost-return-desc" data-art-version="48">
+ <title id="activity-banquet-ghost-return-title">阿良消失，我沒曠職。</title>
+ <desc id="activity-banquet-ghost-return-desc">尾牙散場的夜色裡只剩一雙等待的鞋，隔天工作證仍照常使用。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f6d5c7"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#ba806d" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M17-42c-39 4-56 51-21 75C23 50 46 31 47 13 13 21-3-9 17-42z" fill="#e99775"/><path d="m-33-35 2 7 7 2-7 2-2 7-2-7-7-2 7-2zm65 2 3 9 10 3-10 3-3 10-3-10-10-3 10-3z" fill="#fffaf4"/></g><circle cx="177" cy="139" r="27" fill="#fff4f0" stroke="#ba806d" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#e99775"/><path d="M-19 33q2-17 19-17t19 17" fill="#e99775"/></g><g transform="translate(52 142) scale(0.36)"><path d="m-33-34 29 5 5 30 37 17q13 5 13 24h-92v-34z" fill="#e99775"/><path d="M-41 30h92M-3-7l-17 8m22 2-17 8m24-2-17 8" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#e99775" stroke-width="3" stroke-linecap="round"/>
+</svg>

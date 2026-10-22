@@ -117,3 +117,27 @@ test('reading or filtering the achievement book never changes records, draws gam
  for(const filter of ['all','locked','unlocked','all'])app.book(filter);
  assert.deepEqual(app.records(),before);assert.deepEqual(app.saved(),saved);assert.deepEqual(app.calls,calls);
 });
+
+test('all sixty expanded achievements keep their titles, conditions, art and real/dream mode secret until earned',()=>{
+ const expanded=achievements.ACHIEVEMENTS.slice(149);
+ assert.equal(expanded.length,60);
+ const app=harness(),html=app.book();
+ for(const item of expanded){
+  assert.ok(!html.includes(`<h3>${item.title}</h3>`));
+  assert.ok(!html.includes(item.description));
+  assert.ok(!html.includes(`src="${item.image}"`));
+ }
+ for(const card of html.matchAll(/<article class="achievement-card locked"[\s\S]*?<\/article>/g)){
+  assert.match(card[0],/<h3>\?\?\?<\/h3>/);
+  assert.doesNotMatch(card[0],/<img|achievement-mode|現實出手|腦內夢境/);
+ }
+ for(const mode of ['real','imagined','mixed']){
+  const item=expanded.find(item=>item.mode===mode);assert.ok(item,mode);
+  const unlocked=harness({[item.id]:row()}).book('unlocked');
+  assert.ok(unlocked.includes(`<h3>${item.title}</h3>`));
+  assert.ok(unlocked.includes(item.description));
+  assert.ok(unlocked.includes(`src="${item.image}"`));
+  assert.ok(unlocked.includes(`achievement-mode ${mode}`));
+  if(mode==='mixed')assert.ok(unlocked.includes('夢境＋現實'));
+ }
+});

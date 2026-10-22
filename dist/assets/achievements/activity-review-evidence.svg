@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="activity-review-evidence-title activity-review-evidence-desc" data-art-version="48">
+ <title id="activity-review-evidence-title">雨傘不再兼任專案負責人。</title>
+ <desc id="activity-review-evidence-desc">審查雨傘不再頂替負責人，旁邊的證據文件和方向指標留下可追的待辦。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-46-1Q0-74 46-1q-16-14-30 0-16-14-32 0-14-14-30 0z" fill="#ed6995"/><path d="M0-43v77q0 21-20 10" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-31-47H9l25 25v70h-65z" fill="#fffaf4"/><path d="M9-47v25h25M-19-8h39m-39 14h39m-39 14H7m-26 14h31" fill="none"/><path d="m-12 20 7 7 18-19" fill="none" stroke="#ed6995"/></g><g transform="translate(52 142) scale(0.36)"><circle r="43" fill="#fffaf4"/><path d="m16-24-7 33-25 15 7-33z" fill="#ed6995"/><path d="M0-43v8m43 8h-8M0 43v-8m-43-8h8M-8 8 8-8" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

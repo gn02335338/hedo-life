@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-private-return-title verbal-private-return-desc" data-art-version="48">
+ <title id="verbal-private-return-title">下班罵完，上班還是同事。</title>
+ <desc id="verbal-private-return-desc">私下飯碗旁放著麥克風，隔天仍使用的工作證把工作和口角分開。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-44-4h88q-5 44-44 44T-44-4z" fill="#ed6995"/><path d="M-22 46h44M-30-20l77-22m-75 33 77-22M-12-4v-27m10 27v-29m10 29v-32" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff4f0" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#ed6995"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#ed6995"/><path d="M-19 33q2-17 19-17t19 17" fill="#ed6995"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

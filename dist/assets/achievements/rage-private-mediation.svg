@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="rage-private-mediation-title rage-private-mediation-desc" data-art-version="48">
+ <title id="rage-private-mediation-title">今晚不續攤，改約調解。</title>
+ <desc id="rage-private-mediation-desc">兩杯私下飲料旁是調解天秤和書面事項，續攤改約後續協調。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-47 29h94v10h-94z" fill="#a987cf"/><path d="M-36-10h30v25q-1 13-15 13t-15-13zM7-10h30v25q-1 13-15 13T7 15z" fill="#fffaf4"/><path d="M-6-5H0q12 12-6 17m43-17h6q12 12-6 17M-21-25q-8-8 1-18m42 18q-8-8 1-18" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#f7f1ff" stroke="#9c7db5" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M0-43v87m-22 0h44M-38-25H38M-29-25-47 6h36L-29-25zm58 0L11 6h36L29-25z" fill="#fffaf4"/><path d="M-47 6q3 18 18 18t18-18m22 0q3 18 18 18T47 6" fill="#a987cf"/><circle cy="-29" r="6" fill="#a987cf"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-31-47H9l25 25v70h-65z" fill="#fffaf4"/><path d="M9-47v25h25M-19-8h39m-39 14h39m-39 14H7m-26 14h31" fill="none"/><path d="m-12 20 7 7 18-19" fill="none" stroke="#a987cf"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="activity-arm-whitepaper-title activity-arm-whitepaper-desc" data-art-version="48">
+ <title id="activity-arm-whitepaper-title">十秒賽程，三輪附件。</title>
+ <desc id="activity-arm-whitepaper-desc">腕力手臂旁有十秒計時器與白紙附件，賽程很短，補充聲明很長。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="m-42 37 8-44 12-28q6-13 18-7l12 6q10 4 4 16l-4 7-14-8-5 21Q17-19 36-1q15 15 8 38z" fill="#ed6995"/><path d="M-11 0q-12 4-15 16m34-29q9 11 7 25M-34 26H36" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-31-47H9l25 25v70h-65z" fill="#fffaf4"/><path d="M9-47v25h25M-19-8h39m-39 14h39m-39 14H7m-26 14h31" fill="none"/><path d="m-12 20 7 7 18-19" fill="none" stroke="#ed6995"/></g><g transform="translate(52 142) scale(0.36)"><circle r="42" fill="#fffaf4"/><path d="M0-29V0l20 13M0-42v7m42 7h-7M0 42v-7m-42-7h7" fill="none"/><circle r="5" fill="#ed6995"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

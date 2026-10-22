@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="meal-read-three-title meal-read-three-desc" data-art-version="48">
+ <title id="meal-read-three-title">已讀回條吃到飽</title>
+ <desc id="meal-read-three-desc">手機留著三次沒有成行的邀約回條，餐費沒有支出，等待已經收齊。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><rect x="-25" y="-46" width="50" height="92" rx="9" fill="#fffaf4"/><path d="M-10-35h20m-24 12h28m-28 12H8m-22 12h22" fill="none"/><circle cy="33" r="4" fill="#d9b657"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-43" y="-29" width="86" height="60" rx="7" fill="#fffaf4"/><path d="m-41-26 41 32 41-32m-82 55 28-25m54 25L13 4" fill="none"/></g><circle cx="183" cy="48" r="20" fill="#fffaf4" stroke="#b79537" stroke-width="3"/><text x="183" y="55" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="19">3</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

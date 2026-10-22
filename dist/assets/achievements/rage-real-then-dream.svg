@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="rage-real-then-dream-title rage-real-then-dream-desc" data-art-version="48">
+ <title id="rage-real-then-dream-title">這次記得把手放好。</title>
+ <desc id="rage-real-then-dream-desc">現實拳頭轉向夢泡泡，後來的衝動留在腦內，沒有新增出手。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(87 99) scale(0.8)"><path d="M-34 30v-38q0-9 9-9v-10q0-12 11-12 10 0 10 12v-5q0-12 11-12 10 0 10 12v5q0-10 10-10 10 0 10 10v13q0-9 9-9 9 0 9 9v30q0 17-15 25v14h-51V30z" fill="#a987cf"/><path d="M-25-16v26m21-37V5m21-32V5m20-15V8M-35 4q15-7 23 3l9 11m-26 28h49" fill="none"/></g><g transform="translate(163 115) scale(0.64)"><path d="M-32 28c-34 0-33-38-10-41-4-31 37-43 50-17 23-16 46 4 40 26 25 16 14 39-9 39h-71z" fill="#fffaf4"/><circle cx="-34" cy="45" r="7" fill="#fffaf4"/><circle cx="-47" cy="57" r="3" fill="#fffaf4"/></g><path d="M116 61q20-14 36 2m-3-11 5 12-13-1" fill="none" stroke="#9c7db5" stroke-width="3"/><g transform="translate(52 142) scale(0.36)"><path d="M0-47q17 13 36 13v34q-2 31-36 48Q-34 31-36 0v-34q19 0 36-13z" fill="#a987cf"/><path d="m-18 0 12 13 25-29" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

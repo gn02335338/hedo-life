@@ -7,6 +7,8 @@ import { AchievementStore } from '../worker/achievements.js';
 import { validateCompletion } from '../worker/http.js';
 import { createRun, applyChoice, advance, replayRun } from '../dist/engine.js';
 import { deriveAchievements } from '../dist/achievements.js';
+import { ACHIEVEMENTS_V48,deriveAchievementsV48 } from '../dist/achievements-v48.js';
+import { ROLE_MAP } from '../dist/roles.js';
 
 function harness() {
   const db = new DatabaseSync(':memory:');
@@ -88,4 +90,29 @@ test('e14 rage envelope requires an explicit visible phase and scene, with no cl
  }
  assert.doesNotThrow(()=>validateCompletion({...proof,actions:Array(300).fill(proof.actions[0])},{system:{}}));
  assert.throws(()=>validateCompletion({...proof,actions:Array(301).fill(proof.actions[0])},{system:{}}));
+});
+
+test('expanded milestones sync from replay proofs, preserve first dates, isolate players and never retain source transcripts',async()=>{
+ const routes=JSON.parse(readFileSync(new URL('./fixtures/achievement-milestones-v48.json',import.meta.url),'utf8')).routes;
+ const h=harness(),time='2026-10-22T12:00:00.000Z',newIds=new Set(ACHIEVEMENTS_V48.map(item=>item.id));
+ try{
+  for(const route of routes){
+   const body=validateCompletion({runId:randomUUID(),roleId:route.roleId,seed:route.seed,actions:route.actions,achievements:[...newIds],flags:{rage_real:999},history:[{speaker:'wing'}]},ROLE_MAP);
+   assert.deepEqual(Object.keys(body).sort(),['runId','roleId','seed','actions'].sort());
+   const run=replayRun(body.roleId,body.seed,body.actions);
+   assert.deepEqual(deriveAchievementsV48(run),route.expectedAchievements);
+   await h.store.record('owner',body.runId,run,time);
+   assert.deepEqual(await h.reopen().record('owner',body.runId,run,'2026-10-23T12:00:00.000Z'),[],'retries do not duplicate or redetermine a badge');
+   await assert.rejects(h.store.record('other',body.runId,run),error=>error.status===409);
+  }
+  const snapshot=h.store.snapshot('owner');
+  assert.deepEqual(snapshot.filter(row=>newIds.has(row.id)).map(row=>row.id).sort(),[...newIds].sort());
+  assert.ok(snapshot.every(row=>row.unlockedAt===time));
+  assert.deepEqual(h.store.snapshot('other'),[]);
+  const commitments=h.sql.exec('SELECT * FROM achievement_runs').toArray();
+  assert.equal(commitments.length,routes.length);
+  assert.ok(commitments.every(row=>Object.keys(row).sort().join(',')==='created_at,id,player_id,role_id,seed_hash'));
+  assert.ok(routes.every(route=>!JSON.stringify(commitments).includes(route.seed)));
+  assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM runs').one().n,0,'achievement progress does not fabricate a completed game');
+ }finally{h.db.close();}
 });

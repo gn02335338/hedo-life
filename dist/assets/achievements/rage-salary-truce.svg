@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="rage-salary-truce-title rage-salary-truce-desc" data-art-version="48">
+ <title id="rage-salary-truce-title">薪水沒談完，先談停火。</title>
+ <desc id="rage-salary-truce-desc">薪資硬幣先放到一旁，拳套旁的盾牌表示這輪先處理停火和後續。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><ellipse cy="31" rx="39" ry="13" fill="#a987cf"/><path d="M-39 9v22q0 13 39 13T39 31V9" fill="#a987cf"/><ellipse cy="9" rx="39" ry="13" fill="#fffaf4"/><path d="M-31-13V9q0 13 31 13T31 9v-22" fill="#a987cf"/><ellipse cy="-13" rx="31" ry="12" fill="#fffaf4"/><path d="M0-43v29m10-22h-15q-11 0-10 8t12 8h8q12 0 12 8-1 9-12 9h-17" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#f7f1ff" stroke="#9c7db5" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M0-47q17 13 36 13v34q-2 31-36 48Q-34 31-36 0v-34q19 0 36-13z" fill="#a987cf"/><path d="m-18 0 12 13 25-29" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-24 40v-11q-16-9-16-30v-22q0-16 17-16h35q26 0 26 25v17q0 19-20 27v10z" fill="#a987cf"/><path d="M-21 2q-21-8-24 9-4 15 17 20m7-15V2q0-10 10-10h13M-24 40h42v13h-42z" fill="#fffaf4"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

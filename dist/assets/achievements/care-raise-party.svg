@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="care-raise-party-title care-raise-party-desc" data-art-version="48">
+ <title id="care-raise-party-title">這杯用真的加薪付。</title>
+ <desc id="care-raise-party-desc">真的增加的薪資硬幣換成一杯飲料，氣球慶祝的是已經發生的調薪。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><ellipse cy="31" rx="39" ry="13" fill="#d9b657"/><path d="M-39 9v22q0 13 39 13T39 31V9" fill="#d9b657"/><ellipse cy="9" rx="39" ry="13" fill="#fffaf4"/><path d="M-31-13V9q0 13 31 13T31 9v-22" fill="#d9b657"/><ellipse cy="-13" rx="31" ry="12" fill="#fffaf4"/><path d="M0-43v29m10-22h-15q-11 0-10 8t12 8h8q12 0 12 8-1 9-12 9h-17" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-30-15h55v43q0 17-28 17t-27-17z" fill="#fffaf4"/><path d="M25-8h12q18 20-12 29M-43 49h82M-16-31q-10-10 1-20m16 20q-10-10 1-20m15 20q-10-10 1-20" fill="none"/><path d="M-30 8h55" stroke="#d9b657"/></g><g transform="translate(52 142) scale(0.36)"><path d="M0 20C-50-8-32-49 0-49S50-8 0 20z" fill="#d9b657"/><path d="m-5 20 5-9 5 9z" fill="#fffaf4"/><path d="M0 20q20 16 0 26t0 23" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

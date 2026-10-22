@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="rage-medical-receipt-title rage-medical-receipt-desc" data-art-version="48">
+ <title id="rage-medical-receipt-title">這張收據不能報公司。</title>
+ <desc id="rage-medical-receipt-desc">事故費用收據旁放著醫療箱與打開的錢包，這筆花費由自己處理。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-31-44h62v88l-10-6-10 6-11-6-11 6-10-6-10 6z" fill="#fffaf4"/><path d="M-19-27h38m-38 13h22m-22 17h38m-38 14h22M10 9v18m7-14H6q-8 0-7 5t8 5h5" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#f7f1ff" stroke="#9c7db5" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-41" y="-24" width="82" height="64" rx="8" fill="#fffaf4"/><path d="M-15-24v-15h30v15" fill="none"/><path d="M-8-11H8V0h12v16H8v12H-8V16h-12V0h12z" fill="#a987cf"/></g><g transform="translate(52 142) scale(0.36)"><rect x="-43" y="-29" width="86" height="65" rx="9" fill="#a987cf"/><path d="M-36-29v-12l65-7v19" fill="#fffaf4"/><path d="M17-11h31v29H17q-12-14 0-29z" fill="#fffaf4"/><circle cx="29" cy="4" r="3" stroke="none" fill="#273144"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

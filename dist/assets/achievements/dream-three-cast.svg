@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="dream-three-cast-title dream-three-cast-desc" data-art-version="48">
+ <title id="dream-three-cast-title">腦內卡司持續擴編</title>
+ <desc id="dream-three-cast-desc">腦內片場擴編成三人卡司，所有人都留在夢境的邊界裡。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(120 90) scale(1.3)"><path d="M-32 28c-34 0-33-38-10-41-4-31 37-43 50-17 23-16 46 4 40 26 25 16 14 39-9 39h-71z" fill="#fffaf4"/><circle cx="-34" cy="45" r="7" fill="#fffaf4"/><circle cx="-47" cy="57" r="3" fill="#fffaf4"/></g><g transform="translate(120 83) scale(0.7)"><circle r="14" fill="#a987cf"/><path d="m-9-11-21-22m39 22 21-22m-39 44-21 22m39-22 21 22M-14 0h-28m56 0h28" fill="none"/><circle cx="-35" cy="-38" r="9" fill="#fffaf4"/><circle cx="35" cy="-38" r="9" fill="#fffaf4"/><circle cx="-35" cy="38" r="9" fill="#fffaf4"/><circle cx="35" cy="38" r="9" fill="#fffaf4"/><circle cx="-49" r="7" fill="#fffaf4"/><circle cx="49" r="7" fill="#fffaf4"/></g><g transform="translate(183 146) scale(0.4)"><rect x="-44" y="-33" width="88" height="66" rx="5" fill="#fffaf4"/><path d="M-28-33v66m56-66v66m-71-44h14m-14 22h14m-14 22h14m57-44h14m-14 22h14m-14 22h14" fill="none"/><path d="m-10-17 27 17-27 17z" fill="#a987cf"/></g><circle cx="183" cy="48" r="20" fill="#fffaf4" stroke="#9c7db5" stroke-width="3"/><text x="183" y="55" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="19">3</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

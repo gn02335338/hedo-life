@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="rage-cup-off-duty-title rage-cup-off-duty-desc" data-art-version="48">
+ <title id="rage-cup-off-duty-title">保溫杯終於下台。</title>
+ <desc id="rage-cup-off-duty-desc">保溫杯回到杯子的用途，收據收好，月亮提醒這場記者會可以散場了。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><rect x="-23" y="-44" width="46" height="86" rx="10" fill="#fffaf4"/><path d="M-23-26h46M-23 25h46M-12-10h24m-24 13h24" fill="none"/><path d="M-16-51h32v10h-32z" fill="#a987cf"/></g><circle cx="177" cy="139" r="27" fill="#f7f1ff" stroke="#9c7db5" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-31-44h62v88l-10-6-10 6-11-6-11 6-10-6-10 6z" fill="#fffaf4"/><path d="M-19-27h38m-38 13h22m-22 17h38m-38 14h22M10 9v18m7-14H6q-8 0-7 5t8 5h5" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><path d="M17-42c-39 4-56 51-21 75C23 50 46 31 47 13 13 21-3-9 17-42z" fill="#a987cf"/><path d="m-33-35 2 7 7 2-7 2-2 7-2-7-7-2 7-2zm65 2 3 9 10 3-10 3-3 10-3-10-10-3 10-3z" fill="#fffaf4"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

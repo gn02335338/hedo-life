@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-pip-return-title verbal-pip-return-desc" data-art-version="48">
+ <title id="verbal-pip-return-title">改善口氣？先交付再說。</title>
+ <desc id="verbal-pip-return-desc">改善文件附上一支麥克風，工作桌提醒真正的交付也有留下。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-31-47H9l25 25v70h-65z" fill="#fffaf4"/><path d="M9-47v25h25M-19-8h39m-39 14h39m-39 14H7m-26 14h31" fill="none"/><path d="m-12 20 7 7 18-19" fill="none" stroke="#ed6995"/></g><circle cx="177" cy="139" r="27" fill="#fff4f0" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#ed6995"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-49 12h98v13h-98z" fill="#ed6995"/><path d="M-39 25v31m78-31v31M-32-25h64v37h-64z" fill="#fffaf4"/><path d="M-23-16h46m-23 3V3m-12 0h24M0 25v31" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="meal-rain-check-title meal-rain-check-desc" data-art-version="48">
+ <title id="meal-rain-check-title">改天真的有下一集。</title>
+ <desc id="meal-rain-check-desc">先前的邀餐回條終於接到一碗真的上桌的飯，改天有了下一集。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(87 99) scale(0.8)"><rect x="-43" y="-29" width="86" height="60" rx="7" fill="#fffaf4"/><path d="m-41-26 41 32 41-32m-82 55 28-25m54 25L13 4" fill="none"/></g><g transform="translate(163 115) scale(0.64)"><path d="M-44-4h88q-5 44-44 44T-44-4z" fill="#d9b657"/><path d="M-22 46h44M-30-20l77-22m-75 33 77-22M-12-4v-27m10 27v-29m10 29v-32" fill="none"/></g><path d="M116 61q20-14 36 2m-3-11 5 12-13-1" fill="none" stroke="#b79537" stroke-width="3"/></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

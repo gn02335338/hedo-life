@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="rage-police-return-title rage-police-return-desc" data-art-version="48">
+ <title id="rage-police-return-title">筆錄一份，工單一份。</title>
+ <desc id="rage-police-return-desc">派出所說明紀錄、程序天秤和工作證並列，筆錄與工單各有一份。</desc>
+ <rect width="240" height="200" rx="28" fill="#f7f1ff"/>
+ <circle cx="120" cy="98" r="76" fill="#ded1ef"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#9c7db5" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-31-47H9l25 25v70h-65z" fill="#fffaf4"/><path d="M9-47v25h25M-19-8h39m-39 14h39m-39 14H7m-26 14h31" fill="none"/><path d="m-12 20 7 7 18-19" fill="none" stroke="#a987cf"/></g><circle cx="177" cy="139" r="27" fill="#f7f1ff" stroke="#9c7db5" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M0-43v87m-22 0h44M-38-25H38M-29-25-47 6h36L-29-25zm58 0L11 6h36L29-25z" fill="#fffaf4"/><path d="M-47 6q3 18 18 18t18-18m22 0q3 18 18 18T47 6" fill="#a987cf"/><circle cy="-29" r="6" fill="#a987cf"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#a987cf"/><path d="M-19 33q2-17 19-17t19 17" fill="#a987cf"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#a987cf" stroke-width="3" stroke-linecap="round"/>
+</svg>

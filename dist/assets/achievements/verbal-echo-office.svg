@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-echo-office-title verbal-echo-office-desc" data-art-version="48">
+ <title id="verbal-echo-office-title">辦公室雙聲道</title>
+ <desc id="verbal-echo-office-desc">麥克風和擴音器隔桌回應，兩輪互嗆成了辦公室雙聲道。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(87 99) scale(0.8)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#ed6995"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g><g transform="translate(163 115) scale(0.64)"><path d="m-35-15 55-23V30l-55-22z" fill="#ed6995"/><path d="M-35-15h-12V8h12m15 6 5 28h17L-2 20M31-14l15-6m-15 22h19m-19 16 15 6" fill="#fffaf4"/></g><path d="M116 61q20-14 36 2m-3-11 5 12-13-1" fill="none" stroke="#c67898" stroke-width="3"/><circle cx="183" cy="48" r="20" fill="#fffaf4" stroke="#c67898" stroke-width="3"/><text x="183" y="55" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="19">2</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

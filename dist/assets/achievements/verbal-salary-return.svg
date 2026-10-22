@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-salary-return-title verbal-salary-return-desc" data-art-version="48">
+ <title id="verbal-salary-return-title">薪資會議加了音量條。</title>
+ <desc id="verbal-salary-return-desc">薪資硬幣、現場麥克風與工作證，薪資會議有音量，之後也有工作。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><ellipse cy="31" rx="39" ry="13" fill="#ed6995"/><path d="M-39 9v22q0 13 39 13T39 31V9" fill="#ed6995"/><ellipse cy="9" rx="39" ry="13" fill="#fffaf4"/><path d="M-31-13V9q0 13 31 13T31 9v-22" fill="#ed6995"/><ellipse cy="-13" rx="31" ry="12" fill="#fffaf4"/><path d="M0-43v29m10-22h-15q-11 0-10 8t12 8h8q12 0 12 8-1 9-12 9h-17" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff4f0" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#ed6995"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#ed6995"/><path d="M-19 33q2-17 19-17t19 17" fill="#ed6995"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

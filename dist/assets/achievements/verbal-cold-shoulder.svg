@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-cold-shoulder-title verbal-cold-shoulder-desc" data-art-version="48">
+ <title id="verbal-cold-shoulder-title">關係冷了，工單還熱。</title>
+ <desc id="verbal-cold-shoulder-desc">冷下來的往來改用信件，工作電腦的工單仍在運轉。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><rect x="-43" y="-29" width="86" height="60" rx="7" fill="#fffaf4"/><path d="m-41-26 41 32 41-32m-82 55 28-25m54 25L13 4" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff4f0" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><circle cx="-14" cy="-16" r="22" fill="#ed6995"/><path d="M-14-48v7m-32 25h7m2-23 5 5m38-5-5 5m21 9h-7" fill="none"/><path d="M-15 29q-31-1-24-24 4-15 22-13 8-25 29-12 18-3 24 15 21 2 16 22-4 14-25 12z" fill="#fffaf4"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-36-35h72v57h-72z" fill="#fffaf4"/><path d="M-36 22h72l14 15q0 8-8 8h-84q-8 0-8-8z" fill="#ed6995"/><path d="M-23-20h46m-46 13H3m-26 13h39M-10 31h20" fill="none"/></g><circle cx="183" cy="48" r="20" fill="#fffaf4" stroke="#c67898" stroke-width="3"/><text x="183" y="55" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="19">2</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

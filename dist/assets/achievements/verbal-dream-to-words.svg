@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-dream-to-words-title verbal-dream-to-words-desc" data-art-version="48">
+ <title id="verbal-dream-to-words-title">手放好，這次用嘴。</title>
+ <desc id="verbal-dream-to-words-desc">拳頭留在夢泡泡內，現場的麥克風表示後來說出口的是話。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(120 90) scale(1.3)"><path d="M-32 28c-34 0-33-38-10-41-4-31 37-43 50-17 23-16 46 4 40 26 25 16 14 39-9 39h-71z" fill="#fffaf4"/><circle cx="-34" cy="45" r="7" fill="#fffaf4"/><circle cx="-47" cy="57" r="3" fill="#fffaf4"/></g><g transform="translate(120 83) scale(0.7)"><path d="M-34 30v-38q0-9 9-9v-10q0-12 11-12 10 0 10 12v-5q0-12 11-12 10 0 10 12v5q0-10 10-10 10 0 10 10v13q0-9 9-9 9 0 9 9v30q0 17-15 25v14h-51V30z" fill="#ed6995"/><path d="M-25-16v26m21-37V5m21-32V5m20-15V8M-35 4q15-7 23 3l9 11m-26 28h49" fill="none"/></g><g transform="translate(183 146) scale(0.4)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#ed6995"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

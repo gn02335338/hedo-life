@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="verbal-both-bosses-title verbal-both-bosses-desc" data-art-version="48">
+ <title id="verbal-both-bosses-title">老闆罵完，董事長請收件。</title>
+ <desc id="verbal-both-bosses-desc">麥克風朝向兩張高層象徵，一句寄給老闆，一句寄往董事會。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(87 99) scale(0.8)"><rect x="-14" y="-41" width="28" height="54" rx="14" fill="#ed6995"/><path d="M-24-5v9q0 25 24 25T24 4v-9M0 29v20m-19 0h38M-7-27H7m-14 10H7" fill="none"/></g><g transform="translate(163 115) scale(0.64)"><path d="M-31-6h62v42h-62z" fill="#fffaf4"/><path d="M-31-6v-35l16 14L0-47l15 20 16-14v35z" fill="#ed6995"/><path d="M-39 23v15h78V23M-24 38v16m48-16v16" fill="none"/></g><path d="M116 61q20-14 36 2m-3-11 5 12-13-1" fill="none" stroke="#c67898" stroke-width="3"/><g transform="translate(52 142) scale(0.36)"><path d="m-40-30 21 20 19-34 19 34 21-20-8 65h-64z" fill="#ed6995"/><path d="M-32 18h64" fill="none"/><circle cx="-40" cy="-34" r="5" fill="#fffaf4"/><circle cy="-48" r="5" fill="#fffaf4"/><circle cx="40" cy="-34" r="5" fill="#fffaf4"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

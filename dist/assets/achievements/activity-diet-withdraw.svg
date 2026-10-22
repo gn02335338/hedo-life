@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="activity-diet-withdraw-title activity-diet-withdraw-desc" data-art-version="48">
+ <title id="activity-diet-withdraw-title">退出排行榜，沒有退出午餐。</title>
+ <desc id="activity-diet-withdraw-desc">便當飯碗保留在手邊，腳步走出公開排行榜，午餐仍照常。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="M-44-4h88q-5 44-44 44T-44-4z" fill="#ed6995"/><path d="M-22 46h44M-30-20l77-22m-75 33 77-22M-12-4v-27m10 27v-29m10 29v-32" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-40 50v-99h75v99" fill="#fffaf4"/><path d="m-22-34 42-12v96h-42z" fill="#ed6995"/><circle cx="8" cy="7" r="3" fill="#273144" stroke="none"/><path d="M-49 50h99" fill="none"/></g><g transform="translate(52 142) scale(0.36)"><path d="m-33-34 29 5 5 30 37 17q13 5 13 24h-92v-34z" fill="#ed6995"/><path d="M-41 30h92M-3-7l-17 8m22 2-17 8m24-2-17 8" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

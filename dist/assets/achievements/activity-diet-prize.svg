@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="activity-diet-prize-title activity-diet-prize-desc" data-art-version="48">
+ <title id="activity-diet-prize-title">有蛋塔，還有獎狀。</title>
+ <desc id="activity-diet-prize-desc">蛋塔與習慣紀錄組獎盃並列，獎狀沒有要求沒收甜點。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(113 102) scale(1.03)"><path d="m-42-9 6-14 14 4 9-12 13 8 13-8 9 12 14-4 6 14-5 36q-37 23-74 0z" fill="#d9b657"/><ellipse cy="-4" rx="40" ry="23" fill="#fffaf4"/><ellipse cy="-4" rx="26" ry="13" fill="#eddfa3"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-25-39h50v23q0 31-25 31t-25-31z" fill="#d9b657"/><path d="M-25-29h-16v16q0 18 25 18m41-34h16v16q0 18-25 18M0 15v27m-23 6v-8h46v8z" fill="#fffaf4"/></g><g transform="translate(52 142) scale(0.36)"><path d="M-31-47H9l25 25v70h-65z" fill="#fffaf4"/><path d="M9-47v25h25M-19-8h39m-39 14h39m-39 14H7m-26 14h31" fill="none"/><path d="m-12 20 7 7 18-19" fill="none" stroke="#d9b657"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>
