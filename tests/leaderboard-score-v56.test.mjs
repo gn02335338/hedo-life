@@ -1,10 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { ROLES } from '../dist/roles.js';
 import { ENDINGS, FAMILIES } from '../dist/endings.js';
-import { createRun, replayRun, enableActivitySchedule, applyChoice, advance } from '../dist/engine.js';
+import { createRun, replayRun, enableActivitySchedule, applyChoice, advance, requestExit } from '../dist/engine.js';
 import { SCORE_VERSION_V56, LEADERBOARD_METRICS_V56,
-  leaderboardEligibilityV56, deriveLeaderboardScoreV56 } from '../dist/leaderboard-score-v56.js';
+  leaderboardEligibilityV56, deriveLeaderboardScoreV56,
+  deriveLeaderboardScoreFromMetricsV57, deriveLegacyLeaderboardScoreV1FromMetricsV57 } from '../dist/leaderboard-score-v56.js';
 
 // Boundary fixtures exercise only this read-only projection. Production never
 // accepts this state: the worker derives it independently with replayRun.
@@ -16,11 +18,12 @@ const projection = (options = {}) => ({
   history: [], flags: {}, ...options
 });
 const work = (turn, kind = 'daily') => ({ turn, kind, choiceIndex: 0 });
+const fullWork = Array.from({ length: 23 }, (_, index) => work(index + 1));
 const part = (score, id) => score.breakdown.find(row => row.id === id).points;
 const load = file => JSON.parse(readFileSync(new URL(file, import.meta.url), 'utf8'));
 
 test('metric contract is complete, bounded and immutable', () => {
-  assert.equal(SCORE_VERSION_V56, 1);
+  assert.equal(SCORE_VERSION_V56, 2);
   assert.deepEqual(LEADERBOARD_METRICS_V56.map(row => row.id), [
     'overall', 'skill', 'slack', 'lick', 'mood', 'energy', 'cash', 'trust',
     'boss', 'belief', 'turns', 'verbal', 'realHits', 'imaginedHits', 'promotions'
@@ -34,8 +37,8 @@ test('metric contract is complete, bounded and immutable', () => {
 });
 
 test('six weighted groups total 10,000; the 180-point ability limit can fill its group', () => {
-  const run = projection({ endingId: 'career_chief-system',
-    stats: { skill: 60, slack: 60, lick: 60, mood: 100, energy: 100,
+  const run = projection({ endingId: 'career_chief-system', flags: { promotions: 6 },
+    stats: { skill: 100, slack: 40, lick: 40, mood: 100, energy: 100,
       cash: 100, trust: 100, boss: 100, dream: 100 },
     history: Array.from({ length: 23 }, (_, index) => work(index + 1)) });
   const score = deriveLeaderboardScoreV56(run);
@@ -46,21 +49,29 @@ test('six weighted groups total 10,000; the 180-point ability limit can fill its
   assert.deepEqual(score.breakdown.map(row => row.max), [3000, 1500, 1000, 1000, 2000, 1500]);
 });
 
-test('ability trade-offs have equal weight and cannot exceed 3,000', () => {
-  const run = projection();
+test('ability specializations are symmetric and improve on an untouched balanced start', () => {
+  const run = projection({ history: fullWork });
   const balanced = deriveLeaderboardScoreV56(run);
-  const specialist = deriveLeaderboardScoreV56({ ...run,
-    stats: { ...run.stats, skill: 100, slack: 40, lick: 40 } });
-  assert.equal(specialist.total, balanced.total);
-  assert.equal(specialist.metrics.skill, 100);
-  assert.equal(specialist.metrics.slack, 40);
+  const specialists = ['skill', 'slack', 'lick'].map(key => {
+    const stats = { ...run.stats, skill: 40, slack: 40, lick: 40, [key]: 100 };
+    return deriveLeaderboardScoreV56({ ...run, stats });
+  });
+  assert.equal(part(balanced, 'abilities'), 2280);
+  for (const specialist of specialists) {
+    assert.equal(part(specialist, 'abilities'), 3000);
+    assert.ok(specialist.total > balanced.total);
+  }
   const old = deriveLeaderboardScoreV56({ ...run,
     stats: { ...run.stats, skill: 100, slack: 100, lick: 100 } });
   assert.equal(part(old, 'abilities'), 3000);
+  const focused = deriveLeaderboardScoreV56({ ...run,
+    stats: { ...run.stats, skill: 100, slack: 10, lick: 10 } });
+  assert.equal(part(focused, 'abilities'), 2600);
+  assert.ok(part(focused, 'abilities') > part(balanced, 'abilities'));
 });
 
 test('spending savings affects at most ten percent; wellbeing can offset it', () => {
-  const run = projection();
+  const run = projection({ history: fullWork });
   const rich = deriveLeaderboardScoreV56({ ...run, stats: { ...run.stats, cash: 100 } });
   const spent = deriveLeaderboardScoreV56({ ...run, stats: { ...run.stats, cash: 0 } });
   assert.equal(rich.total - spent.total, 1000);
@@ -71,7 +82,7 @@ test('spending savings affects at most ten percent; wellbeing can offset it', ()
 });
 
 test('relationships prioritize coworkers and correctly map belief to dream', () => {
-  const zero = projection({ stats: Object.fromEntries(Object.keys(projection().stats).map(key => [key, 0])) });
+  const zero = projection({ history: fullWork, stats: Object.fromEntries(Object.keys(projection().stats).map(key => [key, 0])) });
   assert.equal(part(deriveLeaderboardScoreV56({ ...zero, stats: { ...zero.stats, trust: 100 } }), 'relationships'), 600);
   assert.equal(part(deriveLeaderboardScoreV56({ ...zero, stats: { ...zero.stats, boss: 100 } }), 'relationships'), 200);
   const believer = deriveLeaderboardScoreV56({ ...zero, stats: { ...zero.stats, dream: 80 } });
@@ -111,6 +122,7 @@ test('leaving at reporting earns no work turns', () => {
   ]);
   assert.equal(run.completed, true);
   assert.equal(deriveLeaderboardScoreV56(run).completedTurns, 0);
+  assert.equal(deriveLeaderboardScoreV56(run).total, 0);
 });
 
 test('committed counters distinguish actual hits, fantasies and successful promotions', () => {
@@ -146,7 +158,7 @@ test('all 883 endings have stable family tiers with no locked title or hint in s
   assert.equal(FAMILIES.length, 68);
   const tiers = new Map();
   for (const ending of ENDINGS) {
-    const score = deriveLeaderboardScoreV56(projection({ roleId: ending.roleId, endingId: ending.id }));
+    const score = deriveLeaderboardScoreV56(projection({ roleId: ending.roleId, endingId: ending.id, history: fullWork, flags: { promotions: 7 } }));
     assert.ok(score.difficulty.tier >= 1 && score.difficulty.tier <= 5);
     assert.equal(score.difficulty.points, score.difficulty.tier * 300);
     if (tiers.has(ending.family)) assert.equal(score.difficulty.tier, tiers.get(ending.family));
@@ -163,7 +175,7 @@ test('all 883 endings have stable family tiers with no locked title or hint in s
     assert.equal(tiers.get(family), 4, `${family}: shared full-length gate, irrespective of outcome`);
   assert.equal(tiers.get('career_chief'), 5);
   assert.equal(tiers.get('career_director'), 5);
-  assert.equal(tiers.get('rage_coup'), 5);
+  assert.equal(tiers.get('rage_coup'), 3);
   assert.equal(tiers.get('verbal_onboarding'), 1);
   assert.equal(tiers.get('venture_independent'), tiers.get('venture_restart'));
 });
@@ -203,4 +215,148 @@ test('scoring is deterministic, side-effect free and ignores action length', () 
   assert.deepEqual(run, before);
   assert.deepEqual(deriveLeaderboardScoreV56(run), score);
   assert.deepEqual(deriveLeaderboardScoreV56({ ...run, actions: Array.from({ length: 300 }, () => ({ type: 'exit' })) }), score);
+});
+
+test('experience scales five groups once; only completed work creates its multiplier', () => {
+  const ideal = projection({ endingId: 'career_chief-system', flags: { promotions: 6 },
+    stats: { skill: 100, slack: 40, lick: 40, mood: 100, energy: 100,
+      cash: 100, trust: 100, boss: 100, dream: 100 } });
+  let previous = -1;
+  for (let turns = 0; turns <= 23; turns++) {
+    const score = deriveLeaderboardScoreV56({ ...ideal,
+      history: fullWork.slice(0, turns) });
+    const factor = Math.min(turns / 19, 1);
+    assert.deepEqual(score.experience, { completedTurns: turns,
+      fullCreditTurns: 19, factor, percent: Math.round(factor * 100) });
+    for (const group of score.breakdown) {
+      const expected = group.id === 'survival' ? Math.round(turns / 23 * 2000) :
+        Math.round(group.max * factor);
+      assert.equal(group.points, expected, `${turns}: ${group.id}`);
+    }
+    assert.equal(score.difficulty.points, part(score, 'difficulty'));
+    assert.ok(score.total > previous);
+    assert.ok(score.total <= 10000);
+    previous = score.total;
+  }
+  assert.equal(deriveLeaderboardScoreV56(ideal).total, 0);
+});
+
+test('all roles can quit immediately without turning starting luck into an overall score', () => {
+  for (const role of ROLES) for (let seed = 0; seed < 12; seed++) {
+    let run = enableActivitySchedule(createRun(role.id,
+      `e39-cal46-kin49-g-e-s-m-${seed.toString(16).padStart(8, '0')}`));
+    run = advance(applyChoice(run, 2));
+    assert.equal(run.completed, true);
+    const score = deriveLeaderboardScoreV56(run);
+    assert.equal(score.completedTurns, 0);
+    assert.equal(score.total, 0, `${role.id}: ${seed}`);
+    assert.equal(score.metrics.skill, run.stats.skill,
+      'specialty boards still show their real value');
+    assert.equal(score.metrics.cash, run.stats.cash);
+    assert.deepEqual(deriveLeaderboardScoreV56(replayRun(run.roleId, run.seed, run.actions)), score);
+  }
+});
+
+test('forty return-menu loops cannot earn work service or inflate the score', () => {
+  const choose = (run, index) => advance(applyChoice(run, index));
+  for (const roleId of ['system', 'sales', 'executive']) {
+    let run = choose(enableActivitySchedule(createRun(roleId,
+      'e39-cal46-kin49-g-e-s-m-00000064')), 0);
+    const baseline = choose(requestExit(run), 0);
+    for (let cycle = 0; cycle < 40; cycle++) {
+      run = choose(requestExit(run), 1); // leave menu -> rank menu
+      run = choose(run, 1); // rank menu -> alternate career endings
+      run = choose(run, 6); // return to the original scene
+    }
+    const looped = choose(requestExit(run), 0);
+    assert.equal(looped.actions.length, baseline.actions.length + 160);
+    assert.deepEqual(looped.stats, baseline.stats);
+    assert.deepEqual(deriveLeaderboardScoreV56(looped), deriveLeaderboardScoreV56(baseline));
+    assert.deepEqual(deriveLeaderboardScoreV56(replayRun(roleId, looped.seed, looped.actions)),
+      deriveLeaderboardScoreV56(looped));
+  }
+});
+
+test('repeating behavior counters alone never creates overall points', () => {
+  const run = projection({ history: fullWork.slice(0, 10) });
+  const ordinary = deriveLeaderboardScoreV56(run);
+  const repeated = deriveLeaderboardScoreV56({ ...run, flags: {
+    verbal_attempts: 300, rage_real: 300, rage_imagined: 300, promotions: 300
+  }, history: [...run.history, ...Array.from({ length: 280 }, () => work(10, 'verbal'))] });
+  assert.equal(repeated.total, ordinary.total);
+  assert.equal(repeated.completedTurns, ordinary.completedTurns);
+  for (const key of ['verbal', 'realHits', 'imaginedHits', 'promotions'])
+    assert.equal(repeated.metrics[key], 300);
+});
+
+test('starting executive titles do not receive earned career challenge credit', () => {
+  const routes = load('../research/reachability-v3.json').routes;
+  const row = routes.find(route => route.ending === 'career_manager-executive');
+  const run = replayRun(row.roleId, row.seed, row.actions);
+  const score = deriveLeaderboardScoreV56(run);
+  assert.equal(run.flags.promotions || 0, 0);
+  assert.equal(score.completedTurns, 0);
+  assert.equal(score.difficulty.tier, 1);
+  assert.equal(score.total, 0);
+  const old = deriveLegacyLeaderboardScoreV1FromMetricsV57(score.metrics, run.endingId);
+  assert.equal(old.total, 6593, 'published v1 result remains verifiable');
+  assert.equal(old.difficulty.tier, 4);
+  for (const family of ['career_chief', 'career_director', 'career_manager', 'promotion', 'consultant']) {
+    let previous = 0;
+    for (let promotions = 0; promotions <= 6; promotions++) {
+      const earned = deriveLeaderboardScoreV56(projection({ history: fullWork,
+        endingId: `${family}-system`, flags: { promotions } }));
+      assert.ok(earned.difficulty.tier <= 1 + promotions);
+      assert.ok(earned.difficulty.tier >= previous);
+      previous = earned.difficulty.tier;
+    }
+  }
+});
+
+test('an unusually lucky coup is not ranked harder than a full company journey', () => {
+  const run = projection({ endingId: 'rage_coup-system', history: fullWork });
+  const score = deriveLeaderboardScoreV56(run);
+  const legacy = deriveLegacyLeaderboardScoreV1FromMetricsV57(score.metrics, run.endingId);
+  assert.equal(legacy.difficulty.tier, 5);
+  assert.equal(score.difficulty.tier, 3);
+  assert.equal(score.difficulty.points, 900);
+});
+
+test('shared metric snapshots reproduce replay scoring and verify the exact v1 formula', () => {
+  const run = advance(applyChoice(enableActivitySchedule(createRun('executive',
+    'e39-cal46-kin49-g-e-s-m-00000008')), 2));
+  const score = deriveLeaderboardScoreV56(run), before = structuredClone(score.metrics);
+  const legacy = deriveLegacyLeaderboardScoreV1FromMetricsV57(score.metrics, run.endingId);
+  assert.equal(legacy.scoreVersion, 1);
+  assert.equal(legacy.total, 5912);
+  assert.equal(legacy.metrics.overall, 5912);
+  assert.equal(score.scoreVersion, 2);
+  assert.equal(score.total, 0);
+  assert.deepEqual(deriveLeaderboardScoreFromMetricsV57(score.metrics, run.endingId), score);
+  assert.deepEqual(deriveLeaderboardScoreFromMetricsV57({ ...score.metrics, overall: 10000 }, run.endingId), score,
+    'stored overall is validated but always recomputed');
+  assert.deepEqual(score.metrics, before);
+  const routes = load('../research/reachability-v3.json').routes;
+  for (const family of ['retired_free', 'venture_independent', 'nasdaq', 'career_chief']) {
+    const route = routes.find(row => row.ending === `${family}-system`);
+    const natural = replayRun(route.roleId, route.seed, route.actions);
+    const derived = deriveLeaderboardScoreV56(natural);
+    assert.deepEqual(deriveLeaderboardScoreFromMetricsV57(derived.metrics, natural.endingId), derived);
+    assert.ok(derived.total >= 0 && derived.total <= 10000);
+  }
+});
+
+test('both snapshot calculators reject malformed or out-of-range stored metrics', () => {
+  const metrics = deriveLeaderboardScoreV56(projection()).metrics;
+  for (const helper of [deriveLeaderboardScoreFromMetricsV57, deriveLegacyLeaderboardScoreV1FromMetricsV57]) {
+    assert.throws(() => helper(metrics, 'invented-system'));
+    for (const bad of [null, [], {}, { ...metrics, injected: 1 }])
+      assert.throws(() => helper(bad, 'ragequit-system'));
+    for (const { id, max } of LEADERBOARD_METRICS_V56) {
+      for (const bad of [undefined, null, -1, max + 1, 0.5, '1', NaN, Infinity])
+        assert.throws(() => helper({ ...metrics, [id]: bad }, 'ragequit-system'), `${id}: ${bad}`);
+      const missing = { ...metrics }; delete missing[id];
+      assert.throws(() => helper(missing, 'ragequit-system'));
+    }
+  }
 });

@@ -162,7 +162,7 @@ export class HedoArchive extends DurableObject {
   }
 
   leaderboardStore() {
-    return this.leaderboards ||= new LeaderboardStore(this.sql);
+    return this.leaderboards ||= new LeaderboardStore(this.sql, this.ctx.storage);
   }
 
   async leaderboardSubmit(request) {

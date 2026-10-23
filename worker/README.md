@@ -719,7 +719,7 @@ Character/achievement/completion endpoints replay the same action, keep anonymou
 ownership and idempotent commitments, and ignore client statistics. No new player
 identifier, database migration, credential or public raw-control dataset is added.
 
-## Opt-in leaderboards (v56, score version 1)
+## Opt-in leaderboards (v56 API, score version 2)
 
 Ranking is independent of game rules and does not change seeds, actions, RNG,
 endings, anonymous credentials or existing archive tables. The shared
@@ -727,12 +727,17 @@ endings, anonymous credentials or existing archive tables. The shared
 accepts `e39-cal46-kin49-g-e-s-m-` lives; historical lives may preview a score but
 cannot enter this season under their different rules.
 
-The 10,000-point score uses abilities 30% (sum capped at the current 180-point
-budget), mood/energy 15%, cash 10%, trust/boss/belief 10%, actual completed work
-20%, and a static ending challenge tier 15%. Work counts distinct committed
+The 10,000-point score uses abilities 30% (60% strongest ability, 40% sum capped
+at the current 180-point budget), mood/energy 15%, cash 10%, trust/boss/belief 10%,
+actual completed work 20%, and a static ending challenge tier 15%. All groups
+except completed work are multiplied by `min(completedWork / 19, 1)`, then
+rounded separately. Zero-work onboarding exits therefore score zero overall;
+raw single-metric boards still show the verified values. Work counts distinct committed
 work turns from history, up to 23; onboarding, rest, activities, menu visits and
 shortfall jumps do not create work. Every current ending family has a reviewed
-fixed tier. Popularity and good/bad labels never determine challenge. Verbal,
+fixed tier. Career tiers are capped at `1 + earned promotions`, so a starting
+executive title earns no free challenge tier; a random coup has tier 3.
+Popularity and good/bad labels never determine challenge. Verbal,
 imagined-hit, actual-hit and promotion counters are separate single-metric
 boards, not extra overall-score bonuses.
 
@@ -765,14 +770,26 @@ stores owner/run bindings, an opaque public entry ID, nickname, score version,
 actual/advertised roles, derived metric numbers and first publication time.
 No raw seed, action, dialogue or ending label is stored in this table.
 
+Score v1 opt-in records are upgraded in transactions of at most 100 per public
+read, using retained metric numbers and the canonical ending ID in `runs`.
+The frozen v1 formula must reproduce the stored total before the v2 formula is
+applied. Names, public entry IDs, owner bindings and first publication timestamps
+are preserved. While unprocessed rows remain, public reads return 503
+`leaderboard_recalculating` with `Retry-After: 1`, rather than mixing score
+versions or showing a partially migrated ranking. Malformed evidence is
+quarantined from public rankings and remains privately renameable/withdrawable;
+no record is silently deleted. Own responses include each row's actual
+`scoreVersion`. Resubmitting the exact original replay can also upgrade v1.
+
 Public responses expose only nickname, advertised/actual roles, selected value,
 overall score, completed work turns, publication time and opaque entry ID; no
 player ID, run ID, ending identity, proof or difficulty hint. Private own-record
 responses include run IDs for management. Clearing the anonymous credential can
 lose management access; a nickname is not an account or recovery key.
 
-The browser asks for explicit public consent at the ending, supports skipping,
-renaming and withdrawal, and never automatically queues a public name for later
+The browser requires an explicit “留名，加入排行榜” action at the ending, with
+a short disclosure of public fields and no extra consent checkbox. It supports
+skipping, renaming and withdrawal, and never automatically queues a public name for later
 posting. Network failures preserve an in-page draft and show an unconfirmed
 state; successful state is based on a canonical server receipt. Existing local
 collections and completion-sync queues continue independently.

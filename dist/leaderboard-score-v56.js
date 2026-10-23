@@ -3,7 +3,7 @@ import { ENDINGS } from './endings.js';
 // A read-only projection of a completed engine replay. The worker must replay
 // the seed and actions before calling this module; never score posted stats.
 // This version deliberately does not change any gameplay or consume RNG.
-export const SCORE_VERSION_V56 = 1;
+export const SCORE_VERSION_V56 = 2;
 const WORK_TURN_MAX = 23; // 19 ordinary + 4 final work scenes; reporting is not work.
 const CURRENT_SEASON_SEED = /^e39-cal46-kin49-g-e-s-m-/;
 const endingById = new Map(ENDINGS.map(ending => [ending.id, ending]));
@@ -80,6 +80,66 @@ export function leaderboardEligibilityV56(run) {
   return { eligible: true, reason: '' };
 }
 
+function snapshotMetrics(metrics) {
+  if (!metrics || typeof metrics !== 'object' || Array.isArray(metrics) ||
+      Object.keys(metrics).length !== LEADERBOARD_METRICS_V56.length ||
+      LEADERBOARD_METRICS_V56.some(({ id, max }) =>
+        !Object.hasOwn(metrics, id) || !Number.isSafeInteger(metrics[id]) ||
+        metrics[id] < 0 || metrics[id] > max))
+    throw new Error('Invalid canonical leaderboard metrics');
+  return { ...metrics };
+}
+
+function scoreSnapshot(metrics, endingId, legacy) {
+  const values = snapshotMetrics(metrics), ending = endingById.get(endingId);
+  if (!ending) throw new Error('Unknown completed leaderboard ending');
+  const completedTurns = values.turns;
+  const nominalTier = familyTiers.get(ending.family) || 1;
+  // A title assigned on the first morning is not an earned promotion. Keep
+  // the original tiers only when verifying a previously stored v1 snapshot.
+  const careerEnding = ending.family.startsWith('career_') ||
+    ['promotion', 'consultant'].includes(ending.family);
+  const tier = legacy ? nominalTier : ending.family === 'rage_coup' ? 3 :
+    careerEnding ? Math.min(nominalTier, 1 + values.promotions) : nominalTier;
+  const abilitySum = bounded(values.skill + values.slack + values.lick, 180);
+  const strongest = Math.max(values.skill, values.slack, values.lick);
+  const experienceFactor = Math.min(completedTurns / 19, 1);
+  const groups = [
+    { id: 'abilities', label: '三種本事', points: legacy ? Math.round(abilitySum / 180 * 3000) :
+      Math.round(3000 * (.6 * strongest / 100 + .4 * abilitySum / 180)), max: 3000 },
+    { id: 'wellbeing', label: '心情與體力', points: Math.round((values.mood + values.energy) / 200 * 1500), max: 1500 },
+    { id: 'wealth', label: '離場存款', points: Math.round(values.cash * 10), max: 1000 },
+    { id: 'relationships', label: '職場關係', points: Math.round(values.trust * 6 + values.boss * 2 + values.belief * 2), max: 1000 },
+    { id: 'survival', label: '完成工作回合', points: Math.round(completedTurns / WORK_TURN_MAX * 2000), max: 2000 },
+    { id: 'difficulty', label: '結局挑戰', points: tier * 300, max: 1500 }
+  ];
+  const breakdown = legacy ? groups : groups.map(group => group.id === 'survival' ? group :
+    { ...group, points: Math.round(group.points * experienceFactor) });
+  const total = breakdown.reduce((sum, part) => sum + part.points, 0);
+  values.overall = total;
+  return {
+    scoreVersion: legacy ? 1 : SCORE_VERSION_V56, total, metrics: values, breakdown,
+    difficulty: { tier, label: tierLabels[tier - 1],
+      points: breakdown.find(group => group.id === 'difficulty').points, max: 1500 },
+    completedTurns, endingId,
+    ...(!legacy ? { experience: { completedTurns, fullCreditTurns: 19,
+      factor: experienceFactor, percent: Math.round(experienceFactor * 100) } } : {})
+  };
+}
+
+// The same numeric projection scores fresh server replays and migrates old
+// opt-in entries. Stored final metrics are sufficient; raw dialogue, actions
+// and seeds do not need to be retained. The supplied overall is never trusted.
+export function deriveLeaderboardScoreFromMetricsV57(metrics, endingId) {
+  return scoreSnapshot(metrics, endingId, false);
+}
+
+// Verify every v1 row against its original formula before changing versions.
+// This preserves the old tiers, including the randomly acquired coup tier.
+export function deriveLegacyLeaderboardScoreV1FromMetricsV57(metrics, endingId) {
+  return scoreSnapshot(metrics, endingId, true);
+}
+
 export function deriveLeaderboardScoreV56(run) {
   const ending = completedEnding(run);
   const statKeys = ['skill', 'slack', 'lick', 'mood', 'energy', 'cash', 'trust', 'boss', 'dream'];
@@ -89,45 +149,23 @@ export function deriveLeaderboardScoreV56(run) {
     return [key, bounded(run.stats[key], 100)];
   }));
 
-  // Daily/fantasy verbal responses retain their source kind in engine history.
-  // A response after an already answered scene has kind "verbal" instead.
-  // Deduplicating turn slots counts each resolved work scene once and includes
-  // the finale whose completion can leave engine.turn unchanged at 23. Neither
-  // reporting, rest, mini-game stages nor a shortfall turn jump creates a day.
+  // Deduplicate completed work scenes. Reporting, rest, mini-game stages,
+  // menu visits and jumps of the turn cursor do not demonstrate work service.
   const workTurns = new Set(run.history.filter(row =>
     row && ['daily', 'fantasy'].includes(row.kind) &&
     Number.isInteger(row.turn) && row.turn >= 1 && row.turn <= WORK_TURN_MAX &&
     Number.isInteger(row.choiceIndex) && row.choiceIndex >= 0
   ).map(row => row.turn));
-  const completedTurns = workTurns.size;
-
-  // These cumulative flags increment only in the engine's committed result
-  // branches. A failed promotion, cancelled target picker, follow-up response,
-  // menu visit or repeated HTTP submission never increments them. Modern
-  // reality/fantasy flags are separate; ambiguous old cartoon attempts are
-  // deliberately not inferred as actual hits.
   const metrics = {
     overall: 0,
     skill: stats.skill, slack: stats.slack, lick: stats.lick,
     mood: stats.mood, energy: stats.energy, cash: stats.cash,
     trust: stats.trust, boss: stats.boss, belief: stats.dream,
-    turns: completedTurns,
+    turns: workTurns.size,
     verbal: count(run.flags.verbal_attempts),
     realHits: count(run.flags.rage_real),
     imaginedHits: count(run.flags.rage_imagined),
     promotions: count(run.flags.promotions)
   };
-  const tier = familyTiers.get(ending.family) || 1;
-  const difficulty = { tier, label: tierLabels[tier - 1], points: tier * 300, max: 1500 };
-  const breakdown = [
-    { id: 'abilities', label: '三種本事', points: Math.round(bounded(stats.skill + stats.slack + stats.lick, 180) / 180 * 3000), max: 3000 },
-    { id: 'wellbeing', label: '心情與體力', points: Math.round((stats.mood + stats.energy) / 200 * 1500), max: 1500 },
-    { id: 'wealth', label: '離場存款', points: Math.round(stats.cash * 10), max: 1000 },
-    { id: 'relationships', label: '職場關係', points: Math.round(stats.trust * 6 + stats.boss * 2 + stats.dream * 2), max: 1000 },
-    { id: 'survival', label: '完成工作回合', points: Math.round(completedTurns / WORK_TURN_MAX * 2000), max: 2000 },
-    { id: 'difficulty', label: '結局挑戰', points: difficulty.points, max: 1500 }
-  ];
-  const total = breakdown.reduce((sum, part) => sum + part.points, 0);
-  metrics.overall = total;
-  return { scoreVersion: SCORE_VERSION_V56, total, metrics, breakdown, difficulty, completedTurns, endingId: ending.id };
+  return deriveLeaderboardScoreFromMetricsV57(metrics, ending.id);
 }

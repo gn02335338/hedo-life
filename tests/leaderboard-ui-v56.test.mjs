@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createRun,applyChoice,advance,requestExit,getEvent,validRun,enableActivitySchedule} from '../dist/engine.js';
-import {deriveLeaderboardScoreV56,LEADERBOARD_METRICS_V56} from '../dist/leaderboard-score-v56.js';
+import {deriveLeaderboardScoreV56,LEADERBOARD_METRICS_V56,SCORE_VERSION_V56} from '../dist/leaderboard-score-v56.js';
 import {endingLeaderboardHTMLV56,leaderboardHTMLV56,normalizeLeaderboardNicknameV56,createLeaderboardUIV56,LEADERBOARD_CONSENT_V56} from '../dist/leaderboard-ui-v56.js';
 
 function completed(seed='e39-cal46-kin49-g-e-s-m-00000000'){
@@ -19,7 +19,7 @@ function completed(seed='e39-cal46-kin49-g-e-s-m-00000000'){
 }
 const baseRun=completed();
 const entry={entryId:'public-safe-entry',runId:baseRun.runId,nickname:'背鍋隊長',value:6410,total:6410,rank:1,roleId:'ai',actualRoleId:'system',turns:12,createdAt:'2026-10-23T04:00:00.000Z'};
-const response=(overrides={})=>({version:1,scoreVersion:1,metric:'overall',role:'all',entries:[entry],totalPlayers:1,updatedAt:'2026-10-23T05:00:00.000Z',...overrides});
+const response=(overrides={})=>({version:1,scoreVersion:SCORE_VERSION_V56,metric:'overall',role:'all',entries:[entry],totalPlayers:1,updatedAt:'2026-10-23T05:00:00.000Z',...overrides});
 const tick=async()=>{for(let i=0;i<8;i++)await new Promise(resolve=>setImmediate(resolve));};
 
 function harness({run=baseRun,cloud={}}={}){
@@ -42,8 +42,8 @@ test('ending score is a read-only six-part visualization with explicit opt-in an
  const before=JSON.stringify(baseRun),score=deriveLeaderboardScoreV56(baseRun),html=endingLeaderboardHTMLV56(baseRun);
  assert.equal(JSON.stringify(baseRun),before);assert.equal((html.match(/class="lb-score-row"/g)||[]).length,6);
  assert.match(html,new RegExp(score.total.toLocaleString('zh-TW')));assert.match(html,/role="meter"/);assert.match(html,/aria-valuemax="3000"/);
- assert.match(html,/這次不留名/);assert.match(html,/type="checkbox"\s+\s*>/);assert.ok(html.includes(LEADERBOARD_CONSENT_V56));
- assert.doesNotMatch(html,/endingId|ragequit-system|00000000-0000/);assert.doesNotMatch(html,/data-lb-consent[^>]*checked/);
+ assert.match(html,/這次不留名/);assert.match(html,/按「留名，加入排行榜」即/);assert.ok(html.includes(LEADERBOARD_CONSENT_V56));
+ assert.doesNotMatch(html,/endingId|ragequit-system|00000000-0000/);assert.doesNotMatch(html,/type="checkbox"|data-lb-consent/);
  assert.equal(endingLeaderboardHTMLV56({...baseRun,completed:false}),'');
 });
 
@@ -74,10 +74,10 @@ test('opening a board and viewing an ending never submit, rename or withdraw',as
  const h=harness();h.ending();await h.ui.open();assert.equal(h.calls.board.length,1);assert.equal(h.calls.mine,1);assert.deepEqual(h.calls.submit,[]);assert.deepEqual(h.calls.remove,[]);assert.deepEqual(h.calls.rename,[]);
 });
 
-test('explicit submission requires valid nickname and unchecked consent never publishes',async()=>{
- const h=harness(),no=h.form('ending',0,'移動旅人',false);h.dispatch('submit',no.node);await tick();assert.equal(h.calls.submit.length,0);assert.match(h.ending(),/公開前，請先勾選/);
+test('typing never publishes and the explicit leave-name action validates the name without a checkbox',async()=>{
+ const h=harness(),draft=h.form('ending',0,'移動旅人',false);h.dispatch('input',{...draft.input,closest:selector=>selector==='[data-lb-form]'?draft.node:null});await tick();assert.equal(h.calls.submit.length,0);assert.match(h.ending(),/value="移動旅人"/);
  const invalid=h.form('ending',0,'<我>',true);h.dispatch('submit',invalid.node);await tick();assert.equal(h.calls.submit.length,0);assert.match(h.ending(),/不放連結/);
- const yes=h.form('ending',0,'背鍋大使',true);h.dispatch('submit',yes.node);h.dispatch('submit',yes.node);await tick();assert.equal(h.calls.submit.length,1);assert.equal(h.calls.submit[0].run,baseRun);assert.equal(h.calls.submit[0].nickname,'背鍋大使');assert.match(h.ending(),/留名已確認/);assert.match(h.ending(),/這局已以/);assert.doesNotMatch(h.ending(),/data-lb-consent[^>]*checked/);
+ const yes=h.form('ending',0,'背鍋大使',false);h.dispatch('submit',yes.node);h.dispatch('submit',yes.node);await tick();assert.equal(h.calls.submit.length,1);assert.equal(h.calls.submit[0].run,baseRun);assert.equal(h.calls.submit[0].nickname,'背鍋大使');assert.match(h.ending(),/留名已確認/);assert.match(h.ending(),/這局已以/);assert.doesNotMatch(h.ending(),/data-lb-consent|type="checkbox"/);
 });
 
 test('offline submit preserves the typed name and never pretends to be published',async()=>{
@@ -100,10 +100,10 @@ test('published previous lives can rename using metadata only and withdraw after
  h.command('withdraw-confirm','mine');await tick();assert.deepEqual(h.calls.remove,['old-owned-life']);assert.match(h.html(),/目前沒有公開留名/);
 });
 
-test('edited names invalidate an earlier public-consent check',async()=>{
+test('editing a name remains private until the explicit public rename or leave-name action',async()=>{
  const h=harness(),form=h.form('ending',0,'修改名字',true);
  const input={...form.input,closest:selector=>selector==='[data-lb-form]'?form.node:null,hasAttribute:name=>name==='data-lb-name'};
- h.dispatch('input',input);assert.equal(form.checkbox.checked,false);h.dispatch('submit',form.node);await tick();assert.equal(h.calls.submit.length,0);
+ h.dispatch('input',input);await tick();assert.equal(h.calls.submit.length,0);assert.match(h.ending(),/value="修改名字"/);h.dispatch('submit',form.node);await tick();assert.equal(h.calls.submit.length,1);
 });
 
 test('filter requests discard stale responses and do not mix occupations',async()=>{

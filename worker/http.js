@@ -27,7 +27,8 @@ export function json(data, status = 200, extraHeaders = {}) {
 export function errorResponse(error) {
   if (error instanceof ApiError) {
     return json({ error: error.code, message: error.message }, error.status,
-      error.status === 429 ? { 'Retry-After': '10' } : {});
+      error.status === 429 ? { 'Retry-After': '10' }
+        : error.code === 'leaderboard_recalculating' ? { 'Retry-After': '1' } : {});
   }
   // Do not include request bodies, tokens, or internal errors in responses/logs.
   return json({ error: 'unavailable', message: '雲端史冊暫時無法使用，請稍後重試。' }, 503);

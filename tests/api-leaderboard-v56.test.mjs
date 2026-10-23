@@ -161,11 +161,11 @@ test('public output is bounded to 50 players even when more opted in', async () 
   h.db.close();
 });
 
-test('equal selected ability earns competition ranks despite different overall scores', async () => {
+test('equal selected ability earns competition ranks even when reporting exits have zero overall scores', async () => {
   const h = harness(), players = [await h.register(), await h.register('b'.repeat(64)), await h.register('c'.repeat(64))];
   for (const [index, seed] of ['00000000', '00000003', '00000001'].entries()) assert.equal((await submit(h, players[index], proof(completed(seed), randomUUID(), `玩家${index}`))).status, 200);
   const rows = (await h.call('/api/leaderboard?metric=skill')).body.entries;
-  assert.deepEqual(rows.map(row => row.value), [49, 49, 45]); assert.deepEqual(rows.map(row => row.rank), [1, 1, 3]); assert.ok(rows[0].total > rows[1].total, 'overall score only orders the tied rows; it does not break shared rank');
+  assert.deepEqual(rows.map(row => row.value), [49, 49, 45]); assert.deepEqual(rows.map(row => row.rank), [1, 1, 3]); assert.deepEqual(rows.map(row => row.total), [0, 0, 0], 'initial ability is visible on its own board, but reporting is not work experience');
   h.db.close();
 });
 
