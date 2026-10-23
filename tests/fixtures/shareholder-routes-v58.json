@@ -1,0 +1,6784 @@
+{
+  "method": "Natural createRun lives under e39-cal46-kin49-g-e-s-m-h-. Canonical public actions only; search lookahead chooses alternatives to find witnesses. No injected stats, flags, ownership, dates, evidence, results or RNG.",
+  "routes": [
+    {
+      "id": "guard-invitation",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        }
+      ]
+    },
+    {
+      "id": "guard-activity",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "offer-choice-0",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "stock-paid",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "gate",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate-choice-0",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 0
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "gate-choice-1",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        }
+      ],
+      "index": 1
+    },
+    {
+      "id": "hearing",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        }
+      ],
+      "index": 1
+    },
+    {
+      "id": "round-0",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "round-1",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        }
+      ]
+    },
+    {
+      "id": "round-2",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        }
+      ]
+    },
+    {
+      "id": "round-3",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "present",
+            "statement": 1,
+            "evidence": "roster"
+          }
+        }
+      ]
+    },
+    {
+      "id": "finish-prepared",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "present",
+            "statement": 1,
+            "evidence": "roster"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "press",
+            "statement": 2,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "present",
+            "statement": 2,
+            "evidence": "minutes"
+          }
+        }
+      ]
+    },
+    {
+      "id": "returned-prepared",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "present",
+            "statement": 1,
+            "evidence": "roster"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "press",
+            "statement": 2,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "present",
+            "statement": 2,
+            "evidence": "minutes"
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "present",
+            "statement": 1,
+            "evidence": "roster"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "press",
+            "statement": 2,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "present",
+            "statement": 2,
+            "evidence": "minutes"
+          }
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "completed-prepared",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "present",
+            "statement": 1,
+            "evidence": "roster"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "press",
+            "statement": 2,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "present",
+            "statement": 2,
+            "evidence": "minutes"
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "finish-partial",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "returned-partial",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "completed-partial",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "press",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "investment"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "press",
+            "statement": 1,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receivables"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "finish-yield",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "returned-yield",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "completed-yield",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "finish-wrong",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        }
+      ]
+    },
+    {
+      "id": "returned-wrong",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        }
+      ],
+      "index": 0
+    },
+    {
+      "id": "completed-wrong",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "present",
+            "statement": 0,
+            "evidence": "receipt"
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "exit"
+        },
+        {
+          "type": "choice",
+          "eventId": "exit-menu",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "gate-choice-2",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 2
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        }
+      ],
+      "index": 2
+    },
+    {
+      "id": "offer-choice-1",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        }
+      ],
+      "index": 1
+    },
+    {
+      "id": "offer-choice-2",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        }
+      ],
+      "index": 2
+    },
+    {
+      "id": "offer-choice-3",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 3
+        }
+      ],
+      "beforeActions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        }
+      ],
+      "index": 3
+    },
+    {
+      "id": "guard-rest",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000001",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-owen-partner-translation"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-partner-translation",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-rank-authority",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-sales-professor-question",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-video-allowlist"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-video-allowlist",
+          "index": 2
+        },
+        {
+          "type": "break"
+        }
+      ]
+    },
+    {
+      "id": "offer-no-upsize",
+      "roleId": "design",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000007",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-sticker-detective"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-sticker-detective",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "guard-pip",
+      "roleId": "executive",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000009",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-budget-zero",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-websocket-echo",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-boxing-calendar",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-stamp-title"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-signed-forecast",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "id": "offer",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000001",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-owen-partner-translation"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-partner-translation",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-rank-authority",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000003",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-boxing-calendar"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-boxing-calendar",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000005",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-cdp-ticket-king",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000006",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-holiday-pipeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "bd21-introduction-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "design",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000007",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-sticker-detective"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-sticker-detective",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000008",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-cindy-event-budget-owner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-event-budget-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-cash-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "executive",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000009",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-budget-zero",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-websocket-echo",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-00000a",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seat-neighbor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-00000b",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-currency-quote",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-sales-professor-question",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-00000d",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-cash-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "finance28-budget-weather"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-budget-weather",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "roleId": "executive",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-00000e",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-budget-zero",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-stamp-title"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-farewell-booking",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-cindy-lunch-last-seat"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-lunch-last-seat",
+          "index": 2
+        }
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "id": "gate",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "helen-sql-masterclass",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "owen-tesla-run",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-dependency-chair"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-hope-sign-before-metrics",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000001",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-owen-partner-translation"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-partner-translation",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-rank-authority",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-sales-professor-question",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-video-allowlist"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-video-allowlist",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-crm-owner",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000001",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-quote-footnotes",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-owen-partner-translation"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-partner-translation",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-rank-authority",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-sales-professor-question",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-video-allowlist"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-video-allowlist",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-crm-owner",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000003",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-boxing-calendar"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-boxing-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-forwarded-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-signature-runway",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000003",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-boxing-calendar"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-boxing-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-forwarded-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-signature-runway",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000005",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-cdp-ticket-king",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-system-rollback"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000005",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-cdp-ticket-king",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-system-rollback"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000006",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-holiday-pipeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "bd21-introduction-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-mou-annex",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-empty-onboarding",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-three-day-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-owen-report-time-window"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-report-time-window",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "sales",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000006",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-holiday-pipeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "bd21-introduction-scope"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-introduction-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-mou-annex",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "english-class",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-empty-onboarding",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-three-day-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-owen-report-time-window"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-report-time-window",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "design",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000007",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-sticker-detective"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-sticker-detective",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-schoolmate-logo",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-mood",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-cindy-night-message-clock"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-night-message-clock",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000008",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-cindy-event-budget-owner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-event-budget-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-cash-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-cdn-afterglow",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-spencer-currency-slide"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-currency-slide",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-verbal-approval",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-captain-star-rating"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-star-rating",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-dessert-ownership",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-000008",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-cindy-event-budget-owner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-event-budget-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-cash-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-cdn-afterglow",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-spencer-currency-slide"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-currency-slide",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-verbal-approval",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-captain-star-rating"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-star-rating",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-dessert-ownership",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-00000a",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seat-neighbor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-calendar-white",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "system",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-00000a",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-rollback",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-seat-neighbor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-support-night",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-notebook-server",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-js-timeline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-calendar-white",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "system-printer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-system-phone-monitor",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-00000d",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-cash-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "finance28-budget-weather"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-budget-weather",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-websocket-echo",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-tesla-sample-load",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "gate",
+      "roleId": "finance",
+      "seed": "e39-cal46-kin49-g-e-s-m-h-00000d",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-cash-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "finance28-budget-weather"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-budget-weather",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-websocket-echo",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-tesla-sample-load",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-consulting-fee-scope",
+          "index": 2
+        }
+      ]
+    }
+  ]
+}

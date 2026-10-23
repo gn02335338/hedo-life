@@ -1,3 +1,4 @@
+import {isShareholderV58,shareholderDueV58,getShareholderEventV58,getShareholderPlayV58,deriveShareholderPlayV58,createShareholderContextV58,resolveShareholderChoiceV58,resolveShareholderPlayV58,shareholderResultV58} from './shareholders-v58.js';
 import {isWorkGapV50,workGapSurfaceSafeV50,getWorkGapEventV50} from './work-gap-v50.js';
 import {isEnergyRestV53,energyRestWarningV53,getEnergyRestEventV53} from './energy-rest-v53.js';
 import {isEnergySafetyV54,ENERGY_SAFETY_OWED_V54,energySafetyChoiceV54,energySafetyBoundaryV54,energySafetyReturnedBoundaryV54} from './energy-safety-v54.js';
@@ -56,6 +57,7 @@ import { getMoodCollapseV25, getMoodSelfDestructV25, moodCollapseProfileV25 } fr
 import { MEAL_GUEST_IDS_V25, MEAL_EVENTS_V25, withMealEntryV25, getMealV25, withMealRageCopyV25 } from './meals-v25.js';
 import { PATRONAGE_EVENT_V29, patronageTitleV29, canKindDarkInviteV29, patronageWorkCountV29, withGenderContextV29 } from './patronage-v29.js';
 import { WEALTH_EVENTS_V27, wealthEligibilityV27, getWealthEventV27, withWealthEntryV27 } from './wealth-exit-v27.js';
+export {getShareholderPlayV58} from './shareholders-v58.js';
 export {raiseAvailability} from './salary-raise-v19.js';
 export {isWorkGapV50} from './work-gap-v50.js';
 export {isActivityPlayV55,getActivityPlayV55,deriveActivityPlayV55} from './activity-play-v55.js';
@@ -285,6 +287,7 @@ function getPublishedEvent(run){
  return contentRules(run)>=27?withWealthEntryV27(finalEvent,run):finalEvent;
 }
 export function getEvent(run,skipWorkGap=false){
+ if(run?.shareholderContext)return getShareholderEventV58(run);
  if(run?.activityInvitationContext)return getActivityInvitationEventV46(run);
  if(run?.hiddenEncounterContext)return getHiddenEncounterEventV45(run);
  if(run?.activityContext)return withActivityPlayEventV55(run,getActivityEventV44(run));
@@ -299,7 +302,7 @@ export function getEvent(run,skipWorkGap=false){
 }
 // Engine transitions must inspect the selected work scene, never its gap UI.
 function getSourceEventV50(run){return getEvent(run,true);}
-export function isWorkGapOpenV50(run){return isWorkGapV50(run)&&run.flags?.work_gap_open===1&&workGapSurfaceSafeV50(run,getSourceEventV50(run));}
+export function isWorkGapOpenV50(run){if(run?.shareholderContext)return false;return isWorkGapV50(run)&&run.flags?.work_gap_open===1&&workGapSurfaceSafeV50(run,getSourceEventV50(run));}
 const WEATHER=[{text:'Wing看完官網英文，決定對全世界不爽。',delta:-9},{text:'他剛開完別人的會，你負責承受餘震。',delta:-7},{text:'今天不知道誰先拍對馬屁，辦公室暫時放晴。',delta:6},{text:'Wing想到掛牌願景，暫時看誰都像未來股東。',delta:7},{text:'公司沒發生什麼事，老闆也先沒有。',delta:0},{text:'一個未回覆的訊息，讓今天變成臨時考核。',delta:-5}];
 function nextNormal(run){
  if(contentRules(run)>=20&&run.flags.floor_watch)return watchNextEvent(run);
@@ -331,6 +334,7 @@ export function applyChoice(run,index){
   if(index!==0)throw new Error('Unavailable work gap choice');
   const next=structuredClone(run);next.actions.push({type:'choice',eventId:'work-gap-v50',index:0});next.flags.work_gap_open=0;return next;
  }
+ if(run.shareholderContext){if(getShareholderPlayV58(run))throw new Error('Shareholder play input required');return applyShareholderChoiceV58(run,index);}
  if(run.activityInvitationContext)return applyActivityInvitationChoiceV46(run,index);
  if(run.hiddenEncounterContext)return applyHiddenEncounterChoiceV45(run,index);
  if(run.activityContext){if(getActivityPlayV55(run))throw new Error('Activity play input required');return applyActivityChoiceV44(run,index);}
@@ -759,6 +763,7 @@ function advanceCore(run,options={}){
 // This new action is optional and versioned. Existing action lists never
 // inspect a new random ticket or receive an unrequested actor retroactively.
 export function canRequestHiddenEncounter(run){
+ if(run?.shareholderContext)return false;
  if(isWorkGapOpenV50(run))return false;
  if(run?.activityInvitationContext||run?.flags?.activity46_last_turn===run?.turn+1)return false;
  if(!run||!/^e39-/.test(run.seed||'')||run.completed||run.pending||run.turn<2||run.turn>=20||run.actions.length>295||run.flags.hidden45_seen||run.pip?.active||run.flags.floor_watch||run.stats.mood<=15||run.stats.energy<=15||run.stats.cash<=0)return false;
@@ -810,6 +815,51 @@ function advanceHiddenEncounterV45(run){
  else if(next.stats.mood<=0){next.meltdownReturnEventId=next.eventId;next.eventId='mood-collapse';flag(next,'mood_crash_count');}
  return next;
 }
+// The paid stockholding branch is deterministic and belongs only to v58 lives.
+// No extra workday, PIP tick, payroll draw or automatic resignation occurs here.
+function shareholderSurfaceSafeV58(run){
+ if(!isShareholderV58(run)||run.pending||run.completed||run.flags.activity46_enabled!==1||run.turn<3||run.turn>15||run.actions.length>255||run.pip?.active||run.flags.floor_watch||run.stats.energy<=30||run.stats.mood<=20||run.stats.cash<=0||isWorkGapOpenV50(run))return false;
+ if(run.shareholderContext||run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.patronageReplyContext||run.patronageContext||run.raiseContext||run.mealContext||run.wealthReturnEventId||run.salaryAdvice?.status==='open'||run.salaryAdvice?.status==='queued'||run.personnelPending||run.pendingFamily||run.resumeEventId||run.exitReturnEventId||run.breakReturnEventId||run.banquetReturnEventId||run.meltdownReturnEventId)return false;
+ return getSourceEventV50(run)?.kind==='daily';
+}
+function commitShareholderV58(run,resolved,action,choiceText,index){
+ const next=structuredClone(run),before={...run.stats},event=getShareholderEventV58(run),context=next.shareholderContext,breakdown=[];
+ const change=(label,delta)=>{const actual={};for(const [key,value]of Object.entries(delta)){const old=next.stats[key];next.stats[key]=clamp(old+value);if(old!==next.stats[key])actual[key]=next.stats[key]-old;}if(Object.keys(actual).length)breakdown.push({source:'choice',label,delta:actual});};
+ if(resolved.cost){change('員工認股款',{cash:-resolved.cost});flag(next,'cash_spent_total',resolved.cost);next.flags.shareholder58_owned=resolved.cost;next.flags.shareholder58_purchase_turn=run.turn;}
+ if(context.stage==='gate'&&resolved.next==='hearing')next.flags.shareholder58_attended=1;
+ const hearing=context.stage==='hearing',done=hearing&&(resolved.credibility<=0||resolved.advance&&context.round===3);
+ let result=resolved.result;
+ if(done){const final=shareholderResultV58({...context,credibility:resolved.credibility,wins:resolved.wins});const delta=final==='minutes'?{mood:4,trust:3,boss:-2}:final==='followup'?{mood:2,trust:2}:final==='ejected'?{mood:-4,boss:-3}:{mood:-2};change('股東會攻防收尾',delta);result+=' 這場股東會的攻防已結束；接著收好紀錄，再回工作。';}
+ next.actions.push(action);
+ next.history.push({eventId:event.id,kind:'shareholder',title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker,sourceIds:event.sourceIds,turn:run.turn,choiceIndex:index,choiceText,result,chanceOutcome:null,delta:Object.fromEntries(STAT_KEYS.map(key=>[key,next.stats[key]-before[key]])),weather:null,jobTitle:jobTitle(next),pay:next.pay,breakdown,eventOutcome:{label:hearing?'股東會攻防結果':'股東支線結果',result:resolved.label},shareholderOutcome:{version:1,stage:context.stage,round:context.round,mode:action.type==='shareholder-play'?action.input.mode:'choice',done,label:resolved.label}});
+ context.pendingStep={...resolved,done};next.pending=true;next.pendingEffect='shareholderContinue';next.pendingFamily=null;next.lastWeather=null;
+ return next;
+}
+function applyShareholderChoiceV58(run,index){
+ if(!isShareholderV58(run)||!run.shareholderContext||run.shareholderContext.stage==='hearing')throw new Error('Shareholder play input required');
+ const event=getShareholderEventV58(run),resolved=resolveShareholderChoiceV58(run,index);
+ return commitShareholderV58(run,resolved,{type:'choice',eventId:event.id,index},event.choices[index].text,index);
+}
+export function applyShareholderPlay(run,input){
+ if(!getShareholderPlayV58(run))throw new Error('Unavailable shareholder play');
+ const played=deriveShareholderPlayV58(input),resolved=resolveShareholderPlayV58(run,played);
+ return commitShareholderV58(run,resolved,{type:'shareholder-play',version:1,eventId:run.eventId,input:played},resolved.choiceText,0);
+}
+function advanceShareholderV58(run){
+ if(!run.pending||run.completed)return run;
+ const next=structuredClone(run),context=next.shareholderContext,step=context.pendingStep;
+ if(!step||next.pendingEffect!=='shareholderContinue')throw new Error('Missing shareholder continuation');
+ next.pending=false;next.pendingEffect=null;next.pendingFamily=null;delete context.pendingStep;
+ if(context.stage==='hearing'){
+  context.credibility=step.credibility;context.pressure=step.pressure;context.wins=step.wins;context.feedback=step.result;
+  if(Number.isInteger(step.pressed))context.pressed.push(step.pressed);
+  if(step.clue&&!context.evidence.includes(step.clue))context.evidence.push(step.clue);
+  if(step.done){context.stage='finish';context.result=shareholderResultV58(context);next.flags.shareholder58_finished=1;next.flags.shareholder58_result=context.result;next.flags[`shareholder58_result_${context.result}`]=1;}
+  else if(step.advance){context.round++;context.pressed=[];context.feedback=null;}
+ }else if(step.next==='hearing'){context.stage='hearing';}
+ else if(step.next==='return'){next.eventId=context.returnEventId;delete next.shareholderContext;return next;}
+ next.eventId=getShareholderEventV58(next).id;return next;
+}
 // Calendar-enabled lives use a separate versioned action. Historical e39
 // proofs retain their published random stream and optional activity contract.
 export function enableActivitySchedule(run){
@@ -819,6 +869,7 @@ export function enableActivitySchedule(run){
  return next;
 }
 export function canRequestActivityInvitation(run){
+ if(run?.shareholderContext)return false;
  if(isWorkGapOpenV50(run))return false;
  if(!run||!/^e39-cal46-/.test(run.seed||'')||run.flags.activity46_enabled!==1||run.pending||run.completed||run.actions.length>293||run.turn<2||run.turn>=20||run.pip?.active||run.flags.floor_watch||run.stats.mood<=15||run.stats.energy<=15||run.stats.cash<=0)return false;
  if(run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.patronageReplyContext||run.patronageContext||run.raiseContext||run.mealContext||run.wealthReturnEventId||run.salaryAdvice?.status==='open'||run.personnelPending||run.pendingFamily||run.resumeEventId||run.exitReturnEventId||run.breakReturnEventId||run.banquetReturnEventId||run.meltdownReturnEventId)return false;
@@ -856,6 +907,7 @@ function advanceActivityInvitationV46(run){
  return next;
 }
 export function getActivityAvailability(run,activityId){
+ if(run?.shareholderContext)return {available:false,reason:'先完成這場股東會，再回到原本的工作。'};
  if(isWorkGapOpenV50(run))return {available:false,reason:'等活動邀約或公司通知出現，再回應安排。'};
  const no=reason=>({available:false,reason});
  if(/^e39-cal46-/.test(run?.seed||'')||run?.activityInvitationContext)return no('等收到活動邀約或公司通知，再回應眼前的安排。');
@@ -974,9 +1026,14 @@ export function advance(run,options={}){
   }
   energySafetyBoundaryV54(run,next,getSourceEventV50(next));
  }
+ if(next!==run&&shareholderSurfaceSafeV58(next)){
+  const stage=shareholderDueV58(next);
+  if(stage){next.shareholderContext=createShareholderContextV58(stage,next.eventId);next.flags[stage==='offer'?'shareholder58_offer_seen':'shareholder58_meeting_seen']=1;next.eventId=getShareholderEventV58(next).id;}
+ }
  return next;
 }
 function advancePublishedV50(run,options={}){
+ if(run?.shareholderContext)return advanceShareholderV58(run);
  if(run?.activityInvitationContext)return advanceActivityInvitationV46(run);
  if(run?.hiddenEncounterContext)return advanceHiddenEncounterV45(run);
  if(run?.activityContext)return advanceActivityV44(run);
@@ -1012,13 +1069,14 @@ function advancePublishedV50(run,options={}){
  }
  return next;
 }
-export function canRequestBreak(run){if(isWorkGapV50(run))return isWorkGapOpenV50(run)&&run.lastBreakTurn!==run.turn;return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&rules2(run)&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
+export function canRequestBreak(run){if(run?.shareholderContext)return false;if(isWorkGapV50(run))return isWorkGapOpenV50(run)&&run.lastBreakTurn!==run.turn;return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&rules2(run)&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
 export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;const invite=canKindDarkInviteV29(next)&&contentRules(next)>=6&&!(contentRules(next)>=7&&next.lastKindInviteTurn===next.turn)&&roll(next)<KIND_BREAK_CHANCE;next.eventId=invite?'kind-break':'self-care';if(invite&&contentRules(next)>=7)next.lastKindInviteTurn=next.turn;return next;}
-export function canRequestCareer(run){return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&!(contentRules(run)>=30&&run.verbalContext)&&!(contentRules(run)>=29&&run.patronage)&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
+export function canRequestCareer(run){if(run?.shareholderContext)return false;return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&!(contentRules(run)>=30&&run.verbalContext)&&!(contentRules(run)>=29&&run.patronage)&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
 export function requestCareer(run){if(!canRequestCareer(run))return run;const next=structuredClone(run);next.actions.push({type:'career'});next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
-export function canRequestRaise(run){return !run?.activityInvitationContext&&!run?.hiddenEncounterContext&&!run?.activityContext&&!run?.chapterContext&&!run?.companyContext&&!(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
+export function canRequestRaise(run){if(run?.shareholderContext)return false;return !run?.activityInvitationContext&&!run?.hiddenEncounterContext&&!run?.activityContext&&!run?.chapterContext&&!run?.companyContext&&!(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
 export function requestRaise(run){if(!canRequestRaise(run))return run;const next=structuredClone(run);next.actions.push({type:'raise'});next.raiseContext={eventId:run.eventId,fromPay:run.pay,offerPay:null,percent:null,outcome:null,view:null,approach:null};next.eventId='raise-request';return next;}
 export function canRequestSalaryAdvice(run){
+ if(run?.shareholderContext)return false;
  if(!run||run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||run.chapterContext||run.companyContext||contentRules(run)<28||run.pending||run.completed||run.pendingFamily||run.salaryAdvice!==null||run.actions.length>=299||!Number.isInteger(run.pay)||run.pay>=30||run.pay<1||run.stats.mood<=0||run.stats.energy<=0)return false;
  if(run.verbalContext||run.patronageContext||run.mealContext||run.wealthReturnEventId||run.personnelPending||run.actions.some(action=>action.type==='salary-advice')||run.history.some(row=>row.eventId==='low-pay-tip'))return false;
  const first=run.history.find(row=>row.eventId==='onboarding'),anchor=run.history.at(-1);
@@ -1034,6 +1092,7 @@ export function requestSalaryAdvice(run){
 // This optional action leaves the original scene and its choice indices intact.
 // Published lives change only after explicitly choosing the new response.
 export function canRequestPatronageReply(run){
+ if(run?.shareholderContext)return false;
  if(isWorkGapOpenV50(run))return false;
  if(!run||run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||contentRules(run)<29||!run.patronage||run.pending||run.completed||run.pendingFamily||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0||run.actions.length>=299||run.flags.patronage_reply_last_turn===run.turn+1)return false;
  const event=getSourceEventV50(run);
@@ -1068,6 +1127,7 @@ export function requestPatronageReply(run,target){
  next.eventId=PATRONAGE_REPLY_EVENT_V43;next.pending=true;next.pendingEffect='patronageReplyReturn';return next;
 }
 export function canRequestVerbal(run){
+ if(run?.shareholderContext)return false;
  if(isWorkGapOpenV50(run))return false;
  if(run?.activityInvitationContext||run?.hiddenEncounterContext||run?.activityContext||run?.patronageReplyContext)return false;
  if(!run||run.chapterContext||run.companyContext||contentRules(run)<30||run.completed||run.verbalContext||run.rageContext||run.pendingFamily||run.lastVerbalTurn===run.turn||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0)return false;
@@ -1106,6 +1166,7 @@ export function requestVerbal(run,target,version){
  resolved.actions.pop();return resolved;
 }
 export function canRequestRage(run){
+ if(run?.shareholderContext)return false;
  if(isWorkGapOpenV50(run))return false;
  if(run?.activityInvitationContext||run?.hiddenEncounterContext||run?.activityContext||run?.patronageReplyContext)return false;
  if(!(run&&!run.chapterContext&&!run.companyContext&&contentRules(run)>=13&&!run.completed&&!run.rageContext&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pendingFamily))return false;
@@ -1138,7 +1199,7 @@ export function requestRage(run,target){
  const next=structuredClone(current);next.actions.push({type:'rage'});
  next.rageContext={eventId:next.eventId,speaker:getSourceEventV50(next)?.speaker||'wing'};next.eventId='rage-menu';return next;
 }
-export function requestExit(run){if(run?.activityInvitationContext||run?.hiddenEncounterContext||run?.activityContext||run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestExit(run){if(run?.shareholderContext)return run;if(run?.activityInvitationContext||run?.hiddenEncounterContext||run?.activityContext||run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 function replayActions(roleId,seed,actions,count=actions.length){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -1162,6 +1223,10 @@ function replayActions(roleId,seed,actions,count=actions.length){
   else if(action.type==='activity'){
    if(Object.keys(action).sort().join(',')!=='activityId,type,version'||action.version!==1||!ACTIVITY_IDS_V44.includes(action.activityId))throw new Error('Invalid activity action');
    const next=requestActivity(run,action.activityId);if(next===run)throw new Error('Unavailable activity');run=next;
+  }
+  else if(action.type==='shareholder-play'){
+   if(Object.keys(action).sort().join(',')!=='eventId,input,type,version'||action.version!==1||action.eventId!==run.eventId)throw new Error('Invalid shareholder play action');
+   const next=applyShareholderPlay(run,action.input);if(next===run)throw new Error('Unavailable shareholder play');run=advance(next);
   }
   else if(action.type==='activity-play'){
    if(Object.keys(action).sort().join(',')!=='eventId,index,input,type,version'||action.version!==1||action.index!==1||action.eventId!==run.eventId)throw new Error('Invalid activity play action');
@@ -1210,12 +1275,13 @@ export function validRun(run){
    const first=run.actions[0];
    if(!first||Object.keys(first).sort().join(',')!=='type,version'||first.type!=='activity-schedule'||first.version!==1)return false;
   }
-  if(Array.isArray(run?.actions)&&run.actions.some(action=>['patronage-reply','activity','activity-play','hidden-encounter','activity-schedule','activity-invitation'].includes(action?.type))){
+  if(Array.isArray(run?.actions)&&run.actions.some(action=>['patronage-reply','activity','activity-play','shareholder-play','hidden-encounter','activity-schedule','activity-invitation'].includes(action?.type))){
    const last=run.actions.at(-1),prefix=run.pending?replayActions(run.roleId,run.seed,run.actions,run.actions.length-1):null;
    let canonical;
    if(!run.pending)canonical=replayRun(run.roleId,run.seed,run.actions);
    else if(last.type==='patronage-reply')canonical=requestPatronageReply(prefix,last.target);
    else if(last.type==='activity-play')canonical=applyActivityPlay(prefix,last.input);
+   else if(last.type==='shareholder-play')canonical=applyShareholderPlay(prefix,last.input);
    else if(last.type==='choice')canonical=applyChoice(prefix,last.index);
    else if(last.type==='verbal')canonical=requestVerbal(prefix,last.target,last.version);
    else if(last.type==='rage')canonical=requestRage(prefix,last.target);
@@ -1234,6 +1300,7 @@ export function validRun(run){
    };
    return equal(actual,canonical);
   }
+  if(run?.shareholderContext!==undefined||run?.history?.some(row=>row?.shareholderOutcome!==undefined||row?.kind==='shareholder')||Object.keys(run?.flags||{}).some(key=>key.startsWith('shareholder58_')))return false;
   if(run?.activityInvitationContext!==undefined||run?.eventId?.startsWith('activity46-invite-')||run?.history?.some(row=>row?.activityInvitationOutcome!==undefined||row?.kind==='activity-invitation')||Object.keys(run?.flags||{}).some(key=>key.startsWith('activity46_')))return false;
   if(run?.hiddenEncounterContext!==undefined||run?.eventId?.startsWith('hidden45-')||run?.history?.some(row=>row?.hiddenOutcome!==undefined||row?.kind==='hidden')||Object.keys(run?.flags||{}).some(key=>key.startsWith('hidden45_')))return false;
   if(run?.activityContext!==undefined||run?.history?.some(row=>row?.activityOutcome!==undefined||row?.kind==='activity')||Object.keys(run?.flags||{}).some(key=>key.startsWith('activity44_')))return false;

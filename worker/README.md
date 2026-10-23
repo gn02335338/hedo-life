@@ -793,3 +793,35 @@ skipping, renaming and withdrawal, and never automatically queues a public name 
 posting. Network failures preserve an in-page draft and show an unconfirmed
 state; successful state is based on a canonical server receipt. Existing local
 collections and completion-sync queues continue independently.
+
+## Employee shares and shareholder hearing (v58)
+
+New browser lives use `e39-cal46-kin49-g-e-s-m-h-` plus six hexadecimal digits,
+within the existing 32-character seed limit. Earlier seeds retain their exact
+replays. A safe, unanswered ordinary work scene can be suspended by the stock
+offer, then a later meeting notice after purchase. PIP, mandatory personnel,
+activities, rest intervals, pending results and other conversations take priority.
+The calendar must already be enabled. Offers cost 35 or 50 cash index points and
+keep a nine-point living buffer. The engine derives ownership and eligibility;
+neither a client flag nor a forged context grants attendance. Unrealized shares
+remain separate from available cash and leaderboard wealth.
+
+Only the strong attendance replies enter the hearing. Four rounds accept the
+strict action `{type:'shareholder-play',version:1,eventId,input}` with exact input
+keys `{mode,statement,evidence}`. Modes are `press`, `present` and `yield`;
+statement indices are 0–2 and evidence IDs come from a fixed allowlist. A press
+can be committed once per statement and may reveal a document. Presenting a
+document also requires canonical acquisition and the actual active round.
+Clients never provide grades, credibility, pressure, victories or outcomes.
+The evidence puzzle rewards the correct statement/document pair; three mistakes
+end the hearing. Browsing, selecting a statement and selecting a document remain
+local drafts and create no action. There is no timing requirement.
+
+Each committed interaction produces ordinary pending-result history and must be
+continued once before the next move. Replay checks context, ownership, the
+evidence folder, action schema, scores and all prior committed rows. JSON saves
+and cloud proofs use the existing anonymous identity and 300-action limit.
+The hearing does not pay salary, spend another workday, tick PIP, or force an
+employment ending. All meeting results restore the suspended work scene. Public
+statistics retain their existing aggregate behavior; raw dialogue and documents
+are not added to server storage. No new secret or database table is required.

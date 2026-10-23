@@ -1,5 +1,6 @@
 import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
 import {isActivityPlayV55,deriveActivityPlayV55} from '../dist/activity-play-v55.js';
+import {isShareholderV58,validateShareholderInputV58} from '../dist/shareholders-v58.js';
 
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
@@ -121,6 +122,13 @@ export function validateCompletion(body, roleMap) {
     if (action.type === 'salary-advice') {
       if (/^e(?:28|29|30|31|32|33|34|35|36|37|38|39)-/.test(body.seed)&&Object.keys(action).every(key=>key==='type')) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
+    }
+    if (action.type === 'shareholder-play') {
+      if (isShareholderV58(body.seed) && Object.keys(action).sort().join(',') === 'eventId,input,type,version' && action.version === 1
+          && typeof action.eventId === 'string' && action.eventId.length > 0 && action.eventId.length <= 100) {
+        try { validateShareholderInputV58(action.input); continue; } catch {}
+      }
+      throw new ApiError(400, 'invalid_actions', '股東大會的操作紀錄無效。');
     }
     if (action.type === 'activity-play') {
       if (isActivityPlayV55(body.seed)&&Object.keys(action).sort().join(',')==='eventId,index,input,type,version'&&action.version===1&&action.index===1

@@ -156,7 +156,7 @@ test('rage from a revealed result keeps that conversation and committed choice',
 test('new browser lives use the e39 calendar and the guide explains solo and group targets', () => {
   const app = appHarness();
   const seed = vm.runInContext('randomSeed()', app.context);
-  assert.match(seed, /^e39-cal46-kin49-g-e-s-m-[a-f0-9]{8}$/);
+  assert.match(seed, /^e39-cal46-kin49-g-e-s-m-h-[a-f0-9]{6}$/);
   assert.ok(seed.length <= 32);
   vm.runInContext('statGuide()', app.context);
   const guide = app.nodes.get('#dialog-content').innerHTML;
