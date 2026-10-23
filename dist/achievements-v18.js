@@ -94,7 +94,7 @@ export function deriveExtraAchievements(run){
  if(!run||typeof run!=='object')return [];
  const history=Array.isArray(run.history)?run.history:[],flags=run.flags&&typeof run.flags==='object'?run.flags:{},stats=run.stats||{},education=run.education||{},ids=new Set();
  // Engine history is written after a choice resolves, including pending results.
- const resolved=history.filter(item=>item&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0);
+ const resolved=history.filter(item=>item&&item.kind!=='event-departure'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0);
  const work=resolved.filter(item=>['daily','fantasy'].includes(item.kind));
  const add=(id,yes)=>{if(yes)ids.add(id);};
  if(work.length>=3&&roleGoals.some(([role])=>role===run.actualRoleId))add(`role-${run.actualRoleId}`,true);

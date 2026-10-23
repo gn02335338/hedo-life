@@ -15,7 +15,7 @@ const uiScenes=Object.freeze({'role-selection':'onboarding','resume-roll':'onboa
 
 export function sceneIllustration(event,{roleId=null,people=[],reality=null}={}){
   const id=typeof event?.id==='string'?event.id:'';
-  let theme=(['activity','activity-invitation','office-treat'].includes(event?.kind)||typeof event?.kind==='string'&&event.kind.startsWith('shareholder')||event?.hiddenCharacter===true)&&plateIds.has(event.scene)?event.scene:EVENT_SCENES_V38[id]||DYNAMIC_SCENES_V38[id]||uiScenes[id]||'office_day';
+  let theme=(['activity','activity-invitation','office-treat','event-departure'].includes(event?.kind)||typeof event?.kind==='string'&&event.kind.startsWith('shareholder')||event?.hiddenCharacter===true)&&plateIds.has(event.scene)?event.scene:EVENT_SCENES_V38[id]||DYNAMIC_SCENES_V38[id]||uiScenes[id]||'office_day';
   // `reality` must come from the already revealed current history row. A
   // previous imagined/real encounter cannot set this frame's visual mode.
   const mode=['imagined','real'].includes(reality)?reality:null;
@@ -27,7 +27,7 @@ export function sceneIllustration(event,{roleId=null,people=[],reality=null}={})
   theme=SCENE_ALIASES_V38[theme]||theme;
   if(!plateIds.has(theme))theme='office_day';
   const knownRole=Object.hasOwn(roleLabels,roleId)?roleId:null;
-  const members=[...new Set(people)].filter(id=>Object.hasOwn(illustrationPeople,id)).slice(0,3);
+  const members=[...new Set(people)].filter(id=>Object.hasOwn(illustrationPeople,id)).slice(0,event?.activity?.id==='roadshow'&&event?.participants?.includes('professor')?4:3);
   return {theme,mode,roleId:knownRole,roleLabel:knownRole?roleLabels[knownRole]:'',people:members,
     src:`./assets/scenes/${theme}.webp`,title:displayText(event?.title||'上班途中的一幕')};
 }

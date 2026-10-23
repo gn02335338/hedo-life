@@ -919,3 +919,44 @@ remain in use, and older profiles retain their original meal prices.
 
 These rules use the existing anonymous proof endpoints and storage. No new
 credential, personal-data field or database migration is required.
+
+
+## Event departure and Roadshow (v63)
+
+Fresh browser lives use `e39-r63-[nsd]-` and inherit the r62 rules. Earlier
+profiles keep their existing choices, random draws and replay transcripts.
+The new public action is `{type:'event-departure',version:1,eventId}`; `eventId`
+is the currently visible scene, including `work-gap-v50` instead of its hidden
+next-work pointer. Both HTTP validation and canonical replay enforce this exact
+shape, profile, availability and source. No outcome or numeric delta is accepted
+from the client.
+
+Departure previews contain only scene-specific wording. Committing resolves one
+seeded response and stores a separate `departureOutcome`; pending results cannot
+be undone or submitted twice. The pending screen reads the committed history row
+instead of inspecting an unrevealed work scene. Finishing departure clears the
+owned activity or conversation and resumes its actual parent flow. Draft games
+and evidence selections are discarded without submitting them. Completed
+employment outcomes remain final.
+
+Leaving ordinary work uses that day without crediting delivered work, income or
+loan service. A missed PIP day still consumes its improvement deadline and affects
+review. Leaving a private activity or optional conversation does not create an
+additional workday, payment or PIP tick. Already confirmed salary, appointment,
+spending, shares and debt remain in force; departure is not a refund or a legal
+resolution. HR notices and unresolved disputes retain their own consequences.
+Declining onboarding is presented as not accepting the appointment and grouped
+under the existing observation category `other`, rather than company dismissal.
+
+Departure records are excluded from ordinary-choice achievement predicates and
+from action cursors for treat/shareholder evidence. Aborted activities cannot
+claim completion or immediately restart. Valid previously earned achievements
+remain eligible. Character affinity projects only validated departure targets;
+departure is not a spoken outburst, dream hit or actual hit.
+
+The r63 Roadshow retains the six-card raw `matches` input and engine-derived
+performance. Its descriptor supplies the current questions, options and staging:
+all-company attendance, Meimei hosting and three contrasting speakers. Coffee
+costs in the story refer to NT$300 charged by the venue, never 300 savings stat
+points or a new player purchase. No new endpoint, identity field, credential or
+database migration is required.

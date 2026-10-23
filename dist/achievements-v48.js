@@ -70,7 +70,7 @@ export const ACHIEVEMENTS_V48=Object.freeze([
 ]);
 
 const known=person=>Object.hasOwn(PERSONAS,person||'');
-const resolved=row=>row&&Number.isInteger(row.choiceIndex)&&row.choiceIndex>=0&&Number.isInteger(row.turn)&&row.turn>=0&&typeof row.result==='string'&&Boolean(row.result.trim())&&typeof row.choiceText==='string'&&Boolean(row.choiceText.trim())&&Array.isArray(row.breakdown);
+const resolved=row=>row&&row.kind!=='event-departure'&&Number.isInteger(row.choiceIndex)&&row.choiceIndex>=0&&Number.isInteger(row.turn)&&row.turn>=0&&typeof row.result==='string'&&Boolean(row.result.trim())&&typeof row.choiceText==='string'&&Boolean(row.choiceText.trim())&&Array.isArray(row.breakdown);
 const work=row=>resolved(row)&&['daily','fantasy'].includes(row.kind)&&!row.verbalOutcome;
 const privateOrigin=id=>['kind-break','kind-workday','banquet-afterparty','self-care'].includes(id)||/^meal-(?:with-|guests-)/.test(id||'')||/^activity44-(?:arm|diet|dinner|banquet|basketball)-/.test(id||'');
 const salaryOrigin=id=>/^(?:salary-|raise-)/.test(id||'');

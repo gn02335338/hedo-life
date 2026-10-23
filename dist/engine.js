@@ -1,3 +1,4 @@
+import {isParticipationV63,eventDepartureDescriptorV63,resolveEventDepartureV63,withDeparturePipReviewV63} from './event-departure-v63.js';
 import {isOfficeTreatsV61,dueOfficeTreatV61,officeTreatDailyAllowedV61,createOfficeTreatContextV61,getOfficeTreatEventV61,resolveOfficeTreatChoiceV61} from './office-treats-v61.js';
 import {isRecruitmentV60,directEntryV60,entryLabelV60,withRecruitmentOnboardingV60,getRecruitmentEventV60,recruitmentOutcomeV60,recruitmentVerbalLineV60,withRecruitmentVerbalDecisionV60} from './recruitment-v60.js';
 import {isShareholderV58,shareholderDueV58,getShareholderEventV58,getShareholderPlayV58,deriveShareholderPlayV58,createShareholderContextV58,resolveShareholderChoiceV58,resolveShareholderPlayV58,shareholderResultV58,shareholderWorkCountV62,shareholderLoanPaymentV62} from './shareholders-v58.js';
@@ -295,6 +296,11 @@ function getPublishedEvent(run){
  return withRecruitmentOnboardingV60(contentRules(run)>=27?withWealthEntryV27(finalEvent,run):finalEvent,run);
 }
 export function getEvent(run,skipWorkGap=false){
+ if(run?.pending&&run.departureContext){
+  const row=run.history?.[run.departureContext.historyIndex];
+  if(!row||row.kind!=='event-departure')throw new Error('Missing committed departure scene');
+  return {id:row.eventId,kind:'event-departure',title:row.title,body:row.body,speaker:row.speaker,wing:row.wing,sourceIds:row.sourceIds||[],era:'離開當下場合・結果已確定',scope:['meal','rest','private','hidden'].includes(row.departureOutcome.category)?'private':'work',scene:'office_day',choices:[]};
+ }
  if(run?.treatsContext)return getOfficeTreatEventV61(run);
  if(run?.recruitmentContext)return getRecruitmentEventV60(run);
  if(run?.shareholderContext)return getShareholderEventV58(run);
@@ -308,7 +314,8 @@ export function getEvent(run,skipWorkGap=false){
  if(contentRules(run)>=38&&run.eventId==='chapter-resolution')return getChapterResolutionV38(run);
  const event=withDepartureChoicesV38(getPublishedEvent(run),run);
  if(!skipWorkGap&&workGapSurfaceSafeV50(run,event))return isEnergyRestV53(run)?getEnergyRestEventV53(run):getWorkGapEventV50(run);
- return contentRules(run)>=39&&isPrivateSceneV39(event)?{...event,scope:'private'}:event;
+ const reviewed=withDeparturePipReviewV63(event,run);
+ return contentRules(run)>=39&&isPrivateSceneV39(reviewed)?{...reviewed,scope:'private'}:reviewed;
 }
 // Engine transitions must inspect the selected work scene, never its gap UI.
 function getSourceEventV50(run){return getEvent(run,true);}
@@ -447,7 +454,7 @@ export function applyChoice(run,index){
   next.flags.career_last_review_result=effect==='careerTrain'?1:effect==='careerDefer'?2:['careerPromote','careerRegularize'].includes(effect)?4:3;
   if(effect==='careerDefer')next.flags.career_defer_until=next.turn+6;
  }
- if(effect==='startPip'){next.pip={active:true,remaining:3};next.pipCount++;next.crisisCooldown=3;if(!modern)next.stats.boss=Math.max(35,next.stats.boss);}
+ if(effect==='startPip'){if(isParticipationV63(next))next.flags.departure63_pip_missed=0;next.pip={active:true,remaining:3};next.pipCount++;next.crisisCooldown=3;if(!modern)next.stats.boss=Math.max(35,next.stats.boss);}
  if(effect==='pipPassed'){next.pip={active:false,remaining:0};flag(next,'pip_passed');if(contentRules(next)>=20){next.flags.post_pip_tolerance=1;next.personnelPending=null;}}
  if(effect==='finishPip'){next.pip=null;next.crisisCooldown=contentRules(next)>=9?6:3;if(contentRules(next)>=20)next.personnelPending={reason:'passed',strength:0,source:'pip-passed'};}
  if(effect==='educationDone')next.educationReviewed=true;
@@ -574,7 +581,7 @@ function advanceVerbalScenarioV2(run,next,last,effect){
 }
 function advanceCore(run,options={}){
  if(!run.pending||run.completed)return run;
- const next=structuredClone(run);const last=next.history.at(-1),effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
+ const next=structuredClone(run);const actualLast=next.history.at(-1),last=options.departureKindV63?{...actualLast,kind:options.departureKindV63}:actualLast,effect=next.pendingEffect;next.pending=false;next.pendingEffect=null;
  if(contentRules(next)>=38&&last.eventId==='chapter-resolution'){
   const context=next.chapterContext;if(!context)throw new Error('Missing chapter context');
   if(effect==='chapterExit')return finish(next,context.family);
@@ -788,7 +795,7 @@ function advanceCore(run,options={}){
 // invitation never changes a published seed, workday, or random stream.
 // This new action is optional and versioned. Existing action lists never
 // inspect a new random ticket or receive an unrequested actor retroactively.
-export function canRequestHiddenEncounter(run){
+export function canRequestHiddenEncounter(run){if(run?.departureContext)return false;
  if(run?.treatsContext)return false;
  if(run?.recruitmentContext)return false;
  if(run?.shareholderContext)return false;
@@ -951,7 +958,7 @@ export function enableActivitySchedule(run){
  next.actions.push({type:'activity-schedule',version:1});next.flags.activity46_enabled=1;
  return next;
 }
-export function canRequestActivityInvitation(run){
+export function canRequestActivityInvitation(run){if(run?.departureContext)return false;
  if(run?.treatsContext)return false;
  if(run?.recruitmentContext)return false;
  if(run?.shareholderContext)return false;
@@ -992,6 +999,8 @@ function advanceActivityInvitationV46(run){
  return next;
 }
 export function getActivityAvailability(run,activityId){
+ if(run?.departureContext)return {available:false,reason:'先看完離場結果。'};
+ if(isParticipationV63(run)&&activityId&&run.flags?.[`departure63_activity_${activityId}`])return {available:false,reason:'這場活動已經退出，不再重新開場。'};
  if(run?.treatsContext)return {available:false,reason:'先把眼前這場點心插曲收好，再回原本的工作。'};
  if(run?.recruitmentContext)return {available:false,reason:'先把入職介紹談完，再回到原本的工作。'};
  if(run?.shareholderContext)return {available:false,reason:'先完成這場股東會，再回到原本的工作。'};
@@ -1089,7 +1098,139 @@ function advanceActivityV44(run){
  }else if(next.stats.mood<=0){next.meltdownReturnEventId=next.eventId;next.eventId='mood-collapse';flag(next,'mood_crash_count');}
  return next;
 }
+export function getEventDepartureV63(run){
+ if(!isParticipationV63(run))return null;
+ return eventDepartureDescriptorV63(run,run.completed?null:getEvent(run));
+}
+export function requestEventDepartureV63(run){
+ const descriptor=getEventDepartureV63(run);
+ if(!descriptor?.available)return run;
+ const next=structuredClone(run),event=getEvent(run),before={...run.stats};
+ const resolved=resolveEventDepartureV63(run,event,roll(next)),breakdown=[];
+ for(const [key,value]of Object.entries(resolved.delta))next.stats[key]=clamp(next.stats[key]+value);
+ const actual=Object.fromEntries(STAT_KEYS.map(key=>[key,next.stats[key]-before[key]]));
+ if(Object.values(actual).some(Boolean))breakdown.push({source:'event-departure',label:'離開當下場合',delta:Object.fromEntries(Object.entries(actual).filter(([,value])=>value))});
+ next.actions.push({type:'event-departure',version:1,eventId:event.id});
+ flag(next,'departure63_count');flag(next,`departure63_${resolved.category}`);
+ if(resolved.category==='work'){
+  if(next.pip?.active){next.pip.remaining=Math.max(0,next.pip.remaining-1);flag(next,'departure63_pip_missed');}
+  const provocation=freshPersonnelProvocation(run,{...event,kind:'daily'},resolved.delta);
+  if(provocation&&(!next.personnelPending||provocation.reason==='post-pip'))next.personnelPending=provocation;
+ }
+ if(resolved.category==='onboarding')next.flags.departure63_onboarding_declined=1;
+ next.history.push({eventId:event.id,kind:'event-departure',title:`離開當下場合｜${event.title}`,body:event.body,wing:event.wing||'',speaker:event.speaker||'self',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:0,choiceText:descriptor.label,result:resolved.result,chanceOutcome:null,delta:actual,weather:null,jobTitle:jobTitle(next),pay:next.pay,breakdown,departureOutcome:resolved.outcome});
+ next.departureContext={version:1,category:resolved.category,eventId:event.id,sourceKind:event.kind,historyIndex:next.history.length-1};
+ next.pending=true;next.pendingEffect='eventDeparture';next.pendingFamily=null;next.lastWeather=null;
+ return next;
+}
+function closeDepartureJobV63(next,family){
+ for(const key of ['treatsContext','recruitmentContext','shareholderContext','activityInvitationContext','hiddenEncounterContext','activityContext','patronageReplyContext'])if(Object.hasOwn(next,key))delete next[key];
+ return finish(next,family);
+}
+function departureReturnV63(next,eventId){
+ if(typeof eventId!=='string'||!eventId)throw new Error('Missing departure return');
+ next.eventId=rankCompatibleReturn(next,eventId);return next;
+}
+function resumeDepartureCommittedV63(next,context){
+ const history=next.history;
+ next.history=history.slice(0,context.historyLength);next.pending=true;next.pendingEffect=context.pendingEffect;next.pendingFamily=context.pendingFamily;
+ const resumed=advance(next);resumed.history=history;return resumed;
+}
+function advanceEventDepartureV63(run){
+ if(!isParticipationV63(run)||!run.pending||run.completed||run.pendingEffect!=='eventDeparture')throw new Error('Invalid departure continuation');
+ const next=structuredClone(run),context=next.departureContext,last=next.history.at(-1),category=context.category;
+ if(context.version!==1||context.historyIndex!==next.history.length-1||last?.departureOutcome?.category!==category)throw new Error('Missing departure result');
+ delete next.departureContext;next.pending=false;next.pendingEffect=null;next.pendingFamily=null;next.flags.work_gap_open=0;
+ let returned;
+ if(category==='onboarding')returned=closeDepartureJobV63(next,'ragequit');
+ else if(category==='collapse'){next.flags.departure38_voluntary=1;returned=closeDepartureJobV63(next,'ragequit');}
+ else if(category==='gap')returned=next;
+ else if(category==='work'){
+  next.pending=true;next.pendingEffect='eventDeparture';
+  returned=advancePublishedV50(next,{departureKindV63:context.sourceKind});
+ }else if(category==='activity'){
+  const c=next.activityContext;next.flags[`departure63_activity_${c.id}`]=1;next.flags.activity44_last_turn=next.turn+1;delete next.activityContext;
+  returned=departureReturnV63(next,c.returnEventId);
+ }else if(category==='invitation'){
+  const c=next.activityInvitationContext;next.flags[`departure63_activity_${c.id}`]=1;delete next.activityInvitationContext;returned=departureReturnV63(next,c.returnEventId);
+ }else if(category==='treats'){
+  const c=next.treatsContext;next.flags[`departure63_treat_${c.id}`]=1;next.treatsContext=null;returned=departureReturnV63(next,c.returnEventId);
+ }else if(category==='shareholder'){
+  const c=next.shareholderContext;next.flags[`departure63_shareholder_${c.stage}`]=1;delete next.shareholderContext;returned=departureReturnV63(next,c.returnEventId);
+ }else if(category==='recruitment'){
+  const c=next.recruitmentContext;next.flags.departure63_recruitment_intro=1;next.recruitmentContext=null;returned=departureReturnV63(next,c.returnEventId);
+ }else if(category==='hidden'){
+  const c=next.hiddenEncounterContext;next.flags.departure63_hidden=1;delete next.hiddenEncounterContext;returned=departureReturnV63(next,c.returnEventId);
+ }else if(category==='meal'){
+  const c=next.mealContext,origin=c.origin==='self-care'?next.breakReturnEventId:next.resumeEventId;
+  if(c.origin==='self-care')next.breakReturnEventId=null;else next.resumeEventId=null;next.mealContext=null;returned=departureReturnV63(next,origin);
+ }else if(category==='rest'){
+  const origin=next.breakReturnEventId||next.meltdownReturnEventId||next.resumeEventId;
+  next.breakReturnEventId=null;next.meltdownReturnEventId=null;next.resumeEventId=null;returned=departureReturnV63(next,origin);
+ }else if(category==='salary'){
+  const origin=next.raiseContext?.eventId||next.salaryAdvice?.status==='open'&&next.salaryAdvice.returnEventId||next.resumeEventId;
+  next.raiseContext=null;if(next.salaryAdvice?.status==='open'){next.salaryAdvice.status='done';next.salaryAdvice.returnEventId=null;}
+  next.resumeEventId=null;next.flags.departure63_salary_disputed=1;returned=departureReturnV63(next,origin);
+ }else if(category==='patronage'){
+  const c=next.patronageContext;next.patronageContext=null;returned=departureReturnV63(next,c.returnEventId);
+ }else if(category==='company'){
+  const c=next.companyContext;next.companyContext=null;returned=departureReturnV63(next,c.returnEventId);
+ }else if(category==='wealth'){
+  const origin=next.wealthReturnEventId;next.wealthReturnEventId=null;returned=departureReturnV63(next,origin);
+ }else if(category==='personnel'){
+  if(['dismissal-final','paperwork'].includes(context.eventId))returned=closeDepartureJobV63(next,context.eventId==='paperwork'?'fired_refused':'layoff');
+  else if(['labor-claim','labor-mediation'].includes(context.eventId)){flag(next,'labor_unresolved');returned=closeDepartureJobV63(next,'mediation_pending');}
+  else{next.flags.hr_pip_allowed=0;next.flags.boss_crisis_armed=0;next.personnelPending=null;next.resumeEventId=null;next.eventId='dismissal-final';returned=next;}
+ }else if(category==='pip-review')returned=closeDepartureJobV63(next,'pip_fail');
+ else if(category==='pip-passed'){
+  next.pip=null;next.crisisCooldown=6;next.personnelPending={reason:'passed',strength:0,source:'pip-passed'};
+  const origin=next.resumeEventId;next.resumeEventId=null;returned=departureReturnV63(next,origin||nextNormal(next));
+ }else if(category==='chapter'){
+  if(['burnout','broke'].includes(next.chapterContext.family)){next.flags.departure38_voluntary=1;returned=closeDepartureJobV63(next,next.chapterContext.family);}
+  else{next.pending=true;next.pendingEffect='chapterContinue';returned=advanceCore(next);}
+ }else if(category==='verbal'){
+  const c=next.verbalContext;next.flags.departure63_legal_pending=Number(['legal','legal-result'].includes(c.stage)||c.outcome==='legal');
+  if(c.phase==='result'){next.verbalContext=null;next.eventId=c.eventId;returned=resumeDepartureCommittedV63(next,c);}
+  else if(c.eventId==='onboarding'){if(c.outcome!=='personnel')next.flags.departure63_onboarding_declined=1;returned=closeDepartureJobV63(next,c.outcome==='personnel'?'layoff':'ragequit');}
+  else if(['daily','fantasy'].includes(c.sourceKind))returned=finishVerbalSourceV2(next,c);
+  else{
+   next.verbalContext=null;next.eventId=c.eventId;
+   if(PERSONNEL_SCENES.includes(c.eventId)||['crisis-boss','paperwork','pip-review'].includes(c.eventId)){
+    next.personnelPending=null;next.resumeEventId=null;next.flags.hr_pip_allowed=0;next.eventId='dismissal-final';returned=next;
+   }else{
+    const source=getSourceEventV50(next),close=privateReturnEffectV39(source,next);
+    if(close){next.pending=true;next.pendingEffect=close;returned=advanceCore(next);}else returned=next;
+   }
+  }
+ }else if(category==='rage'){
+  const c=next.rageContext;next.flags.departure63_legal_pending=Number(c.mode==='real');next.rageContext=null;next.eventId=c.eventId;
+  if(c.phase==='result')returned=resumeDepartureCommittedV63(next,c);
+  else{
+   const source=getSourceEventV50(next),close=privateReturnEffectV39(source,next);
+   if(close){next.pending=true;next.pendingEffect=close;returned=advanceCore(next);}else returned=next;
+  }
+ }else if(category==='private'){
+  const origin=next.banquetReturnEventId||next.breakReturnEventId||next.resumeEventId;
+  next.banquetReturnEventId=null;next.breakReturnEventId=null;next.resumeEventId=null;returned=departureReturnV63(next,origin);
+ }else{
+  const origin=next.resumeEventId||next.exitReturnEventId;
+  next.resumeEventId=null;next.exitReturnEventId=null;
+  returned=origin?departureReturnV63(next,origin):closeDepartureJobV63(next,'ragequit');
+ }
+ if(!returned.completed&&!returned.pending&&!returned.chapterContext&&!returned.meltdownReturnEventId&&!PERSONNEL_SCENES.includes(returned.eventId)&&!['crisis-boss','paperwork','pip-review'].includes(returned.eventId)){
+  const family=returned.stats.cash<=0?'broke':returned.stats.energy<=0?'burnout':null;
+  if(family){returned.chapterContext={family,historyIndex:returned.history.length-1,actionIndex:returned.actions.length,eventId:returned.eventId,pendingEffect:null,verbal:null,rage:null};returned.flags[`chapter38_${family}`]=returned.history.length;returned.eventId='chapter-resolution';}
+  else if(returned.stats.mood<=0){returned.meltdownReturnEventId=returned.eventId;returned.eventId='mood-collapse';flag(returned,'mood_crash_count');}
+ }
+ if(!returned.completed&&!returned.pending){
+  if(returned.turn>run.turn)returned.flags.work_gap_open=Number(restWarningV62(returned));
+  energySafetyBoundaryV54(run,returned,getSourceEventV50(returned));
+  if(moodRestWarningV62(returned)&&returned.lastBreakTurn!==returned.turn){const candidate={...returned,flags:{...returned.flags,work_gap_open:1}};if(workGapSurfaceSafeV50(candidate,getSourceEventV50(returned)))returned.flags.work_gap_open=1;}
+ }
+ return returned;
+}
 export function advance(run,options={}){
+ if(run?.departureContext)return advanceEventDepartureV63(run);
  const next=advancePublishedV50(run,options);
  if(run.pending&&next!==run&&!next.pending&&!next.completed&&run.eventId==='onboarding'&&run.history.at(-1)?.recruitmentOutcome?.kind==='appointment'&&!next.flags.recruitment60_rick_done){next.recruitmentContext={version:1,stage:0,returnEventId:next.eventId};next.eventId='recruitment60-rick';}
  if(isWorkGapV50(run)&&next!==run){
@@ -1166,13 +1307,13 @@ function advancePublishedV50(run,options={}){
  }
  return next;
 }
-export function canRequestBreak(run){if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;if(isWorkGapV50(run))return isWorkGapOpenV50(run)&&run.lastBreakTurn!==run.turn;return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&rules2(run)&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
+export function canRequestBreak(run){if(run?.departureContext)return false;if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;if(isWorkGapV50(run))return isWorkGapOpenV50(run)&&run.lastBreakTurn!==run.turn;return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&rules2(run)&&!(contentRules(run)>=30&&run.verbalContext)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&run.lastBreakTurn!==run.turn&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
 export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;const invite=canKindDarkInviteV29(next)&&contentRules(next)>=6&&!(contentRules(next)>=7&&next.lastKindInviteTurn===next.turn)&&roll(next)<KIND_BREAK_CHANCE;next.eventId=invite?'kind-break':'self-care';if(invite&&contentRules(next)>=7)next.lastKindInviteTurn=next.turn;return next;}
-export function canRequestCareer(run){if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&!(contentRules(run)>=30&&run.verbalContext)&&!(contentRules(run)>=29&&run.patronage)&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
+export function canRequestCareer(run){if(run?.departureContext)return false;if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&!(contentRules(run)>=30&&run.verbalContext)&&!(contentRules(run)>=29&&run.patronage)&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
 export function requestCareer(run){if(!canRequestCareer(run))return run;const next=structuredClone(run);next.actions.push({type:'career'});next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
-export function canRequestRaise(run){if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;return !run?.activityInvitationContext&&!run?.hiddenEncounterContext&&!run?.activityContext&&!run?.chapterContext&&!run?.companyContext&&!(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
+export function canRequestRaise(run){if(run?.departureContext)return false;if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;return !run?.activityInvitationContext&&!run?.hiddenEncounterContext&&!run?.activityContext&&!run?.chapterContext&&!run?.companyContext&&!(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
 export function requestRaise(run){if(!canRequestRaise(run))return run;const next=structuredClone(run);next.actions.push({type:'raise'});next.raiseContext={eventId:run.eventId,fromPay:run.pay,offerPay:null,percent:null,outcome:null,view:null,approach:null};next.eventId='raise-request';return next;}
-export function canRequestSalaryAdvice(run){
+export function canRequestSalaryAdvice(run){if(run?.departureContext)return false;
  if(run?.treatsContext)return false;
  if(run?.recruitmentContext)return false;
  if(run?.shareholderContext)return false;
@@ -1190,7 +1331,7 @@ export function requestSalaryAdvice(run){
 }
 // This optional action leaves the original scene and its choice indices intact.
 // Published lives change only after explicitly choosing the new response.
-export function canRequestPatronageReply(run){
+export function canRequestPatronageReply(run){if(run?.departureContext)return false;
  if(run?.treatsContext)return false;
  if(run?.recruitmentContext)return false;
  if(run?.shareholderContext)return false;
@@ -1227,7 +1368,7 @@ export function requestPatronageReply(run,target){
  next.patronageReplyContext={version:1,eventId:event.id,historyIndex:next.history.length-1};
  next.eventId=PATRONAGE_REPLY_EVENT_V43;next.pending=true;next.pendingEffect='patronageReplyReturn';return next;
 }
-export function canRequestVerbal(run){
+export function canRequestVerbal(run){if(run?.departureContext)return false;
  if(run?.treatsContext)return false;
  if(run?.recruitmentContext)return false;
  if(run?.shareholderContext)return false;
@@ -1268,7 +1409,7 @@ export function requestVerbal(run,target,version){
  // second player choice and cannot be submitted independently to the Worker.
  resolved.actions.pop();return resolved;
 }
-export function canRequestRage(run){
+export function canRequestRage(run){if(run?.departureContext)return false;
  if(run?.treatsContext)return false;
  if(run?.recruitmentContext)return false;
  if(run?.shareholderContext)return false;
@@ -1304,7 +1445,7 @@ export function requestRage(run,target){
  const next=structuredClone(current);next.actions.push({type:'rage'});
  next.rageContext={eventId:next.eventId,speaker:getSourceEventV50(next)?.speaker||'wing'};next.eventId='rage-menu';return next;
 }
-export function requestExit(run){if(run?.treatsContext)return run;if(run?.recruitmentContext)return run;if(run?.shareholderContext)return run;if(run?.activityInvitationContext||run?.hiddenEncounterContext||run?.activityContext||run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestExit(run){if(run?.departureContext)return run;if(run?.treatsContext)return run;if(run?.recruitmentContext)return run;if(run?.shareholderContext)return run;if(run?.activityInvitationContext||run?.hiddenEncounterContext||run?.activityContext||run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 function replayActions(roleId,seed,actions,count=actions.length){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -1328,6 +1469,10 @@ function replayActions(roleId,seed,actions,count=actions.length){
   else if(action.type==='activity'){
    if(Object.keys(action).sort().join(',')!=='activityId,type,version'||action.version!==1||!ACTIVITY_IDS_V44.includes(action.activityId))throw new Error('Invalid activity action');
    const next=requestActivity(run,action.activityId);if(next===run)throw new Error('Unavailable activity');run=next;
+  }
+  else if(action.type==='event-departure'){
+   if(!isParticipationV63(run)||Object.keys(action).sort().join(',')!=='eventId,type,version'||action.version!==1||action.eventId!==getEvent(run)?.id)throw new Error('Invalid event departure action');
+   const next=requestEventDepartureV63(run);if(next===run)throw new Error('Unavailable event departure');run=advance(next);
   }
   else if(action.type==='shareholder-play'){
    if(Object.keys(action).sort().join(',')!=='eventId,input,type,version'||action.version!==1||action.eventId!==run.eventId)throw new Error('Invalid shareholder play action');
@@ -1375,11 +1520,12 @@ export function validRun(run){
   if(isWorkGapV50(run)&&(![0,1].includes(run.flags?.work_gap_open)||!run.actions?.length&&run.flags.work_gap_open!==0))return false;
   if(isEnergySafetyV54(run)&&(![0,1].includes(run.flags?.[ENERGY_SAFETY_OWED_V54])||!run.actions?.length&&run.flags[ENERGY_SAFETY_OWED_V54]!==0))return false;
   if(!isEnergySafetyV54(run)&&run?.flags?.[ENERGY_SAFETY_OWED_V54]!==undefined)return false;
-  if(Array.isArray(run?.history)&&run.history.some(row=>isPatronageV49(run)&&row?.eventId===PATRONAGE_EVENT_V29&&[0,1].includes(row.choiceIndex)?!isPatronageApplicationOutcomeV49(run,row):row?.patronageApplicationOutcome!==undefined))return false;
+  if(Array.isArray(run?.history)&&run.history.some(row=>isPatronageV49(run)&&row?.eventId===PATRONAGE_EVENT_V29&&!(isParticipationV63(run)&&row.kind==='event-departure')&&[0,1].includes(row.choiceIndex)?!isPatronageApplicationOutcomeV49(run,row):row?.patronageApplicationOutcome!==undefined))return false;
   if((/^e39-cal46-/.test(run?.seed||'')||isRecruitmentV60(run))&&run?.actions?.length){
    const first=run.actions[0];
    if(!first||Object.keys(first).sort().join(',')!=='type,version'||first.type!=='activity-schedule'||first.version!==1)return false;
   }
+  if(!isParticipationV63(run)&&(run?.departureContext!==undefined||run?.history?.some(row=>row?.departureOutcome!==undefined||row?.kind==='event-departure')||Object.keys(run?.flags||{}).some(key=>key.startsWith('departure63_'))))return false;
   if(!isLifeBalanceV62(run)&&run?.shareholderLoan!==undefined)return false;
   if(!isOfficeTreatsV61(run)&&(run?.treatsContext!==undefined||run?.history?.some(row=>row?.treatsOutcome!==undefined||row?.kind==='office-treat')||Object.keys(run?.flags||{}).some(key=>key.startsWith('treats61_'))))return false;
   if(!isRecruitmentV60(run)&&(run?.recruitmentContext!==undefined||run?.history?.some(row=>row?.recruitmentOutcome!==undefined)||Object.keys(run?.flags||{}).some(key=>key.startsWith('recruitment60_'))))return false;
@@ -1390,6 +1536,7 @@ export function validRun(run){
    else if(last.type==='patronage-reply')canonical=requestPatronageReply(prefix,last.target);
    else if(last.type==='activity-play')canonical=applyActivityPlay(prefix,last.input);
    else if(last.type==='shareholder-play')canonical=applyShareholderPlay(prefix,last.input);
+   else if(last.type==='event-departure')canonical=requestEventDepartureV63(prefix);
    else if(last.type==='choice')canonical=applyChoice(prefix,last.index);
    else if(last.type==='verbal')canonical=requestVerbal(prefix,last.target,last.version);
    else if(last.type==='rage')canonical=requestRage(prefix,last.target);

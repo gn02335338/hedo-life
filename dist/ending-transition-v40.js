@@ -6,6 +6,7 @@ import { displayPlayerHistoryV42 } from './job-titles-v42.js';
 import { companyFinaleEmploymentV39 } from './company-v39.js';
 import { displayArmVerbalHistoryV51 } from './arm-verbal-copy-v51.js';
 import { displayContextVerbalHistoryV52 } from './verbal-context-v52.js';
+import { isParticipationV63 } from './participation-profile-v63.js';
 const shownHistory=(row,run)=>displayPrincessHistoryV47(displayPlayerHistoryV42(displayContextVerbalHistoryV52(displayArmVerbalHistoryV51(polishVerbalHistoryV41(displayChronicleHistory(row))),{run,rawRow:row}),run),run);
 
 // A read-only explanation of an already committed ending. Do not use this
@@ -59,7 +60,9 @@ const shown = value => escape(displayText(value??''));
 const name = id => id==='self'?'自己':id==='exit-team'?'法師、真真與阿福':PERSONAS[id]?.name||'當時的對話者';
 
 function employmentStatus(run, family, last) {
+ if(isParticipationV63(run)&&run.flags?.departure63_onboarding_declined&&family==='ragequit'&&['onboarding','verbal'].includes(last?.departureOutcome?.category))return status('offer-declined','你沒有接受這份任用','你在報到時明確拒絕這份工作，今天的任用到此為止。這次不是公司資遣，也沒有補簽自願離職。');
  const finalSpeech=run.history?.findLast(row=>row.verbalOutcome);
+ if(isParticipationV63(run)&&family==='layoff'&&run.pipCount>0)return status('company-exit','公司直接通知離場','公司通知你交接離場；先前的 PIP 紀錄仍保留，這次不另開改善期，也不是你主動離職。');
  if(family==='layoff'&&finalSpeech?.verbalOutcome?.origin==='onboarding'&&finalSpeech.verbalOutcome.phase==='event'&&finalSpeech.verbalOutcome.kind==='personnel'&&!run.history.some(row=>row.eventId==='onboarding'&&!row.verbalOutcome))return STATUSES.verbal_onboarding;
  if(/^e(?:38|39)-/.test(run.seed||'')&&run.flags?.departure38_voluntary)return status('voluntary','你已明確提出離職，結束這份工作','先前的成果與風波仍留在紀錄裡。這次離開是你親自確認的決定，不是公司另外要求你走。');
  const company=companyFinaleEmploymentV39(family);if(company)return company;

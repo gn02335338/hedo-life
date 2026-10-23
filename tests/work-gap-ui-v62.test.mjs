@@ -68,7 +68,7 @@ function appHarness(mobile){
  const context=vm.createContext({...E,...balance,renderWorkGapHTMLV50,run:null,MAX_TURNS:E.MAX_TURNS,
   shareholderCleanupV58:null,activityPlayCleanupV55:null,patronagePickerContext:null,ragePickerContext:null,verbalPickerContext:null,gameViewRevision:0,screen:'game',main:node('#main'),$:node,
   window:{scrollTo(){calls.push('scroll:window');},matchMedia:()=>({matches:mobile})},isPersonnelNotice:()=>false,esc:String,STAT_LABELS:{mood:'自己心情',energy:'體力'},
-  gameSidebarHTML:()=>'<aside class="game-sidebar"></aside>',activityReturnNotice:()=>'',
+  gameSidebarHTML:()=>'<aside class="game-sidebar"></aside>',activityReturnNotice:()=>'',eventDepartureControlV63:()=>'',
   mobileWorkbar:()=>`<nav class="mobile-workbar">心情 ${context.run.stats.mood} · 體力 ${context.run.stats.energy}</nav>`,
   choiceHTML:({c,i})=>`<button type="button" data-choice="${i}">${c.text}</button>`
  });

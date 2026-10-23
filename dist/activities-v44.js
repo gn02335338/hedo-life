@@ -1,6 +1,7 @@
 // Optional, replayable activity scenes. Recollections supply the motifs; all
 // dialogue, scores, draws and later developments are original game fiction.
 // No RNG, storage or engine mutation belongs in this presentation/resolver.
+import {isRoadshowV63,ROADSHOW_PARTICIPANTS_V63,ROADSHOW_STAGES_V63,roadshowChoiceCopyV63} from './roadshow-v63.js';
 export const ACTIVITY_IDS_V44=Object.freeze(['arm','diet','roadshow','dinner','banquet','basketball','review']);
 export const ACTIVITY_META_V44=Object.freeze({
  arm:{name:'腕力大賽',teaser:'十秒鐘的比賽，三輪以上的賽前聲明。',mechanic:'議定規則 → 十秒對決 → 賽後記者會',stages:3,scene:'arm_wrestling'},
@@ -75,6 +76,13 @@ export function getActivityEventV44(run){
   ],{scoreLabel:'習慣持續',pressureLabel:'比較壓力'});
  }
  if(x.id==='roadshow'){
+  if(isRoadshowV63(run)){
+   const copy=ROADSHOW_STAGES_V63[s];
+   return scene(run,copy.title,copy.body,copy.speaker,copy.wing,copy.choices.map((text,index)=>c(text,index===2?{wild:true}:{})),{
+    scoreLabel:'有效接觸',pressureLabel:'待補承諾',participants:[...ROADSHOW_PARTICIPANTS_V63],
+    activity:{id:x.id,stage:s,total:3,mechanic:'水蛇開場 → 三人演講與現場接問 → 核對承諾後收場',scoreMax:12,pressureMax:12,scoreLabel:'有效接觸',score:scoreOf(x),pressureLabel:'待補承諾',pressure:pressureOf(x)}
+   });
+  }
   if(s===0)return scene(run,'展位還沒搭好，願景已經先到場。','真真拿來這次 Roadshow 的分工表。強哥看到搬設備那欄，提醒自己只是助理工程師；安妮余帶了甜點，他說太甜，手卻又伸過去。你記得有人抱怨完上次活動，下一次就從名單消失。這次上台前，先決定展位要靠什麼說話。','jenjen','名字在分工表上的，先確認自己究竟要帶什麼來。',[
    c('帶能重現的展示和離線備案，先測一輪。'),
    c('把客戶問題整理成一頁，展位先接真正的需求。'),
@@ -260,5 +268,5 @@ export function resolveActivityChoiceV44(run,index,ticket){
  }
  const score=clamp(a+gain),pressure=clamp(p+load),done=stage===ACTIVITY_META_V44[x.id].stages-1;
  if(done)flags.push(`activity44_${x.id}_completed`);
- return {result,label,delta,flags,score,pressure,plan,done};
+ return roadshowChoiceCopyV63(run,index,{result,label,delta,flags,score,pressure,plan,done});
 }

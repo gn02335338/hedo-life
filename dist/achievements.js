@@ -85,7 +85,7 @@ export function deriveAchievements(run){
  if(!run||typeof run!=='object')return [];
  const flags=run.flags&&typeof run.flags==='object'?run.flags:{},history=Array.isArray(run.history)?run.history:[],ids=new Set();
  const add=(id,yes)=>{if(yes)ids.add(id);};
- const onboard=history.some(item=>item?.eventId==='onboarding');
+ const onboard=history.some(item=>item?.eventId==='onboarding'&&item.kind!=='event-departure');
  add('work-card',onboard);
  add('switch',onboard&&flags.bait_switch>0);
  add('assistant',onboard&&flags.assistant>0);
@@ -99,7 +99,7 @@ export function deriveAchievements(run){
  add('pay-cut',flags.pay_cut>0);
  add('salary-save',run.salaryCut?.status==='rescinded');
  add('education',flags.education_outcome>0);
- add('self-care',history.filter(item=>/^e(?:25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed||'')&&item?.eventId?.startsWith('meal-with-')?(item.delta?.cash||0)<0:item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed||'')?7:3)&&(!/^e(?:25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed||'')||item.choiceIndex!==4)).length>=3);
+ add('self-care',history.filter(item=>item?.kind!=='event-departure'&&(/^e(?:25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed||'')&&item?.eventId?.startsWith('meal-with-')?(item.delta?.cash||0)<0:item?.eventId==='self-care'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0&&item.choiceIndex<(/^e(?:18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed||'')?7:3)&&(!/^e(?:25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed||'')||item.choiceIndex!==4))).length>=3);
  add('kind-decline',flags.kind_declined>0);
  const attempts=resolvedRageAttempts(run),real=attempts.filter(item=>item.mode==='real'),imagined=attempts.filter(item=>item.mode==='imagined');
  for(const person of ['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei'])add(`real-hit-${person}`,real.some(item=>item.person===person));
@@ -120,7 +120,7 @@ export function deriveAchievements(run){
  add('dream-first-day',imagined.some(item=>item.person==='wing'&&item.origin==='onboarding'));
  // Read committed canonical choices, not the corrected display copy or broad
  // banquet/rage flags. Both resolved song draws participated in the duel.
- const resolved=history.filter(item=>Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0&&typeof item.result==='string'&&item.result.trim());
+ const resolved=history.filter(item=>item?.kind!=='event-departure'&&Number.isInteger(item?.choiceIndex)&&item.choiceIndex>=0&&typeof item.result==='string'&&item.result.trim());
  add('ai-auto-increment',/^e(?:31|32|33|34|35|36|37|38|39)-/.test(run.seed||'')&&run.actualRoleId==='ai'&&resolved.some(item=>item.eventId==='ai31-auto-increment'&&item.kind==='daily'&&item.speaker==='rick'&&item.choiceIndex<=2));
  const activity44=resolved.filter(item=>/^e39-/.test(run.seed||'')&&item.kind==='activity'&&item.activityOutcome?.version===1&&item.eventId===`activity44-${item.activityOutcome.id}-${item.activityOutcome.stage}`);
  add('banquet-first-love',activity44.some(item=>item.eventId==='activity44-banquet-0')||resolved.some(item=>item.eventId==='banquet-welcome'&&item.kind==='banquet'&&item.speaker==='rick'&&item.choiceIndex===1&&item.eventOutcome?.label==='尾牙點歌台'&&['成功搶麥','被夢想插播'].includes(item.eventOutcome.result)));

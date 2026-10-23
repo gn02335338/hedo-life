@@ -2,6 +2,7 @@ import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
 import {isActivityPlayV55,deriveActivityPlayV55} from '../dist/activity-play-v55.js';
 import {isShareholderV58,validateShareholderInputV58} from '../dist/shareholders-v58.js';
 import {isRecruitmentV60} from '../dist/seed-profile-v60.js';
+import {isParticipationV63} from '../dist/participation-profile-v63.js';
 
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
@@ -123,6 +124,11 @@ export function validateCompletion(body, roleMap) {
     if (action.type === 'salary-advice') {
       if (/^e(?:28|29|30|31|32|33|34|35|36|37|38|39)-/.test(body.seed)&&Object.keys(action).every(key=>key==='type')) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
+    }
+    if (action.type === 'event-departure') {
+      if (isParticipationV63(body.seed)&&Object.keys(action).sort().join(',')==='eventId,type,version'&&action.version===1
+          &&typeof action.eventId==='string'&&action.eventId.trim().length>0&&action.eventId.length<=100) continue;
+      throw new ApiError(400, 'invalid_actions', '離場操作紀錄無效。');
     }
     if (action.type === 'shareholder-play') {
       if (isShareholderV58(body.seed) && Object.keys(action).sort().join(',') === 'eventId,input,type,version' && action.version === 1

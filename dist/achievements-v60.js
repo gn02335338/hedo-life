@@ -42,7 +42,7 @@ export const ACHIEVEMENTS_V60=Object.freeze([
  badge('kin-downward-rebound','名片很大，對方照樣回嘴。','特殊任用後，對同事擺架子，卻當場被反嗆或被回報。自己人的身分沒有附全公司靜音權。','office')
 ]);
 
-const committed=row=>Boolean(row&&Number.isInteger(row.choiceIndex)&&row.choiceIndex>=0&&Number.isInteger(row.turn)&&row.turn>=0&&typeof row.result==='string'&&row.result.trim()&&typeof row.choiceText==='string'&&row.choiceText.trim()&&Array.isArray(row.breakdown));
+const committed=row=>Boolean(row&&row.kind!=='event-departure'&&Number.isInteger(row.choiceIndex)&&row.choiceIndex>=0&&Number.isInteger(row.turn)&&row.turn>=0&&typeof row.result==='string'&&row.result.trim()&&typeof row.choiceText==='string'&&row.choiceText.trim()&&Array.isArray(row.breakdown));
 const laterWork=(history,index)=>history.some((row,at)=>at>index&&committed(row)&&['daily','fantasy'].includes(row.kind)&&!row.verbalOutcome&&!row.recruitmentOutcome);
 const strictKeys=(value,keys)=>value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).sort().join(',')===[...keys].sort().join(',');
 const rawChoice=(run,row)=>run.actions.some(action=>action?.type==='choice'&&action.eventId===row.eventId&&action.index===row.choiceIndex);
@@ -77,7 +77,7 @@ function shareholderFacts(run,history){
  const actions=run.actions.filter(action=>action?.type==='shareholder-play'||action?.type==='choice'&&/^shareholder58-/.test(action.eventId||''));
  const facts=[];let cursor=0;
  for(const [index,row]of history.entries()){
-  if(!/^shareholder58-/.test(row?.eventId||''))continue;
+  if(row?.kind==='event-departure'||!/^shareholder58-/.test(row?.eventId||''))continue;
   const action=actions[cursor++],proof=row.shareholderOutcome;
   if(!committed(row)||row.kind!=='shareholder'||!strictKeys(proof,['version','stage','round','mode','done','label'])||proof.version!==1||!Number.isInteger(proof.round)||proof.round<0||proof.round>3||typeof proof.done!=='boolean'||typeof proof.label!=='string'||!proof.label||action?.eventId!==row.eventId||row.eventOutcome?.result!==proof.label||row.eventOutcome.label!==(proof.stage==='hearing'?'股東會攻防結果':'股東支線結果'))continue;
   if(proof.stage==='hearing'){

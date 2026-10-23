@@ -1,6 +1,7 @@
 // Player inputs are bounded evidence of a local game, never a trusted score.
 // The canonical engine derives performance and draws the fictional outcome.
 import {isRecruitmentV60} from './seed-profile-v60.js';
+import {isRoadshowV63,ROADSHOW_PLAY_V63,roadshowPlayCopyV63} from './roadshow-v63.js';
 export const isActivityPlayV55=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-g-e-s-m-/.test(typeof run==='string'?run:run?.seed||'');
 const ids=['arm','diet','roadshow','dinner','banquet','basketball','review'];
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
@@ -70,7 +71,7 @@ export function deriveActivityPlayV55(input,id){
 export function getActivityPlayV55(run){
  const x=run?.activityContext;
  if(!isActivityPlayV55(run)||run.pending||run.completed||!x||x.version!==1||x.stage!==1||!ids.includes(x.id)||run.eventId!==`activity44-${x.id}-1`)return null;
- return {id:x.id,version:1,...structuredClone(ACTIVITY_PLAY_CONTENT_V55[x.id])};
+ return {id:x.id,version:1,...structuredClone(isRoadshowV63(run)?ROADSHOW_PLAY_V63:ACTIVITY_PLAY_CONTENT_V55[x.id])};
 }
 
 export function withActivityPlayEventV55(run,event){
@@ -88,7 +89,7 @@ export function withActivityPlayEventV55(run,event){
   if(x.stage===1){out.title=ACTIVITY_PLAY_CONTENT_V55.basketball.title;out.body='阿福在禁區把路線繞成迷宮，歐文正往籃框飛。傑克在側邊舉手，強哥在場邊聲明助攻不負最終交付責任。五波球輪你決定怎麼打：有人擋路就找空檔，別把每一球都打成硬碰硬。';}
   if(x.stage===2&&x.performance?.injured){out.title='先到場邊，比分不用拿身體換。';out.body='剛才那一下碰撞讓你有點瘀青，傑克已經叫候補上場。阿福開始解釋自己的路線，歐文把手放下來遞水。這回不用再上去證明什麼，最後一波留在場邊決定怎麼收隊。';out.choices=out.choices.map((choice,i)=>({...choice,text:['在場邊喊位置，讓隊友照空檔完成最後一球。','坐著補水，明確說今天不再上場。','把移動迷宮和飛天拐子列入賽後導航更新，請強哥簽收。'][i]}));}
  }
- if(x.stage===1){out.activityPlay={id:x.id,version:1};out.title=ACTIVITY_PLAY_CONTENT_V55[x.id].title;out.choices[1].text='完成這次現場互動，看看接下來怎麼發展。';}
+ if(x.stage===1){out.activityPlay={id:x.id,version:1};out.title=isRoadshowV63(run)?ROADSHOW_PLAY_V63.title:ACTIVITY_PLAY_CONTENT_V55[x.id].title;out.choices[1].text=isRoadshowV63(run)?'接手六張現場問題卡，分到能處理的地方。':'完成這次現場互動，看看接下來怎麼發展。';}
  return out;
 }
 
@@ -113,6 +114,7 @@ export function resolveActivityPlayV55(run,input,ticket){
   label=grade===2?'七天安排留得下來':grade===1?'計畫有幾格需要鬆一點':'行事曆被會議吃掉';result=played.summary+(grade===2?' 安妮余看到點心和休息也有位置，說這張表終於不像加班表。紅茶把別人的體重欄劃掉：照自己做得到的安排就好。':grade===1?' 臨時工作還是擠進了幾格，紅茶請你先保留正常吃飯，不用拿沒做到的一天抵銷整週。安妮余把蛋塔放回自己的盤子，沒有替它寫檢討。':' 行事曆裡好幾天只剩咖啡，主辦看完請你把吃飯時間還給自己。這場比賽沒有要求靠餓肚子獲勝，你可以在結算時留下真正做得到的習慣。');delta={energy:grade===2?6:grade===1?3:1,mood:grade===2?7:2,trust:2};
  }else if(id==='roadshow'){
   label=success?'訪客找到能回答的人':'分流完成，問題還要補';result=played.summary+(success?' 真真終於不用把所有人塞給同一位助理工程師。翅膀想把路過人潮也報成商機，你指著最後一欄：先問人家同不同意聯絡。':' 有人站錯展位，強哥差點又以助理工程師身分退出聊天室。你把問題重新交到負責人手上，先列待確認，沒有現場憑空承諾。');delta={energy:-5,skill:2,trust:success?5:2,mood:success?5:-2};
+  const copy=roadshowPlayCopyV63(run,played,success);if(copy){label=copy.label;result=copy.result;played.summary=copy.summary;}
  }else if(id==='dinner'){
   label=grade===2?'共享菜真的有大家的份':measures.cost>12?'預算先吃完，菜還在等':'這桌菜色還能調一調';result=played.summary+(grade===2?' 飯、青菜和比目魚都轉到桌上，歐文終於吃到不是裝飾的那一份。屎潘蛇確認沒有超支，把下次再吃更好的那句收回半句。':measures.cost>12?' 屎潘蛇把菜單按住，說超出的先別送單。歐文指著還沒上桌的比目魚，船長拿白飯補位；沒有把公司超支偷偷扣進你的存款。':measures.variety===1&&input.plates.includes(0)?' 白飯一盤接一盤，歐文問比目魚是不是遠端出席。船長先確認大家有沒有吃飽，再請你把下一輪菜色排得豐富一點。':measures.fed<4?' 空盤轉得很勤，飯菜的存在感卻不太夠。船長請大家先分現有的菜，歐文把玩具鵝往旁邊挪：牠看起來也不能吃。':' 菜有上桌，搭配卻有點偏。船長請大家先分好現有的份量，歐文看著菜單提醒，下次不用讓同一道菜連續上班。');delta={energy:grade===2?7:3,mood:grade===2?8:1,trust:grade===2?5:2};
  }else if(id==='banquet'){

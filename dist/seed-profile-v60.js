@@ -1,9 +1,9 @@
 // A compact profile keeps all current rules while leaving 88 bits for entropy.
 // Published profiles retain their original deterministic rules and witnesses.
-export const isRecruitmentV60=value=>/^e39-r6[012]-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
+export const isRecruitmentV60=value=>/^e39-r6[0123]-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
 
 export function recruitmentSeedV60(entropy,kind='normal',profile=60){
  const marker={normal:'n',executive:'n',godson:'s',goddaughter:'d'}[kind];
- if(!marker||![60,61,62].includes(profile)||typeof entropy!=='string'||!/^[0-9a-f]{22,}$/i.test(entropy))throw new Error('Invalid recruitment seed input');
+ if(!marker||![60,61,62,63].includes(profile)||typeof entropy!=='string'||!/^[0-9a-f]{22,}$/i.test(entropy))throw new Error('Invalid recruitment seed input');
  return `e39-r${profile}-${marker}-${entropy.toLowerCase().slice(0,22)}`;
 }

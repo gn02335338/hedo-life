@@ -2,6 +2,7 @@ import { PERSONAS } from './persona.js';
 import { isPatronageV49, isPatronageApplicationOutcomeV49 } from './patronage-v49.js';
 import { isRecruitmentOutcomeV60 } from './recruitment-v60.js';
 import { isOfficeTreatOutcomeV61 } from './office-treats-v61.js';
+import { isEventDepartureOutcomeV63 } from './event-departure-v63.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
@@ -49,6 +50,12 @@ export function characterHistoryChanges(run){
  const scores=Object.fromEntries(CHARACTER_IDS.map(id=>[id,50])),changes=[];
  for(const [historyIndex,row] of (Array.isArray(run?.history)?run.history:[]).entries()){
   if(!row||!Number.isInteger(row.choiceIndex)||row.choiceIndex<0)continue;
+  if(row.kind==='event-departure'||Object.hasOwn(row,'departureOutcome')){
+   if(!isEventDepartureOutcomeV63(run,row)||!known(row.departureOutcome.target)||row.speaker!==row.departureOutcome.target)continue;
+   const id=row.departureOutcome.target,score=clamp(scores[id]+row.departureOutcome.affinityDelta,0,100),affinityDelta=score-scores[id];scores[id]=score;
+   changes.push({historyIndex,id,encounters:1,imaginedHits:0,realHits:0,affinityDelta});
+   continue;
+  }
   // The player's employment confirmation is not another NPC conversation.
   if(/^e(?:38|39)-/.test(run.seed||'')&&row.eventId==='chapter-resolution')continue;
   let application=null;

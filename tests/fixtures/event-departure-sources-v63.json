@@ -1,0 +1,140 @@
+{
+  "method": "Additional natural public-action source for the rare earned patronage application. No edited stats, flags, contexts, dates, history or RNG.",
+  "routes": [
+    {
+      "id": "patronage",
+      "roleId": "finance",
+      "seed": "e39-r63-n-0000000000000000000fa0",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-resume-invoice",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-cash-calendar",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-sales-cost",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-forecast-bell",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 0
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-bonus-is-not-exit",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finance28-recurring-tools",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-grant-milestone-calendar",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-currency-slide",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-query-bill",
+          "index": 1
+        }
+      ]
+    }
+  ]
+}

@@ -25,7 +25,7 @@ const intros=Object.freeze({
 const button=(command,text,extra='')=>`<button type="button" data-play-command="${command}" ${extra}>${text}</button>`;
 const radioButtons=(command,options,selected,extra='')=>`<div class="play-segment" role="group">${options.map((name,i)=>button(command,esc(name),`data-play-value="${i}" aria-pressed="${selected===i}" ${extra}`)).join('')}</div>`;
 const count=(values)=>values.filter(value=>value!==null).length;
-const blankState=id=>({id,phase:'ready',mode:'tap',taps:[],beats:[],elapsed:0,selected:0,days:Array.from({length:7},()=>({meal:null,exercise:null})),matches:Array(6).fill(null),plates:Array(6).fill(null),moves:[],evidence:Array(4).fill(null),message:'',locked:false});
+const blankState=(id,descriptor)=>({id,roadPresentation:id==='roadshow'&&Array.isArray(descriptor?.optionDetails)?descriptor:null,phase:'ready',mode:'tap',taps:[],beats:[],elapsed:0,selected:0,days:Array.from({length:7},()=>({meal:null,exercise:null})),matches:Array(6).fill(null),plates:Array(6).fill(null),moves:[],evidence:Array(4).fill(null),message:'',locked:false});
 const pill=(text,kind='')=>`<span class="play-pill ${kind}">${text}</span>`;
 const progress=(label,value,max)=>`<div class="play-progress"><span>${esc(label)} <b data-play-count>${value} / ${max}</b></span><div class="play-progress-track" role="progressbar" aria-label="${esc(label)}" aria-valuemin="0" aria-valuemax="${max}" aria-valuenow="${value}"><i style="width:${Math.max(0,Math.min(100,value/max*100))}%"></i></div></div>`;
 const readiness=state=>state.id==='arm'||state.id==='banquet'?state.phase==='finished':state.id==='diet'?state.days.every(day=>day.meal!==null&&day.exercise!==null):state.id==='roadshow'?count(state.matches)===6:state.id==='dinner'?count(state.plates)===6:state.id==='basketball'?state.moves.length===5:count(state.evidence)===4;
@@ -42,6 +42,10 @@ function dietBody(state){
 }
 
 function roadBody(state){
+ if(state.roadPresentation){
+  const {cards,options,optionDetails}=state.roadPresentation;
+  return `${progress('現場問題已安排',count(state.matches),6)}<div class="road-desk"><div class="road-visitor-list" role="group" aria-label="待處理的現場問題">${cards.map((card,i)=>button('road-visitor',`<span class="play-index">${String(i+1).padStart(2,'0')}</span><span>${esc(card)}<small>${state.matches[i]===null?'尚未安排':`→ ${esc(options[state.matches[i]])}`}</small></span>${state.matches[i]===null?'':'<i aria-hidden="true">✓</i>'}`,`data-play-value="${i}" class="road-visitor ${state.selected===i?'selected':''}" aria-pressed="${state.selected===i}"`)).join('')}</div><div class="road-booths"><span class="play-kicker">第 ${state.selected+1} 題 / 現場回應</span><h3>「${esc(cards[state.selected])}」</h3><p>先決定這一題怎麼接，再一起交出紀錄。</p>${options.map((name,i)=>button('road-match',`<span class="road-booth-icon" aria-hidden="true">${['▣','↔','✉'][i]}</span><b>${esc(name)}</b><small>${esc(optionDetails[i])}</small>`,`data-play-value="${i}" class="road-booth" aria-pressed="${state.matches[state.selected]===i}"`)).join('')}<div class="road-goose" aria-hidden="true">♙ <span>玩具鵝董事長：<br>台上的話先不照單全收。</span></div></div></div>`;
+ }
  return `${progress('訪客已分流',count(state.matches),6)}<div class="road-desk"><div class="road-visitor-list" role="group" aria-label="待接待的訪客">${roadCards.map((card,i)=>button('road-visitor',`<span class="play-index">${String(i+1).padStart(2,'0')}</span><span>${esc(card)}<small>${state.matches[i]===null?'等待分流':`→ ${esc(roadOptions[state.matches[i]])}`}</small></span>${state.matches[i]===null?'':'<i aria-hidden="true">✓</i>'}`,`data-play-value="${i}" class="road-visitor ${state.selected===i?'selected':''}" aria-pressed="${state.selected===i}"`)).join('')}</div><div class="road-booths"><span class="play-kicker">接待第 ${state.selected+1} 位訪客</span><h3>「${esc(roadCards[state.selected])}」</h3><p>把問題交給適合的展位。</p>${roadOptions.map((name,i)=>button('road-match',`<span class="road-booth-icon" aria-hidden="true">${['▣','↔','✉'][i]}</span><b>${esc(name)}</b><small>${['展示目前能重現的功能','確認場景、範圍與限制','取得同意，安排下一步'][i]}</small>`,`data-play-value="${i}" class="road-booth" aria-pressed="${state.matches[state.selected]===i}"`)).join('')}<div class="road-goose" aria-hidden="true">♙ <span>玩具鵝董事長：<br>今天先不代簽承諾。</span></div></div></div>`;
 }
 
@@ -66,20 +70,20 @@ function reviewBody(state){
 
 function bodyFor(state){return ({arm:armBody,diet:dietBody,roadshow:roadBody,dinner:dinnerBody,banquet:banquetBody,basketball:basketballBody,review:reviewBody})[state.id](state);}
 function contentHTML(state){
- return `<div class="activity-play-heading"><span class="play-kicker"><i aria-hidden="true"></i> PLAY THE MOMENT / 動手玩這一幕</span><span class="play-heading-icon" aria-hidden="true">${icons[state.id]}</span><h2>${titles[state.id]}</h2><p>${intros[state.id]}</p></div><div class="activity-play-board play-board-${state.id}">${bodyFor(state)}</div><p class="play-feedback" data-play-feedback role="status" aria-live="polite" aria-atomic="true">${esc(state.message||'操作先記在這裡，劇情結果還沒揭曉。')}</p>${formFooter(state)}`;
+ return `<div class="activity-play-heading"><span class="play-kicker"><i aria-hidden="true"></i> PLAY THE MOMENT / 動手玩這一幕</span><span class="play-heading-icon" aria-hidden="true">${icons[state.id]}</span><h2>${state.roadPresentation?esc(state.roadPresentation.title):titles[state.id]}</h2><p>${state.roadPresentation?esc(state.roadPresentation.instructions):intros[state.id]}</p></div><div class="activity-play-board play-board-${state.id}">${bodyFor(state)}</div><p class="play-feedback" data-play-feedback role="status" aria-live="polite" aria-atomic="true">${esc(state.message||'操作先記在這裡，劇情結果還沒揭曉。')}</p>${formFooter(state)}`;
 }
 
 export function renderActivityPlayHTMLV55(run,event){
  const descriptor=getActivityPlayV55(run);
  if(!descriptor||event?.id!==`activity44-${descriptor.id}-1`)return'';
- const state=blankState(descriptor.id);
- return `<section class="activity-play" data-activity-play-v55="${descriptor.id}" aria-label="${esc(titles[descriptor.id])}">${contentHTML(state)}</section>`;
+ const state=blankState(descriptor.id,descriptor);
+ return `<section class="activity-play" data-activity-play-v55="${descriptor.id}" aria-label="${esc(state.roadPresentation?.title||titles[descriptor.id])}">${contentHTML(state)}</section>`;
 }
 
 export function mountActivityPlayV55({root,run,event,onCommit}={}){
  const descriptor=getActivityPlayV55(run),panel=root?.matches?.('[data-activity-play-v55]')?root:root?.querySelector?.('[data-activity-play-v55]');
  if(!descriptor||!panel||event?.id!==`activity44-${descriptor.id}-1`||typeof onCommit!=='function')return()=>{};
- let state=blankState(descriptor.id),alive=true,frame=null,started=0,lastGesture=-Infinity,lastPaint=0;
+ let state=blankState(descriptor.id,descriptor),alive=true,frame=null,started=0,lastGesture=-Infinity,lastPaint=0;
  const doc=panel.ownerDocument,win=doc.defaultView;
  const now=()=>win.performance.now();
  const cancelFrame=()=>{if(frame!==null)win.cancelAnimationFrame(frame);frame=null;};
@@ -121,14 +125,14 @@ export function mountActivityPlayV55({root,run,event,onCommit}={}){
   event.stopPropagation();
   if(!alive||state.locked||target.disabled)return;
   const command=target.dataset.playCommand,value=Number(target.dataset.playValue);
-  if(command==='reset'){cancelFrame();const mode=state.mode;state=blankState(descriptor.id);state.mode=mode;paint();query('[data-play-command="start"]')?.focus({preventScroll:true});return;}
+  if(command==='reset'){cancelFrame();const mode=state.mode;state=blankState(descriptor.id,descriptor);state.mode=mode;paint();query('[data-play-command="start"]')?.focus({preventScroll:true});return;}
   if(command==='commit'){
    if(!readiness(state))return;
    state.locked=true;paint();feedback('正在記下這一幕，接著揭曉結果。');
    try{Promise.resolve(onCommit(inputFor())).then(result=>{if(result===false&&alive){state.locked=false;paint();feedback('目前進度已有變動，這份操作尚未送出。確認這一幕後，可以重新交出。');}}).catch(()=>{if(alive){state.locked=false;paint();feedback('這一幕還沒送出。請再試一次，或重新整理確認目前進度。');}});}catch{state.locked=false;paint();feedback('這一幕還沒送出。請確認目前進度後再試。');}return;
   }
   if(command==='start'){start();return;}
-  if(command==='arm-mode'||command==='song-mode'){if(state.phase==='playing')return;cancelFrame();state=blankState(descriptor.id);state.mode=value===1?'steady':'tap';paint();return;}
+  if(command==='arm-mode'||command==='song-mode'){if(state.phase==='playing')return;cancelFrame();state=blankState(descriptor.id,descriptor);state.mode=value===1?'steady':'tap';paint();return;}
   if(command==='arm-tap'){
    if(state.phase!=='playing')return;
    const stamp=now(),elapsed=Math.floor(stamp-started);if(state.mode!=='steady'&&elapsed>=ARM_DURATION){finish();return;}
@@ -154,7 +158,7 @@ export function mountActivityPlayV55({root,run,event,onCommit}={}){
   if(command==='diet-meal'||command==='diet-exercise'){state.days[state.selected][command==='diet-meal'?'meal':'exercise']=value;afterSelection(`第 ${state.selected+1} 天的${command==='diet-meal'?'飲食':'活動'}已安排。`);return;}
   if(command==='diet-copy'){const source=state.days[state.selected];if(source.meal===null||source.exercise===null)return;state.days=state.days.map(day=>({meal:day.meal??source.meal,exercise:day.exercise??source.exercise}));afterSelection('這份步調已複製到未排的格子。每一天仍然可以再調整。');return;}
   if(command==='road-visitor'||command==='dinner-slot'||command==='review-question'){state.selected=value;paint();return;}
-  if(command==='road-match'){state.matches[state.selected]=value;afterSelection(`第 ${state.selected+1} 位訪客安排到「${roadOptions[value]}」。`);return;}
+  if(command==='road-match'){state.matches[state.selected]=value;afterSelection(state.roadPresentation?`第 ${state.selected+1} 題先交給「${state.roadPresentation.options[value]}」。`:`第 ${state.selected+1} 位訪客安排到「${roadOptions[value]}」。`);return;}
   if(command==='dinner-dish'){state.plates[state.selected]=value;afterSelection(`第 ${state.selected+1} 道安排「${dishes[value].name}」。`);return;}
   if(command==='basket-move'){if(state.moves.length>=5)return;state.moves.push(value);afterSelection(`第 ${state.moves.length} 波已記下「${basketballMoves[value]}」。${state.moves.length<5?'接著看下一波的防守。':'五波打完，準備交出紀錄。'}`);return;}
   if(command==='review-file'){state.evidence[state.selected]=value;afterSelection(`Q${state.selected+1} 已放入「${evidenceNames[value]}」。`);}

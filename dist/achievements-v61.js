@@ -19,7 +19,7 @@ const committed=row=>Boolean(row&&Number.isInteger(row.turn)&&row.turn>=0&&Numbe
 function factsFrom(run){
  const actions=run.actions.filter(action=>action?.type==='choice'&&/^treats61-/.test(action.eventId||'')),facts=[];let cursor=0;
  for(const [index,row]of run.history.entries()){
-  if(!/^treats61-/.test(row?.eventId||''))continue;
+  if(row?.kind==='event-departure'||!/^treats61-/.test(row?.eventId||''))continue;
   const action=actions[cursor++];
   if(!committed(row)||!isOfficeTreatOutcomeV61(run,row)||!action||Object.keys(action).sort().join(',')!=='eventId,index,type'||action.eventId!==row.eventId||action.index!==row.choiceIndex)continue;
   facts.push({row,index,outcome:row.treatsOutcome});

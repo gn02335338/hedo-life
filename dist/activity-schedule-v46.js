@@ -1,5 +1,7 @@
 // A seed fixes when an invitation can arrive. Reading a calendar never rolls
 // the game's RNG, changes a save, or lets the player choose an activity.
+import {isParticipationV63} from './participation-profile-v63.js';
+import {ROADSHOW_INVITATION_V63} from './roadshow-v63.js';
 export const ACTIVITY_WINDOWS_V46=Object.freeze({
  arm:Object.freeze([2,15]),diet:Object.freeze([4,11]),roadshow:Object.freeze([6,15]),
  dinner:Object.freeze([3,17]),basketball:Object.freeze([2,17]),review:Object.freeze([8,18]),
@@ -79,7 +81,7 @@ const INVITATIONS=Object.freeze({
 const invitation=run=>{
  const context=run?.activityInvitationContext;
  if(!context||context.version!==1||!Object.hasOwn(INVITATIONS,context.id)||typeof context.returnEventId!=='string')throw new Error('Invalid activity invitation');
- return {context,copy:INVITATIONS[context.id]};
+ return {context,copy:context.id==='roadshow'&&isParticipationV63(run)?ROADSHOW_INVITATION_V63:INVITATIONS[context.id]};
 };
 
 export function getActivityInvitationEventV46(run){
