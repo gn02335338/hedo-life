@@ -1,0 +1,1130 @@
+{
+  "method": "Natural final-cohort public-action prefixes from cast and current-ending searches, each validated without state injection.",
+  "routes": [
+    {
+      "id": "voice-zoe",
+      "roleId": "project",
+      "seed": "e39-r66-n-58b5160cd0fb1e48433dce",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-release-acceptance",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast65-simon-authority-stamp",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-invoice-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-3",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-acceptance-drift"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-vendor-hello",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "jonathan-title-budget",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-status-stage",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-project-code",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "project-owner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "project-owner",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-interview-privacy"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-dependency-chair",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sophie-red-tea-label",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-hypothesis-acceptance",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-project-overbooked"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-overbooked",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-escape-room-timeout",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "voice-action",
+      "roleId": "sales",
+      "seed": "e39-r66-n-c429758443b4c4fc7705e9",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-bonus-rule",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-contact-triage",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sales21-forecast-zoo",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-jenjen-kpi-retroactive"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jenjen-kpi-retroactive",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-partner-translation",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "voice-hester",
+      "roleId": "bd",
+      "seed": "e39-r66-n-fd403a766e849ab31b5726",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-running-approval",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-three-day-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "bd21-mou-annex",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-joyce-partner-boundary"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-partner-boundary",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-bonus-is-not-exit",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "voice-simon",
+      "roleId": "design",
+      "seed": "e39-r66-n-5f4e5b7fb2467a3dd77874",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "voice-james",
+      "roleId": "product",
+      "seed": "e39-r66-n-9b1091736b77a75590b617",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-research-credit-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-price-ladder",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-captain-late-dinner"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-late-dinner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-comment-author",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-recommendation-provenance",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-product-scope-amulet"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-scope-amulet",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-model-license",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-helen-decision-sunset"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-decision-sunset",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-leaving-window",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-score-user-value",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast66-zoe-holiday-poster",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-mantis-mouse",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-patent-pm",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-3",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast65-simon-version-one",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-janet-signature-maze"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-signature-maze",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-two-slots-one-test",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "product-boss-user",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "voice-johnny",
+      "roleId": "design",
+      "seed": "e39-r66-n-44b6823f1c6a1e036e525b",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-spencer-founder-proof"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-founder-proof",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "hidden-encounter",
+          "version": 1,
+          "eventId": "design-v21-handoff-inspector"
+        },
+        {
+          "type": "choice",
+          "eventId": "hidden45-21-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-stock-watermark",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast66-simon-button-verb",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-png-source"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-png-source",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-cindy-punctuation-priority",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-3",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-paper-figure-ui"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-mac-level",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-erich-legal-late-call",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-logo-permission",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "voice-kind",
+      "roleId": "product",
+      "seed": "e39-r66-n-a7d85f5774b9fac2ce824f",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-decision-sunset",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-product-user-witness",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "voice-princess",
+      "roleId": "project",
+      "seed": "e39-r66-n-c9d9efebcdd51ef65b0a9f",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-dual-calendar",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast65-action-chain-whiteboard"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast65-action-chain-whiteboard",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "arm-declined-video",
+      "roleId": "design",
+      "seed": "e39-r66-n-3c1a19b7b744c46e498f1f",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-ai-prompt",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-janet-signature-maze"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-signature-maze",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-3",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 5
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast66-simon-button-verb"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-camel",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast66-simon-button-verb",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-cindy-unread-party",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-handoff-inspector"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-handoff-inspector",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-review",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-lunch-reset",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-founder-proof",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast66-zoe-training-recorder",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-late-paperwork",
+          "index": 1
+        }
+      ]
+    }
+  ]
+}

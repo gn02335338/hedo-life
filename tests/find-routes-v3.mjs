@@ -94,33 +94,36 @@ function utility(run,target) {
   return value;
 }
 
-function simulateRage(roleId,target,attempt,seedPrefix='e31') {
-  const seed=`${seedPrefix}-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
-  let start=advance(requestRage(createRun(roleId,seed)));
+function simulateRage(roleId,target,attempt,seedPrefix='e31',hooks={}) {
+  const next=hooks.advanceRun||advance,initialise=hooks.initialiseRun||((run)=>run);
+  const seed=hooks.seedFactory?.(roleId,target,attempt)||`${seedPrefix}-${roleId}-r${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  let start=next(requestRage(initialise(createRun(roleId,seed))));
   let fallback=start;
   function search(run,depth){
     if(run.completed){fallback=run;return run.endingId===`${target}-${roleId}`?run:null;}
     if(depth<=0||!run.eventId.startsWith('rage-')&&run.eventId!=='chapter-resolution')return null;
     const event=getEvent(run);
     for(let index=0;index<event.choices.length;index++)if(event.choices[index].available!==false){
-      const found=search(advance(applyChoice(run,index)),depth-1);if(found)return found;
+      const found=search(next(applyChoice(run,index)),depth-1);if(found)return found;
     }
     return null;
   }
-  const run=search(start,['e38','e39'].includes(seedPrefix)?5:4)||fallback;
+  const run=search(start,hooks.seedFactory?7:['e38','e39'].includes(seedPrefix)?5:4)||fallback;
   return {run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}};
 }
 
-function simulateVerbalV32(roleId,target,attempt,seedPrefix='e37'){
- const seed=`${seedPrefix}-${roleId}-v${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
- let run=createRun(roleId,seed),mealUnavailableTurn=-1;
+function simulateVerbalV32(roleId,target,attempt,seedPrefix='e37',hooks={}){
+ const next=hooks.advanceRun||advance,initialise=hooks.initialiseRun||((run)=>run);
+ const seed=hooks.seedFactory?.(roleId,target,attempt)||`${seedPrefix}-${roleId}-v${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+ let run=initialise(createRun(roleId,seed)),mealUnavailableTurn=-1;
  const packageRun=()=>({run,route:{roleId,seed,target,actions:run.actions,ending:run.endingId,turns:run.turn,stats:run.stats,flags:run.flags,assignment:run.assignment,rank:run.rank}});
- const choose=index=>{run=advance(applyChoice(run,index));};
+ const choose=index=>{run=next(applyChoice(run,index));};
  const guest={verbal_wing_concession:'wing',verbal_boardroom:'spencer',verbal_rick_awake:'rick',verbal_hr_rewrite:'hope',verbal_legal_letter:'erich',verbal_sonny_statement:'sonny',verbal_kind_ghost:'kind',verbal_colleague_solidarity:'jack',verbal_viral:'wing',verbal_mutual_mute:'wing',verbal_apology:'wing'}[target];
- const speech=()=>{const spoken=advance(requestVerbal(run,undefined,2));if(spoken===run)return false;run=spoken;if(run.eventId!=='verbal-v32-aftermath')return false;const event=getEvent(run),exact=event.choices.findIndex((choice,index)=>index<3&&applyChoice(run,index).pendingFamily===target);choose(exact>=0?exact:0);if(run.chapterContext)choose(1);return true;};
+ const speech=()=>{const spoken=next(requestVerbal(run,undefined,2));if(spoken===run)return false;run=spoken;if(run.eventId!=='verbal-v32-aftermath')return false;const event=getEvent(run),exact=event.choices.findIndex((choice,index)=>index<3&&applyChoice(run,index).pendingFamily===target);choose(exact>=0?exact:0);if(run.chapterContext)choose(1);return true;};
  if(target==='verbal_onboarding'){speech();return packageRun();}
  const onboard=getEvent(run).choices.map((choice,index)=>({choice,index})).filter(({choice,index})=>index<2&&choice.available!==false).sort((a,b)=>utility(applyChoice(run,b.index),'taiwan')-utility(applyChoice(run,a.index),'taiwan'))[0];choose(onboard.index);
- for(let step=0;step<30&&!run.completed;step++){
+ for(let step=0;step<(hooks.seedFactory?180:30)&&!run.completed;step++){
+  if(hooks.seedFactory&&getEvent(run)?.kind==='activity-invitation'){choose(1);continue;}
   if(getEvent(run)?.speaker===guest&&speech())return packageRun();
   if(canRequestBreak(run)){run=requestBreak(run);}
   const event=getEvent(run);if(event.id==='kind-break'||event.id==='kind-workday'){choose(event.choices.findIndex(choice=>choice.effect==='kindDecline'||choice.effect==='kindWorkDecline'));continue;}
@@ -149,24 +152,28 @@ function simulateVerbalV32(roleId,target,attempt,seedPrefix='e37'){
  return packageRun();
 }
 
-export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}) {
+export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31',...hooks}={}) {
+  const next=hooks.advanceRun||advance,initialise=hooks.initialiseRun||((run)=>run);
   if(COMPANY_ENDING_IDS_V39.includes(target))seedPrefix='e39';
-  if(VERBAL_ENDING_IDS_V32.includes(target))return simulateVerbalV32(roleId,target,attempt,['e32','e33','e34','e35','e36','e37','e38','e39'].includes(seedPrefix)?seedPrefix:'e37');
+  if(VERBAL_ENDING_IDS_V32.includes(target)&&!hooks.genericVerbal)return simulateVerbalV32(roleId,target,attempt,['e32','e33','e34','e35','e36','e37','e38','e39'].includes(seedPrefix)?seedPrefix:'e37',hooks);
   if(COMPANY_ENDING_IDS_V32.includes(target)&&!['nasdaq','taiwan'].includes(target)&&!['e32','e33','e34','e35','e36','e37','e38','e39'].includes(seedPrefix))seedPrefix='e37';
-  if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt,seedPrefix);
-  const seed=`${seedPrefix}-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
-  let run=createRun(roleId,seed),actions=[],openedRaise=false;
+  if(target.startsWith('rage_'))return simulateRage(roleId,target,attempt,seedPrefix,hooks);
+  const seed=hooks.seedFactory?.(roleId,target,attempt)||`${seedPrefix}-${roleId}-${FAMILIES.findIndex(f=>f.id===target).toString(36)}-${attempt.toString(36)}`;
+  let run=initialise(createRun(roleId,seed)),actions=[],openedRaise=false;
   let chooserState=(attempt+1)*17713+target.length*39977;
   const noise=()=>{chooserState^=chooserState<<13;chooserState^=chooserState>>>17;chooserState^=chooserState<<5;return (chooserState>>>0)/4294967296;};
-  const choose=index=>{actions.push({type:'choice',eventId:run.eventId,index});run=advance(applyChoice(run,index));};
-  const leave=()=>{actions.push({type:'exit'});run=requestExit(run);};
+  const choose=index=>{actions.push({type:'choice',eventId:run.eventId,index});run=next(applyChoice(run,index));};
+  const leave=()=>{const exited=requestExit(run);if(hooks.seedFactory&&exited===run)return false;actions.push({type:'exit'});run=exited;return true;};
   const targetRank=CAREER_FAMILIES_V17.indexOf(target);
-  const desiredRank=()=>targetRank>=0?targetRank:target==='consultant'?5:target==='promotion'?Math.max(1,run.rank+((run.flags.promotions||0)>0?0:1)):0;
+  const desiredRank=()=>targetRank>=0?targetRank:target==='consultant'?5:target==='promotion'?Math.max(1,run.rank+((run.flags.promotions||0)>0?0:1)):hooks.seedFactory&&WEALTH_GOALS.has(target)?[1,3,5][attempt%3]:0;
   const careerTarget=()=>targetRank>=0?((run.rank===targetRank&&careerEndingAvailable(run))||(run.rank>targetRank&&run.rank>=4&&!run.resumeEventId)):eligibleStoryEndings(run).includes(target)?true:target==='assistant'?(run.assignment==='assistant'||(run.roleId==='executive'&&run.turn>=4&&run.stats.boss<45)):target==='promotion'?run.rank>=1&&(run.flags.promotions||0)>0:target==='slacker'?run.stats.slack>=65:target==='sycophant'?run.stats.lick>=75&&run.stats.boss>=65:target==='historian'?(run.flags.archive||0)>=4:false;
   const effectIndex=effect=>evChoiceIndex(getEvent(run),effect);
-  for(let step=0;step<150&&!run.completed;step++) {
+  const visited=hooks.seedFactory?new Map():null;
+  for(let step=0;step<(hooks.seedFactory?320:150)&&!run.completed;step++) {
+    if(visited){const key=JSON.stringify([run.eventId,run.turn,run.rng,run.stats,run.flags,run.verbalContext?.stage,run.companyContext?.route]);const times=(visited.get(key)||0)+1;visited.set(key,times);if(times>2)break;}
+    const handled=hooks.beforeStep?.(run,target);if(handled&&handled!==run){run=handled;continue;}
     if(raise&&!openedRaise&&canRequestRaise(run)){actions.push({type:'raise'});run=requestRaise(run);openedRaise=true;continue;}
-    if(canRequestBreak(run)&&(run.stats.mood<45||run.stats.energy<35)&&run.stats.cash>=8&&!['broke','burnout'].includes(target)){
+    if(canRequestBreak(run)&&(run.stats.mood<45||run.stats.energy<35)&&run.stats.cash>=8&&(!['broke','burnout'].includes(target)||hooks.seedFactory&&target==='broke')){
       const menu=requestBreak(run),plans=[];
       const inspect=(candidate,prefix=[])=>{
         for(const [index,choice]of getEvent(candidate).choices.entries()){
@@ -175,7 +182,7 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}
           // An unaffordable or unwanted surprise invitation must not prevent
           // the finder from using the ordinary self-care choices behind it.
           if(choice.effect==='kindDecline'&&prefix.length===0){
-            const declined=advance(applyChoice(candidate,index));
+            const declined=next(applyChoice(candidate,index));
             if(declined.eventId==='self-care')inspect(declined,[index]);
           }
         }
@@ -191,11 +198,14 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}
       const canApply=review.choices.some(choice=>choice.check&&choice.available!==false);
       const training=evChoiceIndex(review,'careerTrain');
       const usefulTraining=training>=0&&utility(applyChoice(menu,training),target)>utility(run,target);
-      if(careerReadiness(run).ready||canApply||usefulTraining){actions.push({type:'career'});run=menu;continue;}
+      if(careerReadiness(run).ready||canApply||!hooks.seedFactory&&usefulTraining){actions.push({type:'career'});run=menu;continue;}
     }
     const ev=getEvent(run);
-    if(COMPANY_ENDING_IDS_V39.includes(target)){
-      if(ev.id===FANTASY_EVENTS[3].id){choose(attempt%3);continue;}
+    if(hooks.seedFactory&&ev.id==='onboarding'&&target==='assistant'){choose(0);continue;}
+    if(hooks.seedFactory&&ev.id.startsWith('meal-guests-')){const finish=evChoiceIndex(ev,'mealFinish');choose(finish>=0?finish:evChoiceIndex(ev,'mealCancel'));continue;}
+    if(hooks.seedFactory&&ev.kind==='activity-invitation'){choose(1);continue;}
+    if(COMPANY_ENDING_IDS_V39.includes(target)||(hooks.seedFactory&&(COMPANY_ENDING_IDS_V32.includes(target)||target==='acquired'))){
+      if(ev.id===FANTASY_EVENTS[3].id){const route=hooks.seedFactory?(target==='acquired'||/^(google|buyer)_/.test(target)?1:target.startsWith('vietnam')?2:/^(nasdaq|taiwan)/.test(target)?0:attempt%3):attempt%3;choose(route);continue;}
       if(ev.kind==='company'){const exact=ev.choices.findIndex((choice,index)=>choice.available!==false&&applyChoice(run,index).pendingFamily===target),available=ev.choices.map((choice,index)=>({choice,index})).filter(({choice})=>choice.available!==false&&choice.draw);choose(exact>=0?exact:available.length?available[attempt%available.length].index:ev.choices.length-1);continue;}
     }
     if(ev.id==='chapter-resolution'){choose(run.chapterContext.family===target||ev.choices[0].effect==='chapterExit'?1:0);continue;}
@@ -253,7 +263,7 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}
       const entry=effectIndex('wealthPlan');if(entry>=0){choose(entry);continue;}
     }
     const wealthReady=wealthGoal?wealthEligibilityV27(run):null;
-    if(wealthReady&&(target.startsWith('venture_')?wealthReady.startup:wealthReady.retirement)&&['daily','fantasy'].includes(ev.kind)){leave();continue;}
+    if(wealthReady&&(target.startsWith('venture_')?wealthReady.startup:wealthReady.retirement)&&['daily','fantasy'].includes(ev.kind)&&leave())continue;
     if(run.eventId==='rank-exit'){
       const direct=effectIndex(target);
       if(direct>=0){choose(direct);continue;}
@@ -270,7 +280,7 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}
     if(run.eventId==='story-exit'){
       const direct=effectIndex(target);choose(direct>=0?direct:effectIndex('rankHub'));continue;
     }
-    if(careerTarget()&&!['exit-menu','career-exit','career-review','onboarding'].includes(run.eventId)){leave();continue;}
+    if(careerTarget()&&!['exit-menu','career-exit','career-review','onboarding'].includes(run.eventId)&&leave())continue;
     if(run.eventId==='exit-menu'){choose(1);continue;}
     if(run.eventId==='career-exit'){
       const idx=ev.choices.findIndex(c=>c.effect===target&&c.available!==false);
@@ -291,7 +301,7 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}
     }
     if(run.eventId==='pip-passed') {choose(target==='pip_exit'?0:1);continue;}
     if(run.eventId==='crisis-mood'){
-      const paid=ev.choices[1].available!==false;
+      const paid=ev.choices[1].available!==false&&(!hooks.seedFactory||ev.choices[1].effect!=='mealOpen'||run.stats.cash>8);
       choose(paid&&(target!=='burnout'||run.stats.energy<15)?1:2);continue;
     }
     if(run.eventId==='mood-collapse'){
@@ -312,15 +322,16 @@ export function simulate(roleId,target,attempt,{raise=false,seedPrefix='e31'}={}
       const needsPromotion=target!=='assistant'&&targetRank!==0&&(run.assignment==='assistant'?desired>0:run.rank<desired);
       const pass=ev.choices.findIndex((c,i)=>c.available!==false&&c.check&&['careerPromote','careerRegularize'].includes(applyChoice(run,i).pendingEffect));
       if(needsPromotion&&pass>=0){choose(pass);continue;}
+      if(hooks.seedFactory&&needsPromotion){choose(2);continue;}
       const candidates=needsPromotion?[2,3]:[3,2];
       const best=candidates.map(i=>({i,score:utility(applyChoice(run,i),target)})).sort((a,b)=>b.score-a.score)[0];
       choose(best.i);continue;
     }
-    const eligible=ev.choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false&&c.effect!=='ragequit'&&c.effect!=='careerExit');
+    const eligible=ev.choices.map((c,i)=>({c,i})).filter(({c})=>c.available!==false&&c.effect!=='ragequit'&&c.effect!=='careerExit'&&(!hooks.seedFactory||c.effect!=='mealOpen'));
     let best=null;
     for(const {c,i} of eligible){
       const preview=applyChoice(run,i);
-      let score=utility(preview,target);
+      let score=utility(preview,target)+(hooks.utilityBonus?.(run,preview,target)||0);
       if(preview.pendingFamily) score+=preview.pendingFamily===target?10000:-10000;
       const finalGoal={nasdaq:'final_global',taiwan:'final_taiwan',acquired:'final_acquire'}[target];
       if(finalGoal&&c.flags?.includes(finalGoal))score+=1000;

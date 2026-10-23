@@ -5,11 +5,13 @@ import {ACHIEVEMENTS,ACHIEVEMENT_MAP,ACHIEVEMENT_GROUPS,LEGACY_RAGE_ACHIEVEMENT_
 import {createRun,getEvent,applyChoice,advance,requestRage,replayRun,validRun} from '../dist/engine.js';
 
 const copy=value=>JSON.parse(JSON.stringify(value));
+const publishedIds=new Set(ACHIEVEMENTS.slice(0,250).map(row=>row.id));
+const publishedEarned=run=>deriveAchievements(run).filter(id=>publishedIds.has(id));
 const choose=(run,index)=>advance(applyChoice(run,index));
 
-test('250 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
- assert.equal(ACHIEVEMENTS.length,250);
- assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,250);
+test('1000 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
+ assert.equal(ACHIEVEMENTS.length,1000);
+ assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,1000);
  assert.deepEqual(Object.keys(ACHIEVEMENT_MAP),ACHIEVEMENTS.map(item=>item.id));
  const pictures=new Set();
  for(const achievement of ACHIEVEMENTS){
@@ -87,16 +89,16 @@ test('published complete routes derive real onboarding, PIP, salary and career a
  for(const id of ['assistant','switch','robot','promotion','manager','director','pip','pip-pass','pay-cut','education','kind-decline','nasdaq'])assert.ok(covered.has(id),`natural goal ${id}`);
 });
 
-test('published and current natural routes prove all 250 achievements without injected state',()=>{
+test('historical natural routes retain proof for the original 250 achievements without injected state',()=>{
  const routes=JSON.parse(readFileSync(new URL('./fixtures/achievement-routes-v18.json',import.meta.url),'utf8'));
  const covered=new Set();
  assert.ok(routes.length>0);
  for(const route of routes){
   assert.deepEqual(Object.keys(route).sort(),['actions','expectedAchievements','roleId','seed'],'public proofs contain only replay inputs and earned IDs');
-  assert.match(route.seed,/^e18-/,'all badges are attainable in the current cohort');
+  assert.match(route.seed,/^e18-/,'historical witnesses retain their original rule cohort');
   const run=replayRun(route.roleId,route.seed,route.actions),saved=copy(run);
   assert.equal(validRun(saved),true,`${route.seed} survives JSON save validation`);
-  assert.deepEqual(deriveAchievements(saved),route.expectedAchievements,`${route.seed} derives its actual earned badges`);
+  assert.deepEqual(publishedEarned(saved),route.expectedAchievements,`${route.seed} derives its actual earned badges`);
   assert.deepEqual(replayRun(saved.roleId,saved.seed,saved.actions),saved,`${route.seed} has a deterministic canonical replay`);
   if(route.expectedAchievements.includes('dream-absent'))assert.ok(saved.history.some(item=>item.eventId==='rage-release'&&item.speaker==='kind'&&item.eventOutcome?.result==='腦內劇場'),'the current absence badge follows the resolved imaginary Kind chase');
   if(route.expectedAchievements.includes('real-documented'))assert.ok(saved.history.some(item=>item.eventId==='rage-legal'&&Number.isInteger(item.choiceIndex)&&item.choiceIndex>=0),'the current documentation badge follows an actual formal-record decision');
@@ -120,8 +122,8 @@ test('published and current natural routes prove all 250 achievements without in
  for(const route of latest)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
  const treats=JSON.parse(readFileSync(new URL('./fixtures/achievement-milestones-v61.json',import.meta.url),'utf8')).routes;
  for(const route of treats)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
- assert.equal(covered.size,250);
- assert.deepEqual(ACHIEVEMENTS.filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.map(item=>item.id));
+ assert.equal([...covered].filter(id=>publishedIds.has(id)).length,250);
+ assert.deepEqual(ACHIEVEMENTS.slice(0,250).filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.slice(0,250).map(item=>item.id));
 });
 
 test('natural banquet choices unlock attendance, sharing and Kind’s ghosting, without guessing a future lottery',()=>{

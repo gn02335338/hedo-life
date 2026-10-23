@@ -7,6 +7,7 @@ import { ACHIEVEMENTS_V32, deriveAchievementsV32, hasCompanyFinaleV32 } from './
 import { ACHIEVEMENTS_V48, deriveAchievementsV48 } from './achievements-v48.js';
 import { ACHIEVEMENTS_V60, deriveAchievementsV60 } from './achievements-v60.js';
 import { ACHIEVEMENTS_V61, deriveAchievementsV61 } from './achievements-v61.js';
+import { ACHIEVEMENTS_V66, deriveAchievementsV66 } from './achievements-v66.js';
 const badge=(id,title,description,group,options={})=>Object.freeze({id,title,description,group,image:`./assets/achievements/${id}.svg`,...options});
 const realBadge=(person,title,description)=>badge(`real-hit-${person}`,title,description,'rage',{mode:'real',image:`./assets/achievements/rage-${person}.svg`});
 const modeBadge=(id,title,description,mode,art)=>badge(id,title,description,'rage',{mode,image:`./assets/achievements/${art||id}.svg`});
@@ -75,11 +76,12 @@ export const ACHIEVEMENTS=Object.freeze([
  ...ACHIEVEMENTS_V32,
  ...ACHIEVEMENTS_V48,
  ...ACHIEVEMENTS_V60,
- ...ACHIEVEMENTS_V61
+ ...ACHIEVEMENTS_V61,
+ ...ACHIEVEMENTS_V66
 ]);
 export const ACHIEVEMENT_MAP=Object.freeze(Object.fromEntries(ACHIEVEMENTS.map(item=>[item.id,item])));
 export const ACHIEVEMENT_RECORD_MAP=Object.freeze({...LEGACY_RAGE_ACHIEVEMENT_MAP,...ACHIEVEMENT_MAP});
-export const ACHIEVEMENT_GROUPS=Object.freeze({office:'上班日常',career:'職涯與離場',rage:'失控世界線',verbal:'口舌風波',banquet:'尾牙之夜',wallet:'存款的用處',craft:'本事與代價','legacy-rage':'舊版暴走紀念'});
+export const ACHIEVEMENT_GROUPS=Object.freeze({office:'上班日常',career:'職涯與離場',rage:'失控世界線',verbal:'口舌風波',banquet:'尾牙之夜',wallet:'存款的用處',craft:'本事與代價',stories:'人物故事',professions:'職業現場',activities:'活動紀錄','legacy-rage':'舊版暴走紀念'});
 
 export function deriveAchievements(run){
  if(!run||typeof run!=='object')return [];
@@ -134,5 +136,6 @@ export function deriveAchievements(run){
  for(const id of deriveAchievementsV48(run))ids.add(id);
  for(const id of deriveAchievementsV60(run))ids.add(id);
  for(const id of deriveAchievementsV61(run))ids.add(id);
+ for(const id of deriveAchievementsV66(run))ids.add(id);
  return ACHIEVEMENTS.filter(item=>ids.has(item.id)).map(item=>item.id);
 }

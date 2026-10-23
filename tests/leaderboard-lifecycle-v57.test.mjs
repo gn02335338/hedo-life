@@ -115,7 +115,7 @@ test('repeated renames alter only nickname and cannot renew the public tie times
   assert.equal((await h.call('/api/me', { token: p.token })).body.totalRuns, 1);
 });
 
-test('withdrawing each player best reveals the next canonical best for that metric, without counting an extra player', async t => {
+test('withdrawing one of a player\'s runs preserves every other named run on all metric boards', async t => {
   const h = harness(); t.after(() => h.db.close());
   const p = await h.register(), payloads = [];
   for (let n = 60; n < 68; n++) {
@@ -128,14 +128,15 @@ test('withdrawing each player best reveals the next canonical best for that metr
     if (own.length < 2) break;
     const before = (await h.call(`/api/leaderboard?metric=${metric}`)).body;
     assert.equal(before.totalPlayers, 1);
-    assert.equal(before.entries.length, 1);
+    assert.equal(before.entries.length, own.length);assert.equal(before.totalEntries,own.length);
     const best = before.entries[0];
     const removed = own.find(row => row.entryId === best.entryId);
     assert.ok(removed);
     assert.equal((await h.call(`/api/leaderboard/${removed.runId}`, { method: 'DELETE', token: p.token })).status, 200);
     const after = (await h.call(`/api/leaderboard?metric=${metric}`)).body;
     assert.equal(after.totalPlayers, 1);
-    assert.equal(after.entries.length, 1);
+    assert.equal(after.entries.length, own.length-1);assert.equal(after.totalEntries,own.length-1);
+    assert.deepEqual(new Set(after.entries.map(row=>row.entryId)),new Set(own.filter(row=>row.entryId!==best.entryId).map(row=>row.entryId)));
     assert.notEqual(after.entries[0].entryId, best.entryId);
     assert.equal(after.entries[0].value, Math.max(...own.filter(row => row.entryId !== best.entryId).map(row => row.metrics[metric])));
   }
@@ -154,6 +155,7 @@ test('a lost successful withdrawal receipt is safe to retry and no sync or metad
   assert.equal((await h.call('/api/me', { token: p.token })).body.totalRuns, 1);
   assert.equal((await post(h, p, { ...payload, nickname: '我明確重新留名' })).status, 200);
   assert.equal((await h.call('/api/leaderboard')).body.totalPlayers, 1);
+  assert.equal((await h.call('/api/leaderboard')).body.totalEntries, 1);
 });
 
 test('pagination with identical timestamps visits all owned names once and deletion of a cursor fails explicitly', async t => {
@@ -184,6 +186,7 @@ test('pagination with identical timestamps visits all owned names once and delet
   assert.equal(stale.status, 400);
   assert.equal(stale.body.error, 'invalid_leaderboard_cursor');
   assert.equal((await h.call('/api/leaderboard')).body.totalPlayers, 1);
+  assert.equal((await h.call('/api/leaderboard')).body.totalEntries, 206);
 });
 
 function uiOverWorker(h, p, run, { losePublishReceipt = false, loseWithdrawalReceipt = false } = {}) {
@@ -323,7 +326,7 @@ test('score-v1 migration is bounded, transactional and never serves a partially 
   assert.equal(second.status, 200);
   assert.equal(second.body.scoreVersion, 2);
   assert.equal(second.body.totalPlayers, 1);
-  assert.equal(second.body.entries.length, 1);
+  assert.equal(second.body.entries.length, 50);assert.equal(second.body.totalEntries,103);
   for (const row of before) {
     const after = { ...h.sql.exec('SELECT * FROM leaderboard_entries WHERE run_id=?', row.run_id).one() };
     const metrics = Object.fromEntries(Object.entries(deriveLeaderboardScoreV56(completed(80 + Number(row.nickname.slice(3)))) .metrics));

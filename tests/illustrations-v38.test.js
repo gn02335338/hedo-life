@@ -72,6 +72,10 @@ test('published scene maps and new authored events use the 42 produced plates, w
  }
  assert.equal(art.sceneIllustration({id:'unrecognized-old-save'}).theme,'office_day');
  assert.equal(art.sceneIllustration({id:'../../secret'}).src,'./assets/scenes/office_day.webp');
+ for(const event of allEvents.filter(event=>event.id.startsWith('cast66-'))){
+  assert.ok(artMap.SCENE_PLATES_V38.includes(event.scene),event.id);
+  assert.equal(art.sceneIllustration(event).theme,artMap.SCENE_ALIASES_V38[event.scene]||event.scene,event.id);
+ }
 });
 
 test('illustration selection never examines future choices, outcomes or chance values',()=>{
@@ -129,13 +133,13 @@ for(const mobile of [false,true]){
    const roleId=event.roles?.[0]||'system',cohort=event.minRules>=39?'e39':'e37';
    // New cast scenes require their real cohort. Rendering an art fixture does
    // not make the frozen e39 event pool eligible for unpublished characters.
-   const seed=event.requiresCastV65?'e39-r65-n-0000000000000000000000':`${cohort}-art-${event.id}`,run=engine.createRun(roleId,seed);
+   const seed=event.requiresCastV66?'e39-r66-n-0000000000000000000000':event.requiresCastV65?'e39-r65-n-0000000000000000000000':`${cohort}-art-${event.id}`,run=engine.createRun(roleId,seed);
    run.actualRoleId=roleId;run.eventId=event.id;run.turn=12;
    if(event.requireGender)run.characterGender=event.requireGender;
    const before=JSON.stringify(run),html=app.render(run);
    assert.match(html,/class="story-illustration/);assert.match(html,/src="\.\/assets\/scenes\/[^"/]+\.webp"/);
    assert.ok(html.includes(`data-scene-role="${run.actualRoleId}"`));
-   if(event.requiresCastV65)assert.equal(art.sceneIllustration(event).theme,event.scene,event.id);
+   if(event.requiresCastV65||event.requiresCastV66)assert.equal(art.sceneIllustration(event).theme,event.scene,event.id);
    assert.doesNotMatch(html,/assets\/endings\//,'no future ending image in work scene');
    assert.equal(JSON.stringify(run),before,event.id);
   }

@@ -5,6 +5,7 @@ import {hasAuthoredVerbalV52} from './verbal-authored-v52.js';
 import {verbalEditorialLineV52} from './verbal-editorial-v52.js';
 import {displayArmVerbalLineV51} from './arm-verbal-copy-v51.js';
 import {recruitmentVerbalLineV60} from './recruitment-v60.js';
+import {castVerbalLineV66} from './verbal-cast-v66.js';
 
 // Presentation never changes the published random stream or action protocol.
 // Authored speech takes priority. A fallback answers the visible quote, not a
@@ -51,6 +52,8 @@ function anchoredLine(event,target,phase){
 
 export function displayContextVerbalLineV52(line,{event,target,run,phase='event'}={}){
  if(typeof line!=='string'||!line||!event?.id||!['event','result'].includes(phase)||!(target==='self'||Object.hasOwn(PERSONAS,target)))return line;
+ const cast=castVerbalLineV66(run,event,target,phase);
+ if(cast)return cast;
  const recruitment=recruitmentVerbalLineV60(run,event,target,phase);
  if(recruitment)return recruitment;
  const source=visible(event);
@@ -73,7 +76,8 @@ const rememberPrefix=(key,value)=>{
  return value;
 };
 const stateForCopy=run=>({seed:run.seed,roleId:run.roleId,actualRoleId:run.actualRoleId,assignment:run.assignment,
- salaryAdvice:run.salaryAdvice?{...run.salaryAdvice}:null,raiseContext:run.raiseContext?{...run.raiseContext}:null});
+ salaryAdvice:run.salaryAdvice?{...run.salaryAdvice}:null,raiseContext:run.raiseContext?{...run.raiseContext}:null,
+ history:(run.history||[]).filter(row=>row.kind==='activity-invitation'&&row.activityInvitationOutcome?.id==='arm'&&row.activityInvitationOutcome.accepted===false).map(row=>({kind:row.kind,activityInvitationOutcome:{id:'arm',accepted:false}}))});
 const matchesRow=(context,row)=>!!context&&context.rowIndex>=0&&context.original===row?.choiceText&&row.eventId===context.event.id&&row.speaker===context.target&&row.verbalOutcome?.version===2&&row.verbalOutcome.origin===context.event.id&&row.verbalOutcome.phase===context.phase&&row.verbalOutcome.target===context.target;
 function speechContext(run,rowIndex){
  if(!run||typeof run!=='object'||!Array.isArray(run.actions)||!Array.isArray(run.history)||run.actions.length>300)return null;

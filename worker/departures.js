@@ -1,4 +1,5 @@
 import {ENDINGS} from '../dist/endings.js';
+import {isOnboardingDeclineV66} from '../dist/release-clarity-v66.js';
 
 // These are coarse outcome groups, not ending titles or unlock hints. Keep the
 // explicit family list so future endings cannot silently become resignations.
@@ -31,7 +32,8 @@ const endingFamilies=new Map(ENDINGS.map(ending=>[ending.id,ending.family]));
 export function deriveDepartureWay(run){
  if(!run?.completed||!/^e(?:38|39)-/.test(run.seed||'')||!endingWays.has(run.endingId))return null;
  const family=endingFamilies.get(run.endingId);
- if(/^e39-r6[35]-[nsd]-[0-9a-f]{22}$/.test(run.seed)&&run.flags?.departure63_onboarding_declined===1&&family==='ragequit'&&['onboarding','verbal'].includes(run.history?.at(-1)?.departureOutcome?.category))return 'other';
+ if(isOnboardingDeclineV66(run))return 'other';
+ if(/^e39-r6[356]-[nsd]-[0-9a-f]{22}$/.test(run.seed)&&run.flags?.departure63_onboarding_declined===1&&family==='ragequit'&&['onboarding','verbal'].includes(run.history?.at(-1)?.departureOutcome?.category))return 'other';
  const choseDeparture=run.flags?.departure38_voluntary===1&&run.history?.some(row=>row.eventId==='chapter-resolution'&&row.choiceIndex===1);
  if(choseDeparture&&!['burnout','broke'].includes(family))return 'voluntary';
  return endingWays.get(run.endingId);

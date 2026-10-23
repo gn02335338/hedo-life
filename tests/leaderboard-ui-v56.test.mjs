@@ -19,7 +19,7 @@ function completed(seed='e39-cal46-kin49-g-e-s-m-00000000'){
 }
 const baseRun=completed();
 const entry={entryId:'public-safe-entry',runId:baseRun.runId,nickname:'背鍋隊長',value:6410,total:6410,rank:1,roleId:'ai',actualRoleId:'system',turns:12,createdAt:'2026-10-23T04:00:00.000Z'};
-const response=(overrides={})=>({version:1,scoreVersion:SCORE_VERSION_V56,metric:'overall',role:'all',entries:[entry],totalPlayers:1,updatedAt:'2026-10-23T05:00:00.000Z',...overrides});
+const response=(overrides={})=>({version:1,scoreVersion:SCORE_VERSION_V56,metric:'overall',role:'all',entries:[entry],totalEntries:1,totalPlayers:1,updatedAt:'2026-10-23T05:00:00.000Z',...overrides});
 const tick=async()=>{for(let i=0;i<8;i++)await new Promise(resolve=>setImmediate(resolve));};
 
 function harness({run=baseRun,cloud={}}={}){
@@ -57,12 +57,23 @@ test('public board supports every metric, role aliases, ties and no ending or id
  for(const metric of LEADERBOARD_METRICS_V56)assert.ok(html.includes(`value="${metric.id}"`));
  assert.match(html,/&lt;script&gt;偷襲&lt;\/script&gt;/);assert.doesNotMatch(html,/<script>|nasdaq-system|不應外洩|private-player|private-seed/);
  assert.match(html,/產品設計/);assert.doesNotMatch(html,/空降主管/);assert.match(html,/高階主管/);
- assert.equal((html.match(/aria-label="第 1 名"/g)||[]).length,2);assert.match(html,/第 3 名/);assert.match(html,/1、1、3/);assert.match(html,/前 50 名/);
+ assert.equal((html.match(/aria-label="第 1 名"/g)||[]).length,2);assert.match(html,/第 3 名/);assert.match(html,/1、1、3/);assert.match(html,/前 50 局/);
 });
 
 test('missing public records remain unknown rather than fabricated zero or first place',()=>{
- const html=leaderboardHTMLV56({data:null,error:'連不上'});assert.match(html,/等待取得已留名人數/);assert.match(html,/先不替任何人編名次/);assert.doesNotMatch(html,/class="lb-rank-row/);
- const empty=leaderboardHTMLV56({data:response({entries:[],totalPlayers:0})});assert.match(empty,/0 位匿名玩家符合此榜/);assert.match(empty,/第一個名字還沒出現/);
+ const html=leaderboardHTMLV56({data:null,error:'連不上'});assert.match(html,/等待取得已留名局數/);assert.match(html,/先不替任何人編名次/);assert.doesNotMatch(html,/class="lb-rank-row/);
+ const empty=leaderboardHTMLV56({data:response({entries:[],totalEntries:0,totalPlayers:0})});assert.match(empty,/共 0 局 \/ 0 位匿名玩家/);assert.match(empty,/第一個名字還沒出現/);
+});
+
+test('the board describes named lives independently and displays run and anonymous-player totals as different counts',()=>{
+ const html=leaderboardHTMLV56({data:response({totalEntries:7,totalPlayers:2})});assert.match(html,/共 7 局 \/ 2 位匿名玩家/);assert.match(html,/每局獨立排名/);assert.match(html,/每局留名都獨立排名，同一位玩家的不同人生都會列入/);assert.match(html,/前 50 局/);assert.doesNotMatch(html,/每人取最佳|只取符合篩選的最佳|每位匿名玩家的最佳/);
+ const prior=leaderboardHTMLV56({data:response({totalEntries:undefined})});assert.match(prior,/等待取得已留名局數/);assert.doesNotMatch(prior,/共 0 局/,'an old response lacking the additive count cannot invent a zero');
+});
+
+test('renaming or withdrawing one previous life in the UI leaves the same owner\'s other life and current-ending name intact',async()=>{
+ const h=harness(),other={...entry,runId:'00000000-0000-4000-8000-000000000057',entryId:'second-public-entry',nickname:'另一段低分人生',total:0};h.setEntries([entry,other]);await h.ui.open();
+ h.dispatch('submit',h.form('mine',1,'只改另一段的名字').node);await tick();assert.deepEqual(h.calls.rename,[{runId:other.runId,nickname:'只改另一段的名字'}]);assert.match(h.ending(),/背鍋隊長/);assert.doesNotMatch(h.ending(),/只改另一段的名字/);assert.match(h.html(),/只改另一段的名字/);
+ h.command('withdraw','mine',1);assert.equal(h.calls.remove.length,0);h.command('withdraw-confirm','mine',1);await tick();assert.deepEqual(h.calls.remove,[other.runId]);assert.match(h.ending(),/背鍋隊長/);assert.match(h.html(),/背鍋隊長/);assert.doesNotMatch(h.html(),/只改另一段的名字/);assert.match(h.html(),/1 局/);
 });
 
 test('nickname normalization accepts Unicode aliases but blocks personal links and unsafe markup',()=>{

@@ -1,3 +1,4 @@
+import {hiddenStoryV66} from './hidden-stories-v66.js';
 // Public original scenes for a rare fictional visitor. The administrator's
 // separate archive, source material and portrait are never imported here.
 export const HIDDEN_PERSONAS_V45=Object.freeze({'hidden-visitor':Object.freeze({name:'魚酥姐',title:'辦公室支援角色',image:'./assets/hidden-visitor.png',portrait:true,hidden:true,about:'偶爾出現，協助語言與辦公室日常安排的支援角色。'})});
@@ -161,14 +162,14 @@ const verbalLines=[
 ];
 const c=(text,extra={})=>({text,detail:'',result:'',delta:{},flags:[],...extra});
 export function getHiddenEncounterEventV45(run){
- const context=run?.hiddenEncounterContext,row=rows[context?.scene];
+ const context=run?.hiddenEncounterContext,row=rows[context?.scene]||hiddenStoryV66(run,context?.scene);
  if(!context||context.version!==1||!row)throw new Error('Invalid hidden encounter');
  const base={id:`hidden45-${context.scene}-${context.stage}`,kind:'hidden',speaker:'hidden-visitor',hiddenCharacter:true,scope:'private',era:'意外相遇',sourceIds:['characterFiction'],scene:[0,1,3,5,6,7].includes(context.scene)?'office_day':'admin_coffee',wing:''};
  if(context.stage===1)return {...base,title:'先把現場收拾好。',body:context.incident==='real'?'你剛才真的動了手，旁邊的人已經把雙方分開。原本的閒聊停了，先確認有沒有人受傷，再決定怎麼留下說明。':'話越說越重，旁邊的人請你們先分開。有個人提出要留下紀錄，這場私人爭執得先有個可以聯繫的處理方式。',choices:[c('請現場的人協助分開，確認彼此是否需要就醫。'),c('如果需要說明，就到派出所各自把經過說清楚。'),c('收起腦中的記者會麥克風，先把傾倒的杯子扶正。',{wild:true})]};
- return {...base,title:row.title,body:row.body,choices:[...row.choices.map((choice,index)=>c(choice.text,index===1?{wild:true}:{})),c(verbalLines[context.scene],{hiddenAction:'verbal'}),c('受不了了，扁他。',{hiddenAction:'rage'})]};
+ return {...base,title:row.title,body:row.body,choices:[...row.choices.map((choice,index)=>c(choice.text,index===1?{wild:true}:{})),c(row.verbal||verbalLines[context.scene],{hiddenAction:'verbal'}),c('受不了了，扁他。',{hiddenAction:'rage'})]};
 }
 export function resolveHiddenEncounterChoiceV45(run,index,draw){
- const context=run.hiddenEncounterContext,row=rows[context.scene];
+ const context=run.hiddenEncounterContext,row=rows[context.scene]||hiddenStoryV66(run,context.scene);
  if(!Number.isInteger(index)||draw<0||draw>=1||!row||![0,1].includes(context.stage))throw new Error('Invalid hidden choice');
  if(context.stage===1){
   if(index<0||index>2)throw new Error('Unavailable hidden aftermath');

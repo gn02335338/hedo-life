@@ -16,7 +16,7 @@ const profileRun=()=>({seed:'e39-pure-cast-profile',actualRoleId:'sales',rank:1,
 
 test('the five additive public characters have thirty distinct playable work scenes each and retain occupational buckets',()=>{
  assert.deepEqual(CAST_IDS_V39,expected);assert.equal(Object.keys(PERSONAS).length,28);
- assert.equal(CAST_EVENTS_V39.length,150);assert.equal(EVENTS.filter(event=>!event.requiresCastV65).length,861,'the published pre-v65 deck stays intact');
+ assert.equal(CAST_EVENTS_V39.length,150);assert.equal(EVENTS.filter(event=>!event.requiresCastV65&&!event.requiresCastV66).length,861,'the published pre-v65 deck stays intact');
  assert.equal(new Set(CAST_EVENTS_V39.map(event=>event.id)).size,150);
  assert.equal(new Set(CAST_EVENTS_V39.map(event=>event.choices.find(choice=>choice.wild).text)).size,150,'each scene has its own authored absurd response');
  const roleIds=new Set(ROLES.map(role=>role.id));

@@ -14,6 +14,7 @@ import * as currentCareer from '../dist/career-v17.js';
 import * as persona from '../dist/persona.js';
 import * as characterStats from '../dist/character-stats.js';
 import {polishDreamText} from '../dist/copy-v15.js';
+import * as achievementBookV66 from '../dist/achievement-book-v66.js';
 import {renderEndingReport} from '../dist/ending-report-view.js';
 
 const appSource=(await readFile(new URL('../dist/app.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
@@ -31,7 +32,7 @@ function harness(initial={}){
    showModal(){this.open=true;},close(){this.open=false;},
   });return nodes.get(selector);
  };
- const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,polishDreamText,renderEndingReport,
+ const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,...achievementBookV66,polishDreamText,renderEndingReport,
   createFeedbackUI:()=>({open(){}}),createCharacterBook:()=>({open(){},onSnapshot(){},onRunChanged(){}}),
   cloud:{state:{status:'local',achievements:[]},subscribe(callback){subscriber=callback;},init:async()=>{calls.cloud++;return null;},achievementProgress:async()=>{calls.proof++;return null;},characterProgress:async()=>null,complete:async()=>null},
   localStorage:{getItem:key=>stored.get(key)||null,setItem(key,value){calls.save++;stored.set(key,value);}},
@@ -43,8 +44,9 @@ function harness(initial={}){
  return {calls,node,records:()=>plain(vm.runInContext('achievements',context)),saved:()=>JSON.parse(stored.get('hedo-life-v3')),
   book(filter='all'){context.testFilter=filter;vm.runInContext('achievementFilter=testFilter;achievementBook()',context);return node('#dialog-content').innerHTML;},
   cloudMerge(rows){subscriber({status:'online',achievements:rows});},
-  async importRecords(rows){const target={id:'import-collection',value:'file',files:[{size:100,text:async()=>JSON.stringify({format:'hedo-collection',version:3,unlocked:[],achievements:rows})}]};for(const callback of listeners.get('change')||[])await callback({target});return target;},
+  async importRecords(rows,serialized=null){const text=serialized??JSON.stringify({format:'hedo-collection',version:3,unlocked:[],achievements:rows});const target={id:'import-collection',value:'file',files:[{size:Buffer.byteLength(text),text:async()=>text}]};for(const callback of listeners.get('change')||[])await callback({target});return target;},
   async exportRecords(){vm.runInContext('exportCollection()',context);return JSON.parse(await exported.text());},
+  async exportText(){vm.runInContext('exportCollection()',context);return exported.text();},
   renderEnding(){context.testRun={...engine.createRun('sales','e21-collection-ending'),completed:true,endingId:endings.ENDINGS[0].id};vm.runInContext('run=testRun;endingScreen()',context);return node('#main').innerHTML;},
  };
 }
@@ -61,7 +63,7 @@ test('old local badges retain every ID, timestamp and source without becoming re
  assert.equal(app.node('#achievement-count').textContent,`1 / ${achievements.ACHIEVEMENTS.length}`);
  const html=app.book();assert.match(html,/aria-valuenow="1"/);assert.match(html,/舊版暴走紀念/);
  assert.match(html,/無法據此確認真的出手/);assert.equal(cardCount(mainGrid(html),'unlocked'),1);
- assert.equal(cardCount(html,'unlocked'),1+oldIds.length);assert.equal(cardCount(html,'locked'),achievements.ACHIEVEMENTS.length-1);
+ assert.equal(cardCount(html,'unlocked'),1+oldIds.length);assert.equal(cardCount(html,'locked'),35);
  assert.match(app.renderEnding(),new RegExp(`翻開成就簿 · 1 / ${achievements.ACHIEVEMENTS.length}`));
 });
 
@@ -93,15 +95,15 @@ test('active filters and progress exclude legacy keepsakes and never list unearn
  const app=harness({'rage-wing':row(),'work-card':row()});
  const unlocked=app.book('unlocked');assert.equal(cardCount(mainGrid(unlocked),'unlocked'),1);assert.equal(cardCount(mainGrid(unlocked),'locked'),0);
  assert.equal(cardCount(unlocked,'unlocked'),2);assert.match(unlocked,/legacy-rage-card/);
- const locked=app.book('locked');assert.equal(cardCount(mainGrid(locked),'unlocked'),0);assert.equal(cardCount(mainGrid(locked),'locked'),achievements.ACHIEVEMENTS.length-1);
+ const locked=app.book('locked');assert.equal(cardCount(mainGrid(locked),'unlocked'),0);assert.equal(cardCount(mainGrid(locked),'locked'),36);
  const absent=achievements.LEGACY_RAGE_ACHIEVEMENTS.find(item=>item.id==='rage-rick');assert.ok(absent);assert.ok(!locked.includes(`<h3>${absent.title}</h3>`));
  assert.match(locked,/aria-valuenow="1"/);
- const empty=harness().book();assert.ok(!empty.includes('legacy-rage-achievements'));assert.equal(cardCount(empty,'locked'),achievements.ACHIEVEMENTS.length);
+ const empty=harness().book();assert.ok(!empty.includes('legacy-rage-achievements'));assert.equal(cardCount(empty,'locked'),36);
 });
 
 test('only unlocked active rage badges reveal their dream or real mode, title, condition and art',()=>{
  const initial={'dream-wing':row(),'real-hit-wing':row()};
- const app=harness(initial),html=app.book();
+ const app=harness(initial),html=app.book('unlocked');
  for(const [id,mode,label]of [['dream-wing','imagined','腦內夢境'],['real-hit-wing','real','現實出手']]){
   const item=achievements.ACHIEVEMENT_MAP[id];assert.ok(item);assert.ok(html.includes(`<h3>${item.title}</h3>`));
   assert.ok(html.includes(item.description));assert.ok(html.includes(`src="${item.image}"`));assert.ok(html.includes(`achievement-mode ${mode}">${label}`));
@@ -120,7 +122,7 @@ test('reading or filtering the achievement book never changes records, draws gam
 
 test('all expanded achievements keep their titles, conditions, art and real/dream mode secret until earned',()=>{
  const expanded=achievements.ACHIEVEMENTS.slice(149);
- assert.equal(expanded.length,101);
+ assert.equal(expanded.length,851);
  const app=harness(),html=app.book();
  for(const item of expanded){
   assert.ok(!html.includes(`<h3>${item.title}</h3>`));
@@ -140,4 +142,10 @@ test('all expanded achievements keep their titles, conditions, art and real/drea
   assert.ok(unlocked.includes(`achievement-mode ${mode}`));
   if(mode==='mixed')assert.ok(unlocked.includes('夢境＋現實'));
  }
+});
+
+test('a full 1000-card formatted export imports intact without becoming server-verified proof',async()=>{
+ const initial=Object.fromEntries(achievements.ACHIEVEMENTS.map(item=>[item.id,row('verified')])),owner=harness(initial),text=await owner.exportText();assert.ok(Buffer.byteLength(text)>100000,'the former import ceiling rejected the app’s own full export');
+ const restored=harness(),before={...restored.calls};await restored.importRecords({},text);const records=restored.saved().achievements;assert.equal(Object.keys(records).length,1000);assert.ok(Object.values(records).every(value=>value.source==='imported'&&value.unlockedAt===date));assert.equal(restored.calls.proof,before.proof);assert.equal(restored.calls.cloud,before.cloud);assert.equal(restored.node('#achievement-count').textContent,'1000 / 1000');
+ const oversized=harness();await oversized.importRecords({},' '.repeat(500001));assert.deepEqual(oversized.saved().achievements,{});
 });

@@ -155,15 +155,14 @@ export class LeaderboardStore {
   public({ metric, role }, now = new Date().toISOString()) {
     this.migrateLegacyBatch();
     // Interpolated column names come only from the fixed shared metric allowlist.
-    // SQL selects one best entry per player before applying the public 50-row cap.
+    // Each verified, named run owns one row. Keep every run eligible; the
+    // public 50-row window never replaces a player's lower-scoring entries.
     const column = valueColumn(metric), where = role === 'all' ? 'score_version = ?' : 'score_version = ? AND actual_role_id = ?';
     const args = role === 'all' ? [SCORE_VERSION_V56] : [SCORE_VERSION_V56, role];
-    const rows = this.sql.exec(`WITH best AS (
-      SELECT entry_id,nickname,role_id,actual_role_id,total,metric_turns,created_at,${column} AS value,
-        ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY ${column} DESC,total DESC,created_at ASC,entry_id ASC) AS position
+    const rows = this.sql.exec(`SELECT entry_id,nickname,role_id,actual_role_id,total,metric_turns,created_at,${column} AS value
       FROM leaderboard_entries WHERE ${where}
-    ) SELECT * FROM best WHERE position = 1 ORDER BY value DESC,total DESC,created_at ASC,entry_id ASC LIMIT 50`, ...args).toArray();
-    const count = this.sql.exec(`SELECT COUNT(DISTINCT player_id) AS n FROM leaderboard_entries WHERE ${where}`, ...args).one().n;
+      ORDER BY value DESC,total DESC,created_at ASC,entry_id ASC LIMIT 50`, ...args).toArray();
+    const count = this.sql.exec(`SELECT COUNT(*) AS entries,COUNT(DISTINCT player_id) AS players FROM leaderboard_entries WHERE ${where}`, ...args).one();
     let rank = 0, previousValue = null;
     return { version: 1, scoreVersion: SCORE_VERSION_V56, metric, role,
       entries: rows.map((row, index) => {
@@ -172,6 +171,6 @@ export class LeaderboardStore {
         return { rank, nickname: row.nickname, value: row.value, total: row.total,
           roleId: row.role_id, actualRoleId: row.actual_role_id, turns: row.metric_turns, createdAt: row.created_at, entryId: row.entry_id };
       }),
-      totalPlayers: count, updatedAt: now };
+      totalEntries: count.entries, totalPlayers: count.players, updatedAt: now };
   }
 }

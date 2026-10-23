@@ -742,10 +742,12 @@ imagined-hit, actual-hit and promotion counters are separate single-metric
 boards, not extra overall-score bonuses.
 
 - `GET /api/leaderboard?metric=overall&role=all`: public top 50. Fixed metric and
-  actual-role allowlists; each anonymous owner contributes one best opted-in
-  life per metric/filter. Equal selected values receive equal competition ranks
+  actual-role allowlists; every opted-in life ranks independently, including
+  multiple lives by the same anonymous owner. Equal selected values receive equal competition ranks
   (`1,1,3`), with total, first publication time and opaque entry ID resolving
-  display order.
+  display order. `totalEntries` counts matching published lives; `totalPlayers`
+  continues to count their distinct anonymous owners. Existing lower-scoring
+  listings remain stored and now participate without a data migration.
 - `POST /api/leaderboard`: authenticated opt-in with the normal completion proof
   plus `nickname`. Requires a completed replay, season eligibility and the exact
   owner/role/seed/action commitment. An unsynced valid completion can be recorded
@@ -993,3 +995,37 @@ The diet interlude retains its seven-day calendar and uses three different
 team introductions. Neither the new activities nor character-book reads reveal
 unselected outcomes or change already published achievements. New portraits
 are generated cartoons; original reference photographs are not shipped.
+
+## Sharing readiness and additive content (v66)
+
+Fresh browser lives use `e39-r66-[nsd]-` and inherit the previous participation,
+recruitment, recovery, loans and calendar rules. Published cohorts retain their
+event eligibility, random draws, hidden-story range and canonical transcripts.
+The current pool adds 160 independently authored daily stories and 23 hidden
+base stories. Character counts exclude old short scenes permanently replaced
+by scheduled activities or office treats. Each public character, and the
+separately concealed company character, has at least 31 current playable stories.
+Run `node scripts/audit-cast-v66.mjs` for the reproducible inventory.
+
+The achievement catalog is now 1,000 IDs. Its original 250 IDs and order remain
+unchanged; 750 additive achievements derive only from committed canonical
+history. Historical complete histories can qualify for new badges. Frozen-save
+tests compare the original badge projection while separately testing additive
+awards. Clients cannot post trusted achievement IDs, counts or outcomes. The
+server derives the entire catalog without a fixed 250-row limit. Pagination and
+filters affect only presentation; locked cards do not load artwork or reveal
+names or criteria. Collection import accepts up to 500 KB so a full exported
+collection can be restored, while validating known IDs and dates as before.
+
+The current acquisition discussion offers an employee transfer arrangement
+independent of the former boss's board seat. A bounded consultant proposal is
+available through the real career/exit menu after sufficient high-level work,
+resources and experience; choosing to discuss it does not itself end employment.
+Both paths use existing strict `choice` actions and explicit later acceptance.
+Declining the standard offer at onboarding is presented as an unaccepted
+appointment, with departure group `other`. This is a read-only projection of
+canonical history, not a new ending ID or altered saved state.
+
+All changes use existing anonymous proof endpoints. Per-run leaderboard entries
+retain owner isolation, idempotency and server-derived scores. There is no new
+credential, personal-data field or database migration.

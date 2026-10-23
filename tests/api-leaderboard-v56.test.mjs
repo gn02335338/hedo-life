@@ -122,7 +122,7 @@ test('public ranking exposes only allowlisted presentation fields and never endi
   const h = harness(), p = await h.register(), run = completed(), payload = proof(run);
   const publish = await submit(h, p, payload); assert.equal(publish.status, 200);
   const response = await h.call('/api/leaderboard?metric=skill&role=all'); assert.equal(response.status, 200); assert.equal(response.headers.get('Cache-Control'), 'private, no-store');
-  assert.deepEqual(Object.keys(response.body).sort(), ['entries', 'metric', 'role', 'scoreVersion', 'totalPlayers', 'updatedAt', 'version']);
+  assert.deepEqual(Object.keys(response.body).sort(), ['entries', 'metric', 'role', 'scoreVersion', 'totalEntries', 'totalPlayers', 'updatedAt', 'version']);
   assert.deepEqual(Object.keys(response.body.entries[0]).sort(), ['actualRoleId', 'createdAt', 'entryId', 'nickname', 'rank', 'roleId', 'total', 'turns', 'value']);
   assert.equal(response.body.entries[0].value, run.stats.skill);
   const text = JSON.stringify(response.body); for (const secret of [p.id, p.token, payload.runId, run.seed, run.endingId, 'actions', 'difficulty', 'player_id', 'endingId', 'seed_hash']) assert.ok(!text.includes(secret), secret);
@@ -131,14 +131,14 @@ test('public ranking exposes only allowlisted presentation fields and never endi
   h.db.close();
 });
 
-test('each metric chooses one best run per player, uses actual job filter and deterministic ties', async () => {
+test('each metric ranks every named run, including several from the same player, with actual job filters and deterministic ties', async () => {
   const h = harness(), p = await h.register(), other = await h.register('b'.repeat(64)), payloads = [];
   for (const seed of ['00000001', '00000002', '00000003', '00000004']) { const run = completed(seed, 'ai'), payload = proof(run); payloads.push({ run, payload, score: deriveLeaderboardScoreV56(run) }); assert.equal((await submit(h, p, payload)).status, 200); }
   const same = await submit(h, other, proof(payloads[0].run)); assert.equal(same.status, 200);
   for (const metric of ['overall', 'skill', 'slack', 'lick', 'cash', 'verbal']) {
-    const data = (await h.call(`/api/leaderboard?metric=${metric}&role=all`)).body; assert.equal(data.entries.length, 2); assert.equal(data.totalPlayers, 2);
-    const expected = Math.max(...payloads.map(row => row.score.metrics[metric])); const ids = new Set((await h.call('/api/leaderboard/mine', { token: p.token })).body.entries.map(row => row.entryId));
-    assert.equal(data.entries.find(row => ids.has(row.entryId)).value, expected);
+    const data = (await h.call(`/api/leaderboard?metric=${metric}&role=all`)).body; assert.equal(data.entries.length, 5); assert.equal(data.totalEntries, 5); assert.equal(data.totalPlayers, 2);
+    const expected = payloads.map(row => row.score.metrics[metric]).sort((a,b)=>b-a); const ids = new Set((await h.call('/api/leaderboard/mine', { token: p.token })).body.entries.map(row => row.entryId));
+    assert.deepEqual(data.entries.filter(row => ids.has(row.entryId)).map(row=>row.value), expected);
     assert.deepEqual(data, { ...data, entries: (await h.call(`/api/leaderboard?metric=${metric}&role=all`)).body.entries });
   }
   const reassigned = payloads.find(row => row.run.actualRoleId !== row.run.roleId); assert.ok(reassigned, 'natural AI onboarding produces a real reassignment witness');
@@ -147,7 +147,26 @@ test('each metric chooses one best run per player, uses actual job filter and de
   h.db.close();
 });
 
-test('public output is bounded to 50 players even when more opted in', async () => {
+test('a lower-score life stays listed beside the same owner\'s better life, with per-run rename, withdrawal and retry isolation',async t=>{
+ const h=harness();t.after(()=>h.db.close());const owner=await h.register(),other=await h.register('b'.repeat(64));
+ let better=advance(applyChoice(enableActivitySchedule(createRun('system','e39-cal46-kin49-g-e-s-m-00000001')),0));
+ better=advance(applyChoice(better,0));better=requestExit(better);for(let i=0;i<10&&!better.completed;i++)better=advance(applyChoice(better,0));
+ const lower=completed('00000002'),bestProof=proof(better,randomUUID(),'同一位玩家'),lowProof=proof(lower,randomUUID(),'同一位玩家');assert.ok(deriveLeaderboardScoreV56(better).total>deriveLeaderboardScoreV56(lower).total);
+ const best=await submit(h,owner,bestProof),low=await submit(h,owner,lowProof);assert.equal(best.status,200);assert.equal(low.status,200);assert.notEqual(best.body.entry.entryId,low.body.entry.entryId);assert.equal(low.body.entry.total,0,'zero points remain a valid named completed life');
+ const stableBest={...h.sql.exec('SELECT * FROM leaderboard_entries WHERE run_id=?',bestProof.runId).one()};
+ for(const metric of LEADERBOARD_METRICS_V56.map(metric=>metric.id)){
+  const board=(await h.call(`/api/leaderboard?metric=${metric}`)).body;assert.equal(board.totalEntries,2);assert.equal(board.totalPlayers,1);assert.deepEqual(new Set(board.entries.map(entry=>entry.entryId)),new Set([best.body.entry.entryId,low.body.entry.entryId]));
+ }
+ const roles=new Set([best.body.entry.actualRoleId,low.body.entry.actualRoleId]);for(const role of roles){const board=(await h.call(`/api/leaderboard?role=${role}`)).body;assert.equal(board.totalEntries,[best,low].filter(response=>response.body.entry.actualRoleId===role).length);assert.ok(board.entries.every(entry=>entry.actualRoleId===role));}
+ const retries=await Promise.all([submit(h,owner,lowProof),submit(h,owner,lowProof)]);assert.ok(retries.every(response=>response.status===200&&response.body.entry.entryId===low.body.entry.entryId));assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM leaderboard_entries').one().n,2);
+ const changed=await h.call(`/api/leaderboard/${lowProof.runId}`,{method:'PATCH',token:owner.token,body:{nickname:'低分也有自己的名字'}});assert.equal(changed.status,200);assert.equal(changed.body.entry.total,low.body.entry.total);assert.deepEqual({...h.sql.exec('SELECT * FROM leaderboard_entries WHERE run_id=?',bestProof.runId).one()},stableBest);
+ assert.equal((await h.call(`/api/leaderboard/${bestProof.runId}`,{method:'PATCH',token:other.token,body:{nickname:'冒名更動'}})).status,404);assert.equal((await h.call(`/api/leaderboard/${bestProof.runId}`,{method:'DELETE',token:other.token})).status,404);
+ assert.equal((await submit(h,owner,{...lowProof,total:10000})).status,400);assert.equal((await submit(h,other,lowProof)).status,409);
+ for(let i=0;i<2;i++)assert.equal((await h.call(`/api/leaderboard/${lowProof.runId}`,{method:'DELETE',token:owner.token})).status,200);
+ const after=(await h.call('/api/leaderboard')).body;assert.equal(after.totalEntries,1);assert.equal(after.totalPlayers,1);assert.equal(after.entries[0].entryId,best.body.entry.entryId);assert.deepEqual({...h.sql.exec('SELECT * FROM leaderboard_entries WHERE run_id=?',bestProof.runId).one()},stableBest);assert.equal((await h.call('/api/me',{token:owner.token})).body.totalRuns,2,'withdrawing one public name preserves both completed lives');
+});
+
+test('public output is bounded to 50 runs even when more opted in', async () => {
   const h = harness(), run = completed(), score = deriveLeaderboardScoreV56(run), store = h.archive.leaderboardStore(), date = '2026-10-23T00:00:00.000Z';
   for (let i = 0; i < 55; i++) {
     const playerId = `owner-${i}`, runId = randomUUID();
@@ -156,7 +175,7 @@ test('public output is bounded to 50 players even when more opted in', async () 
     store.publish(playerId, runId, run, score, `玩家${i}`, date);
   }
   const a = (await h.call('/api/leaderboard')).body, b = (await h.call('/api/leaderboard')).body;
-  assert.equal(a.entries.length, 50); assert.equal(a.totalPlayers, 55); assert.deepEqual(a.entries, b.entries); assert.deepEqual(a.entries.map(row => row.rank), Array(50).fill(1));
+  assert.equal(a.entries.length, 50); assert.equal(a.totalEntries, 55); assert.equal(a.totalPlayers, 55); assert.deepEqual(a.entries, b.entries); assert.deepEqual(a.entries.map(row => row.rank), Array(50).fill(1));
   assert.deepEqual(a.entries.map(row => row.entryId), a.entries.map(row => row.entryId).sort());
   h.db.close();
 });

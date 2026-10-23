@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 import * as engine from '../dist/engine.js';
 import {CHARACTER_IDS,deriveCharacterStats,characterAffinity} from '../dist/character-stats.js';
 import {deriveAchievements} from '../dist/achievements.js';
+import {derivePublishedAchievements} from './achievement-compat.mjs';
 import {patronageWorkCountV29} from '../dist/patronage-v29.js';
 import {replayRoute} from './find-routes-v3.mjs';
 import {frozenCharacterProjection,ORIGINAL_CHARACTER_IDS_V37} from './character-compat.mjs';
@@ -242,7 +243,7 @@ test('forged action envelopes, RNG, statistics, relationships, context and direc
 test('adding the optional reply preserves untouched published e29 and e38 save checkpoints byte for byte',()=>{
  for(const cohort of [29,38]){
   const fixture=JSON.parse(readFileSync(new URL(`./fixtures/legacy-e${cohort}-routes.json`,import.meta.url),'utf8')),routes=Array.isArray(fixture)?fixture:fixture.routes;
-  const digest=state=>cohort===29?hash(state):hash({engine:state,achievements:deriveAchievements(state),characters:frozenCharacterProjection(deriveCharacterStats(state),ORIGINAL_CHARACTER_IDS_V37)});
+  const digest=state=>cohort===29?hash(state):hash({engine:state,achievements:derivePublishedAchievements(state),characters:frozenCharacterProjection(deriveCharacterStats(state),ORIGINAL_CHARACTER_IDS_V37)});
   for(const route of [routes[0],routes[Math.floor(routes.length/2)],routes.at(-1)]){
    const checkpoints=[],run=replayRoute(route,state=>{assertCanonical(state);checkpoints.push(digest(state));assert.equal(Object.hasOwn(state,'patronageReplyContext'),false);assert.equal(Object.hasOwn(state.flags,'patronage_reply_last_turn'),false);});
    assert.deepEqual(checkpoints,route.checkpoints);assert.equal(digest(run),cohort===29?route.stateSha256:route.checkpoints.at(-1));

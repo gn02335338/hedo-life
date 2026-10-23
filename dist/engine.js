@@ -1,5 +1,10 @@
 import {getRageV65,rageTargetForV65} from './rage-cast-v65.js';
 import {castVerbalLineV65,withCastVerbalScenarioV65} from './verbal-cast-v65.js';
+import {castVerbalLineV66} from './verbal-cast-v66.js';
+import {isExpansionV66} from './expansion-profile-v66.js';
+import {hiddenStoryCountV66} from './hidden-stories-v66.js';
+import {withEmployeeAcquisitionV66,withConsultantInvitationV66} from './company-v66.js';
+import {withSceneContinuityV66} from './scene-continuity-v66.js';
 import {MEAL_GUEST_IDS_V65,MEAL_EVENTS_V65,mealPageIdV65,getMealEventV65} from './meals-cast-v65.js';
 import {isExpansionV65} from './expansion-profile-v65.js';
 import {dueBlockchainV65,createBlockchainContextV65,getBlockchainEventV65,resolveBlockchainChoiceV65} from './blockchain-v65.js';
@@ -142,7 +147,7 @@ function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta
 function rawGetEvent(run){
  if(!run||run.completed)return null;
  if(isExpansionV65(run)&&MEAL_EVENTS_V65.includes(run.eventId))return getMealEventV65(run);
- if(contentRules(run)>=32&&COMPANY_EVENTS_V32.includes(run.eventId))return contentRules(run)>=39?getCompanyEventV39(run):getCompanyEventV32(run);
+ if(contentRules(run)>=32&&COMPANY_EVENTS_V32.includes(run.eventId))return withEmployeeAcquisitionV66(contentRules(run)>=39?getCompanyEventV39(run):getCompanyEventV32(run),run);
  if(contentRules(run)>=30&&VERBAL_EVENTS_V30.includes(run.eventId))return getVerbalEventV30(run);
  if(contentRules(run)>=29&&run.eventId===PATRONAGE_EVENT_V29)return getPatronageEventV49(run);
  if(WEALTH_EVENTS_V27.includes(run.eventId)){
@@ -173,7 +178,7 @@ function rawGetEvent(run){
  case 'career-review':if(contentRules(run)<8)throw new Error('Unknown career event');return getCareerReview(run);
  case 'career-duty-5':case 'career-duty-6':case 'career-duty-7':if(contentRules(run)<17)throw new Error('Unknown career event');return getCareerDuty(run);
  case 'career-duty-1':case 'career-duty-2':case 'career-duty-3':case 'career-duty-4':if(contentRules(run)<8)throw new Error('Unknown career event');return getCareerDuty(run);
- case 'rank-exit':if(contentRules(run)<8)throw new Error('Unknown career event');return getRankExit(run);
+ case 'rank-exit':if(contentRules(run)<8)throw new Error('Unknown career event');return withConsultantInvitationV66(getRankExit(run),run);
  case 'career-step-down':if(contentRules(run)<8)throw new Error('Unknown career event');return getCareerStepDown(run);
  case 'story-exit':if(contentRules(run)<8)throw new Error('Unknown career event');return getStoryExit(run);
  case 'onboarding':{
@@ -278,7 +283,7 @@ function rawGetEvent(run){
  ],'career');
  }
  const event=EVENTS.find(e=>e.id===run.eventId)||FANTASY_EVENTS.find(e=>e.id===run.eventId);
- if(!event||(event.requiresCastV65&&!isExpansionV65(run))||(event.minRules??0)>contentRules(run)||(contentRules(run)>=29&&event.requireGender&&event.requireGender!==run.characterGender))throw new Error(`Unknown event ${run.eventId}`);
+ if(!event||(event.requiresCastV66&&!isExpansionV66(run))||(event.requiresCastV65&&!isExpansionV65(run))||(event.minRules??0)>contentRules(run)||(contentRules(run)>=29&&event.requireGender&&event.requireGender!==run.characterGender))throw new Error(`Unknown event ${run.eventId}`);
  if(event===FANTASY_EVENTS[3])return {...event,kind:'fantasy',choices:[...event.choices,c('不去交易所。我的人生另有用途。','選擇職涯、離職或隱藏結局。','你從口袋裡拿出那張舊清單，翻到背面。空白，剛好可以寫自己的。',{},'careerExit')]};
  return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':'daily'};
 }
@@ -300,7 +305,7 @@ function getPublishedEvent(run){
  const copied=contentRules(run)>=15?applyCopyV15(wild,run):wild;
  const named=contentRules(run)>=16?applyPersonaCopy(copied):copied;
  const finalEvent=contentRules(run)>=17?applyOnboardingV17(named,run,{jobTitle,educationLabel}):named;
- return withRecruitmentOnboardingV60(contentRules(run)>=27?withWealthEntryV27(finalEvent,run):finalEvent,run);
+ return withSceneContinuityV66(withRecruitmentOnboardingV60(contentRules(run)>=27?withWealthEntryV27(finalEvent,run):finalEvent,run),run);
 }
 export function getEvent(run,skipWorkGap=false){
  if(run?.pending&&run.departureContext){
@@ -333,7 +338,7 @@ function nextNormal(run){
  if(contentRules(run)>=20&&run.flags.floor_watch)return watchNextEvent(run);
  if(run.turn>=20&&run.turn<MAX_TURNS)return FANTASY_EVENTS[run.turn-20].id;
  if(run.turn>=MAX_TURNS)return contentRules(run)>=8?'rank-exit':'career-exit';
- const supported=ev=>(!ev.requiresCastV65||isExpansionV65(run))&&officeTreatDailyAllowedV61(run,ev)&&calendarDailyAllowedV46(run,ev)&&(ev.minRules??0)<=contentRules(run)&&(!ev.requireGender||contentRules(run)>=29&&ev.requireGender===run.characterGender)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0))&&(contentRules(run)<8||((ev.minRank??0)<=legacyCareerRank(run)&&(ev.maxRank??4)>=legacyCareerRank(run)));
+ const supported=ev=>(!ev.requiresCastV66||isExpansionV66(run))&&(!ev.requiresCastV65||isExpansionV65(run))&&officeTreatDailyAllowedV61(run,ev)&&calendarDailyAllowedV46(run,ev)&&(ev.minRules??0)<=contentRules(run)&&(!ev.requireGender||contentRules(run)>=29&&ev.requireGender===run.characterGender)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0))&&(contentRules(run)<8||((ev.minRank??0)<=legacyCareerRank(run)&&(ev.maxRank??4)>=legacyCareerRank(run)));
  const matchesRole=ev=>!ev.roles||ev.roles.includes(run.actualRoleId)||(contentRules(run)<21&&ev.roles.includes(run.roleId));
  let pool=EVENTS.filter(ev=>supported(ev)&&!run.seen.includes(ev.id)&&(ev.minTurn??0)<=run.turn&&(ev.maxTurn??99)>=run.turn&&matchesRole(ev));
  if(!pool.length)pool=EVENTS.filter(ev=>supported(ev)&&matchesRole(ev));
@@ -817,7 +822,7 @@ export function canRequestHiddenEncounter(run){if(run?.blockchainContext)return 
 }
 export function requestHiddenEncounter(run){
  if(!canRequestHiddenEncounter(run))return run;
- const next=structuredClone(run),scene=Math.min(HIDDEN_SCENE_COUNT_V45-1,Math.floor(roll(next)*HIDDEN_SCENE_COUNT_V45));
+ const next=structuredClone(run),count=isExpansionV66(run)?hiddenStoryCountV66(run):HIDDEN_SCENE_COUNT_V45,scene=Math.min(count-1,Math.floor(roll(next)*count));
  next.actions.push({type:'hidden-encounter',version:1,eventId:run.eventId});
  next.hiddenEncounterContext={version:1,returnEventId:run.eventId,scene,stage:0,incident:null};
  next.flags.hidden45_seen=1;next.eventId=getHiddenEncounterEventV45(next).id;
@@ -1418,7 +1423,7 @@ export function canRequestVerbal(run){if(run?.blockchainContext)return false;if(
  return !!event&&!VERBAL_EVENTS_V30.includes(event.id)&&!['rage','rage-world','verbal'].includes(event.kind);
 }
 export function getVerbalTargets(run){return canRequestVerbal(run)?verbalTargetsV30(getSourceEventV50(run)):[];}
-const spokenLine=(run,event,target,phase)=>castVerbalLineV65(run,event,target,phase)||recruitmentVerbalLineV60(run,event,target,phase)||(contentRules(run)>=39?strongVerbalLineV39({event,target,run,phase,base:verbalLineV2(run,event,target,phase)}):verbalLineV2(run,event,target,phase));
+const spokenLine=(run,event,target,phase)=>castVerbalLineV66(run,event,target,phase)||castVerbalLineV65(run,event,target,phase)||recruitmentVerbalLineV60(run,event,target,phase)||(contentRules(run)>=39?strongVerbalLineV39({event,target,run,phase,base:verbalLineV2(run,event,target,phase)}):verbalLineV2(run,event,target,phase));
 export function getVerbalLine(run,target){
  if(!canRequestVerbal(run))return '';
  const event=getSourceEventV50(run),targets=getVerbalTargets(run),selected=target??targets[0];

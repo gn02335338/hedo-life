@@ -15,7 +15,7 @@ const phases=['event','result'];
 const copy=value=>JSON.parse(JSON.stringify(value));
 const sample=createRun('ai','e39-verbal-scene-copy');
 const rendered=event=>({...event,speaker:event.speaker||'wing'});
-const publishedEvents=EVENTS.filter(event=>!event.requiresCastV65);
+const publishedEvents=EVENTS.filter(event=>!event.requiresCastV65&&!event.requiresCastV66);
 const publishedPeople=Object.keys(PERSONAS).filter(id=>!CAST_IDS_V65.includes(id));
 const source=id=>{const event=EVENTS.find(row=>row.id===id);assert.ok(event,id);return rendered(event);};
 const quote=(event,target,run=sample,phase='event')=>verbalSceneLine({event,target,run,phase});

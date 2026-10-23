@@ -1,0 +1,18 @@
+// Pagination is a display-only projection. Locked cards receive a serial
+// number, never an achievement ID, title, condition, image path or alt text.
+const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export const ACHIEVEMENT_PAGE_SIZE_V66=36;
+export function achievementPageV66({catalog=[],records={},filter='all',group='all',page=0}={}){
+ const list=catalog.map((item,index)=>({item,index})).filter(({item})=>(group==='all'||item.group===group)&&(filter==='all'||(filter==='unlocked')===Object.hasOwn(records,item.id)));
+ const pages=Math.max(1,Math.ceil(list.length/ACHIEVEMENT_PAGE_SIZE_V66)),selected=Math.max(0,Math.min(pages-1,Number.isInteger(page)?page:0));
+ return{page:selected,pages,total:list.length,from:list.length?selected*ACHIEVEMENT_PAGE_SIZE_V66+1:0,to:Math.min(list.length,(selected+1)*ACHIEVEMENT_PAGE_SIZE_V66),rows:list.slice(selected*ACHIEVEMENT_PAGE_SIZE_V66,(selected+1)*ACHIEVEMENT_PAGE_SIZE_V66)};
+}
+const navigation=state=>`<nav class="achievement-pages-v66" aria-label="成就圖鑑分頁"><button type="button" data-achievement-page="${state.page-1}"${state.page===0?' disabled':''}>← 上一頁</button><span>第 <b>${state.page+1}</b> / ${state.pages} 頁</span><button type="button" data-achievement-page="${state.page+1}"${state.page+1>=state.pages?' disabled':''}>下一頁 →</button></nav>`;
+export function renderAchievementBookV66({catalog=[],records={},groups={},filter='all',group='all',page=0,renderUnlocked=()=>'',legacyHTML=''}={}){
+ const state=achievementPageV66({catalog,records,filter,group,page}),count=catalog.filter(item=>Object.hasOwn(records,item.id)).length;
+ const cards=state.rows.map(({item,index})=>{
+  const number=String(index+1).padStart(3,'0'),record=records[item.id];
+  return record?renderUnlocked(item,record,number):`<article class="achievement-card locked" aria-label="第 ${number} 枚成就，尚未解鎖"><div class="achievement-art"><span aria-hidden="true">?</span></div><div class="achievement-card-copy"><span class="achievement-category">${number} / UNKNOWN</span><h3>???</h3><p>等那一天發生，再替它命名。</p></div></article>`;
+ }).join('');
+ return `<section class="achievement-book-v66"><div class="achievement-heading"><div><span class="eyebrow">LITTLE VICTORIES, STRANGE MEMORIES.</span><h2 id="dialog-title" tabindex="-1">有些事，值得留一枚章。</h2></div><span class="achievement-total"><b>${count}</b> / ${catalog.length}</span></div><p class="dialog-lead">把上班途中那些特別的瞬間收好。夢裡出氣與現實出手分開收章。還沒拿到的成就，名字、圖案和條件都先保密。</p><div class="achievement-progress" role="meter" aria-label="已解鎖成就" aria-valuemin="0" aria-valuemax="${catalog.length}" aria-valuenow="${count}"><span style="width:${catalog.length?count/catalog.length*100:0}%"></span></div><div class="achievement-filters" role="group" aria-label="成就收藏狀態">${[['all','全部'],['unlocked','已解鎖'],['locked','未解鎖']].map(([id,label])=>`<button type="button" data-achievement-filter="${id}" aria-pressed="${filter===id}" class="${filter===id?'selected':''}">${label}</button>`).join('')}</div><div class="achievement-groups-v66" role="group" aria-label="成就類別">${[['all','所有類別'],...Object.entries(groups).filter(([id])=>id!=='legacy-rage'&&catalog.some(item=>item.group===id))].map(([id,label])=>`<button type="button" data-achievement-group="${esc(id)}" aria-pressed="${group===id}">${esc(label)}</button>`).join('')}</div><p class="achievement-storage-note">成就先保存在這個瀏覽器，連線後以可重播紀錄驗證並同步。舊圖鑑照常保留；匯入的成就不會算進全站紀錄。</p><p class="achievement-page-summary-v66" role="status">${state.total} 枚 · 目前顯示 ${state.from}–${state.to} 枚</p>${navigation(state)}<div class="achievement-grid">${cards||'<p class="empty-state">這裡還沒有收藏。先去過一天你的人生吧。</p>'}</div>${navigation(state)}${legacyHTML}</section>`;
+}

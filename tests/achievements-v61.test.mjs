@@ -15,8 +15,8 @@ const earned=run=>deriveAchievements(run).filter(id=>idSet.has(id));
 const newStoryRows=run=>run.history.filter(row=>row.kind==='office-treat');
 
 test('nine original illustrated food-story badges append to the unchanged published collection',()=>{
- assert.equal(ACHIEVEMENTS_V61.length,9);assert.deepEqual(ACHIEVEMENTS.slice(241),ACHIEVEMENTS_V61);assert.deepEqual(ACHIEVEMENTS.slice(209,241),ACHIEVEMENTS_V60);
- assert.equal(ACHIEVEMENTS.length,250);assert.equal(new Set(ACHIEVEMENTS.map(row=>row.id)).size,250);
+ assert.equal(ACHIEVEMENTS_V61.length,9);assert.deepEqual(ACHIEVEMENTS.slice(241,250),ACHIEVEMENTS_V61);assert.deepEqual(ACHIEVEMENTS.slice(209,241),ACHIEVEMENTS_V60);
+ assert.equal(ACHIEVEMENTS.length,1000);assert.equal(new Set(ACHIEVEMENTS.map(row=>row.id)).size,1000);
  const art=new Set();
  for(const row of ACHIEVEMENTS_V61){
   assert.equal(ACHIEVEMENT_MAP[row.id],row);assert.ok(row.title.length>=4);assert.ok(row.description.length>=25);assert.equal(row.image,`./assets/achievements/${row.id}.svg`);assert.equal(row.mode,undefined);

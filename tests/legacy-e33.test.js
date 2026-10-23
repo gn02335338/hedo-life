@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {replayRoute} from './find-routes-v3.mjs';
 import {validRun,replayRun} from '../dist/engine.js';
-import {deriveAchievements} from '../dist/achievements.js';
+import {derivePublishedAchievements as deriveAchievements} from './achievement-compat.mjs';
 import {deriveCharacterStats} from '../dist/character-stats.js';
 import {assertFrozenCharacterStats} from './character-compat.mjs';
 
