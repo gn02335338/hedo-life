@@ -1,8 +1,9 @@
 import {isOfficeTreatsV61,dueOfficeTreatV61,officeTreatDailyAllowedV61,createOfficeTreatContextV61,getOfficeTreatEventV61,resolveOfficeTreatChoiceV61} from './office-treats-v61.js';
 import {isRecruitmentV60,directEntryV60,entryLabelV60,withRecruitmentOnboardingV60,getRecruitmentEventV60,recruitmentOutcomeV60,recruitmentVerbalLineV60,withRecruitmentVerbalDecisionV60} from './recruitment-v60.js';
-import {isShareholderV58,shareholderDueV58,getShareholderEventV58,getShareholderPlayV58,deriveShareholderPlayV58,createShareholderContextV58,resolveShareholderChoiceV58,resolveShareholderPlayV58,shareholderResultV58} from './shareholders-v58.js';
+import {isShareholderV58,shareholderDueV58,getShareholderEventV58,getShareholderPlayV58,deriveShareholderPlayV58,createShareholderContextV58,resolveShareholderChoiceV58,resolveShareholderPlayV58,shareholderResultV58,shareholderWorkCountV62,shareholderLoanPaymentV62} from './shareholders-v58.js';
 import {isWorkGapV50,workGapSurfaceSafeV50,getWorkGapEventV50} from './work-gap-v50.js';
 import {isEnergyRestV53,energyRestWarningV53,getEnergyRestEventV53} from './energy-rest-v53.js';
+import {isLifeBalanceV62,moodRestWarningV62,restWarningV62} from './life-balance-v62.js';
 import {isEnergySafetyV54,ENERGY_SAFETY_OWED_V54,energySafetyChoiceV54,energySafetyBoundaryV54,energySafetyReturnedBoundaryV54} from './energy-safety-v54.js';
 import {HIDDEN_SCENE_COUNT_V45,getHiddenEncounterEventV45,resolveHiddenEncounterChoiceV45} from './hidden-encounter-v45.js';
 import {scheduledActivityV46,getActivityInvitationEventV46,invitationResultV46,calendarDailyAllowedV46} from './activity-schedule-v46.js';
@@ -404,6 +405,14 @@ export function applyChoice(run,index){
   // Only an actual workday outside PIP can establish a fresh recovery.
   if(contentRules(next)>=10&&!next.pip?.active&&next.stats.boss>=35)next.flags.boss_crisis_armed=1;
   if(next.turn>0&&next.turn%4===0){const income=Math.max(4,Math.round(next.pay/10)),previousCash=next.stats.cash;change('income','本期薪資入帳',{cash:income});result+=modern?` 本期遊戲薪資入帳，存款實際 +${next.stats.cash-previousCash}。`:` 本期遊戲薪資入帳，存款 +${income}。`;}
+  if(isLifeBalanceV62(next)&&next.shareholderLoan){
+   const work=shareholderWorkCountV62({...next,history:[...next.history,{kind:event.kind,turn:next.turn,choiceIndex:index}]}),payment=shareholderLoanPaymentV62(next,{work});
+   next.shareholderLoan=payment.loan;
+   if(payment.due>0){
+    change('shareholder-loan','認股信貸本期還款',{cash:-payment.amount});
+    result+=` 認股信貸本期應還 ${payment.due}，實際扣款 ${payment.amount}；尚欠 ${payment.loan.remaining}。${payment.insufficient?'存款不足，未付的債務仍在，未上市股份不能抵作現金。':payment.loan.remaining===0?'這筆信貸已還清，股份仍尚未變現。':''}`;
+   }
+  }
   if(next.pip?.active)next.pip.remaining=Math.max(0,next.pip.remaining-1);
  }
  if(modern&&effect==='finishBreak'){
@@ -895,6 +904,11 @@ function commitShareholderV58(run,resolved,action,choiceText,index){
  const next=structuredClone(run),before={...run.stats},event=getShareholderEventV58(run),context=next.shareholderContext,breakdown=[];
  const change=(label,delta)=>{const actual={};for(const [key,value]of Object.entries(delta)){const old=next.stats[key];next.stats[key]=clamp(old+value);if(old!==next.stats[key])actual[key]=next.stats[key]-old;}if(Object.keys(actual).length)breakdown.push({source:'choice',label,delta:actual});};
  if(resolved.cost){change('員工認股款',{cash:-resolved.cost});flag(next,'cash_spent_total',resolved.cost);next.flags.shareholder58_owned=resolved.cost;next.flags.shareholder58_purchase_turn=run.turn;}
+ if(isLifeBalanceV62(next)&&resolved.loan){
+  next.shareholderLoan=structuredClone(resolved.loan);next.flags.shareholder58_owned=resolved.stockTotal;
+  change('信貸借入的生活周轉金',{cash:resolved.cashGrant});
+  change('翅膀龍心大悅',{boss:resolved.bossTarget-next.stats.boss});
+ }
  if(context.stage==='gate'&&resolved.next==='hearing')next.flags.shareholder58_attended=1;
  const hearing=context.stage==='hearing',done=hearing&&(resolved.credibility<=0||resolved.advance&&context.round===3);
  let result=resolved.result;
@@ -1083,7 +1097,7 @@ export function advance(run,options={}){
   // Once triggered, the interval survives a no-turn interruption or paid
   // recovery. Starting the next scene is the only way to close it. Healthy
   // new lives proceed straight to work, without an extra continue screen.
-  else if(next.turn>run.turn)next.flags.work_gap_open=isEnergyRestV53(next)?Number(energyRestWarningV53(next)):1;
+  else if(next.turn>run.turn)next.flags.work_gap_open=isLifeBalanceV62(next)?Number(restWarningV62(next)):isEnergyRestV53(next)?Number(energyRestWarningV53(next)):1;
  }
  if(isEnergySafetyV54(run)){
   const pending=next.personnelPending,previous=run.personnelPending;
@@ -1099,6 +1113,10 @@ export function advance(run,options={}){
    }
   }
   energySafetyBoundaryV54(run,next,getSourceEventV50(next));
+ }
+ if(isLifeBalanceV62(next)&&next!==run&&!next.completed&&moodRestWarningV62(next)&&next.lastBreakTurn!==next.turn&&(energySafetyReturnedBoundaryV54(run,next)||run.shareholderContext&&!next.shareholderContext)){
+  const candidate={...next,flags:{...next.flags,work_gap_open:1}};
+  if(workGapSurfaceSafeV50(candidate,getSourceEventV50(next)))next.flags.work_gap_open=1;
  }
  if(next!==run&&!run.treatsContext&&shareholderSurfaceSafeV58(next)){
   const stage=shareholderDueV58(next);
@@ -1362,6 +1380,7 @@ export function validRun(run){
    const first=run.actions[0];
    if(!first||Object.keys(first).sort().join(',')!=='type,version'||first.type!=='activity-schedule'||first.version!==1)return false;
   }
+  if(!isLifeBalanceV62(run)&&run?.shareholderLoan!==undefined)return false;
   if(!isOfficeTreatsV61(run)&&(run?.treatsContext!==undefined||run?.history?.some(row=>row?.treatsOutcome!==undefined||row?.kind==='office-treat')||Object.keys(run?.flags||{}).some(key=>key.startsWith('treats61_'))))return false;
   if(!isRecruitmentV60(run)&&(run?.recruitmentContext!==undefined||run?.history?.some(row=>row?.recruitmentOutcome!==undefined)||Object.keys(run?.flags||{}).some(key=>key.startsWith('recruitment60_'))))return false;
   if(isRecruitmentV60(run)||Array.isArray(run?.actions)&&run.actions.some(action=>['patronage-reply','activity','activity-play','shareholder-play','hidden-encounter','activity-schedule','activity-invitation'].includes(action?.type))){

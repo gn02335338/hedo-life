@@ -1,5 +1,5 @@
 // New lives get these three interludes. Published r60 and older lives are frozen.
-export const isOfficeTreatsV61=value=>/^e39-r61-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
+export const isOfficeTreatsV61=value=>/^e39-r6[12]-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
 export const OFFICE_TREAT_IDS_V61=Object.freeze(['jack-drinks','company-tea','birthday-cake']);
 const hash=value=>{let result=2166136261;for(const char of String(value))result=Math.imul(result^char.charCodeAt(0),16777619)>>>0;return result;};
 const windows={'jack-drinks':[2,16],'company-tea':[4,15],'birthday-cake':[6,18]};

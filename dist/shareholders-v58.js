@@ -1,5 +1,6 @@
 // A new seed cohort owns this interlude. Historical replays never enter it.
 import {isRecruitmentV60} from './seed-profile-v60.js';
+import {isLifeBalanceV62} from './life-balance-v62.js';
 export const isShareholderV58=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-g-e-s-m-h-[a-f0-9]{6}$/.test(typeof run==='string'?run:run?.seed||'');
 export const SHAREHOLDER_CAST_V58=Object.freeze(['wing','spencer','erich','jenjen','janet','sonny']);
 const hash=value=>{let h=2166136261;for(const c of String(value))h=Math.imul(h^c.charCodeAt(0),16777619)>>>0;return h;};
@@ -42,11 +43,11 @@ export function shareholderDueV58(run){
 export function getShareholderStatusV58(run){
  if(!isShareholderV58(run)||!run.flags?.shareholder58_owned)return null;
  const declined=run.flags?.shareholder58_meeting_seen&&(!run.shareholderContext||run.shareholderContext.stage==='gate'&&run.pending&&run.shareholderContext.pendingStep?.next==='return');
- return {version:1,label:run.flags?.shareholder58_attended?'已親自出席股東會':declined?'已認股，這次未親自出席':run.shareholderContext?.stage==='gate'?'收到股東會通知，正在確認出席':'已認股，等候股東會安排',offered:!!run.flags?.shareholder58_offer_seen,paid:run.flags?.shareholder58_owned||0,qualified:!!run.flags?.shareholder58_owned,attended:!!run.flags?.shareholder58_attended,finished:!!run.flags?.shareholder58_finished,result:run.flags?.shareholder58_result||null};
+ return {version:1,label:run.flags?.shareholder58_attended?'已親自出席股東會':declined?'已認股，這次未親自出席':run.shareholderContext?.stage==='gate'?'收到股東會通知，正在確認出席':'已認股，等候股東會安排',offered:!!run.flags?.shareholder58_offer_seen,paid:run.flags?.shareholder58_owned||0,qualified:!!run.flags?.shareholder58_owned,attended:!!run.flags?.shareholder58_attended,finished:!!run.flags?.shareholder58_finished,result:run.flags?.shareholder58_result||null,...(isLifeBalanceV62(run)&&run.shareholderLoan?{financing:{ownCash:(run.flags.shareholder58_owned||0)-30,financedShares:30,reserveCash:10},loan:{principal:run.shareholderLoan.principal,total:run.shareholderLoan.total,remaining:run.shareholderLoan.remaining,paid:run.shareholderLoan.paid}}:{})};
 }
 export function getShareholderEventV58(run){
  const c=context(run),common={kind:'shareholder',era:'員工認股・股東會支線',scope:'work',scene:'office_day',sourceIds:['characterFiction'],cast:[...SHAREHOLDER_CAST_V58,'jack']};
- if(c.stage==='offer')return {...common,scene:'company_market',id:'shareholder58-offer',speaker:'wing',title:'大企業都入股了，就差你的生活費。',body:'翅膀突然宣布員工認股：「某幾家大企業都入股了，這種大好機會，不是每個人都有。」簡報把機會放到最大，把尚未上市、資金不易取回的附件放在最後。傑克在旁邊摸著自己的收據：「我已經認太多了。早知道拿去買正2，現在就財富自由了。」他把收據摺回口袋，說這次至少要把文件看完。',wing:'要好命就要把握機會。現在認股，以後才有位置坐。',choices:[option('認購一份。投入 35 存款指數，先看完風險附件再簽。',run.stats.cash>=44),option('認購加碼份。投入 50 存款指數，收據、股數都留一份。',run.stats.cash>=59),option('先不認股。生活費要能領回，願景先留在簡報裡。'),option('提議把願景拿去質押；銀行肯收，我再考慮。')]};
+ if(c.stage==='offer')return {...common,scene:'company_market',id:'shareholder58-offer',speaker:'wing',title:'大企業都入股了，就差你的生活費。',body:'翅膀突然宣布員工認股：「某幾家大企業都入股了，這種大好機會，不是每個人都有。」簡報把機會放到最大，把尚未上市、資金不易取回的附件放在最後。傑克在旁邊摸著自己的收據：「我已經認太多了。早知道拿去買正2，現在就財富自由了。」他把收據摺回口袋，說這次至少要把文件看完。',wing:'要好命就要把握機會。現在認股，以後才有位置坐。',choices:[option('認購一份。投入 35 存款指數，先看完風險附件再簽。',run.stats.cash>=44),option('認購加碼份。投入 50 存款指數，收據、股數都留一份。',run.stats.cash>=59),option('先不認股。生活費要能領回，願景先留在簡報裡。'),option('提議把願景拿去質押；銀行肯收，我再考慮。'),...(isLifeBalanceV62(run)?[option(`我 all in，存款全押，再辦信貸加碼。全數自有存款（${run.stats.cash}）＋30 借款認股；另 10 借款留生活費，負債 48 分 4 期，每完成 4 個工作回合還 12。`,run.stats.cash>0)]:[])]};
  if(c.stage==='gate')return {...common,scene:'hallway_gate',id:'shareholder58-gate',speaker:'jenjen',title:'你有股票，真真說你可以不用來。',body:'股東會通知到了。你帶著認股收據到門口，真真笑著說場地座位不多，「你們手上還有工作，我幫你帶委託書、代投票就好，不一定要本人來。」傑克站在你旁邊：「我的錢都坐裡面了，人還只能站外面？」門後有翅膀、屎潘蛇、法師、Janet 與阿福；能不能進去，現在等你表態。',wing:'位子不多。我幫你帶委託書、代投票，你回去忙吧。',choices:[option('那就麻煩你，我先回工作。'),option('我已認股，也收到通知。請核對資格，我要親自出席。'),option('把收據當通行證舉起來：錢能進門，付錢的人也要進門。')]};
  if(c.stage==='finish'){
   const summaries={minutes:['股東會結束｜願景終於附了待辦。','四輪問題都留下可核對的紀錄。錢沒有當場回來，上市也沒有突然成功，但「之後再說」終於被拆成誰回覆、回覆什麼。傑克收好影本：「早知道拿去買正2……算了，今天至少拿回四個句號。」'],followup:['股東會結束｜還有問題，這次有編號。','你守住幾項問題，也讓幾個說法沒有混過去。部分回覆仍待補件，傑克替它們編了號，避免下次又以全新願景重新介紹。股份仍未能變現，工作也還得繼續。'],adjourned:['股東會結束｜你坐進來了，答案還在外面。','你留在會場到散會，幾輪說明卻沒被追成能核對的答案。傑克沒有怪你，只把通知和收據疊好：「我現在最會的投資，是投入時間等。」散會餐敘說是「隨便點」，送到桌上的卻只有套餐。傑克看了一眼菜單：「原來選擇權也沒上市。」這場到此結束，你們回到原本的工作。'],ejected:['股東會結束｜發言先被請去冷靜。','連續幾次拿錯資料，會場開始只記得你的推論。屎潘蛇請你停止本輪發言，傑克陪你收好文件離場：「下次先對頁碼，再對幹。」這是股東會的失利，不是離職通知；持股和工作都還在。']};
@@ -67,6 +68,10 @@ export function deriveShareholderPlayV58(input){
 export function createShareholderContextV58(stage,returnEventId){return {version:1,stage,returnEventId,round:0,pressed:[],evidence:[...initialEvidence],credibility:3,pressure:0,wins:0,feedback:null};}
 export function resolveShareholderChoiceV58(run,index){
  const c=context(run),event=getShareholderEventV58(run);if(!Number.isInteger(index)||!event.choices[index]||event.choices[index].available===false)throw new Error('Unavailable shareholder choice');
+ if(c.stage==='offer'&&index===4&&isLifeBalanceV62(run)){
+  const terms=shareholderAllInTermsV62(run);
+  return {label:'全押認股｜翅膀龍心大悅',result:`你把全部 ${terms.ownCash} 存款拿去認股，再辦 40 點信貸，其中 30 點加碼買股、10 點留下周轉。認股收據寫著總投入 ${terms.stockTotal}，你的可用存款剩下借來的 10 點。翅膀當場笑開：「這才叫跟公司站在一起！」剛才還要你看格局，現在連筆都替你拿好了。傑克看了一眼你的貸款表：「我們的股票還沒上市，你的還款日已經排好了。」信貸合計要還 48，從這次認股後每完成 4 個工作回合扣 12，共 4 期；股份仍未能變現，也不會替你把債消掉。股東會通知仍要等之後，這張收據先好好留著。`,cost:terms.ownCash,stockTotal:terms.stockTotal,cashGrant:terms.cashGrant,bossTarget:100,loan:terms.loan,next:'return',purchase:true};
+ }
  if(c.stage==='offer')return index<2?{label:'認股款已支付',result:`你逐頁看過附件，付出 ${index===0?35:50} 存款指數，拿到收據與持股紀錄。傑克提醒你保管好，別把認股當成隨時能領回的定存。股東會還沒開始，出席通知要等之後。`,cost:index===0?35:50,next:'return',purchase:true}:{label:'這次沒有認股',result:index===2?'你把生活費留在自己帳上。翅膀說機會不等人，你回答帳單也一樣。沒有認股，就沒有這次股東會的出席支線。':'你問銀行肯不肯收願景。翅膀說你太計較，傑克卻小聲問，如果真的能質押，能不能順便替他的那份問一下。你沒有付款，也沒有取得出席資格。',next:'return'};
  if(c.stage==='gate')return index===0?{label:'你接受了勸退',result:'你把資料交給真真，沒有走進會場。傑克停了一下，說自己還是想進去問。這次股東會沒有你的席位紀錄，認購的股票仍然留在名下。',next:'return'}:{label:'股東大會開始',result:index===1?'你把通知與收據放在桌上，請真真核對，不接受代為出席。傑克跟著補一句「我也親自來」。真真確認後帶你們入場，翅膀、屎潘蛇、法師、Janet、阿福都已就座，四輪問題從投資說法開始。':'你舉起收據，沒有把出席當成拜託。真真讓你放低紙張，確認資格後帶你與傑克入座。翅膀看了一眼那張收據，說既然來了，就照議程。股東大會正式開始。',next:'hearing'};
  if(c.stage==='finish')return {label:'這場股東會已結束',result:'你和傑克把資料各自收好，回到原本的工作。持股仍在，這場沒有多算一個工作日，也沒有替你決定離職。',next:'return',finished:true};
@@ -87,3 +92,26 @@ export function resolveShareholderPlayV58(run,input){
 export function shareholderResultV58(c){return c.credibility<=0?'ejected':c.wins===4?'minutes':c.wins>=2?'followup':'adjourned';}
 
 export const validateShareholderInputV58=deriveShareholderPlayV58;
+
+
+// This is a fixed fictional funding contract in stat points, not a real loan
+// product or interest-rate model. Only actual unique work turns service it.
+export function shareholderWorkCountV62(run){
+ return new Set((run?.history||[]).filter(row=>row&&['daily','fantasy'].includes(row.kind)&&Number.isInteger(row.turn)&&row.turn>=1&&row.turn<=23&&Number.isInteger(row.choiceIndex)&&row.choiceIndex>=0).map(row=>row.turn)).size;
+}
+export function shareholderAllInTermsV62(run){
+ if(!isLifeBalanceV62(run)||!Number.isInteger(run?.stats?.cash)||run.stats.cash<1||run.stats.cash>100)throw new Error('Unavailable all-in share subscription');
+ const ownCash=run.stats.cash,startedWork=shareholderWorkCountV62(run);
+ return {ownCash,financedShares:30,stockTotal:ownCash+30,cashGrant:10,loan:{version:1,kind:'employee-stock',principal:40,financeCost:8,total:48,remaining:48,paid:0,instalment:12,instalments:4,interval:4,startedWork,lastProcessedWork:startedWork}};
+}
+const loanKeys='financeCost,instalment,instalments,interval,kind,lastProcessedWork,paid,principal,remaining,startedWork,total,version';
+export function shareholderLoanPaymentV62(run,{loan=run?.shareholderLoan,work=shareholderWorkCountV62(run),cash=run?.stats?.cash}={}){
+ if(!isLifeBalanceV62(run)||!loan)return {due:0,amount:0,insufficient:false,loan:loan?structuredClone(loan):null};
+ if(typeof loan!=='object'||Array.isArray(loan)||Object.keys(loan).sort().join(',')!==loanKeys||loan.version!==1||loan.kind!=='employee-stock'||loan.principal!==40||loan.financeCost!==8||loan.total!==48||loan.instalment!==12||loan.instalments!==4||loan.interval!==4||!Number.isInteger(loan.remaining)||loan.remaining<0||loan.remaining>48||!Number.isInteger(loan.paid)||loan.paid<0||loan.paid+loan.remaining!==48||!Number.isInteger(loan.startedWork)||loan.startedWork<0||loan.startedWork>23||!Number.isInteger(loan.lastProcessedWork)||loan.lastProcessedWork<loan.startedWork||loan.lastProcessedWork>23||!Number.isInteger(work)||work<loan.startedWork||work>23||!Number.isInteger(cash)||cash<0||cash>100)throw new Error('Invalid shareholder loan ledger');
+ const next=structuredClone(loan);
+ if(work<=loan.lastProcessedWork||loan.remaining===0)return {due:0,amount:0,insufficient:false,loan:next};
+ const scheduled=Math.min(loan.instalments,Math.floor((work-loan.startedWork)/loan.interval))*loan.instalment;
+ const due=Math.max(0,scheduled-loan.paid),amount=Math.min(cash,due);
+ next.paid+=amount;next.remaining-=amount;next.lastProcessedWork=work;
+ return {due,amount,insufficient:amount<due,loan:next};
+}

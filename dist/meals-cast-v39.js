@@ -1,6 +1,7 @@
 import {CAST_IDS_V39,CAST_PROFILES_V39} from './cast-v39.js';
 import {characterHistoryChanges} from './character-stats.js';
 import {MEAL_GUEST_IDS_V37,MEAL_EVENTS_V37,mealPageIdV37,getMealEventV37} from './professor-v37.js';
+import {getPrincessDinnerV62} from './princess-dinner-v62.js';
 export {CAST_IDS_V39} from './cast-v39.js';
 export const MEAL_GUEST_IDS_V39=Object.freeze([...MEAL_GUEST_IDS_V37,...CAST_IDS_V39]);
 export const MEAL_EVENTS_V39=Object.freeze([...MEAL_EVENTS_V37,...CAST_IDS_V39.map(id=>`meal-with-${id}`)]);
@@ -8,6 +9,8 @@ export const mealPageIdV39=mealPageIdV37;
 const departments={system:'engineering',ai:'engineering',mis:'it',project:'project',product:'product',design:'product',bd:'business',sales:'sales',executive:'leadership',finance:'finance',accounting:'finance',hr:'people',admin:'admin'};
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 const empty=(text,effect,extra={})=>({text,detail:'',result:'',delta:{},flags:[],effect,...extra});
+const mealData=(run,id)=>id==='princess'&&getPrincessDinnerV62(run)||data[id];
+export function castMealCostV39(run,id){const p=CAST_PROFILES_V39[id];if(!p)throw new Error('Unknown cast dinner guest');return id==='princess'&&getPrincessDinnerV62(run)?.cost||p.cost;}
 
 export function castInvitationProfileV39(run,id){
  const p=CAST_PROFILES_V39[id];if(!p)throw new Error('Unknown cast dinner guest');
@@ -39,14 +42,14 @@ const data={
  captain:{title:'兩個人訂兩個位子，今天先穩穩靠岸。',body:'船長傳來自己挑的店，你也把菜單看過，確認有兩個人各自想吃的東西。這次沒有臨時全員加入、沒有包廂超載，也不用誰的戀愛或私人行程當笑話。',quote:'你不喜歡就直接講，我們可以換，不用真的跟船沉。',normal:'各自說清楚口味，別替對方決定喜不喜歡。',wild:'替筷子船員發船票，一張票只能坐一個人。',accept:'船長答應了，這次先把實際人數和訂位都確認好。兩個人兩張椅子，餐費還沒付。',decline:'船長說今天另有安排，這班先不出航。你不替未成行的飯局留座位，也沒有付餐費。',flavor:{normal:['船長聽見你不喜歡的口味，這次真的換了一道。你也沒有把以前的雷店連播一遍，兩個人先把今天這一餐吃對了。','你們各自點自己喜歡的東西，沒有發現新的共同愛好，也沒有互相勉強。船很小，今晚倒是準時靠岸。','你說某道菜普通，她以為又要聽自己總挑錯店。你想只講今天這一口，她卻開始替以前每次訂餐補說明。'],wild:['船長替湯匙安排救生衣，你替多出來的邀約放上候補。玩笑越講越離譜，人數卻第一次從頭到尾都對得起來。','船票很快收進口袋，船長把剩下的飯吃完。你們一起演了短短一段航海，沒有替彼此續訂下一季。','船長問你是不是覺得她連兩個人也數不清。你只是想逗她笑，卻剛好踩到她今天不想再當全公司活動梗的位置。']}}
 };
 function invitation(run,id){
- const p=CAST_PROFILES_V39[id],flag=`meal_invite_${id}_day_${run.turn}`,attempted=Number(run.flags?.[flag]||0)>0,{acceptChance}=castInvitationProfileV39(run,id);
- return empty(attempted?`${p.name}今天已經問過了。`:`傳訊息約${p.name}吃飯（成行餐費 ${p.cost} 存款）`,'mealPick',{mealTarget:id,mealCost:p.cost,available:!attempted&&run.stats.cash>=p.cost,draw:{label:'飯局邀請回覆',outcomes:[{weight:acceptChance,label:'答應赴約',result:data[id].accept,delta:{},flags:[flag],effect:'mealPick'},{weight:1-acceptChance,label:'今天約不到',result:data[id].decline,delta:{},flags:[flag],effect:'mealDeclined'}]}});
+ const p=CAST_PROFILES_V39[id],d=mealData(run,id),cost=castMealCostV39(run,id),flag=`meal_invite_${id}_day_${run.turn}`,attempted=Number(run.flags?.[flag]||0)>0,{acceptChance}=castInvitationProfileV39(run,id);
+ return empty(attempted?`${p.name}今天已經問過了。`:`傳訊息約${p.name}吃飯（成行餐費 ${cost} 存款）`,'mealPick',{mealTarget:id,mealCost:cost,available:!attempted&&run.stats.cash>=cost,draw:{label:'飯局邀請回覆',outcomes:[{weight:acceptChance,label:'答應赴約',result:d.accept,delta:{},flags:[flag],effect:'mealPick'},{weight:1-acceptChance,label:'今天約不到',result:d.decline,delta:{},flags:[flag],effect:'mealDeclined'}]}});
 }
 function dinner(run,id){
- const p=CAST_PROFILES_V39[id],d=data[id];if(run.mealContext?.guest!==id||run.mealContext.page!==2)throw new Error('Invalid cast dinner context');
+ const p=CAST_PROFILES_V39[id],d=mealData(run,id),cost=castMealCostV39(run,id);if(run.mealContext?.guest!==id||run.mealContext.page!==2)throw new Error('Invalid cast dinner context');
  return {id:`meal-with-${id}`,speaker:id,kind:'self-care',minRules:39,privateContext:true,era:'下班飯局',sourceIds:['castFictionV39','characterFiction'],title:d.title,body:d.body,wing:d.quote,choices:[...[d.normal,d.wild].map((text,replyIndex)=>{
-  const profile=castMealChatProfileV39(run,id,replyIndex),delta={cash:-p.cost,mood:replyIndex?33:30,energy:replyIndex?14:16,trust:replyIndex?4:6,...(replyIndex?{slack:6}:{})},gain=Math.min(12,8+replyIndex+Math.min(3,profile.familiarity)),loss=replyIndex?-9:-6;
-  return {text:`${text}（花費 ${p.cost} 存款）`,detail:'',result:'',delta,flags:['spend_mood','spend_network','meal_shared',`meal_guest_${id}`],effect:'mealFinish',mealCost:p.cost,available:run.stats.cash>=p.cost,...(replyIndex?{wild:true}:{}),draw:{label:'餐桌氣氛',outcomes:[['warm','聊得很開',profile.warmChance,gain],['neutral','平常吃飯',profile.neutralChance,0],['mine','不小心踩雷',profile.mineChance,loss]].map(([reaction,label,weight,affinityDelta],index)=>({weight,label,result:d.flavor[profile.reply][index],delta:{...delta},mealOutcome:{version:1,target:id,replyIndex,reaction,affinityDelta}}))}};
+  const profile=castMealChatProfileV39(run,id,replyIndex),delta={cash:-cost,mood:replyIndex?33:30,energy:replyIndex?14:16,trust:replyIndex?4:6,...(replyIndex?{slack:6}:{})},gain=Math.min(12,8+replyIndex+Math.min(3,profile.familiarity)),loss=replyIndex?-9:-6;
+  return {text:`${text}（花費 ${cost} 存款）`,detail:'',result:'',delta,flags:['spend_mood','spend_network','meal_shared',`meal_guest_${id}`],effect:'mealFinish',mealCost:cost,available:run.stats.cash>=cost,...(replyIndex?{wild:true}:{}),draw:{label:'餐桌氣氛',outcomes:[['warm','聊得很開',profile.warmChance,gain],['neutral','平常吃飯',profile.neutralChance,0],['mine','不小心踩雷',profile.mineChance,loss]].map(([reaction,label,weight,affinityDelta],index)=>({weight,label,result:d.flavor[profile.reply][index],delta:{...delta},mealOutcome:{version:1,target:id,replyIndex,reaction,affinityDelta}}))}};
  }),empty('今天先不吃，改天再約。','mealCancel',{result:`你把這餐先取消，${p.name}也收起菜單。沒有用餐或付餐費，下一次有空再問。`})]};
 }
 export function getMealEventV39(run){

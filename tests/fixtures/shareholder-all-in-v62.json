@@ -1,0 +1,1746 @@
+{
+  "version": 1,
+  "profile": 62,
+  "routes": [
+    {
+      "id": "offer",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-empty-kind"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-empty-kind",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-attitude-update",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "executive-first-week"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "purchased",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-empty-kind"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-empty-kind",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-attitude-update",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "executive-first-week"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        }
+      ],
+      "work": 4
+    },
+    {
+      "id": "meeting-door",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-empty-kind"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-empty-kind",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-attitude-update",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "executive-first-week"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "meeting-hearing",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-empty-kind"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-empty-kind",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-attitude-update",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "executive-first-week"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        }
+      ]
+    },
+    {
+      "id": "meeting-finished",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-empty-kind"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-empty-kind",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-attitude-update",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "executive-first-week"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "first-payment",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-empty-kind"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-empty-kind",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-attitude-update",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "executive-first-week"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-promise-footnote",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-budget-zero"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-budget-zero",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "completed-with-loan",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000000",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "quiz26-empty-kind"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-empty-kind",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "rick-attitude-update",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "executive-first-week"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-promise-footnote",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-budget-zero"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-budget-zero",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-final",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-bell-responsibility",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-vietnam-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-buffer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "id": "second-payment",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000005",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 3
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-scrutiny",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-bonus-anchor"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-bonus-anchor",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-badge-job-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-delegation-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-delegation-return",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "sonny-phishing-curtain"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sonny-phishing-curtain",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-half-day-queue",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-frontend-future",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-kind-piano-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "paid-off",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000046",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-budget-zero",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-student-identity-badge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-stamp-title"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-bell-responsibility",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-work-own-name",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-jonathan-frontend-future"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-frontend-future",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-delegation-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-delegation-return",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-star-rating",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-overruled",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-buffer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-blame-dependency",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-notice-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-parking-brand",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-floor-move-boxes",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cindy-not-every-departure"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 2
+        }
+      ]
+    },
+    {
+      "id": "completed-paid-off",
+      "roleId": "executive",
+      "seed": "e39-r62-n-0000000000000000000046",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career-duty-5",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-budget-zero",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-student-identity-badge",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-motion-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 4
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-stamp-title"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-stamp-title",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "dp-sales-dread",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-bell-responsibility",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-work-own-name",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-gate",
+          "index": 1
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-0",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-1",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-2",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "shareholder-play",
+          "version": 1,
+          "eventId": "shareholder58-hearing-3",
+          "input": {
+            "mode": "yield",
+            "statement": 0,
+            "evidence": null
+          }
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-finish",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-jonathan-frontend-future"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-jonathan-frontend-future",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-first-week",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "job-executive-delegation-return"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-review",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "job-executive-delegation-return",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-star-rating",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-break",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-overruled",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "executive-buffer",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-blame-dependency",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-notice-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-parking-brand",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-owen-floor-move-boxes",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cindy-not-every-departure"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cindy-not-every-departure",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "advisor-research-deadline",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "road",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "dismissal-final",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-claim",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "labor-mediation",
+          "index": 0
+        }
+      ]
+    }
+  ]
+}

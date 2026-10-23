@@ -887,3 +887,35 @@ awards also requiring their final scene. The existing anonymous character,
 achievement and completion endpoints replay these actions, enforce ownership,
 reject changed steps and deduplicate submissions. No new API endpoint, table,
 player identifier or deployment secret is introduced.
+
+
+## Mood intervals, financed shares and princess meals (v62)
+
+Fresh browser lives use `e39-r62-[nsd]-` and retain the r61 office stories and
+previous feature gates. Earlier profiles keep their exact replay rules. Positive
+mood at 30 or less can now open the same between-scene recovery interval as low
+energy. Ongoing activities, personnel conversations and other owned scenes finish
+first. Paid recovery returns to the same interval; zero mood still follows the
+existing collapse path. Neither rest nor opening an interval advances work or PIP.
+
+The fifth employee-share offer is r62-only. It spends all current savings on
+shares and adds 30 borrowed stat points to the investment. Another 10 borrowed
+points remain available for living costs. The fixed fictional financing contract
+borrows 40 and owes 48 in total, repaid in four installments of 12 after every four
+unique resolved work turns following purchase. Income resolves before repayment.
+Menus, activities, rest, repeated continuations and shareholder hearings do not
+count as work. Payment never makes cash negative; any shortfall stays owed and
+uses the existing cash-exhaustion resolution. Unlisted shares are not spendable
+cash, and leaving the company does not erase the outstanding balance. Purchase,
+repayment ledger, shares, Wing's resolved reaction and remaining loan are derived
+by canonical replay, including pending saves. Earlier seeds reject invented loan
+state. The sidebar and ending show the remaining debt separately from savings.
+
+Princess meals cost 52 stat points in r62, disclosed before invitation and before
+ordering. Refused or canceled invitations cost nothing. Insufficient funds disable
+the purchase; spending exactly the available 52 can reach the existing zero-cash
+resolution. Familiarity, invitation rejection and seeded conversation reactions
+remain in use, and older profiles retain their original meal prices.
+
+These rules use the existing anonymous proof endpoints and storage. No new
+credential, personal-data field or database migration is required.
