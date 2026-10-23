@@ -20,6 +20,7 @@ import * as activities from '../dist/activities-v44.js';
 import * as jobTitles from '../dist/job-titles-v42.js';
 import {polishVerbalHistoryV41} from '../dist/verbal-presentation-v41.js';
 import {renderEndingTransition} from '../dist/ending-transition-v40.js';
+import {patronageLegacyNoticeV68} from '../dist/patronage-notice-v68.js';
 
 const appSource=(await readFile(new URL('../dist/app.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
 const plain=value=>JSON.parse(JSON.stringify(value));
@@ -34,7 +35,7 @@ async function harness(mobile){
    showModal(){this.open=true;},close(){this.open=false;for(const callback of dialogListeners.get('close')||[])callback({target:this});},
   });return nodes.get(selector);
  };
- const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,...jobTitles,...activityUI,polishDreamText,polishVerbalHistoryV41,renderEndingReport,renderEndingTransition,
+ const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,...jobTitles,...activityUI,polishDreamText,polishVerbalHistoryV41,renderEndingReport,renderEndingTransition,patronageLegacyNoticeV68,
   requestPatronageReply(...args){calls.patronage.push(args[1]);return engine.requestPatronageReply(...args);},
   requestVerbal(...args){calls.verbal.push({argsLength:args.length,target:args[1],phase:args[0].pending?'result':'event'});return engine.requestVerbal(...args);},
   advance(run){calls.advance++;return engine.advance(run);},
@@ -57,6 +58,17 @@ async function harness(mobile){
   async doubleChoice(index){const revision=vm.runInContext('gameViewRevision',context),dataset={choice:String(index),choiceView:String(revision)};await click(dataset,true,1);await click(dataset,true,2);},
  };
 }
+
+for(const mobile of [false,true])test(`continued old appointments show a single visible chapter notice and restarting still requires confirmation (${mobile?'mobile':'desktop'})`,async()=>{
+ const seed='e39-r66-s-'+'ab'.repeat(11),entry=engine.directEntryV60(seed);
+ const old=engine.advance(engine.applyChoice(engine.enableActivitySchedule(engine.createRun(entry.roleId,seed)),0)),before=structuredClone(old);
+ const app=await harness(mobile),html=app.render(old),chapter=html.slice(html.indexOf('<article'));
+ assert.match(chapter,/特殊任用版本提醒/);assert.equal((html.match(/特殊任用版本提醒/g)||[]).length,1);
+ assert.ok(chapter.indexOf('</div><aside class="rules-notice"')>=0,'notice follows the mobile-only bar instead of being inside its hidden container');
+ assert.deepEqual(old,before);assert.equal(engine.validRun(old),true);
+ await app.action('new');assert.equal(app.dialog().open,true);assert.match(app.picker(),/目前在第/);
+ assert.deepEqual(plain(app.state()),plain(old));await app.action('close-dialog');assert.equal(app.dialog().open,false);
+});
 
 
 function legacySourceRun(role='sales'){
@@ -180,7 +192,7 @@ for(const mobile of [false,true]){
   }
  });
  test(`${device}: starting a new life enables the calendar before the first work transition`,async()=>{
-  const app=await harness(mobile),seed=app.randomSeed();assert.match(seed,/^e39-r67-n-[a-f\d]{22}$/);assert.equal(seed.length,32);
+  const app=await harness(mobile),seed=app.randomSeed();assert.match(seed,/^e39-r68-n-[a-f\d]{22}$/);assert.equal(seed.length,32);
   const candidate=engine.createRun('sales',seed);app.candidate(candidate);await app.action('start');
   const expected=engine.enableActivitySchedule(candidate),actual=plain(app.state());delete actual.runId;
   assert.deepEqual(actual,plain(expected));assert.equal(actual.eventId,'onboarding');

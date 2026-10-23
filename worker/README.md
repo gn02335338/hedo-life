@@ -4,6 +4,8 @@ Cloudflare Workers serves `dist/` as Static Assets and routes `/api/*` to the Wo
 
 ## Endpoints
 
+Fresh `e39-r68-[nsd]-` lives inherit the r67 appointment benefits. A canonical patronage reply with negative affinity no longer contributes friendly familiarity to any of the 28 public meal guests; its encounter and affinity counters remain intact. Positive cooperation still contributes familiarity. This changes no salary, allowance, workday, PIP, action schema or archive field. Earlier meal draws retain their original rules. The browser also explains the difference when continuing an appointment predating r67 instead of silently suggesting that the older life has current benefits.
+
 Fresh `e39-r67-[nsd]-` lives inherit r66 features and add replay-derived special-appointment benefits. Acceptance through direct recruitment or an earned application uses `appointmentPayV67` (at least 180K, up to 500K), grants a one-time 24-point cash-index subsidy, and credits 6 cash-index points per two distinct completed work scenes after appointment. Cash is still clamped to 0–100. Introductions, conversations, rest, invitations, missed work and company-route navigation do not earn this allowance. The existing history breakdown exposes actual credited amounts; no client-supplied balance or benefit field is trusted. Three identity-specific scenes replace personal education and ordinary pay-cut reviews after appointment. Workplace patronage replies can save energy and improve mood while changing personal affinity; private responses keep their own rules. Existing action schemas, archive tables and anonymous identity remain unchanged, and all earlier seed cohorts retain their published behavior.
 
 Appointed e29–e39 lives also accept the optional versioned action

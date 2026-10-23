@@ -1,5 +1,6 @@
 import {CAST_IDS_V65,CAST_PROFILES_V65,isCastV65} from './cast-v65.js';
 import {characterHistoryChanges} from './character-stats.js';
+import {countsFriendlyPatronageEncounterV68} from './patronage-familiarity-v68.js';
 import {MEAL_GUEST_IDS_V39,MEAL_EVENTS_V39,mealPageIdV39,getMealEventV39} from './meals-cast-v39.js';
 
 export const MEAL_GUEST_IDS_V65=Object.freeze([...MEAL_GUEST_IDS_V39,...CAST_IDS_V65]);
@@ -14,7 +15,7 @@ export function castInvitationProfileV65(run,id){
  let familiarity=0,realHits=0,recentInsults=0,affinity=50;
  for(const change of characterHistoryChanges(run).filter(change=>change.id===id)){
   const row=run.history[change.historyIndex];affinity+=change.affinityDelta;realHits+=change.realHits;
-  if(!change.imaginedHits&&!change.realHits&&!['rage','rage-world','verbal'].includes(row.kind)&&!row.verbalOutcome)familiarity++;
+  if(!change.imaginedHits&&!change.realHits&&!['rage','rage-world','verbal'].includes(row.kind)&&!row.verbalOutcome&&countsFriendlyPatronageEncounterV68(run,row))familiarity++;
   if(row.verbalOutcome&&change.affinityDelta<0&&Number.isInteger(row.turn)&&run.turn-row.turn<=3)recentInsults++;
  }
  const playerDepartment=departments[run.actualRoleId]||null,sameDepartment=p.department===playerDepartment||id==='zoe'&&['hr','admin'].includes(run.actualRoleId);

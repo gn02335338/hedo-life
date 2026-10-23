@@ -1,6 +1,7 @@
 // Original consultant dinner scenes. The professor is an external guest, not a
 // new manager with invented authority over the player's pay or employment.
 import {characterHistoryChanges} from './character-stats.js';
+import {countsFriendlyPatronageEncounterV68} from './patronage-familiarity-v68.js';
 import {MEAL_GUEST_IDS_V25,MEAL_EVENTS_V25,getMealV25} from './meals-v25.js';
 import {withMealInvitationsV34} from './meal-invitations-v34.js';
 import {withMealReactionsV36} from './meal-reactions-v36.js';
@@ -18,7 +19,7 @@ export function professorInvitationProfileV37(run){
   let affinity=50,familiarity=0,realHits=0,recentInsults=0;
   for(const change of changes){
     const row=run.history[change.historyIndex];affinity+=change.affinityDelta;realHits+=change.realHits;
-    if(!change.imaginedHits&&!change.realHits&&!['rage','rage-world','verbal'].includes(row.kind)&&!row.verbalOutcome)familiarity++;
+    if(!change.imaginedHits&&!change.realHits&&!['rage','rage-world','verbal'].includes(row.kind)&&!row.verbalOutcome&&countsFriendlyPatronageEncounterV68(run,row))familiarity++;
     if(row.verbalOutcome&&change.affinityDelta<0&&Number.isInteger(row.turn)&&run.turn-row.turn<=3)recentInsults++;
   }
   const researchRole=['ai','system','product'].includes(run?.actualRoleId);

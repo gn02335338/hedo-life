@@ -1,5 +1,6 @@
 import { PERSONAS } from './persona.js';
 import { characterHistoryChanges } from './character-stats.js';
+import {countsFriendlyPatronageEncounterV68} from './patronage-familiarity-v68.js';
 
 // The invitation belongs to this life. Archive totals and client-supplied
 // relationship counters never influence a seeded reply.
@@ -27,7 +28,7 @@ export function invitationProfileV34(run,id){
   const row=run.history[change.historyIndex];
   affinity+=change.affinityDelta;realHits+=change.realHits;
   // Dreams, fights and their aftermaths are not friendly time together.
-  if(!change.imaginedHits&&!change.realHits&&!['rage','rage-world','verbal'].includes(row.kind)&&!row.verbalOutcome)familiarity++;
+  if(!change.imaginedHits&&!change.realHits&&!['rage','rage-world','verbal'].includes(row.kind)&&!row.verbalOutcome&&countsFriendlyPatronageEncounterV68(run,row))familiarity++;
   const recent=Number.isInteger(row.turn)&&Number.isInteger(run.turn)?run.turn-row.turn<=3:change.historyIndex>=run.history.length-6;
   if(recent&&row.verbalOutcome&&change.affinityDelta<0)recentInsults++;
  }

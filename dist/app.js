@@ -1,5 +1,6 @@
 import { ROLES, ROLE_MAP } from './roles.js';
 import {isPatronageBenefitsV67} from './patronage-benefits-v67.js';
+import {patronageLegacyNoticeV68} from './patronage-notice-v68.js';
 import { SOURCES } from './public-sources.js';
 import { ENDINGS, FAMILIES } from './endings.js';
 import { LEGACY_ENDINGS } from './legacy.js';
@@ -97,7 +98,7 @@ const leaderboardUI=typeof createLeaderboardUIV56==='function'?createLeaderboard
 const pad=n=>String(n).padStart(2,'0');
 function randomSeed(kind='normal'){
  const entropy=typeof crypto.getRandomValues==='function'?Array.from(crypto.getRandomValues(new Uint8Array(11)),byte=>byte.toString(16).padStart(2,'0')).join(''):crypto.randomUUID().replaceAll('-','').slice(0,22);
- return typeof recruitmentSeedV60==='function'?recruitmentSeedV60(entropy,kind,67):`e39-r67-${({normal:'n',executive:'n',godson:'s',goddaughter:'d'})[kind]}-${entropy}`;
+ return typeof recruitmentSeedV60==='function'?recruitmentSeedV60(entropy,kind,68):`e39-r68-${({normal:'n',executive:'n',godson:'s',goddaughter:'d'})[kind]}-${entropy}`;
 }
 const randomRecruiter=typeof createRandomRecruiterV60==='function'?createRandomRecruiterV60():null;
 const applicationTitle=state=>typeof entryLabelV60==='function'?entryLabelV60(state):ROLE_MAP[state.roleId].name;
@@ -430,7 +431,7 @@ function activityReturnNotice(event){const treat=typeof officeTreatReturnHTMLV61
 function activityEndNotice(event){if(run?.pending&&typeof officeTreatPhaseV61==='function'&&officeTreatPhaseV61(run,event)?.phase==='end')return officeTreatPhaseHTMLV61(run,event);return run?.pending&&typeof activityPhaseV52==='function'&&activityPhaseV52(run,event)?.phase==='end'?activityPhaseNoticeHTMLV52(run,event):'';}
 function activityNextLabel(event){const treat=typeof officeTreatNextLabelV61==='function'?officeTreatNextLabelV61(run,event):null;if(treat)return treat;if(typeof activityPhaseV52!=='function')return'繼續';const phase=activityPhaseV52(run,event);return phase?.phase==='end'?'回到原本的事':phase?'繼續活動':'繼續';}
 
-function mobileWorkbar(){return `<div class="mobile-workbar"><button data-action="work-card">工作證與數值 ↑</button><span>心情 ${run.stats.mood} · 體力 ${run.stats.energy} · 存款 ${run.stats.cash}${run.pip?.active?` · PIP 剩 ${run.pip.remaining} 回合`:''}${/^e(?:20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed)&&run.flags.floor_watch?' · 三樓看門中':''}</span></div>`;}
+function mobileWorkbar(){return `<div class="mobile-workbar"><button data-action="work-card">工作證與數值 ↑</button><span>心情 ${run.stats.mood} · 體力 ${run.stats.energy} · 存款 ${run.stats.cash}${run.pip?.active?` · PIP 剩 ${run.pip.remaining} 回合`:''}${/^e(?:20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed)&&run.flags.floor_watch?' · 三樓看門中':''}</span></div>${typeof patronageLegacyNoticeV68==='function'?patronageLegacyNoticeV68(run):''}`;}
 // This reads only current resources. It never evaluates choices, rolls RNG,
 // changes the run, or interrupts a committed result with a new game action.
 function resourceWarningHTML(){
@@ -450,7 +451,7 @@ function resourceWarningHTML(){
  return `<section class="resource-warning ${critical?'critical':'caution'}" data-resource-warning role="alert" aria-atomic="true"><span class="resource-warning-icon" aria-hidden="true">!</span><div class="resource-warning-content"><b class="resource-warning-title">${critical?'快撐不住了，先顧自己。':'電量偏低，別只顧著上班。'}</b><ul>${risks.map(key=>`<li data-warning-stat="${key}"><b>${STAT_LABELS[key]}剩 ${run.stats[key]} / 100</b><span>${key==='energy'?'體力耗盡可能讓這段人生直接結束。':modern?'心情歸零會真正失控，記得留時間照顧自己。':'心情再降下去，會遇到情緒危機。'}</span></li>`).join('')}</ul><p>${advice}</p>${canRest?'<button type="button" class="resource-rest-button" data-action="break">查看休息安排 <span aria-hidden="true">↗</span></button>':''}</div></section>`;
 }
 function usesEnergySafety(state=run){return typeof isEnergySafetyV54==='function'?isEnergySafetyV54(state):/^e39-cal46-kin49-g-e-s-/.test(state?.seed||'');}
-function usesLifeBalance(state=run){return typeof isLifeBalanceV62==='function'?isLifeBalanceV62(state):/^e39-r6[23567]-[nsd]-[0-9a-f]{22}$/.test(state?.seed||'');}
+function usesLifeBalance(state=run){return typeof isLifeBalanceV62==='function'?isLifeBalanceV62(state):/^e39-r6[235678]-[nsd]-[0-9a-f]{22}$/.test(state?.seed||'');}
 function usesEnergyRest(state=run){return typeof isEnergyRestV53==='function'?isEnergyRestV53(state):/^e39-cal46-kin49-g-e-/.test(state?.seed||'');}
 function usesWorkGap(state=run){return typeof isWorkGapV50==='function'?isWorkGapV50(state):/^e39-cal46-kin49-g-/.test(state?.seed||'');}
 function workGapIsOpen(state=run){return typeof isWorkGapOpenV50==='function'&&isWorkGapOpenV50(state);}
@@ -493,7 +494,7 @@ function endingTextForRun(ending){
  ending=shownEnding(ending);
  if(typeof chapterDepartureCopyV38==='function')ending=chapterDepartureCopyV38(run,ending);
  if(ending&&typeof isOnboardingDeclineV66==='function'&&isOnboardingDeclineV66(run))return {...ending,title:'名片先別拆，我沒有要接。',subtitle:'這份任用，到報到桌前為止。',body:'你看完實際職稱與交辦方式，決定不接受這份任用。名片留在桌上，尚未生效的條件也沒有簽下去。翅膀還在說機會難得，你已經走出門口；今天沒有開始受僱，這次結局記下的是拒絕這份工作。'};
- if(ending&&/^e39-r(?:63|65|66|67)-/.test(run?.seed||'')&&run.flags?.departure63_onboarding_declined&&ending.family==='ragequit'&&['onboarding','verbal'].includes(run.history?.at(-1)?.departureOutcome?.category))return {...ending,title:'名片先別拆，我沒有要接。',subtitle:'這次報到，由你提早喊停。',body:'你把還沒收下的名片留在桌上，說這份任用不接受。翅膀還準備繼續交代，你已經轉身走向門口。今天沒有完成報到，也沒有補簽別的職稱或薪資。這段人生停在你決定不留下的那一刻。'};
+ if(ending&&/^e39-r(?:63|65|66|67|68)-/.test(run?.seed||'')&&run.flags?.departure63_onboarding_declined&&ending.family==='ragequit'&&['onboarding','verbal'].includes(run.history?.at(-1)?.departureOutcome?.category))return {...ending,title:'名片先別拆，我沒有要接。',subtitle:'這次報到，由你提早喊停。',body:'你把還沒收下的名片留在桌上，說這份任用不接受。翅膀還準備繼續交代，你已經轉身走向門口。今天沒有完成報到，也沒有補簽別的職稱或薪資。這段人生停在你決定不留下的那一刻。'};
  if(!ending||!/^e(?:32|33|34|35|36|37|38|39)-/.test(run?.seed||'')||ending.family!=='taiwan')return ending;
  // The published generic Taiwan card stays intact for old saves/collections;
  // this cohort's actual company scene specifically resolves an OTC listing.
