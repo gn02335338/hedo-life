@@ -1,6 +1,10 @@
 // This is a read-only projection of committed results. It never rerolls a life
 // or changes the save/replay protocol. Row deltas already include 0/100 limits.
 import {isPatronageOutcomeV43} from './character-stats.js';
+import {isWorkGapV50} from './work-gap-v50.js';
+import {isActivityPlayV55,deriveActivityPlayV55} from './activity-play-v55.js';
+import {isShareholderV58,deriveShareholderPlayV58} from './shareholders-v58.js';
+import {isEventDepartureOutcomeV63} from './event-departure-v63.js';
 const LABELS = Object.freeze({
  energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰',
  boss:'翅膀心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力'
@@ -11,6 +15,10 @@ const turnValue = value => Number.isInteger(value) && value >= 0 ? value : null;
 
 function sampleLabel(row) {
  const id = typeof row?.eventId === 'string' ? row.eventId : '';
+ if (row?.kind === 'event-departure') return '事件離場';
+ if (row?.kind === 'shareholder') return row.shareholderOutcome?.stage === 'offer' ? '員工認股' : '股東會';
+ if (row?.kind === 'office-treat') return '點心插曲';
+ if (row?.kind === 'recruitment') return '入職介紹';
  if (id === 'mood-self-destruct') return '自爆';
  if (id === 'mood-collapse') return '崩潰';
  if (id === 'patronage-reply' && row?.kind === 'patronage') return '自己人發話';
@@ -40,17 +48,45 @@ function sampleLabel(row) {
  return '選擇';
 }
 
-// Direct rage and verbal actions commit an implicit result row. Menu-opening
-// actions do not. A v2 verbal decision then commits the explicitly selected
-// source answer, rather than a row named after the decision wrapper.
+// Opening a menu or returning from a work gap does not commit a result row.
+// Interactive plays, departure, direct rage and verbal actions do. Match these
+// without replaying the engine or mistaking a shortened log for a full life.
+// A v2 verbal decision commits its source answer instead of its wrapper name.
 function historyMatchesActions(run, history) {
  if (!Array.isArray(run?.actions)) return true;
- const committed = run.actions.filter(action => action?.type === 'choice' || action?.type === 'patronage-reply' ||
+ const committed = run.actions.filter(action => action?.type === 'choice' &&
+  !(isWorkGapV50(run) && action.eventId === 'work-gap-v50' && action.index === 0) ||
+  ['patronage-reply','activity-play','shareholder-play','event-departure'].includes(action?.type) ||
   (['rage','verbal'].includes(action?.type) && ['event','result'].includes(action.phase)));
  if (committed.length !== history.length) return false;
  let spokenSource = null;
  return committed.every((action, index) => {
   const row = history[index];
+  if (action.type === 'event-departure') {
+   spokenSource = null;
+   return action.version === 1 && action.eventId === row?.eventId && isEventDepartureOutcomeV63(run,row);
+  }
+  if (action.type === 'activity-play') {
+   spokenSource = null;
+   try {
+    const played = deriveActivityPlayV55(action.input,action.input?.kind),outcome = row?.activityOutcome;
+    return isActivityPlayV55(run) && action.version === 1 && action.index === 1 &&
+     action.eventId === `activity44-${action.input.kind}-1` && row?.eventId === action.eventId &&
+     row.kind === 'activity' && row.choiceIndex === 1 && outcome?.version === 1 &&
+     outcome.id === action.input.kind && outcome.stage === 1 && outcome.done === false &&
+     outcome.performance?.version === 1 && outcome.performance.score === played.score && outcome.performance.grade === played.grade;
+   } catch { return false; }
+  }
+  if (action.type === 'shareholder-play') {
+   spokenSource = null;
+   try {
+    const played = deriveShareholderPlayV58(action.input),outcome = row?.shareholderOutcome;
+    return isShareholderV58(run) && action.version === 1 && row?.eventId === action.eventId &&
+     row.kind === 'shareholder' && row.choiceIndex === 0 && outcome?.version === 1 &&
+     outcome.stage === 'hearing' && Number.isInteger(outcome.round) && outcome.round >= 0 && outcome.round <= 3 &&
+     action.eventId === `shareholder58-hearing-${outcome.round}` && outcome.mode === played.mode && typeof outcome.done === 'boolean';
+   } catch { return false; }
+  }
   if (action.type === 'patronage-reply') {
    spokenSource = null;
    return action.version === 1 && isPatronageOutcomeV43(run,row) &&
