@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="treat-jonathan-toppings-title treat-jonathan-toppings-desc" data-art-version="61">
+ <title id="treat-jonathan-toppings-title">這杯的料，比職責還滿。</title>
+ <desc id="treat-jonathan-toppings-desc">強哥那杯塞滿配料的飲料旁放著點單標籤，杯子的內容比責任範圍還滿。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 105) scale(1.02)"><path d="M-33-31h66l-9 78h-48z" fill="#ed6995"/><path d="M-39-40h78v12h-78z" fill="#fffaf4"/><path d="m12-57-4 38" fill="none"/><path d="M-29-7q14-20 29-3t29-3" fill="#fffaf4"/><circle cx="-13" cy="15" r="5" fill="#fffaf4"/><circle cx="6" cy="15" r="5" fill="#fffaf4"/><circle cx="-3" cy="31" r="5" fill="#fffaf4"/><circle cx="15" cy="31" r="5" fill="#fffaf4"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-25" y="-46" width="50" height="92" rx="9" fill="#fffaf4"/><path d="M-10-35h20m-24 12h28m-28 12H8m-22 12h22" fill="none"/><circle cy="33" r="4" fill="#ed6995"/></g><g transform="translate(51 143) scale(0.34)"><path d="m-42-19 22-22h52v80h-52l-22-22z" fill="#fffaf4"/><circle cx="-20" cy="-19" r="5" fill="#ed6995"/><path d="M-5-19h24m-24 15h24m-24 15h17" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

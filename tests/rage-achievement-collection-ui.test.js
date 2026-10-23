@@ -118,9 +118,9 @@ test('reading or filtering the achievement book never changes records, draws gam
  assert.deepEqual(app.records(),before);assert.deepEqual(app.saved(),saved);assert.deepEqual(app.calls,calls);
 });
 
-test('all ninety-two expanded achievements keep their titles, conditions, art and real/dream mode secret until earned',()=>{
+test('all expanded achievements keep their titles, conditions, art and real/dream mode secret until earned',()=>{
  const expanded=achievements.ACHIEVEMENTS.slice(149);
- assert.equal(expanded.length,92);
+ assert.equal(expanded.length,101);
  const app=harness(),html=app.book();
  for(const item of expanded){
   assert.ok(!html.includes(`<h3>${item.title}</h3>`));

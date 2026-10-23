@@ -7,9 +7,9 @@ import {createRun,getEvent,applyChoice,advance,requestRage,replayRun,validRun} f
 const copy=value=>JSON.parse(JSON.stringify(value));
 const choose=(run,index)=>advance(applyChoice(run,index));
 
-test('241 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
- assert.equal(ACHIEVEMENTS.length,241);
- assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,241);
+test('250 distinct illustrated achievements contain complete Traditional Chinese copy and safe local art',()=>{
+ assert.equal(ACHIEVEMENTS.length,250);
+ assert.equal(new Set(ACHIEVEMENTS.map(item=>item.id)).size,250);
  assert.deepEqual(Object.keys(ACHIEVEMENT_MAP),ACHIEVEMENTS.map(item=>item.id));
  const pictures=new Set();
  for(const achievement of ACHIEVEMENTS){
@@ -87,7 +87,7 @@ test('published complete routes derive real onboarding, PIP, salary and career a
  for(const id of ['assistant','switch','robot','promotion','manager','director','pip','pip-pass','pay-cut','education','kind-decline','nasdaq'])assert.ok(covered.has(id),`natural goal ${id}`);
 });
 
-test('published and current natural routes prove all 241 achievements without injected state',()=>{
+test('published and current natural routes prove all 250 achievements without injected state',()=>{
  const routes=JSON.parse(readFileSync(new URL('./fixtures/achievement-routes-v18.json',import.meta.url),'utf8'));
  const covered=new Set();
  assert.ok(routes.length>0);
@@ -118,7 +118,9 @@ test('published and current natural routes prove all 241 achievements without in
  for(const route of expanded)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
  const latest=JSON.parse(readFileSync(new URL('./fixtures/achievement-milestones-v60.json',import.meta.url),'utf8')).routes;
  for(const route of latest)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
- assert.equal(covered.size,241);
+ const treats=JSON.parse(readFileSync(new URL('./fixtures/achievement-milestones-v61.json',import.meta.url),'utf8')).routes;
+ for(const route of treats)for(const id of deriveAchievements(replayRun(route.roleId,route.seed,route.actions)))covered.add(id);
+ assert.equal(covered.size,250);
  assert.deepEqual(ACHIEVEMENTS.filter(item=>covered.has(item.id)).map(item=>item.id),ACHIEVEMENTS.map(item=>item.id));
 });
 

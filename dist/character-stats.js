@@ -1,6 +1,7 @@
 import { PERSONAS } from './persona.js';
 import { isPatronageV49, isPatronageApplicationOutcomeV49 } from './patronage-v49.js';
 import { isRecruitmentOutcomeV60 } from './recruitment-v60.js';
+import { isOfficeTreatOutcomeV61 } from './office-treats-v61.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
@@ -68,6 +69,12 @@ export function characterHistoryChanges(run){
    recruitment=row.recruitmentOutcome;
    if(!ids.includes(recruitment.target))ids.push(recruitment.target);
   }
+  let treat=null;
+  if(Object.hasOwn(row,'treatsOutcome')||row.kind==='office-treat'){
+   if(!isOfficeTreatOutcomeV61(run,row))continue;
+   treat=row.treatsOutcome;
+   if(!ids.includes(treat.target))ids.push(treat.target);
+  }
   if(!ids.length)continue;
   let mode=null,verbal=null,meal=null;
   if(row.mealOutcome!==undefined){
@@ -94,7 +101,7 @@ export function characterHistoryChanges(run){
    // Only the already resolved choice contributes. Neither incidental luck nor
    // daily weather is another character's opinion. Historical rows without a
    // choice ledger retain their encounters, without inventing an affinity delta.
-   const requested=recruitment&&id===recruitment.target?recruitment.affinityDelta:application&&id==='rick'?application.affinityDelta:patronage?patronage.affinityDelta:verbal?verbal.affinityDelta:meal?meal.affinityDelta:mode==='real'?-25:mode==='imagined'||row.kind==='rage-world'?0:clamp(Math.round(id==='wing'?delta.boss:delta.trust),-12,12);
+   const requested=treat&&id===treat.target?treat.affinityDelta:recruitment&&id===recruitment.target?recruitment.affinityDelta:application&&id==='rick'?application.affinityDelta:patronage?patronage.affinityDelta:verbal?verbal.affinityDelta:meal?meal.affinityDelta:mode==='real'?-25:mode==='imagined'||row.kind==='rage-world'?0:clamp(Math.round(id==='wing'?delta.boss:delta.trust),-12,12);
    const score=clamp(scores[id]+requested,0,100),affinityDelta=score-scores[id];scores[id]=score;
    changes.push({historyIndex,id,encounters:1,imaginedHits:mode==='imagined'?1:0,realHits:mode==='real'?1:0,affinityDelta});
   }

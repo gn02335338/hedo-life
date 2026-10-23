@@ -19,8 +19,8 @@ const fixture=(file,id)=>{const row=JSON.parse(readFileSync(new URL(`./fixtures/
 const byBadge=id=>{const found=runs.find(({run})=>deriveAchievementsV60(run).includes(id));assert.ok(found,id);return found;};
 
 test('thirty-two authored badges append without changing published IDs, illustrations or real/dream modes',()=>{
- assert.equal(ACHIEVEMENTS_V60.length,32);assert.deepEqual(ACHIEVEMENTS.slice(209),ACHIEVEMENTS_V60);assert.deepEqual(ACHIEVEMENTS.slice(149,209),ACHIEVEMENTS_V48);
- assert.equal(ACHIEVEMENTS.length,241);assert.equal(new Set(ACHIEVEMENTS.map(row=>row.id)).size,241);
+ assert.equal(ACHIEVEMENTS_V60.length,32);assert.deepEqual(ACHIEVEMENTS.slice(209,241),ACHIEVEMENTS_V60);assert.deepEqual(ACHIEVEMENTS.slice(149,209),ACHIEVEMENTS_V48);
+ assert.equal(ACHIEVEMENTS.length,250);assert.equal(new Set(ACHIEVEMENTS.map(row=>row.id)).size,250);
  const art=new Set();
  for(const row of ACHIEVEMENTS_V60){
   assert.equal(ACHIEVEMENT_MAP[row.id],row);assert.match(row.id,/^[a-z]+(?:-[a-z]+)+$/);assert.ok(row.title.length>=4);assert.ok(row.description.length>=25);assert.equal(row.image,`./assets/achievements/${row.id}.svg`);

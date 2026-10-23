@@ -6,7 +6,7 @@ export const isWorkGapV50=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-g-/.test
 
 export function workGapSurfaceSafeV50(run,source){
  if(!isWorkGapV50(run)||run.flags?.work_gap_open!==1||run.pending||run.completed||run.pendingFamily||!['daily','fantasy'].includes(source?.kind))return false;
- if(run.recruitmentContext||run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.raiseContext||run.patronageContext||run.mealContext||run.personnelPending)return false;
+ if(run.treatsContext||run.recruitmentContext||run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.raiseContext||run.patronageContext||run.mealContext||run.personnelPending)return false;
  if(run.resumeEventId||run.exitReturnEventId||run.breakReturnEventId||run.banquetReturnEventId||run.meltdownReturnEventId||run.wealthReturnEventId||run.salaryAdvice?.status==='open'||run.salaryAdvice?.status==='queued')return false;
  return run.stats.mood>0&&run.stats.energy>0&&run.stats.cash>0;
 }

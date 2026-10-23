@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="cake-jack-relief-title cake-jack-relief-desc" data-art-version="61">
+ <title id="cake-jack-relief-title">高級蛋糕，物理系必修。</title>
+ <desc id="cake-jack-relief-desc">尚未退冰的生日蛋糕旁伸出幫忙的手，傑克不用再獨自硬切那塊冰。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff4f0"/>
+ <circle cx="120" cy="98" r="76" fill="#f6d5c7"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#ba806d" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 105) scale(0.88)"><ellipse cy="37" rx="50" ry="14" fill="#fffaf4"/><path d="M-39-16h78v52q-39 19-78 0z" fill="#e99775"/><ellipse cy="-16" rx="39" ry="17" fill="#fffaf4"/><path d="M-39-13v12q10 12 18 0 9 14 21 1 11 12 20-1 10 12 19 0v-12M-39 22q39 19 78 0M-17-27v-20m17 15v-19m17 24v-20" fill="none"/><path d="M-17-48q-10-11 0-17 10 6 0 17zm17-4q-10-11 0-17 10 6 0 17zm17 4q-10-11 0-17 10 6 0 17z" fill="#e99775"/></g><circle cx="177" cy="139" r="27" fill="#fff4f0" stroke="#ba806d" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-27 35v-29q0-14 12-14v-27q0-11 10-11t10 11v27-35q0-11 10-11t10 11v36-27q0-11 10-11t10 11v34-16q0-11 10-11t10 11v33q-1 18-18 30v13H-8V48z" fill="#e99775"/></g><g transform="translate(51 143) scale(0.34)"><path d="m-32-26 48-13 20 21v48l-48 12-20-22z" fill="#d5eef4"/><path d="m-32-26 20 21 48-13M-12-5v47m-6-29 8-12m17 21 8-13" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#e99775" stroke-width="3" stroke-linecap="round"/>
+</svg>

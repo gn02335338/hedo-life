@@ -44,7 +44,7 @@ export function activityPhaseNoticeHTMLV52(run,event){
 }
 
 const blockedReturn=run=>run.pending||run.completed||run.pendingFamily||[
- 'activityContext','activityInvitationContext','hiddenEncounterContext','chapterContext','companyContext','rageContext','verbalContext',
+ 'treatsContext','activityContext','activityInvitationContext','hiddenEncounterContext','chapterContext','companyContext','rageContext','verbalContext',
  'patronageReplyContext','patronageContext','raiseContext','mealContext','personnelPending','resumeEventId','exitReturnEventId',
  'breakReturnEventId','banquetReturnEventId','meltdownReturnEventId','wealthReturnEventId'
 ].some(key=>!!run[key])||['open','queued'].includes(run.salaryAdvice?.status)||['mood','energy','cash'].some(key=>run.stats?.[key]<=0);

@@ -854,3 +854,36 @@ the validated recruitment outcome, keeping Rick's jealousy separate from
 Wing's mood and from imagined or actual hits. Existing achievement, character
 and completion APIs, anonymous ownership, storage and opt-in rankings remain in
 use; no new credential or database migration is required.
+
+
+## Office treats (v61)
+
+Fresh browser lives use `e39-r61-[nsd]-` plus 22 random hexadecimal characters.
+The compact recruitment predicate recognizes both r60 and r61; explicit helper
+profile 61 generates the new cohort, while its historical default 60 remains
+available. All earlier seeds and stored proofs retain their exact rules.
+
+Three optional workplace interludes suspend an unanswered ordinary work scene.
+They open only in their seeded work-turn windows, with a cooldown and each story
+limited to once per life. Personnel notices, PIP, active conversations, activities,
+resource warnings and recovery intervals take priority. The new `treatsContext`
+uses the existing choice action envelope; no free-form server outcome is accepted.
+Each submitted choice commits a bounded `treatsOutcome`, the ordinary effect
+ledger, seeded mood variation and ability tradeoffs. No additional workday,
+paycheck or PIP tick is created, and the player never pays Jack's drink bill.
+
+Company tea cancellation takes effect when the accident scene begins, after the
+preceding result is continued. It excludes later company-tea stories while
+leaving private drinks, meals and other activities available. The birthday
+story establishes the shared photo and Jack's solo struggle before responses.
+Completed interludes return to the suspended scene; the client skips optional
+catch-up prompts on that one continuation. Other menus cannot interrupt a
+started interlude. Unresolved resource consequences remain subject to the
+existing fatigue and collapse rules.
+
+Character affinity reads the validated resolved speaker outcome. Nine new badges
+require matching committed choices and structured results, with receipt/plan
+awards also requiring their final scene. The existing anonymous character,
+achievement and completion endpoints replay these actions, enforce ownership,
+reject changed steps and deduplicate submissions. No new API endpoint, table,
+player identifier or deployment secret is introduced.

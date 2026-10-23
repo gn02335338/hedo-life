@@ -1,0 +1,827 @@
+{
+  "method": "Six canonical natural r61 routes, using public choice actions from office-treats-routes-v61.json and a resolved final birthday choice. No injected stats, flags, contexts, histories or supplied rewards.",
+  "routes": [
+    {
+      "id": "company-tea-2-0",
+      "roleId": "design",
+      "seed": "e39-r61-n-675df9dafeb46694ddfaa6",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-logo-bigger",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-semester-exchange-rate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "tea-star-and-half",
+        "tea-name-check",
+        "tea-no-scapegoat"
+      ]
+    },
+    {
+      "id": "jack-drinks-0-1",
+      "roleId": "design",
+      "seed": "e39-r61-n-675df9dafeb46694ddfaa6",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-logo-bigger",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-semester-exchange-rate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-interview-privacy"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-floor-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 1
+        }
+      ],
+      "expectedAchievements": [
+        "treat-jack-decline",
+        "tea-star-and-half",
+        "tea-name-check",
+        "tea-no-scapegoat"
+      ]
+    },
+    {
+      "id": "jack-drinks-2-0",
+      "roleId": "design",
+      "seed": "e39-r61-n-675df9dafeb46694ddfaa6",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-logo-bigger",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-semester-exchange-rate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-interview-privacy"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-floor-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "treat-jack-drink",
+        "treat-jonathan-toppings",
+        "tea-star-and-half",
+        "tea-name-check",
+        "tea-no-scapegoat"
+      ]
+    },
+    {
+      "id": "cake-final-help",
+      "roleId": "design",
+      "seed": "e39-r61-n-675df9dafeb46694ddfaa6",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-logo-bigger",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-semester-exchange-rate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-interview-privacy"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-floor-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-chairman-portrait"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-cola-code",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-stock-watermark",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-typeface-mood"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-farewell-not-served",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-notice-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-2",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "treat-jack-drink",
+        "treat-jonathan-toppings",
+        "tea-star-and-half",
+        "tea-name-check",
+        "tea-no-scapegoat",
+        "cake-jack-relief"
+      ]
+    },
+    {
+      "id": "cake-final-wait",
+      "roleId": "design",
+      "seed": "e39-r61-n-675df9dafeb46694ddfaa6",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-logo-bigger",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-semester-exchange-rate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-interview-privacy"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-floor-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-chairman-portrait"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-cola-code",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-stock-watermark",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-typeface-mood"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-farewell-not-served",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-notice-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-1",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-2",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "treat-jack-drink",
+        "treat-jonathan-toppings",
+        "tea-star-and-half",
+        "tea-name-check",
+        "tea-no-scapegoat",
+        "cake-let-it-thaw"
+      ]
+    },
+    {
+      "id": "cake-final-goose",
+      "roleId": "design",
+      "seed": "e39-r61-n-675df9dafeb46694ddfaa6",
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-logo-bigger",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-responsive-banner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-semester-exchange-rate",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-component-throne",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "q26-interview-privacy"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-dinner",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "q26-interview-privacy",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "education-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-floor-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-2",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-chairman-portrait"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-chairman-portrait",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz26-cola-code",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "salary-cut",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-stock-watermark",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "design-v21-typeface-mood"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "design-v21-typeface-mood",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "sam-farewell-not-served",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-paper-figure-ui",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "quiz-notice-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-2",
+          "index": 0
+        }
+      ],
+      "expectedAchievements": [
+        "treat-jack-drink",
+        "treat-jonathan-toppings",
+        "tea-star-and-half",
+        "tea-name-check",
+        "tea-no-scapegoat",
+        "cake-goose-chair"
+      ]
+    }
+  ]
+}

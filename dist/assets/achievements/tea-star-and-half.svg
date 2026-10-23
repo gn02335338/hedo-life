@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="tea-star-and-half-title tea-star-and-half-desc" data-art-version="61">
+ <title id="tea-star-and-half-title">福利有預算，評分先打折。</title>
+ <desc id="tea-star-and-half-desc">公司下午茶選中的店家旁標著一點五顆星，飲料仍照訂單進了公司。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 105) scale(1.02)"><path d="M-43-10h86v59h-86z" fill="#fffaf4"/><path d="M-51-34h102v26H-51z" fill="#ed6995"/><path d="M-34-34v26m23-26v26m22-26v26m23-26v26M-31 8h36v22h-36m48-22h14v41M-51 49H51" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-32-30h64l-8 77h-48z" fill="#ed6995"/><path d="M-38-39h76v12h-76z" fill="#fffaf4"/><path d="m9-54-2 64M-28 4h56" fill="none"/><path d="M-19 36h13m14 0h11" fill="none" stroke="#fffaf4"/></g><g transform="translate(51 143) scale(0.34)"><path d="m0-46 14 30 33 4-24 24 5 34L0 30l-28 16 5-34-24-24 33-4z" fill="#ed6995"/></g><circle cx="183" cy="47" r="21" fill="#fffaf4" stroke="#c67898" stroke-width="3"/><text x="183" y="53" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="15">1.5</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

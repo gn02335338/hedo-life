@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="treat-jack-drink-title treat-jack-drink-desc" data-art-version="61">
+ <title id="treat-jack-drink-title">傑克有請，這次真的有杯。</title>
+ <desc id="treat-jack-drink-desc">傑克請客的飲料確實送到手上，禮物盒和聯絡電話陪著這杯下班前的小確幸。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 105) scale(1.02)"><path d="M-32-30h64l-8 77h-48z" fill="#ed6995"/><path d="M-38-39h76v12h-76z" fill="#fffaf4"/><path d="m9-54-2 64M-28 4h56" fill="none"/><path d="M-19 36h13m14 0h11" fill="none" stroke="#fffaf4"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-37" y="-9" width="74" height="52" rx="5" fill="#ed6995"/><path d="M-42-22h84v17h-84z" fill="#fffaf4"/><path d="M0-22v65m0-66q-35-30-33-8 3 15 33 8zm0 0q35-30 33-8-3 15-33 8z" fill="#fffaf4"/></g><g transform="translate(51 143) scale(0.34)"><rect x="-25" y="-46" width="50" height="92" rx="9" fill="#fffaf4"/><path d="M-10-35h20m-24 12h28m-28 12H8m-22 12h22" fill="none"/><circle cy="33" r="4" fill="#ed6995"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>
