@@ -9,7 +9,7 @@ export const CAST_PROFILES_V65=Object.freeze({
  hester:Object.freeze({name:'海姐',title:'業務總監',department:'sales',seniority:'director',cost:18,sensitivity:.03,
   about:'海斯特，也叫 Hester，負責業務開發與客戶協調。與順哥有進修同學的交情，常參與跨部門的商務討論。',era:'海姐・業務與合作窗口'}),
  simon:Object.freeze({name:'丁哥',title:'產品設計專員',department:'product',seniority:'colleague',cost:12,sensitivity:.03,
-  about:'Simon，也叫賽門、丁丁或全才副理，從事產品設計。曾參與主管職務考核，也會主持員工活動。',era:'丁哥・設計與職責邊界'}),
+  about:'Simon，也叫賽門或丁丁，從事產品設計。曾參與主管職務考核，也會主持員工活動。',era:'丁哥・設計與職責邊界'}),
  james:Object.freeze({name:'詹姆士',title:'回鍋同事',department:'engineering',seniority:'colleague',cost:11,sensitivity:.01,
   about:'James，也有人寫作詹姆斯，曾多次離職後回到公司。熟悉不同時期的工作方式，同事以「移動趙子龍」打趣他的回鍋經歷。',era:'詹姆士・回鍋與版本沿革'}),
  johnny:Object.freeze({name:'強尼',title:'專案管理師',department:'project',seniority:'colleague',cost:11,sensitivity:.02,
