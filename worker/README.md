@@ -1029,3 +1029,27 @@ canonical history, not a new ending ID or altered saved state.
 All changes use existing anonymous proof endpoints. Per-run leaderboard entries
 retain owner isolation, idempotency and server-derived scores. There is no new
 credential, personal-data field or database migration.
+
+## Hedo Island static experience
+
+`/island/` is served from `dist/island/` through the existing static asset binding.
+It is a standalone original 3D miniature with nine districts, 27 dialogue
+choices and a six-stop day tour. The application makes no API calls and adds no
+server-side records or migrations. Existing career identity, saved games,
+collections and archive behavior are unchanged.
+
+Only the browser-local `hedo-island-v1` key is read or written. Its version 1
+record contains visited district IDs and selected choice indexes (0–2), with no
+credentials, free text or dialogue transcripts. Reads and writes project onto
+known districts, deduplicate visits and discard invalid indexes or choices for
+unvisited districts. If storage is unavailable, exploration remains usable for
+the current page session. Clearing browser storage removes these island memories.
+
+Three.js 0.180.0 and its helpers are bundled locally under MIT; see
+`dist/island/THREE-LICENSE.txt`. The island application, dialogue and procedural
+geometry are original; no reference-site code or assets are included. A WebGL
+fallback retains the list, stories and passport.
+
+After `npm start`, open `http://127.0.0.1:4173/island/`. Run the island checks with
+`node --test tests/island-content.test.mjs tests/island-progress.test.mjs`, and
+the repository checks with `npm test` and `npm run build:check`.

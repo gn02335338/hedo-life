@@ -2,7 +2,7 @@
 
 一款繁體中文職場黑色幽默遊戲。多種職缺、雙心情、隨機人設、升遷與離場，收集 883 種職業結局與 1,000 枚圖文成就。
 
-**[開始遊戲／史冊補完計畫](https://hedo-life.bvstudio.workers.dev)** · **[GitHub Issues](https://github.com/gn02335338/hedo-life/issues)**
+**[開始遊戲／史冊補完計畫](https://hedo-life.bvstudio.workers.dev)** · **[探索禾多島](https://hedo-life.bvstudio.workers.dev/island/)** · **[GitHub Issues](https://github.com/gn02335338/hedo-life/issues)**
 
 ## 這次的人生
 
@@ -210,6 +210,14 @@ e27 使用 `e27-` 新種子，加入存款門檻的離職規劃與 36 種各職�
 多人對話的挑人功能適用於 e14 及之後的既有局，不必另開新種子。原本沒有指定對象的操作仍沿用舊預設與重播結果；新操作只能選當時在場的人。取消選人不會留下遊戲操作，也不能藉此重抽結果。已同步的同一人生不能改選另一位來替換原分支。
 
 真實本機 API smoke 的啟動指令見 [Worker 說明](worker/README.md#local-verification)。Smoke 只允許 localhost，避免測試資料污染正式統計。
+
+### 禾多島
+
+`/island/` 是獨立的原創 3D 微縮島嶼體驗，包含九個地點、27 種回話、六站「島上的一天」導覽，以及日夜切換與探索護照。本機啟動後開啟 [禾多島](http://127.0.0.1:4173/island/)。無法顯示 WebGL 時仍可使用地點清單閱讀故事與集章，對方的反應在選擇回話後才揭曉。
+
+足跡與已選回話只存在這個瀏覽器的 `hedo-island-v1`，不呼叫遊戲 API，也不改動職涯存檔、匿名身分或收藏。場景使用本機附帶的 Three.js 0.180.0（[MIT 授權](dist/island/THREE-LICENSE.txt)）；應用程式碼、對話與場景幾何皆為原創，沒有複製參考網站的程式或素材。[參考觀察範圍](research/hedo-island-reference.md)與[資料行為](worker/README.md#hedo-island-static-experience)另有說明。
+
+島嶼測試涵蓋地點、公開角色、回話結構、導覽連結，以及獨立儲存鍵與損壞資料處理：`node --test tests/island-content.test.mjs tests/island-progress.test.mjs`。完整驗證仍使用 `npm test` 與 `npm run build:check`。
 
 ## GitHub + Cloudflare
 

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f4eb">
+  <meta name="description" content="歡迎來到禾多島。一座裝著上班日常的迷你群島，走訪九個地點、遇見熟悉的同事，收集你的登島回憶。">
+  <title>禾多島 HEDO ISLAND｜上班的事，上島再說。</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='20' fill='%23274e43'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-size='40' fill='%23f7edc7'%3E禾%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./island.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#district-list">跳至地點清單</a>
+  <header class="masthead">
+    <a class="wordmark" href="./" aria-label="禾多島首頁">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 30 24 21l17 9-17 10z" fill="#87a891"/><path d="M7 30v5l17 9 17-9v-5l-17 9z" fill="#d2b68a"/><path d="M24 8v23m0-14L14 9m10 14 12-10" stroke="#264e42" stroke-width="3" stroke-linecap="round"/><path d="M13 7c-6 0-4 9 9 11C24 11 18 6 13 7m24 4c6 0 5 8-11 13-1-6 6-13 11-13" fill="#527d58"/></svg>
+      <span>禾多島<small>HEDO ISLAND</small></span>
+    </a>
+    <span class="header-note">一座小島，很多上班的故事。</span>
+    <nav class="header-actions" aria-label="小島導覽">
+      <button id="tour-start" class="plain-button"><span aria-hidden="true">▷</span> 島上的一天</button>
+      <button id="passport-open" class="plain-button"><span aria-hidden="true">▧</span> 小島護照 <span id="passport-count" class="count-bubble">0</span></button>
+      <a class="game-link" href="/">回到人生 <span aria-hidden="true">↗</span></a>
+      <button id="help-open" class="help-button" aria-label="操作說明">?</button>
+    </nav>
+  </header>
+
+  <main class="island-layout">
+    <section id="map-area" class="map-area" aria-label="禾多島互動地圖">
+      <div id="scene" class="scene"></div>
+      <div id="loading" class="loading" role="status"><span class="loading-island" aria-hidden="true">禾</span><p>正在把小島搬過來…</p></div>
+      <div id="map-fallback" class="map-fallback" hidden><span aria-hidden="true">⌁</span><h2>換一種方式逛島</h2><p>這台裝置暫時無法顯示 3D 地圖。<br>從地點清單出發，故事與集章一樣可以玩。</p><button id="fallback-list" class="primary-button">開啟地點清單 ↗</button></div>
+      <div class="map-intro" id="map-intro"><div class="eyebrow"><span class="live-dot"></span> AN ORDINARY EXTRAORDINARY DAY</div><h1>上班的事，<br>上島再說<span>。</span></h1><p>在會議與海風之間，<br>找一點上班以外的日常。</p><button id="explore-start" class="explore-button">隨意走走 <span aria-hidden="true">↗</span></button></div>
+      <div class="map-top-right"><span class="weather"><span id="weather-icon" aria-hidden="true">☀</span> <span id="weather-label">晴時偶有會議</span></span><button id="list-toggle" class="round-button" aria-label="收合地點清單" aria-expanded="true" aria-controls="island-sidebar">☷</button></div>
+      <div class="compass" aria-hidden="true"><span>N</span><svg viewBox="0 0 40 40"><path d="m20 3 6 17-6-3-6 3z" fill="currentColor"/><path d="m20 37 6-17-6 3-6-3z" fill="currentColor" opacity=".25"/></svg></div>
+      <div class="zoom-controls" aria-label="地圖縮放"><button id="zoom-in" aria-label="放大地圖">＋</button><button id="zoom-out" aria-label="縮小地圖">−</button><button id="map-reset" aria-label="回到全島" title="回到全島">⌂</button></div>
+      <div class="map-caption"><span>九個地點 · 一點荒謬 · 很多日常</span><small>拖曳旋轉 · 滾輪縮放 · 點地點探索</small></div>
+      <div class="map-controls" role="group" aria-label="地圖顯示選項">
+        <button id="connections-toggle" aria-pressed="false"><span aria-hidden="true">⌁</span> 關係線</button><span class="control-divider"></span>
+        <button id="top-toggle" aria-pressed="false"><span aria-hidden="true">◇</span> 鳥瞰</button><span class="control-divider"></span>
+        <button id="pause-toggle" aria-pressed="false"><span aria-hidden="true">Ⅱ</span> <span id="pause-label">暫停</span></button>
+      </div>
+      <div class="time-control"><label for="time-range"><span id="time-icon" aria-hidden="true">☀</span><span id="time-name">午間小島</span><output id="time-output" for="time-range">12:00</output></label><input id="time-range" type="range" min="6" max="23" step="0.5" value="12" aria-label="小島時間"><div class="time-ticks"><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div></div>
+      <section id="tour-card" class="tour-card" aria-labelledby="tour-title" hidden><div class="tour-top"><span class="eyebrow">A DAY ON THE ISLAND</span><button id="tour-close" class="close-button" aria-label="結束導覽">×</button></div><div class="tour-heading"><span id="tour-time"></span><h2 id="tour-title"></h2></div><p id="tour-note"></p><div class="tour-footer"><div id="tour-dots" aria-label="導覽進度"></div><button id="tour-next" class="primary-button">下一站 →</button></div></section>
+      <button id="mobile-explore" class="mobile-explore" aria-expanded="false" aria-controls="island-sidebar"><span>探索小島 <small id="mobile-progress">0 / 9 已踏訪</small></span><span aria-hidden="true">↗</span></button>
+    </section>
+
+    <aside id="island-sidebar" class="sidebar" aria-label="地點清單與故事">
+      <div class="sidebar-top"><span class="eyebrow">THE ISLAND GUIDE</span><button id="sidebar-close" class="close-button mobile-only" aria-label="收合地點清單">×</button></div>
+      <div id="browse-panel"><h2>今天，想去哪裡？</h2><p class="side-description">工作可以晚點想，先逛一圈。</p><div class="search-wrap"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="找地點、角色、日常…" aria-label="搜尋地點或角色" autocomplete="off"><span class="search-key" aria-hidden="true">⌕</span></div><div class="filter-tabs" role="group" aria-label="篩選地點"><button id="filter-all" aria-pressed="true">全部地點 <span>09</span></button><button id="filter-visited" aria-pressed="false">我的足跡 <span id="visited-filter-count">00</span></button></div><div id="district-list" class="district-list" tabindex="-1"></div><p id="empty-search" class="empty-search" hidden>這裡還沒有足跡。<br>試試其他關鍵字，或從全部地點出發。</p><div class="sidebar-bottom"><div class="progress-caption"><span>小島探索進度</span><strong id="progress-label">0 / 9</strong></div><div class="progress-track"><div id="progress-bar"></div></div><p>每一次停留，都值得留個紀念。</p></div></div>
+      <article id="detail-panel" hidden aria-labelledby="detail-title"></article>
+      <div class="side-footnote"><button id="help-sidebar">操作說明</button> · 非官方職場寓言 · 對話皆為虛構</div>
+    </aside>
+  </main>
+
+  <dialog id="passport-dialog" class="island-dialog" aria-labelledby="passport-title"><div class="dialog-heading"><span class="eyebrow">LITTLE ISLAND, LITTLE MEMORIES</span><button class="close-button" data-close-dialog aria-label="關閉小島護照">×</button></div><div class="passport-title-row"><div><h2 id="passport-title">我的小島護照</h2><p>不必證明生產力，來過就有一章。</p></div><span class="passport-emblem" aria-hidden="true">禾</span></div><div id="passport-grid" class="passport-grid"></div><p id="passport-message"></p><p id="storage-note" class="storage-note">足跡保存在這個瀏覽器，不需要登入。</p><button id="passport-explore" class="primary-button">繼續去走走 ↗</button></dialog>
+  <dialog id="help-dialog" class="island-dialog help-dialog" aria-labelledby="help-title"><div class="dialog-heading"><span class="eyebrow">WELCOME ABOARD</span><button class="close-button" data-close-dialog aria-label="關閉操作說明">×</button></div><h2 id="help-title">不用打卡，也能登島。</h2><p>這是一座把職場日常變成風景的小島。點地點、遇見同事，選一句你想說的話。</p><div class="help-grid"><div><b>01 · 逛逛小島</b><p>拖曳旋轉、滾輪或雙指縮放。也可以直接使用地點清單；地圖聚焦時，方向鍵平移、＋／−縮放、Home 回全景。</p></div><div><b>02 · 遇見日常</b><p>每個地點有一段短篇。選擇回話後，才會揭曉對方的反應。</p></div><div><b>03 · 留下足跡</b><p>走訪就會蓋章。打開小島護照，看看還有哪裡沒去過。</p></div><div><b>04 · 換個時間</b><p>滑動時間看日夜，或跟著「島上的一天」走一趟。不用趕進度。</p></div></div><p class="help-note">禾多島是獨立的散步體驗。想體驗完整職涯故事，可以「回到人生」。</p></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><div class="noscript-note">禾多島需要 JavaScript 才能探索。請啟用 JavaScript，或<a href="/">回到人生首頁</a>。</div></noscript>
+</body>
+</html>
