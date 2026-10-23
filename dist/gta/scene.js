@@ -324,7 +324,7 @@ export async function createCityScene({ container, onReady } = {}) {
   }
   // Merge fixed parts by material once, so a car does not cost dozens of draw calls.
   // Animated doors stay separate, and all cars share geometry/material caches.
-  function mergeFixedParts(group) {
+  function mergeFixedParts(group, ownedGeometries = null) {
     const groups = new Map();
     for (const child of [...group.children]) {
       if (!child.isMesh) continue;
@@ -336,13 +336,15 @@ export async function createCityScene({ container, onReady } = {}) {
     }
     for (const [material, pieces] of groups) {
       const geometry = new THREE.BufferGeometry();
-      for (const attributeName of ['position', 'normal']) {
+      for (const attributeName of ['position', 'normal', 'uv']) {
+        if (pieces.some(piece => !piece.attributes[attributeName])) continue;
+        const itemSize = pieces[0].attributes[attributeName].itemSize;
         const length = pieces.reduce((n, piece) => n + piece.attributes[attributeName].array.length, 0);
         const array = new Float32Array(length); let offset = 0;
         for (const piece of pieces) { array.set(piece.attributes[attributeName].array, offset); offset += piece.attributes[attributeName].array.length; }
-        geometry.setAttribute(attributeName, new THREE.BufferAttribute(array, 3));
+        geometry.setAttribute(attributeName, new THREE.BufferAttribute(array, itemSize));
       }
-      pieces.forEach(piece => piece.dispose()); geometry.computeBoundingSphere(); geometries.add(geometry);
+      pieces.forEach(piece => piece.dispose()); geometry.computeBoundingSphere(); geometries.add(geometry); ownedGeometries?.add(geometry);
       const mesh = new THREE.Mesh(geometry, material); group.add(mesh);
     }
   }
@@ -352,8 +354,33 @@ export async function createCityScene({ container, onReady } = {}) {
   function contact(parent, x, z) {
     return part(parent, contactGeometry, contactMaterial, [0, 0.015, 0], [x, z, 1], [-Math.PI / 2, 0, 0]);
   }
-  function car(color) {
-    const group = new THREE.Group(); const paint = mat(color || '#b5c7b8', { metalness: 0.28, roughness: 0.32 });
+  let policeDecalMaterial = null;
+  function policeDecal() {
+    if (policeDecalMaterial) return policeDecalMaterial;
+    // Original local lettering; one texture shared by every police car and door.
+    const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 160;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#eef4ef'; ctx.fillRect(0, 0, 512, 160);
+    ctx.fillStyle = '#112936'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '900 56px "Arial", "Noto Sans TC", sans-serif'; ctx.fillText('禾多警察', 256, 47);
+    ctx.font = '900 56px "Arial", sans-serif'; ctx.fillText('POLICE', 256, 116);
+    const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace; textures.add(texture);
+    policeDecalMaterial = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide, toneMapped: false });
+    materials.set('policeDecal', policeDecalMaterial); return policeDecalMaterial;
+  }
+  const policeWhite = mat('#eef4ef', { metalness: 0.2, roughness: 0.34 });
+  const policeRedOff = mat('#601b2e'), policeBlueOff = mat('#173f74');
+  const policeRedOn = new THREE.MeshBasicMaterial({ color: '#ff3650', toneMapped: false });
+  const policeBlueOn = new THREE.MeshBasicMaterial({ color: '#35a9ff', toneMapped: false });
+  const policeRedDim = new THREE.MeshBasicMaterial({ color: '#a64552', toneMapped: false });
+  const policeBlueDim = new THREE.MeshBasicMaterial({ color: '#3b6e9b', toneMapped: false });
+  const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  materials.set('policeRedOn', policeRedOn); materials.set('policeBlueOn', policeBlueOn);
+  materials.set('policeRedDim', policeRedDim); materials.set('policeBlueDim', policeBlueDim);
+  function car(color, kind = null, id = '') {
+    const police = kind === 'police'; const ownedGeometries = new Set();
+    const group = new THREE.Group(); group.name = `vehicle:${id}`;
+    const paint = mat(police ? '#17232e' : color || '#b5c7b8', { metalness: 0.28, roughness: 0.32 });
     const rubber = mat('#182329'); const chrome = mat('#6f8a8c', { metalness: 0.75, roughness: 0.3 });
     part(group, boxGeometry, rubber, [0, 0.38, 0], [1.82, 0.38, 3.65]);
     part(group, boxGeometry, paint, [0, 0.62, 0], [1.95, 0.28, 3.92]);
@@ -366,7 +393,7 @@ export async function createCityScene({ container, onReady } = {}) {
       g.setIndex([0,4,5,0,5,1,2,6,7,2,7,3,4,7,6,4,6,5]); g.computeVertexNormals(); return g;
     });
     part(group, cabinGeometry, M.glass, [0, 0.98, 0.04], [1, 1, 1]);
-    part(group, boxGeometry, paint, [0, 1.64, 0.08], [1.34, 0.09, 1.12]);
+    part(group, boxGeometry, police ? policeWhite : paint, [0, 1.64, 0.08], [1.34, 0.09, 1.12]);
     for (const x of [-0.99, 0.99]) for (const z of [-1.21, 1.21]) {
       part(group, geo('wheel', () => new THREE.CylinderGeometry(0.43, 0.43, 0.28, 12)), rubber, [x, 0.44, z], [1,1,1], [0,0,Math.PI/2]);
       part(group, geo('rim', () => new THREE.CylinderGeometry(0.24, 0.24, 0.29, 8)), chrome, [x, 0.44, z], [1,1,1], [0,0,Math.PI/2]);
@@ -379,23 +406,41 @@ export async function createCityScene({ container, onReady } = {}) {
     part(group, boxGeometry, rubber, [0, 0.48, -2.0], [1.56, 0.12, 0.06]);
     part(group, boxGeometry, rubber, [0, 0.48, 2.0], [1.56, 0.12, 0.06]);
     part(group, boxGeometry, M.white, [0, 0.66, 1.995], [0.52, 0.15, 0.02]);
-    mergeFixedParts(group);
+    if (police) {
+      for (const side of [-1, 1]) part(group, boxGeometry, policeWhite, [side * 0.985, 0.65, 0], [0.075, 0.17, 2.05]);
+      part(group, boxGeometry, rubber, [0, 1.76, 0.05], [1.43, 0.15, 0.43]);
+      part(group, planeGeometry, policeDecal(), [0, 1.005, -1.33], [1.45, 0.66, 1], [-Math.PI / 2, 0, 0]);
+    }
+    mergeFixedParts(group, ownedGeometries);
     const door = new THREE.Group(); door.position.set(-0.96, 0.73, -0.88); group.add(door);
-    part(door, boxGeometry, paint, [0, 0.13, 0.78], [0.11, 0.44, 1.57]);
+    part(door, boxGeometry, police ? policeWhite : paint, [0, 0.13, 0.78], [0.11, 0.44, 1.57]);
     part(door, boxGeometry, M.glass, [0.1, 0.62, 0.76], [0.06, 0.55, 1.16]);
-    part(door, boxGeometry, chrome, [-0.065, 0.25, 1.19], [0.035, 0.06, 0.22]);
-    mergeFixedParts(door);
+    part(door, boxGeometry, chrome, [-0.065, police ? 0.33 : 0.25, 1.19], [0.035, 0.06, 0.22]);
+    mergeFixedParts(door, ownedGeometries);
     const passengerDoor = door.clone(); passengerDoor.position.x = 0.96; passengerDoor.scale.x = -1; group.add(passengerDoor);
+    let redFlash = null, blueFlash = null;
+    if (police) {
+      part(door, planeGeometry, policeDecal(), [-0.061, 0.13, 0.78], [1.32, 0.38, 1], [0, -Math.PI / 2, 0]);
+      // Mirror the passenger lettering as well as the door so it reads normally outside.
+      part(passengerDoor, planeGeometry, policeDecal(), [-0.061, 0.13, 0.78], [-1.32, 0.38, 1], [0, -Math.PI / 2, 0]);
+      redFlash = part(group, boxGeometry, policeRedOff, [-0.38, 1.92, 0.05], [0.61, 0.2, 0.35]);
+      blueFlash = part(group, boxGeometry, policeBlueOff, [0.38, 1.92, 0.05], [0.61, 0.2, 0.35]);
+    }
     const occupant = new THREE.Group(); group.add(occupant);
     // A small side silhouette makes occupied cars distinguishable before taking one.
     part(occupant, sphereGeometry, mat('#c99070'), [-0.77, 1.37, 0.03], [0.12, 0.16, 0.14]);
-    part(occupant, boxGeometry, mat('#8aaeb8'), [-0.77, 1.13, 0.08], [0.13, 0.29, 0.3]);
+    part(occupant, boxGeometry, mat(police ? '#243b55' : '#8aaeb8'), [-0.77, 1.13, 0.08], [0.13, 0.29, 0.3]);
     contact(group, 1.32, 2.4);
-    scene.add(group); return { group, door, passengerDoor, occupant, heading: null };
+    scene.add(group); return { group, door, passengerDoor, occupant, police, redFlash, blueFlash, ownedGeometries, flashOffset: [...String(id)].reduce((n, char) => n + char.charCodeAt(0), 0) % 8 };
   }
   // This is the authoritative fleet supplied by game physics, including parked cars.
   // No visual-only traffic or permanently owned player vehicle is created.
-  const fleetModels = new Map();
+  const fleetModels = new Map(); const visibleFleetIds = new Set();
+  function releaseCar(id, model) {
+    scene.remove(model.group);
+    for (const geometry of model.ownedGeometries) { geometry.dispose(); geometries.delete(geometry); }
+    model.ownedGeometries.clear(); fleetModels.delete(id);
+  }
 
   function person(tint = '#e6d79f', small = false) {
     const group = new THREE.Group(); const shirt = mat(tint); const skin = mat('#c99070'); const trousers = mat('#283c4a');
@@ -530,16 +575,27 @@ export async function createCityScene({ container, onReady } = {}) {
     lastFrameStamp = dt > 0 ? stamp : 0;
     if (['auto', 'low', 'high'].includes(quality) && quality !== qualityMode) { qualityMode = quality; applyQuality(); }
     let transitionCar = null, selectedCar = null;
-    for (const model of fleetModels.values()) model.group.visible = false;
+    visibleFleetIds.clear(); for (const state of fleet) visibleFleetIds.add(state.id);
+    for (const [id, model] of fleetModels) if (!visibleFleetIds.has(id)) releaseCar(id, model);
     for (const state of fleet) {
       let model = fleetModels.get(state.id);
-      if (!model) { model = car(state.color); fleetModels.set(state.id, model); }
+      if (model && model.police !== (state.kind === 'police')) { releaseCar(state.id, model); model = null; }
+      if (!model) { model = car(state.color, state.kind, state.id); fleetModels.set(state.id, model); }
       model.group.position.set(state.x, 0.04, state.z); model.group.rotation.y = -state.heading;
       model.group.visible = Math.hypot(state.x - px, state.z - pz) < (qualityLow ? 105 : 150) || cameraMode === 'aerial' || cinematic;
       model.occupant.visible = Boolean(state.occupied) && state.id !== controlledId;
       model.door.rotation.y = model.passengerDoor.rotation.y = 0;
+      if (model.police) {
+        // Alternate just twice per second; reduced-motion uses steady dim colors.
+        // Shared unlit materials keep this independent of dynamic light/shadow passes.
+        const flash = Math.floor(t * 2 + model.flashOffset) % 2;
+        const siren = state.siren !== false;
+        const steady = reducedMotion?.matches;
+        model.redFlash.material = !siren ? policeRedOff : steady ? policeRedDim : flash === 0 ? policeRedOn : policeRedOff;
+        model.blueFlash.material = !siren ? policeBlueOff : steady ? policeBlueDim : flash === 1 ? policeBlueOn : policeBlueOff;
+      }
       if (state.id === transition?.carId) transitionCar = state;
-      if (state.id === selectedCarId) selectedCar = state;
+      if (state.id === selectedCarId && state.kind !== 'police') selectedCar = state;
     }
     const jump = Number.isFinite(actor.y) ? Math.max(0, actor.y) : 0;
     walker.group.visible = walking || Boolean(transition);
@@ -657,7 +713,8 @@ export async function createCityScene({ container, onReady } = {}) {
   function getStats() {
     return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, pixelRatio: appliedDpr,
       quality: qualityMode, reduced: qualityLow, averageFrameMs: Math.round(frameAverage * 10000) / 10,
-      fleetModels: fleetModels.size, camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
+      fleetModels: fleetModels.size, policeModels: [...fleetModels.values()].filter(model => model.police).length,
+      geometryCount: renderer.info.memory.geometries, textureCount: renderer.info.memory.textures, camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
       target: { x: cameraTarget.x, y: cameraTarget.y, z: cameraTarget.z } };
   }
 

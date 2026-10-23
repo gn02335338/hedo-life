@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#121e27">
-  <meta name="description" content="禾多 GTA：從街上的行人開始，靠近車門搶車、自由駕駛、接同事委託。原創職場喜劇開放城市。">
+  <meta name="description" content="禾多 GTA：從街上的行人開始，靠近車門搶車、自由駕駛、接同事委託。搶車與碰撞會引來警察，甩開搜索才能解除通緝。">
   <title>禾多 GTA｜下班之前，城市是你的。</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23e5f45b'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-size='40' font-weight='900' fill='%23121e27'%3E禾%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="./gta.css">
@@ -20,7 +20,7 @@
       <nav class="toolbar" aria-label="遊戲工具">
         <a class="home-link" href="/">回移動人生 ↗</a>
         <button id="help" class="icon-btn" aria-label="操作說明" title="操作說明">?</button>
-        <button id="sound" class="icon-btn" aria-label="開啟引擎音效" aria-pressed="false" title="引擎音效">♪</button>
+        <button id="sound" class="icon-btn" aria-label="開啟遊戲音效" aria-pressed="false" title="引擎與警笛音效">♪</button>
         <button id="quality" class="icon-btn" aria-label="切換為省電畫質" title="畫質：自動">◈</button>
         <button id="pause" class="icon-btn game-only" aria-label="暫停遊戲" title="暫停 · Esc">Ⅱ</button>
       </nav>
@@ -30,12 +30,12 @@
       <div class="intro-copy">
         <p class="eyebrow"><span>OPEN WORLD</span> 禾多人生・城市番外篇</p>
         <h1 id="welcome-title">下班之前，<br><em>先狂飆。</em></h1>
-        <p class="intro-description">從一個沒車的下班人開始。<br>走上街頭，找輛車，整座禾多市由你接手。</p>
+        <p class="intro-description">從一個沒車的下班人開始。<br>走上街頭，找輛車，甩開身後的警笛。</p>
         <div class="start-actions"><button id="start" class="primary" disabled><span id="start-label">城市準備中</span><span aria-hidden="true">↗</span></button><button id="welcome-help" class="text-btn">怎麼玩 <span>↗</span></button></div>
         <p class="save-note" id="welcome-save">免登入 · 進度只儲存在這台裝置</p>
       </div>
       <div class="city-caption"><span class="coordinates">25° 02′ N &nbsp; 121° 33′ E <i>FICTIONAL CITY</i></span><div><span class="live-dot"></span> 傍晚 17:42 <b>禾多總部周邊</b></div><p>今天不趕 KPI，先趕下一個路口。</p></div>
-      <div class="welcome-footer"><span>02 — 街頭接手</span><p>行人開局 <i>·</i> 搶車漫遊 <i>·</i> 六段委託</p><span>WASD 移動 / F 搶車 / 滑鼠轉視角</span></div>
+      <div class="welcome-footer"><span>03 — 警笛響起</span><p>行人開局 <i>·</i> 警察追捕 <i>·</i> 六段委託</p><span>WASD 移動 / F 搶車 / 滑鼠轉視角</span></div>
     </section>
 
     <section id="hud" class="hud" hidden aria-label="遊戲資訊">
@@ -45,8 +45,8 @@
         <p id="mission-detail">走向路邊的車，靠近後按 F 搶車。</p>
         <div class="mission-bottom"><span id="mission-step">自由漫遊</span><span id="mission-distance">禾多總部周邊</span></div>
       </div>
-      <div class="wallet"><small>跑腿基金</small><strong id="money">$ 500</strong><span id="heat" aria-label="目擊警戒 0 級">☆☆☆</span><small id="heat-status"></small></div>
-      <div class="map-widget"><button id="open-map" aria-label="開啟城市地圖"><canvas id="minimap" width="360" height="360" aria-label="位置與任務目標小地圖"></canvas><span class="map-north">N ↑</span><span class="map-name">禾多市 <kbd>M</kbd></span></button><div class="district-line"><span class="live-dot"></span><span id="district">總部大道</span><span id="completed">0 / 6</span></div></div>
+      <div class="wallet"><small>跑腿基金</small><strong id="money">$ 500</strong><span id="heat" aria-label="通緝 0 星">☆☆☆☆☆</span><small id="heat-status" aria-live="polite"></small><div id="wanted-meter" class="wanted-meter" role="progressbar" aria-label="解除通緝進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><i id="wanted-bar"></i></div><small id="wanted-hint"></small></div>
+      <div class="map-widget"><button id="open-map" aria-label="開啟城市地圖"><canvas id="minimap" width="360" height="360" aria-label="位置、任務與警方搜索小地圖"></canvas><span class="map-north">N ↑</span><span class="map-name">禾多市 <kbd>M</kbd></span></button><div class="district-line"><span class="live-dot"></span><span id="district">總部大道</span><span id="completed">0 / 6</span></div></div>
       <div class="drive-panel"><div class="speed"><strong id="speed">WALK</strong><span id="speed-unit">ON FOOT</span></div><div class="drive-meta"><span id="drive-mode">街頭行人</span><button id="camera" title="切換視角 · V">切換視角 <kbd>V</kbd></button></div><div class="drive-actions"><button id="enter-exit"><span id="vehicle-button-label">靠近車輛</span> <kbd>F</kbd></button><button id="reset">回到路邊 <kbd>R</kbd></button></div></div>
       <div id="look-pad" class="look-pad" aria-label="拖曳右半畫面轉動視角"><span>拖曳轉視角</span></div>
       <div class="interaction"><div class="context-actions"><button id="vehicle-action" hidden><kbd>F</kbd><span>搶車</span></button><button id="interact" hidden><kbd>E</kbd><span>接取物品</span></button></div><span id="drive-hint">WASD 移動 · Shift 奔跑 · Space 跳躍 · 滑鼠轉視角</span></div>
