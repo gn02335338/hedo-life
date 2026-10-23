@@ -7,25 +7,12 @@ import * as THREE from './vendor/three.module.js';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { mergeGeometries } from './vendor/BufferGeometryUtils.js';
 
-const LAYOUT = [
-  { id: 'lobby', x: 0, z: 0, color: '#df7756', label: [0, 1.7, 3.45] },
-  { id: 'lab', x: -8.8, z: -7.8, color: '#739c9a', label: [0, 1.7, 3.5] },
-  { id: 'meeting', x: .3, z: -9.1, color: '#b597b5', label: [0, 1.7, 3.45] },
-  { id: 'hr', x: -10, z: 1, color: '#dcab69', label: [0, 1.7, 3.4] },
-  { id: 'finance', x: 9.2, z: -7.5, color: '#6d8896', label: [0, 1.7, 3.45] },
-  { id: 'cafe', x: -8.5, z: 9.5, color: '#ce7956', label: [0, 1.7, 3.5] },
-  { id: 'plaza', x: 9.7, z: 1.3, color: '#c88b75', label: [0, 1.7, 3.5] },
-  { id: 'court', x: .7, z: 10, color: '#729988', label: [0, 1.7, 3.4] },
-  { id: 'harbor', x: 10.8, z: 10.5, color: '#d2af72', label: [0, 1.7, 3.5] },
-];
-const LINKS = [
-  ['lab', 'meeting'], ['meeting', 'finance'], ['lab', 'hr'],
-  ['lab', 'lobby'], ['meeting', 'lobby'], ['finance', 'plaza'],
-  ['hr', 'lobby'], ['hr', 'cafe'], ['lobby', 'plaza'],
-  ['lobby', 'court'], ['cafe', 'court'], ['court', 'harbor'], ['plaza', 'harbor'],
-];
+import { displayPersona } from '../persona.js';
+import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, NPC_POSITIONS, movePlayer, nearestInteraction } from './navigation.js';
 
-export async function createIslandScene({ container, districts = [], onSelect = () => {}, onReady = () => {} }) {
+const COLLEAGUES = Object.freeze({ lobby:'wing', lab:'jack', meeting:'meimei', hr:'hope', finance:'janet', cafe:'jonathan', plaza:'captain', court:'owen', harbor:'cindy' });
+
+export async function createIslandScene({ container, districts = [], onSelect = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {} }) {
   if (!container) throw new Error('Missing island container');
   let renderer;
   try {
@@ -102,6 +89,14 @@ export async function createIslandScene({ container, districts = [], onSelect = 
   const tileGroups = new Map();
   const labelItems = [];
   const people = [];
+  const colleagues = [];
+  const interactionTargets = [];
+  let roaming = false, movementEnabled = true, nearby = null;
+  let moveInput = { x:0, z:0 };
+  let playerPosition = { ...PLAYER_SPAWN };
+  let walkTime = 0, playerMoving = false;
+  const cameraRight = new THREE.Vector3(), cameraDown = new THREE.Vector3();
+  const followTarget = new THREE.Vector3(), followDelta = new THREE.Vector3();
   const dataById = new Map(districts.map((d) => [d.id, d]));
   const mat = (color, opts = {}) => {
     const key = JSON.stringify([color, opts]);
@@ -594,7 +589,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     const title = document.createElement('span'); title.className = 'map-label-name'; title.textContent = name;
     button.append(count, title);
     button.setAttribute('aria-label', `探索${name}`);
-    button.addEventListener('click', (event) => { event.stopPropagation(); onSelect(config.id); });
+    button.addEventListener('click', (event) => { event.stopPropagation(); if(!roaming || nearby?.kind==='building' && nearby.districtId===config.id) onSelect(config.id); });
     overlay.append(button);
     labelItems.push({ id: config.id, element: button, position: new THREE.Vector3(config.x + config.label[0], config.label[1], config.z + config.label[2]) });
   }
@@ -636,30 +631,77 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     line(scene, points, '#badbd1');
   }
 
-  function makePerson(index, tile) {
+  function makePerson(index, tile, options = {}) {
     const g = group(scene);
-    const skin = mat(from(['#e9b48c','#cc936e','#a77256','#f0c4a3']));
-    const shirt = from([palette.white,palette.brick,palette.teal,palette.lilac,palette.gold,palette.navy]);
-    cylinder(g, shirt, 0, .44, 0, .14, .35, 7);
-    mesh(g, sphereSmoothG, skin, 0, .76, .015, .14,.16,.14);
-    const hair = mesh(g, sphereG, mat(from(['#5c4337','#39494c','#7b5844'])), 0, .85, -.02, .15,.09,.15);
+    const skin = mat(options.skin || from(['#e9b48c','#cc936e','#a77256','#f0c4a3']));
+    const shirt = options.shirt || from([palette.white,palette.brick,palette.teal,palette.lilac,palette.gold,palette.navy]);
+    const body = group(g);
+    cylinder(body, shirt, 0, .44, 0, .14, .35, 7);
+    mesh(body, sphereSmoothG, skin, 0, .76, .015, .14,.16,.14);
+    mesh(body, sphereG, mat(options.hair || '#5c4337'), 0, .85, -.02, .15,.09,.15);
+    for(const x of [-.049,.049]) ball(body,palette.navy,x,.77,.145,.012);
     const legs = [], arms = [];
     for (const x of [-.07,.07]) {
       const leg = group(g, x, .29, 0);
       cylinder(leg, palette.navy, 0, -.11, 0, .055, .24, 6);
       box(leg, palette.cream, 0, -.245, .035, .11, .08, .18);
       legs.push(leg);
-      const arm = group(g, Math.sign(x)*.19, .57, 0);
+      const arm = group(body, Math.sign(x)*.19, .57, 0);
       cylinder(arm, shirt, 0, -.08, 0, .045, .19, 6);
       ball(arm, skin, 0, -.21, 0, .052);
       arms.push(arm);
     }
-    if (index % 3 === 0) box(g, palette.wood, .25, .28, 0, .17, .22, .08);
-    if (index % 3 === 1) box(g, palette.navy, 0, .46, -.15, .2,.25,.11);
-    const phase = index * 1.74;
-    people.push({ object:g, legs, arms, tile, phase, speed:.07+random()*.035, radius:2.55+random()*.33, index });
+    if(options.accessory === 'bag') box(body,palette.wood,.25,.28,0,.17,.22,.08);
+    if(options.accessory === 'coffee') { cylinder(body,palette.cream,.22,.39,.12,.055,.15,8); cylinder(body,palette.woodDark,.22,.47,.12,.046,.012,8); }
+    if(options.accessory === 'clipboard') box(body,palette.cream,.22,.4,.06,.16,.24,.035,-.2);
+    if(options.accessory === 'glasses') { box(body,palette.navy,0,.79,.15,.25,.065,.025); box(body,palette.gold,0,.8,.17,.027,.025,.02); }
+    if(options.accessory === 'cap') { cylinder(body,palette.white,0,.9,0,.16,.12,10); box(body,palette.white,0,.86,.14,.24,.025,.16); }
+    if(options.player) {
+      // A bright hiking jacket, brimmed hat and red pack identify the visitor.
+      cylinder(body,palette.cream,0,.94,-.005,.16,.14,10);
+      cylinder(body,palette.cream,0,.87,.015,.215,.035,12);
+      box(body,palette.brick,0,.47,-.17,.23,.3,.13);
+      for(const x of [-.095,.095]) box(body,palette.brick,x,.5,.12,.026,.29,.035);
+      box(body,palette.white,0,.53,.15,.09,.1,.018);
+    }
+    const person = { object:g, body, legs, arms, tile, phase:index*1.74, speed:.07+random()*.035, radius:2.65+random()*.15, index };
+    if(!options.player) people.push(person);
+    return person;
   }
-  LAYOUT.forEach((config,index) => { makePerson(index*2, config); makePerson(index*2+1, config); });
+  const colleagueLooks = [
+    {shirt:palette.navy,accessory:'bag',hair:'#4a4540'},
+    {shirt:palette.teal,accessory:'glasses',hair:'#3d4142'},
+    {shirt:palette.brick,accessory:'clipboard',hair:'#574032'},
+    {shirt:palette.lilac,accessory:'clipboard',hair:'#5d4337'},
+    {shirt:palette.blue,accessory:'bag',hair:'#6c5142'},
+    {shirt:palette.white,accessory:'coffee',hair:'#3d4142'},
+    {shirt:palette.pink,accessory:'cap',hair:'#624438'},
+    {shirt:palette.navy,accessory:'glasses',hair:'#3d4142'},
+    {shirt:palette.gold,accessory:'clipboard',hair:'#73503f'},
+  ];
+  LAYOUT.forEach((config,index) => {
+    const id = COLLEAGUES[config.id];
+    const person = makePerson(index,config,colleagueLooks[index]);
+    person.id=id; person.fixed=true; person.home=NPC_POSITIONS[config.id];
+    person.object.scale.setScalar(1.18);
+    person.object.position.set(person.home.x,WALK_HEIGHT,person.home.z);
+    person.object.rotation.y=-.25;
+    const label=document.createElement('div');label.className='map-npc-label';label.textContent=displayPersona(id).name;label.setAttribute('aria-hidden','true');label.style.pointerEvents='none';label.style.display='none';overlay.append(label);
+    person.label=label;
+    colleagues.push(person);
+    interactionTargets.push({kind:'building',id:config.id,districtId:config.id,key:`building:${config.id}`,position:DISTRICT_ENTRANCES[config.id],radius:1.25});
+    interactionTargets.push({kind:'person',id,districtId:config.id,key:`person:${id}`,position:person.home,radius:1.4});
+    // The guide is stationary and approachable; a second tiny passer-by keeps
+    // each district lively without moving its interaction target.
+    makePerson(index+11,config,{shirt:from([palette.white,palette.teal,palette.brick,palette.lilac])});
+  });
+  const player=makePerson(100,LAYOUT[0],{player:true,shirt:palette.gold,skin:'#e9b48c',hair:'#5c4337'});
+  player.object.scale.setScalar(1.42);
+  player.object.visible=false;
+  player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);
+  const playerRing=mesh(scene,geo(new THREE.RingGeometry(.29,.39,28)),mat('#fff3be',{emissive:'#d7b14b',emissiveIntensity:.22,side:THREE.DoubleSide,depthWrite:false}),playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
+  playerRing.rotation.x=-Math.PI/2;playerRing.visible=false;playerRing.castShadow=false;
+  const playerMarker=document.createElement('div');playerMarker.className='map-player-marker';playerMarker.textContent='我';playerMarker.setAttribute('aria-hidden','true');playerMarker.style.pointerEvents='none';playerMarker.style.display='none';overlay.append(playerMarker);
 
   function boat(x,z, color, scale = 1, sail = false) {
     const b = group(scene, x, .03, z, -.45);
@@ -719,7 +761,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     pointer.set((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);
     raycaster.setFromCamera(pointer,camera);
     const hit=raycaster.intersectObjects(rayTargets,false).find((item)=>item.object.userData.district);
-    if(hit)onSelect(hit.object.userData.district);
+    if(hit && (!roaming || nearby?.districtId===hit.object.userData.district))onSelect(hit.object.userData.district);
   };
   renderer.domElement.addEventListener('pointerdown',onPointerDown);
   renderer.domElement.addEventListener('pointerup',onPointerUp);
@@ -738,7 +780,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     if(event.key==='+'||event.key==='='||event.key==='-'){
       event.preventDefault();transition=null;needsRender=true;camera.zoom=THREE.MathUtils.clamp(camera.zoom*Math.exp((event.key==='-'?-1:1)*.17),controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();
     } else if(event.key==='Home'){
-      event.preventDefault();for(const item of labelItems)item.element.setAttribute('aria-pressed','false');selectRing.visible=false;topView=false;moveCamera(homeTarget,1,homeOffset);
+      event.preventDefault();resetView();
     }
   };
   renderer.domElement.addEventListener('keydown',onKeyDown);
@@ -752,7 +794,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     camera.left=-baseView*aspect;camera.right=baseView*aspect;camera.top=baseView;camera.bottom=-baseView;
     // On tall screens keep the entire archipelago within the horizontal frame.
     if(aspect<.8){camera.left=-20.8;camera.right=20.8;camera.top=20.8/aspect;camera.bottom=-20.8/aspect;}
-    if(window.innerWidth>780){const dx=(camera.right-camera.left)*.04,dy=(camera.top-camera.bottom)*.02;camera.left-=dx;camera.right-=dx;camera.top-=dy;camera.bottom-=dy;}
+    if(window.innerWidth>780&&!roaming){const dx=(camera.right-camera.left)*.04,dy=(camera.top-camera.bottom)*.02;camera.left-=dx;camera.right-=dx;camera.top-=dy;camera.bottom-=dy;}
     camera.updateProjectionMatrix();renderer.setSize(width,height,false);
   };
   const resizeObserver=new ResizeObserver(resize);resizeObserver.observe(container);resize();
@@ -761,6 +803,111 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     const toPosition=target.clone().add(offset||camera.position.clone().sub(controls.target));
     if(reducedMotion.matches){controls.target.copy(target);camera.position.copy(toPosition);camera.zoom=zoom;camera.updateProjectionMatrix();controls.update();transition=null;return;}
     transition={start:performance.now(),targetFrom:controls.target.clone(),targetTo:target.clone(),positionFrom:camera.position.clone(),positionTo:toPosition,zoomFrom:camera.zoom,zoomTo:zoom};
+  }
+  function updateNearby() {
+    const next=roaming?nearestInteraction(playerPosition,interactionTargets,nearby?.key):null;
+    if(next?.key!==nearby?.key){nearby=next;needsRender=true;onNearby(next);}
+    return nearby;
+  }
+  function getFollowTarget() {
+    followTarget.set(playerPosition.x,WALK_HEIGHT+.85,playerPosition.z);
+    if(window.innerWidth<=780){
+      // Dialogs and detail sheets must not cover the visitor's position.
+      const screenY=movementEnabled?.48:.24;
+      const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);
+      followTarget.addScaledVector(up,-(camera.top-camera.bottom)/camera.zoom*(.5-screenY));
+    }
+    return followTarget;
+  }
+  function setMoveInput(input = {}) {
+    const x=Number(input.x),z=Number(input.z);
+    moveInput={x:roaming&&movementEnabled&&Number.isFinite(x)?THREE.MathUtils.clamp(x,-1,1):0,z:roaming&&movementEnabled&&Number.isFinite(z)?THREE.MathUtils.clamp(z,-1,1):0};
+  }
+  function standStill() {
+    playerMoving=false;player.body.position.y=0;
+    for(const limb of [...player.legs,...player.arms])limb.rotation.x=0;
+  }
+  function setMovementEnabled(value) {
+    movementEnabled=Boolean(value);needsRender=true;
+    if(!movementEnabled){moveInput={x:0,z:0};standStill();}
+  }
+  function setRoaming(value) {
+    const next=Boolean(value);if(next===roaming)return;
+    roaming=next;moveInput={x:0,z:0};standStill();needsRender=true;resize();
+    renderer.domElement.setAttribute('aria-label',next?'禾多島散步地圖。以 W A S D、方向鍵或畫面方向按鈕移動，靠近入口或同事後按 E 或空白鍵互動。可拖曳旋轉、捲動縮放，Home 回到全島。':'禾多島互動立體地圖，可拖曳旋轉、捲動縮放，或用地點按鈕探索。');
+    player.object.visible=next;playerRing.visible=next;
+    playerMarker.style.display=next?'':'none';
+    controls.enablePan=!next;
+    if(next){
+      movementEnabled=true;
+      controls.stopListenToKeyEvents();
+      controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_ROTATE};
+      topView=false;selectRing.visible=false;
+      player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);
+      moveCamera(getFollowTarget().clone(),window.innerWidth<=780?3.15:2.65,homeOffset);
+    }else{
+      controls.listenToKeyEvents(renderer.domElement);
+      controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
+      for(const colleague of colleagues)colleague.label.style.display='none';
+      moveCamera(homeTarget,1,homeOffset);
+    }
+    updateNearby();onRoamChange(next);
+  }
+  function resetView() {
+    if(roaming)setRoaming(false);
+    for(const item of labelItems)item.element.setAttribute('aria-pressed','false');
+    selectRing.visible=false;topView=false;moveCamera(homeTarget,1,homeOffset);
+  }
+  function updateWalking(dt) {
+    if(!roaming)return;
+    const beforeX=playerPosition.x,beforeZ=playerPosition.z;
+    if(movementEnabled&&(moveInput.x||moveInput.z)){
+      camera.updateMatrixWorld();
+      cameraRight.setFromMatrixColumn(camera.matrixWorld,0);cameraRight.y=0;cameraRight.normalize();
+      cameraDown.subVectors(camera.position,controls.target);cameraDown.y=0;
+      if(cameraDown.lengthSq()<.0001)cameraDown.set(-cameraRight.z,0,cameraRight.x);
+      else cameraDown.normalize();
+      const worldInput={x:cameraRight.x*moveInput.x+cameraDown.x*moveInput.z,z:cameraRight.z*moveInput.x+cameraDown.z*moveInput.z};
+      playerPosition=movePlayer(playerPosition,worldInput,dt,3.8);
+    }
+    const dx=playerPosition.x-beforeX,dz=playerPosition.z-beforeZ;
+    const moved=Math.hypot(dx,dz);
+    if(moved>.00005){
+      playerMoving=true;walkTime+=moved*2.5;needsRender=true;
+      const angle=Math.atan2(dx,dz);
+      const difference=Math.atan2(Math.sin(angle-player.object.rotation.y),Math.cos(angle-player.object.rotation.y));
+      player.object.rotation.y+=difference*Math.min(1,dt*18);
+      const stride=Math.sin(walkTime*5)*.47;
+      player.legs[0].rotation.x=stride;player.legs[1].rotation.x=-stride;
+      player.arms[0].rotation.x=-stride*.8;player.arms[1].rotation.x=stride*.8;
+      player.body.position.y=Math.abs(Math.sin(walkTime*5))*.025;
+    }else if(playerMoving){standStill();needsRender=true;}
+    player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);
+    playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
+    updateNearby();
+    for(const colleague of colleagues){
+      if(Math.hypot(colleague.home.x-playerPosition.x,colleague.home.z-playerPosition.z)>3.3)continue;
+      const angle=Math.atan2(playerPosition.x-colleague.home.x,playerPosition.z-colleague.home.z);
+      const difference=Math.atan2(Math.sin(angle-colleague.object.rotation.y),Math.cos(angle-colleague.object.rotation.y));
+      if(Math.abs(difference)>.005){colleague.object.rotation.y+=difference*Math.min(1,dt*5);needsRender=true;}
+    }
+    const desired=getFollowTarget();
+    if(transition){
+      const offset=transition.positionTo.clone().sub(transition.targetTo);
+      transition.targetTo.copy(desired);transition.positionTo.copy(desired).add(offset);
+    }else{
+      followDelta.subVectors(desired,controls.target);
+      if(followDelta.lengthSq()>.000001){
+        followDelta.multiplyScalar(reducedMotion.matches?1:1-Math.exp(-dt*9));
+        controls.target.add(followDelta);camera.position.add(followDelta);needsRender=true;
+      }
+    }
+  }
+  function positionOverlay(element,position,visible=true) {
+    const projected=position.clone().project(camera);
+    visible=visible&&projected.z>-1&&projected.z<1&&projected.x>-1.1&&projected.x<1.1&&projected.y>-1.1&&projected.y<1.1;
+    element.style.display=visible?'':'none';
+    if(visible)element.style.transform=`translate(${(projected.x*.5+.5)*width}px, ${(-projected.y*.5+.5)*height}px) translate(-50%, -50%)`;
   }
   function setHour(hour){
     const value=Number(hour);
@@ -787,6 +934,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     if(!paused||!renderedOnce){
     waterUniforms.uTime.value=elapsed;
     for(const person of people){
+      if(person.fixed){person.body.position.y=Math.sin(elapsed*1.6+person.phase)*.012;continue;}
       const a=person.phase+elapsed*person.speed;
       // Rounded paths keep miniature colleagues in the pedestrian plaza.
       person.object.position.set(person.tile.x+Math.cos(a)*person.radius,1.07+Math.abs(Math.sin(elapsed*5+person.phase))*.015,person.tile.z+Math.sin(a)*person.radius*.77+.17);
@@ -802,6 +950,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     }
     if(connectionGroup.visible)for(const item of connectionDots)item.dot.position.copy(item.curve.getPoint((elapsed*.12+item.offset)%1));
     }
+    updateWalking(dt);
     if(transition){
       const linear=Math.min(1,(time-transition.start)/850);const t=1-Math.pow(1-linear,3);
       controls.target.lerpVectors(transition.targetFrom,transition.targetTo,t);camera.position.lerpVectors(transition.positionFrom,transition.positionTo,t);camera.zoom=THREE.MathUtils.lerp(transition.zoomFrom,transition.zoomTo,t);camera.updateProjectionMatrix();
@@ -812,9 +961,15 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     camera.updateMatrixWorld();
     for(const item of labelItems){
       const v=item.position.clone().project(camera);
-      const visible=v.z>-1&&v.z<1&&v.x> -1.15&&v.x<1.15&&v.y> -1.1&&v.y<1.1;
+      const closeEnough=!roaming;
+      const visible=closeEnough&&v.z>-1&&v.z<1&&v.x> -1.15&&v.x<1.15&&v.y> -1.1&&v.y<1.1;
+      item.element.disabled=roaming&&!(nearby?.kind==='building'&&nearby.districtId===item.id);
       item.element.style.display=visible?'':'none';
       if(visible)item.element.style.transform=`translate(${(v.x*.5+.5)*width}px, ${(-v.y*.5+.5)*height}px) translate(-50%, -50%)`;
+    }
+    if(roaming){
+      positionOverlay(playerMarker,new THREE.Vector3(playerPosition.x,WALK_HEIGHT+1.85,playerPosition.z));
+      for(const colleague of colleagues)positionOverlay(colleague.label,new THREE.Vector3(colleague.home.x,WALK_HEIGHT+1.52,colleague.home.z),Math.hypot(colleague.home.x-playerPosition.x,colleague.home.z-playerPosition.z)<3.8);
     }
     renderer.render(scene,camera);
     renderedOnce=true;needsRender=false;
@@ -825,6 +980,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
   onReady({ reducedMotion:reducedMotion.matches });
   return {
     focus(id){
+      if(roaming)return;
       const config=LAYOUT.find((d)=>d.id===id);if(!config)return;
       for(const item of labelItems)item.element.setAttribute('aria-pressed',String(item.id===id));
       selectRing.position.set(config.x,1.08,config.z);selectRing.visible=true;
@@ -838,7 +994,11 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       }
       moveCamera(target,zoom);
     },
-    reset(){for(const item of labelItems)item.element.setAttribute('aria-pressed','false');selectRing.visible=false;topView=false;moveCamera(homeTarget,1,homeOffset);},
+    reset:resetView,
+    setRoaming,
+    setMoveInput,
+    setMovementEnabled,
+    interactNearby(){return updateNearby();},
     setHour,
     setConnections(value){connectionGroup.visible=Boolean(value);needsRender=true;for(const item of connectionDots)item.dot.position.copy(item.curve.getPoint((elapsed*.12+item.offset)%1));},
     setPaused(value){paused=Boolean(value);needsRender=true;},

@@ -1,6 +1,8 @@
 import { DISTRICTS, TOUR } from './content.js';
 import { readProgress, writeProgress } from './progress.js';
 import { displayPersona } from '../persona.js';
+import { ENCOUNTERS } from './encounters.js';
+import { bindWalkControls } from './walk-controls.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
@@ -20,6 +22,11 @@ let connections = false;
 let toastTimer;
 let lastFocus;
 let storageAvailable = true;
+let roaming = false;
+let nearby = null;
+let walkControls;
+const encounterChoices = new Map();
+const encounterById = new Map(ENCOUNTERS.map(item => [item.id, item]));
 
 function element(tag, className = '', text) {
   const node = document.createElement(tag);
@@ -115,6 +122,97 @@ function setSidebar(open) {
   $('#list-toggle').setAttribute('aria-expanded', String(open));
   $('#list-toggle').setAttribute('aria-label', open ? '收合地點清單' : '開啟地點清單');
   $('#mobile-explore').setAttribute('aria-expanded', String(open));
+  updateWalking();
+}
+function canWalk() {
+  const sidebarOpen = mobile.matches ? document.body.classList.contains('mobile-sheet-open') : !document.body.classList.contains('sidebar-collapsed');
+  return roaming && !sidebarOpen && !document.querySelector('dialog[open]');
+}
+function updateWalking() {
+  walkControls?.clear();
+  scene?.setMovementEnabled(canWalk());
+  document.body.classList.toggle('walking-blocked', roaming && !canWalk());
+  $('#walk-hint').textContent = mobile.matches ? '按住左下方向鍵移動 · 靠近後點「聊聊」' : 'W A S D／方向鍵移動 · 靠近後按 E 或空白鍵';
+}
+function syncRoaming(value) {
+  roaming = value;
+  document.body.classList.toggle('roaming', value);
+  $('#walk-hud').hidden = !value;
+  $('#roam-toggle').setAttribute('aria-pressed', String(value));
+  $('#roam-toggle').textContent = value ? '↗ 看全島' : '♟ 開始散步';
+  updateNearby(value ? nearby : null);
+  updateWalking();
+}
+function setRoaming(value) {
+  if (!scene) return;
+  stopTour();
+  if (value) { browse({ reset: false }); setSidebar(false); }
+  scene.setRoaming(value);
+  syncRoaming(value);
+  topView = false; $('#top-toggle').setAttribute('aria-pressed', 'false');
+  if (!value) { browse(); setSidebar(!mobile.matches); }
+  else $('#scene canvas')?.focus({ preventScroll: true });
+}
+function updateNearby(target) {
+  nearby = target;
+  $('#nearby-prompt').hidden = !target || !roaming;
+  if (!target) return;
+  const district = byId.get(target.districtId);
+  if (target.kind === 'person') {
+    const encounter = encounterById.get(target.id);
+    $('#nearby-name').textContent = displayPersona(target.id).name;
+    $('#nearby-greeting').textContent = encounter?.greeting || '一起聊聊島上的日常。';
+    $('#interact-label').textContent = '聊聊';
+  } else {
+    $('#nearby-name').textContent = district.name;
+    $('#nearby-greeting').textContent = '已經走到門口了，進來聽一段日常。';
+    $('#interact-label').textContent = '探索';
+  }
+}
+function renderEncounter(target) {
+  const district = byId.get(target.districtId);
+  const isPerson = target.kind === 'person';
+  const story = isPerson ? encounterById.get(target.id) : district.story;
+  const content = $('#encounter-content'); content.replaceChildren();
+  $('#encounter-place').textContent = `${district.number} / ${district.name} · ${isPerson ? '島上偶遇' : '門口的日常'}`;
+  if (isPerson) {
+    const speaker = element('div', 'encounter-speaker');
+    const portrait = element('img'); portrait.src = `/assets/${target.id}.png`; portrait.alt = '';
+    speaker.append(portrait, element('strong', '', displayPersona(target.id).name)); content.append(speaker);
+  }
+  const title = element('h2', '', story.title); title.id = 'encounter-title';
+  content.append(title, element('p', 'encounter-opening', story.opening));
+  const selected = isPerson ? encounterChoices.get(target.id) : progress.choices[district.id];
+  if (Number.isInteger(selected)) {
+    const result = element('div', 'story-response'); result.id = 'encounter-response'; result.tabIndex = -1;
+    result.append(element('b', '', `你說：${story.choices[selected].label}`), element('p', '', story.choices[selected].response));
+    content.append(result);
+    $('#encounter-leave').textContent = '把這段日常收好，繼續散步 →';
+  } else {
+    const choices = element('div', 'story-choices');
+    story.choices.forEach((choice, index) => {
+      const option = button('', '', () => {
+        if (isPerson) encounterChoices.set(target.id, index);
+        else { progress.choices[district.id] = index; save(); }
+        $('#encounter-count').textContent = `本次散步 · ${encounterChoices.size} / 9 段偶遇`;
+        renderEncounter(target);
+        $('#encounter-response').focus({ preventScroll: true });
+        $('#encounter-response').scrollIntoView({ block: 'nearest' });
+      });
+      option.dataset.encounterChoice = index;
+      option.append(element('span', '', `0${index + 1}`), document.createTextNode(choice.label)); choices.append(option);
+    });
+    content.append(choices);
+    $('#encounter-leave').textContent = '先聊到這裡，繼續走走 →';
+  }
+}
+function interactNearby() {
+  if (!canWalk()) return;
+  const target = scene?.interactNearby();
+  if (!target) return;
+  if (target.kind === 'person' && !encounterById.has(target.id)) return;
+  if (!progress.visited.includes(target.districtId)) { progress.visited.push(target.districtId); save(); syncProgress(); }
+  renderEncounter(target); openDialog($('#encounter-dialog'));
 }
 function browse({ reset = true } = {}) {
   activeId = null;
@@ -127,6 +225,7 @@ function browse({ reset = true } = {}) {
   $('#island-sidebar').scrollTop = 0;
 }
 function openList() {
+  if (roaming) setRoaming(false);
   stopTour(); browse(); setSidebar(true);
   $('#district-list').focus({ preventScroll: true });
 }
@@ -177,6 +276,7 @@ function renderDetail(d) {
 }
 function selectDistrict(id, { touring = false, moveFocus = true } = {}) {
   const d = byId.get(id); if (!d) return;
+  if (roaming) setRoaming(false);
   if (!touring) stopTour();
   activeId = id;
   const firstVisit = !progress.visited.includes(id);
@@ -213,6 +313,7 @@ function setHour(value) {
   scene?.setHour(hour);
 }
 function showTour(index) {
+  if (roaming) setRoaming(false);
   tourIndex = index;
   const stop = TOUR[index];
   document.body.classList.add('touring');
@@ -241,8 +342,17 @@ function renderPassport() {
     ? `九座小島都留下了你的足跡，也收下 ${memories} 段日常。今天的行程完成，剩下的時間是你的。`
     : `已踏訪 ${progress.visited.length} / 9 個地點，收下 ${memories} 段日常。還有 ${9 - progress.visited.length} 個地方等你慢慢發現。`;
 }
-function openDialog(dialog) { lastFocus = document.activeElement; dialog.showModal(); }
-function closeDialog(dialog) { dialog.close(); lastFocus?.focus({ preventScroll: true }); }
+function openDialog(dialog) { lastFocus = document.activeElement; dialog.showModal(); updateWalking(); }
+function restoreDialogFocus() {
+  if (roaming) $('#scene canvas')?.focus({ preventScroll: true });
+  else if (lastFocus?.isConnected) lastFocus.focus({ preventScroll: true });
+}
+function closeDialog(dialog) { dialog.close(); updateWalking(); restoreDialogFocus(); }
+
+walkControls = bindWalkControls({ pad: $('#walk-pad'), canMove: canWalk, onMove: input => scene?.setMoveInput(input), onInteract: interactNearby, onHome: () => setRoaming(false) });
+$('#roam-toggle').addEventListener('click', () => setRoaming(!roaming));
+$('#interact-button').addEventListener('click', interactNearby);
+$('#encounter-leave').addEventListener('click', () => closeDialog($('#encounter-dialog')));
 
 $('#search').addEventListener('input', renderList);
 for (const name of ['all', 'visited']) $('#filter-' + name).addEventListener('click', () => {
@@ -258,10 +368,10 @@ $('#sidebar-close').addEventListener('click', () => { setSidebar(false); $('#mob
 $('#mobile-explore').addEventListener('click', () => { stopTour(); setSidebar(true); });
 $('#fallback-list').addEventListener('click', openList);
 $('.skip-link').addEventListener('click', event => { event.preventDefault(); openList(); });
-$('#explore-start').addEventListener('click', wander);
+$('#explore-start').addEventListener('click', () => setRoaming(true));
 $('#zoom-in').addEventListener('click', () => scene?.zoom(1));
 $('#zoom-out').addEventListener('click', () => scene?.zoom(-1));
-$('#map-reset').addEventListener('click', () => { stopTour(); browse(); if (mobile.matches) setSidebar(false); });
+$('#map-reset').addEventListener('click', () => { if (roaming) setRoaming(false); else { stopTour(); browse(); if (mobile.matches) setSidebar(false); } });
 $('#connections-toggle').addEventListener('click', () => { connections = !connections; scene?.setConnections(connections); $('#connections-toggle').setAttribute('aria-pressed', String(connections)); });
 $('#top-toggle').addEventListener('click', () => { topView = !topView; scene?.setTopView(topView); $('#top-toggle').setAttribute('aria-pressed', String(topView)); });
 function updatePause() { scene?.setPaused(paused); $('#pause-toggle').setAttribute('aria-pressed', String(paused)); $('#pause-label').textContent = paused ? '播放' : '暫停'; }
@@ -279,6 +389,12 @@ $('#help-open').addEventListener('click', () => openDialog($('#help-dialog')));
 $('#help-sidebar').addEventListener('click', () => openDialog($('#help-dialog')));
 document.querySelectorAll('[data-close-dialog]').forEach(node => node.addEventListener('click', () => closeDialog(node.closest('dialog'))));
 document.querySelectorAll('dialog').forEach(dialog => {
+  dialog.addEventListener('close', () => {
+    updateWalking();
+    // Native Escape can need restoration; explicit navigation after close owns
+    // its new focus and must not be overridden by this queued close event.
+    if (document.activeElement === document.body || dialog.contains(document.activeElement)) restoreDialogFocus();
+  });
   dialog.addEventListener('click', event => {
     if (event.target !== dialog) return;
     const rect = dialog.getBoundingClientRect();
@@ -292,9 +408,9 @@ document.addEventListener('keydown', event => {
     else if (activeId) browse();
   }
 });
-mobile.addEventListener('change', () => { document.body.classList.remove('mobile-sheet-open', 'sidebar-collapsed'); setSidebar(!mobile.matches); });
+mobile.addEventListener('change', () => { document.body.classList.remove('mobile-sheet-open', 'sidebar-collapsed'); setSidebar(!mobile.matches && !roaming); });
 window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if (byId.has(id)) selectDistrict(id); else browse(); });
-window.addEventListener('pagehide', () => scene?.destroy(), { once: true });
+window.addEventListener('pagehide', () => { walkControls.destroy(); scene?.destroy(); }, { once: true });
 // A bfcache restoration needs a fresh renderer after pagehide teardown.
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 
@@ -305,17 +421,20 @@ const initialId = location.hash.slice(1);
 if (byId.has(initialId)) selectDistrict(initialId, { moveFocus: false });
 try {
   const { createIslandScene } = await import('./scene.js');
-  scene = await createIslandScene({ container: $('#scene'), districts: DISTRICTS, onSelect: id => selectDistrict(id) });
+  scene = await createIslandScene({ container: $('#scene'), districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onNearby: updateNearby, onRoamChange: syncRoaming });
   $('#loading').hidden = true;
+  $('#roam-toggle').disabled = false;
   setHour(hour); updatePause(); scene.setConnections(connections); scene.setTopView(topView);
   if (activeId) scene.focus(activeId);
   syncProgress();
   $('#scene').addEventListener('webglcontextlost', () => {
+    syncRoaming(false); $('#roam-toggle').disabled = true; $('#explore-start').disabled = true;
     $('#map-fallback').hidden = false;
     toast('地圖暫時休息中，仍可從清單探索。');
   }, true);
 } catch (error) {
   $('#loading').hidden = true; $('#map-fallback').hidden = false;
+  $('#roam-toggle').disabled = true; $('#explore-start').disabled = true;
   document.querySelectorAll('.map-controls button,.zoom-controls button').forEach(node => { node.disabled = true; });
   console.warn('Island map unavailable:', error instanceof Error ? error.message : 'renderer initialization failed');
 }

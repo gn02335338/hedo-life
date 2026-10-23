@@ -1033,9 +1033,12 @@ credential, personal-data field or database migration.
 ## Hedo Island static experience
 
 `/island/` is served from `dist/island/` through the existing static asset binding.
-It is a standalone original 3D miniature with nine districts, 27 dialogue
-choices and a six-stop day tour. The application makes no API calls and adds no
-server-side records or migrations. Existing career identity, saved games,
+It is a standalone original 3D miniature with nine districts, 27 district dialogue
+choices and a six-stop day tour. Walking mode adds a controllable visitor,
+connected bridges and nine public colleagues with 27 separate encounter choices.
+Keyboard and touch controls release movement when interrupted; conversations and
+the open district list stop walking. The application makes no API calls and adds
+no server-side records or migrations. Existing career identity, saved games,
 collections and archive behavior are unchanged.
 
 Only the browser-local `hedo-island-v1` key is read or written. Its version 1
@@ -1045,11 +1048,19 @@ known districts, deduplicate visits and discard invalid indexes or choices for
 unvisited districts. If storage is unavailable, exploration remains usable for
 the current page session. Clearing browser storage removes these island memories.
 
+Walking preserves that key and version 1 schema. Entering a district story or
+meeting a colleague can mark the district visited; choosing a district response
+uses its existing district ID. NPC outcomes live separately in the in-memory
+`encounterChoices` map keyed by public persona ID, never in the district-choice
+namespace. The encounter counter counts that map for the current page session;
+reloading resets it. Neither NPC responses nor visitor position are written to
+local storage, session storage, career history or the server.
+
 Three.js 0.180.0 and its helpers are bundled locally under MIT; see
 `dist/island/THREE-LICENSE.txt`. The island application, dialogue and procedural
 geometry are original; no reference-site code or assets are included. A WebGL
 fallback retains the list, stories and passport.
 
 After `npm start`, open `http://127.0.0.1:4173/island/`. Run the island checks with
-`node --test tests/island-content.test.mjs tests/island-progress.test.mjs`, and
+`node --test tests/island-*.test.mjs`, and
 the repository checks with `npm test` and `npm run build:check`.

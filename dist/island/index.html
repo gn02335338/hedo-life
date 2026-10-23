@@ -31,7 +31,19 @@
       <div id="scene" class="scene"></div>
       <div id="loading" class="loading" role="status"><span class="loading-island" aria-hidden="true">禾</span><p>正在把小島搬過來…</p></div>
       <div id="map-fallback" class="map-fallback" hidden><span aria-hidden="true">⌁</span><h2>換一種方式逛島</h2><p>這台裝置暫時無法顯示 3D 地圖。<br>從地點清單出發，故事與集章一樣可以玩。</p><button id="fallback-list" class="primary-button">開啟地點清單 ↗</button></div>
-      <div class="map-intro" id="map-intro"><div class="eyebrow"><span class="live-dot"></span> AN ORDINARY EXTRAORDINARY DAY</div><h1>上班的事，<br>上島再說<span>。</span></h1><p>在會議與海風之間，<br>找一點上班以外的日常。</p><button id="explore-start" class="explore-button">隨意走走 <span aria-hidden="true">↗</span></button></div>
+      <div class="map-intro" id="map-intro"><div class="eyebrow"><span class="live-dot"></span> AN ORDINARY EXTRAORDINARY DAY</div><h1>上班的事，<br>上島再說<span>。</span></h1><p>沿著小橋走走，靠近同事聊聊。<br>今天，用自己的步調探索。</p><button id="explore-start" class="explore-button">開始散步 <span aria-hidden="true">↗</span></button></div>
+      <button id="roam-toggle" class="roam-toggle" aria-pressed="false" disabled><span aria-hidden="true">♟</span> 開始散步</button>
+      <section id="walk-hud" class="walk-hud" aria-label="散步操作" hidden>
+        <div class="walk-status"><span class="eyebrow">ON FOOT · 自由散步</span><p id="walk-hint">W A S D／方向鍵移動 · 靠近入口或同事</p><small id="encounter-count">本次散步 · 0 / 9 段偶遇</small></div>
+        <div id="nearby-prompt" class="nearby-prompt" hidden><div role="status" aria-live="polite"><strong id="nearby-name"></strong><p id="nearby-greeting"></p></div><button id="interact-button" class="primary-button"><kbd>E</kbd> <span id="interact-label">聊聊</span></button></div>
+        <div id="walk-pad" class="walk-pad" role="group" aria-label="方向控制，按住移動">
+          <button data-walk="up" class="walk-up" aria-label="向上走">↑</button>
+          <button data-walk="left" class="walk-left" aria-label="向左走">←</button>
+          <span class="walk-center" aria-hidden="true">步</span>
+          <button data-walk="right" class="walk-right" aria-label="向右走">→</button>
+          <button data-walk="down" class="walk-down" aria-label="向下走">↓</button>
+        </div>
+      </section>
       <div class="map-top-right"><span class="weather"><span id="weather-icon" aria-hidden="true">☀</span> <span id="weather-label">晴時偶有會議</span></span><button id="list-toggle" class="round-button" aria-label="收合地點清單" aria-expanded="true" aria-controls="island-sidebar">☷</button></div>
       <div class="compass" aria-hidden="true"><span>N</span><svg viewBox="0 0 40 40"><path d="m20 3 6 17-6-3-6 3z" fill="currentColor"/><path d="m20 37 6-17-6 3-6-3z" fill="currentColor" opacity=".25"/></svg></div>
       <div class="zoom-controls" aria-label="地圖縮放"><button id="zoom-in" aria-label="放大地圖">＋</button><button id="zoom-out" aria-label="縮小地圖">−</button><button id="map-reset" aria-label="回到全島" title="回到全島">⌂</button></div>
@@ -55,7 +67,8 @@
   </main>
 
   <dialog id="passport-dialog" class="island-dialog" aria-labelledby="passport-title"><div class="dialog-heading"><span class="eyebrow">LITTLE ISLAND, LITTLE MEMORIES</span><button class="close-button" data-close-dialog aria-label="關閉小島護照">×</button></div><div class="passport-title-row"><div><h2 id="passport-title">我的小島護照</h2><p>不必證明生產力，來過就有一章。</p></div><span class="passport-emblem" aria-hidden="true">禾</span></div><div id="passport-grid" class="passport-grid"></div><p id="passport-message"></p><p id="storage-note" class="storage-note">足跡保存在這個瀏覽器，不需要登入。</p><button id="passport-explore" class="primary-button">繼續去走走 ↗</button></dialog>
-  <dialog id="help-dialog" class="island-dialog help-dialog" aria-labelledby="help-title"><div class="dialog-heading"><span class="eyebrow">WELCOME ABOARD</span><button class="close-button" data-close-dialog aria-label="關閉操作說明">×</button></div><h2 id="help-title">不用打卡，也能登島。</h2><p>這是一座把職場日常變成風景的小島。點地點、遇見同事，選一句你想說的話。</p><div class="help-grid"><div><b>01 · 逛逛小島</b><p>拖曳旋轉、滾輪或雙指縮放。也可以直接使用地點清單；地圖聚焦時，方向鍵平移、＋／−縮放、Home 回全景。</p></div><div><b>02 · 遇見日常</b><p>每個地點有一段短篇。選擇回話後，才會揭曉對方的反應。</p></div><div><b>03 · 留下足跡</b><p>走訪就會蓋章。打開小島護照，看看還有哪裡沒去過。</p></div><div><b>04 · 換個時間</b><p>滑動時間看日夜，或跟著「島上的一天」走一趟。不用趕進度。</p></div></div><p class="help-note">禾多島是獨立的散步體驗。想體驗完整職涯故事，可以「回到人生」。</p></dialog>
+  <dialog id="encounter-dialog" class="island-dialog encounter-dialog" aria-labelledby="encounter-title"><div class="dialog-heading"><span id="encounter-place" class="eyebrow"></span><button class="close-button" data-close-dialog aria-label="結束對話，繼續散步">×</button></div><div id="encounter-content"></div><button id="encounter-leave" class="encounter-leave">先聊到這裡，繼續走走 →</button></dialog>
+  <dialog id="help-dialog" class="island-dialog help-dialog" aria-labelledby="help-title"><div class="dialog-heading"><span class="eyebrow">WELCOME ABOARD</span><button class="close-button" data-close-dialog aria-label="關閉操作說明">×</button></div><h2 id="help-title">不用打卡，也能登島。</h2><p>這是一座把職場日常變成風景的小島。親自走一段路，遇見同事，選一句你想說的話。</p><div class="help-grid"><div><b>01 · 自由散步</b><p>點「開始散步」，用 W A S D 或方向鍵移動；手機按住畫面方向盤。拖曳旋轉視角，滾輪或雙指縮放。按 Home 或「看全島」回到地圖。</p></div><div><b>02 · 靠近聊聊</b><p>走近建築入口或同事，提示出現後按 E、空白鍵或「聊聊」。選擇回話後才揭曉反應，對話時會暫停走動。</p></div><div><b>03 · 留下足跡</b><p>走近入口再探索會蓋章；地點清單也能閱讀故事與集章。同事偶遇記在本次散步，重新整理會重來。</p></div><div><b>04 · 換個時間</b><p>回到全島後可滑動時間看日夜，或跟著「島上的一天」走一趟。暫停只停止環境動態，仍可自己走動。</p></div></div><p class="help-note">禾多島是獨立的散步體驗。想體驗完整職涯故事，可以「回到人生」。</p></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <noscript><div class="noscript-note">禾多島需要 JavaScript 才能探索。請啟用 JavaScript，或<a href="/">回到人生首頁</a>。</div></noscript>
 </body>
