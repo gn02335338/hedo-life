@@ -5,7 +5,7 @@ import {createHash,randomBytes,randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import vm from 'node:vm';
 import * as E from '../dist/engine.js';
-import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
+import {ACTIVITY_IDS_V44 as CURRENT_ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
 import {isActivityPlayV55,deriveActivityPlayV55,getActivityPlayV55,resolveActivityPlayV55} from '../dist/activity-play-v55.js';
 import {renderActivityPlayHTMLV55,mountActivityPlayV55} from '../dist/activity-play-ui-v55.js';
 import {ROLE_MAP} from '../dist/roles.js';
@@ -19,6 +19,8 @@ import {validateFeedback,validatePublisherToken} from '../worker/feedback.js';
 import * as http from '../worker/http.js';
 
 const fixture=JSON.parse(readFileSync(new URL('./fixtures/activity-play-routes-v55.json',import.meta.url),'utf8'));
+// These published proofs predate Camel. The r65 suite owns its new controls.
+const ACTIVITY_IDS_V44=CURRENT_ACTIVITY_IDS_V44.filter(id=>id!=='camel');
 const oldRoutes=JSON.parse(readFileSync(new URL('./fixtures/energy-safety-routes-v54.json',import.meta.url),'utf8')).routes;
 const copy=value=>JSON.parse(JSON.stringify(value));
 const route=id=>{const row=fixture.routes.find(row=>row.id===id);assert.ok(row,id);return row;};

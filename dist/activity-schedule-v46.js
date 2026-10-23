@@ -1,8 +1,10 @@
+import {isExpansionV65} from './expansion-profile-v65.js';
 // A seed fixes when an invitation can arrive. Reading a calendar never rolls
 // the game's RNG, changes a save, or lets the player choose an activity.
 import {isParticipationV63} from './participation-profile-v63.js';
 import {ROADSHOW_INVITATION_V63} from './roadshow-v63.js';
 export const ACTIVITY_WINDOWS_V46=Object.freeze({
+ camel:Object.freeze([3,17]),
  arm:Object.freeze([2,15]),diet:Object.freeze([4,11]),roadshow:Object.freeze([6,15]),
  dinner:Object.freeze([3,17]),basketball:Object.freeze([2,17]),review:Object.freeze([8,18]),
  banquet:Object.freeze([16,19])
@@ -31,7 +33,7 @@ export function scheduledActivityV46(run){
  const banquetDue=16+hash(`${run.seed}:banquet`)%3;
  if(inWindow(turn,'banquet')&&turn>=banquetDue&&unseen(run,'banquet')&&(ready||turn===19))return 'banquet';
  if(!ready||(run.flags.activity46_count||0)>=3||hash(`${run.seed}:${turn}:invitation`)/4294967296>=.42)return null;
- const ids=COMMON_ACTIVITIES.filter(id=>inWindow(turn,id)&&unseen(run,id));
+ const ids=COMMON_ACTIVITIES.filter(id=>(id!=='camel'||isExpansionV65(run))&&inWindow(turn,id)&&unseen(run,id));
  if(!ids.length)return null;
  const role=run.actualRoleId||run.roleId,total=ids.reduce((sum,id)=>sum+weight(id,role),0);
  let ticket=hash(`${run.seed}:${turn}:activity`)/4294967296*total;
@@ -42,6 +44,7 @@ export function scheduledActivityV46(run){
 // These invitations precede the existing multi-scene activities. Nothing here
 // implies that the player has agreed, travelled, paid, or started competing.
 const INVITATIONS=Object.freeze({
+ camel:{title:'丁哥搬來三張名牌：真人駱駝大賽，要來嗎？',speaker:'simon',scene:'meeting',source:'characterFiction',body:'丁哥代表福委會來揪真人駱駝大賽，手上卻只有紙名牌和骰袋。阿福正問誰要扛誰，他把名牌放到桌上：真人只負責喊位置，不抬人。你還沒報名，今天的活動點也不用花錢買。',wing:'要來一起猜排名嗎？名牌跑就好，人坐著也能玩。',choices:['參加，先看看骰色與疊堆怎麼算。','這場我先不去，留著處理自己的安排。','派玩具鵝先報名，本尊這次不出席。'],results:['你向丁哥報名，準備過去看規則。紙名牌先進場，現金留在口袋。','你說這次不參加，丁哥把人數核對好，沒有收活動費。','丁哥問鵝會不會自己猜排名，你說牠負責精神出席。你沒有參賽，先回原本的事。']},
  arm:{title:'阿福的手還沒上桌，邀請先到了。',speaker:'jack',scene:'office_day',source:'videoOffice',
   body:'傑克從隔壁探頭，問你要不要一起看腕力大賽。阿福站在桌邊，先說今天吃太飽，又問有沒有錄影。比賽還沒開始，你連椅子都還沒搬過去。',
   wing:'要來嗎？先看他今天到底願不願意比。',
@@ -86,7 +89,9 @@ const invitation=run=>{
 
 export function getActivityInvitationEventV46(run){
  const {context,copy}=invitation(run);
- return {id:`activity46-invite-${context.id}`,title:copy.title,body:copy.body,speaker:copy.speaker,wing:copy.wing,
+ if(context.id==='camel'&&!isExpansionV65(run))throw new Error('Invalid camel invitation');
+ const freshDiet=context.id==='diet'&&isExpansionV65(run);
+ return {id:`activity46-invite-${context.id}`,title:freshDiet?'傑克來揪三隊減肥比賽。':copy.title,body:freshDiet?'傑克在群組主揪減肥比賽，Johnny、安妮余、阿福各帶一隊。這次用七天飲食與活動行事曆記錄自己的安排，不公布真人身體數字；你還沒選隊，也可以說不參加。':copy.body,speaker:freshDiet?'jack':copy.speaker,wing:copy.wing,
   kind:'activity-invitation',era:context.id==='banquet'?'年度後段・尾牙通知':'突然的活動邀約',scope:'work',scene:copy.scene,
   sourceIds:[...new Set([copy.source,'characterFiction'])],
   choices:copy.choices.map((text,index)=>({text,result:copy.results[index],delta:{},...(index===2?{wild:true}:{})}))};

@@ -3,7 +3,7 @@
   "styleRevision": 41,
   "method": "Built-in image_gen illustrations, composed and optimized with Sharp",
   "counts": {
-    "portraitRemakes": 20,
+    "portraitRemakes": 26,
     "preservedPortraits": 2,
     "scenePlates": 42,
     "endingMasters": 68,
@@ -1202,6 +1202,60 @@
       "height": 760,
       "bytes": 154349,
       "sha256": "3adf054ebdfb93771aedc076373a337d63b363b413612260a44a545cfdce2838",
+      "referenceRemake": true
+    },
+    {
+      "id": "zoe",
+      "path": "./assets/zoe.png",
+      "width": 600,
+      "height": 600,
+      "bytes": 327110,
+      "sha256": "2a9f10536484e50df4b7162b3a43d583cea05e3608e66b90d78e32603d9c37c5",
+      "referenceRemake": true
+    },
+    {
+      "id": "action",
+      "path": "./assets/action.png",
+      "width": 600,
+      "height": 600,
+      "bytes": 355101,
+      "sha256": "f7f5e24b8f20e68f8485062924e212e4771a3c0dcca0f36a0a75fa4a86860c33",
+      "referenceRemake": true
+    },
+    {
+      "id": "hester",
+      "path": "./assets/hester.png",
+      "width": 600,
+      "height": 600,
+      "bytes": 405880,
+      "sha256": "56ebb840ba2cc0d047cc9ca39739a9b5f6afb7d49adc9871003072b78d2cc5bb",
+      "referenceRemake": true
+    },
+    {
+      "id": "simon",
+      "path": "./assets/simon.png",
+      "width": 600,
+      "height": 600,
+      "bytes": 404185,
+      "sha256": "5c300e56dd796b847d994cb7f4608fd553eaf6fc13d81762071f1c51960e972e",
+      "referenceRemake": true
+    },
+    {
+      "id": "james",
+      "path": "./assets/james.png",
+      "width": 600,
+      "height": 600,
+      "bytes": 384764,
+      "sha256": "f1b7339b556b83d5b166782add179d7c4d46f5c72eb6c964d83db463b65859cd",
+      "referenceRemake": true
+    },
+    {
+      "id": "johnny",
+      "path": "./assets/johnny.png",
+      "width": 600,
+      "height": 600,
+      "bytes": 410669,
+      "sha256": "ebd1631390646da14830a8acc05fa9060553c1e3ef3299d7d1d8f1809a42467a",
       "referenceRemake": true
     }
   ],

@@ -1,3 +1,4 @@
+import {isExpansionV65} from '../dist/expansion-profile-v65.js';
 import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
 import {isActivityPlayV55,deriveActivityPlayV55} from '../dist/activity-play-v55.js';
 import {isShareholderV58,validateShareholderInputV58} from '../dist/shareholders-v58.js';
@@ -6,7 +7,7 @@ import {isParticipationV63} from '../dist/participation-profile-v63.js';
 
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
-const RAGE_TARGET_IDS=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain']);
+const RAGE_TARGET_IDS=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','zoe','action','hester','simon','james','johnny']);
 
 export class ApiError extends Error {
   constructor(status, code, message) {
@@ -138,7 +139,7 @@ export function validateCompletion(body, roleMap) {
       throw new ApiError(400, 'invalid_actions', '股東大會的操作紀錄無效。');
     }
     if (action.type === 'activity-play') {
-      if (isActivityPlayV55(body.seed)&&Object.keys(action).sort().join(',')==='eventId,index,input,type,version'&&action.version===1&&action.index===1
+      if (isActivityPlayV55(body.seed)&&(action.input?.kind!=='camel'||isExpansionV65(body.seed))&&Object.keys(action).sort().join(',')==='eventId,index,input,type,version'&&action.version===1&&action.index===1
           &&typeof action.eventId==='string'&&action.eventId.trim().length>0&&action.eventId.length<=100) {
         try { deriveActivityPlayV55(action.input,action.input?.kind); continue; } catch {}
       }
@@ -160,7 +161,7 @@ export function validateCompletion(body, roleMap) {
     }
     if (action.type === 'activity') {
       if (/^e39-/.test(body.seed)&&!/^e39-cal46-/.test(body.seed)&&!isRecruitmentV60(body.seed)&&Object.keys(action).sort().join(',')==='activityId,type,version'
-          &&action.version===1&&ACTIVITY_IDS_V44.includes(action.activityId)) continue;
+          &&action.version===1&&ACTIVITY_IDS_V44.includes(action.activityId)&&(action.activityId!=='camel'||isExpansionV65(body.seed))) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
     if (action.type === 'patronage-reply') {

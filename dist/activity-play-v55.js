@@ -1,9 +1,12 @@
+import {isExpansionV65} from './expansion-profile-v65.js';
+import {deriveCamelInputV65,getCamelPlayV65,resolveCamelPlayV65} from './camel-v65.js';
+import {isDietV65,DIET_TEAMS_V65,dietTeamV65,dietPlayCopyV65} from './diet-v65.js';
 // Player inputs are bounded evidence of a local game, never a trusted score.
 // The canonical engine derives performance and draws the fictional outcome.
 import {isRecruitmentV60} from './seed-profile-v60.js';
 import {isRoadshowV63,ROADSHOW_PLAY_V63,roadshowPlayCopyV63} from './roadshow-v63.js';
 export const isActivityPlayV55=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-g-e-s-m-/.test(typeof run==='string'?run:run?.seed||'');
-const ids=['arm','diet','roadshow','dinner','banquet','basketball','review'];
+const ids=['arm','diet','roadshow','dinner','banquet','basketball','review','camel'];
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 export const ACTIVITY_PLAY_CONTENT_V55=Object.freeze({
  arm:{title:'八秒上桌，這回輪到你。',instructions:'按開始後，在八秒內按動出力鍵，保持節奏；連續猛按也會累。也可選不計時的八拍模式。比賽只在畫面裡進行，不必真的用手腕硬撐。',duration:8000,steadyTimes:[500,1500,2500,3500,4500,5500,6500,7500]},
@@ -30,6 +33,7 @@ const timingHits=(entries,targets,window)=>{
 };
 
 export function deriveActivityPlayV55(input,id){
+ if(id==='camel')return deriveCamelInputV65(input);
  if(!ids.includes(id)||!input||input.kind!==id)throw new Error('Invalid activity play kind');
  let score=0,summary='',measures={};
  if(id==='arm'){
@@ -70,13 +74,15 @@ export function deriveActivityPlayV55(input,id){
 
 export function getActivityPlayV55(run){
  const x=run?.activityContext;
+ if(x?.id==='camel')return getCamelPlayV65(run);
  if(!isActivityPlayV55(run)||run.pending||run.completed||!x||x.version!==1||x.stage!==1||!ids.includes(x.id)||run.eventId!==`activity44-${x.id}-1`)return null;
- return {id:x.id,version:1,...structuredClone(isRoadshowV63(run)?ROADSHOW_PLAY_V63:ACTIVITY_PLAY_CONTENT_V55[x.id])};
+ return {id:x.id,version:1,...structuredClone(isRoadshowV63(run)?ROADSHOW_PLAY_V63:ACTIVITY_PLAY_CONTENT_V55[x.id]),...(isDietV65(run)?{teams:structuredClone(DIET_TEAMS_V65),team:dietTeamV65(run)?.id||null}:{})};
 }
 
 export function withActivityPlayEventV55(run,event){
  if(!isActivityPlayV55(run)||!run.activityContext)return event;
  const x=run.activityContext,out={...event,choices:event.choices.map(choice=>({...choice}))};
+ if(x.id==='camel'){if(x.stage===1){out.activityPlay={id:'camel',version:1};out.title=getCamelPlayV65({...run,pending:false})?.title||out.title;out.choices[1].text='擲骰，揭曉這一輪';}return out;}
  if(x.id==='arm'){
   out.activity={...out.activity,mechanic:'議定規則 → 八秒出力 → 理由伯記者會'};
   if(x.stage===0){out.body='傑克把桌面清空，這回請你和阿福上桌。阿福先問有沒有錄影，再說今天吃太飽。披薩盒裡又少了一片。你們提議先比一小場，他想了一下，說開始的那一秒也要先定義。';out.choices[0].text='先訂好時間、喊停與平手規則，再把手放上桌。';}
@@ -94,6 +100,7 @@ export function withActivityPlayEventV55(run,event){
 }
 
 export function resolveActivityPlayV55(run,input,ticket){
+ if(run?.activityContext?.id==='camel')return resolveCamelPlayV65(run,input,ticket);
  const x=run.activityContext,id=x?.id;
  if(!getActivityPlayV55(run)||!Number.isFinite(ticket)||ticket<0||ticket>=1)throw new Error('Unavailable activity play');
  const played=deriveActivityPlayV55(input,id),{grade,score,measures}=played;
@@ -126,5 +133,6 @@ export function resolveActivityPlayV55(run,input,ticket){
  }else{
   label=success?'問題與佐證對上了':'先把缺件列清楚';result=played.summary+(success?' 委員照頁碼找到能核對的內容，水蛇終於不用靠眼神替附件補字。正式審查結果仍待通知，這一輪至少知道每個承諾要找哪份資料。':' 有份附件對不上問題，委員請你先列缺件。你沒有拿願景補成證據，水蛇記下責任人與補件期限；這次不是現場宣布過關，也不用假裝每一頁都存在。');delta={energy:-5,skill:2,trust:success?5:2,mood:success?5:-2};
  }
+ if(id==='diet')result=dietPlayCopyV65(run,played,result);
  return {result,label,delta,flags,score:clamp((x.score||0)+gain,0,12),pressure:clamp((x.pressure||0)+load,0,12),plan,done:false,choiceText:played.summary,performance:{version:1,grade,score,summary:played.summary,measures,injured:injury,injuryTarget}};
 }

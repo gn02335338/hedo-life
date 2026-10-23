@@ -960,3 +960,36 @@ all-company attendance, Meimei hosting and three contrasting speakers. Coffee
 costs in the story refer to NT$300 charged by the venue, never 300 savings stat
 points or a new player purchase. No new endpoint, identity field, credential or
 database migration is required.
+
+
+## Cast and activity expansion (v65)
+
+Fresh lives use `e39-r65-[nsd]-` and inherit the r63 participation rules.
+Historical seed cohorts keep their published event pools, meal pages, random
+draws, invitation schedules and transcripts. Six public character IDs are added
+to the existing anonymous character store; their gameplay is gated to r65.
+No credential, identity field or database migration is introduced.
+
+Camel remains an `activity-play` version 1 action with source index 1. Its exact
+input is `{kind:'camel',move:0|1|2,prediction:[0,1,2]}` with a permutation for
+`prediction`. The first prediction is locked. Six submissions each reveal one
+server-derived color and a 1–3 die; colors are drawn without replacement in
+three-color legs. Client-provided dice, points, altered predictions and extra
+rounds are rejected. Structured `activityOutcome.camel` records the revealed
+board and ranking; `performance` continues to represent only the bounded raw
+input, so existing report reconstruction remains compatible. Six rounds are
+part of one activity, with no added workday, payroll, loan installment or PIP
+tick. Activity points are not cash. Mid-event departure retains resolved rounds
+but does not mark the whole activity complete.
+
+The four-stage blockchain interlude uses existing `choice` actions and an owned
+context. Its structured outcomes project character affinity only after a reply
+is committed. It has explicit start and end notices, can be left early and
+returns to the original work scene without re-answering that scene or crediting
+a workday. Pending scenes own the screen until continued; recovery and other
+side actions cannot interrupt the interlude.
+
+The diet interlude retains its seven-day calendar and uses three different
+team introductions. Neither the new activities nor character-book reads reveal
+unselected outcomes or change already published achievements. New portraits
+are generated cartoons; original reference photographs are not shipped.

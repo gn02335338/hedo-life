@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CHARACTER_IDS,CHARACTER_METRICS,deriveCharacterStats,characterAffinity,isPatronageOutcomeV43} from '../dist/character-stats.js';
+import {CAST_IDS_V65} from '../dist/cast-v65.js';
 import {ROLE_MAP} from '../dist/roles.js';
 import {validateCompletion,ApiError} from '../worker/http.js';
 
@@ -22,7 +23,7 @@ const rejected=body=>assert.throws(()=>validateCompletion(body,ROLE_MAP),error=>
 test('a patronage reply credits only its selected public character and never records a hit',()=>{
  for(const target of CHARACTER_IDS){
   for(const reaction of ['obliged','retort','reported','welcomed']){
-   const row=reply(target),run=life([{...row,patronageOutcome:{...row.patronageOutcome,reaction}}]);
+   const row=reply(target),seed=CAST_IDS_V65.includes(target)?'e39-r65-n-'+'a'.repeat(22):'e39-patronage-projection',run=life([{...row,patronageOutcome:{...row.patronageOutcome,reaction}}],seed);
    assert.equal(isPatronageOutcomeV43(run,run.history[0]),true,`${target}/${reaction}`);
    for(const current of deriveCharacterStats(run)){
     assert.equal(current.encounters,Number(current.id===target));
@@ -32,6 +33,7 @@ test('a patronage reply credits only its selected public character and never rec
    }
   }
  }
+ for(const target of CAST_IDS_V65){const row=reply(target),run=life([row]);assert.equal(isPatronageOutcomeV43(run,row),false);empty(run);}
 });
 
 test('patronage affinity respects score bounds and uses evidence rather than incidental trust or Wing weather',()=>{

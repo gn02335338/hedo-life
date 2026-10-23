@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as engine from '../dist/engine.js';
-import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
+import {ACTIVITY_IDS_V44 as CURRENT_ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
+const ACTIVITY_IDS_V44=CURRENT_ACTIVITY_IDS_V44.filter(id=>id!=='camel'); // This fixture cohort published seven activities.
 import {buildEndingReport} from '../dist/ending-report.js';
 import {deriveAchievements} from '../dist/achievements.js';
 import {CHARACTER_IDS,deriveCharacterStats} from '../dist/character-stats.js';

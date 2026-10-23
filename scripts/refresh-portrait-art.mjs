@@ -10,7 +10,7 @@ const assets=new URL('../dist/assets/',import.meta.url);
 const manifestURL=new URL('art-v38.json',assets);
 const raw=await fs.readFile(manifestURL,'utf8');
 const previous=JSON.parse(raw);
-const ids=['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain'];
+const ids=['wing','spencer','rick','hope','erich','jenjen','sonny','kind','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','zoe','action','hester','simon','james','johnny'];
 assert.deepEqual(previous.portraits.map(item=>item.id),ids,'Unexpected portrait roster or order');
 
 const portraits=await Promise.all(previous.portraits.map(async record=>{

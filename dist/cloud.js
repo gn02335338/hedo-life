@@ -19,7 +19,7 @@ try{
  if(Array.isArray(savedProgress))progress=savedProgress;
 }catch{token=null;status='local';storageError='此瀏覽器無法保存匿名同步資料，請保留目前頁面。';}
 const legacyCharacterIds=['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei'];
-const characterIds=[...legacyCharacterIds,'helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain'];
+const characterIds=[...legacyCharacterIds,'helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','zoe','action','hester','simon','james','johnny'];
 const characterMetrics=['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents'];
 function safeCharacterRows(value){
  if(!Array.isArray(value)||!value.length)return null;

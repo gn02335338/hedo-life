@@ -1,17 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CHARACTER_IDS,deriveCharacterStats,characterAffinity} from '../dist/character-stats.js';
+import {CAST_IDS_V65} from '../dist/cast-v65.js';
 
 const release=(target,kind='relationship',affinityDelta=-35)=>({
  eventId:'verbal-release',kind:'verbal',speaker:target,choiceIndex:0,
  verbalOutcome:{kind,target,affinityDelta,origin:'onboarding',phase:'event'},
  breakdown:[{source:'choice',delta:{boss:-25,trust:8}}],
 });
-const life=history=>({seed:'e30-verbal-counter',history});
+const life=(history,seed='e30-verbal-counter')=>({seed,history});
 
 test('a spoken outburst can sharply reduce only the selected character affinity without recording a hit',()=>{
  for(const id of CHARACTER_IDS){
-  const run=life([release(id)]),rows=deriveCharacterStats(run),selected=rows.find(row=>row.id===id);
+  const seed=CAST_IDS_V65.includes(id)?'e39-r65-n-'+'a'.repeat(22):'e30-verbal-counter';
+  const run=life([release(id)],seed),rows=deriveCharacterStats(run),selected=rows.find(row=>row.id===id);
   assert.equal(selected.encounters,1);assert.equal(selected.affinityLost,35);assert.equal(selected.affinityDownEvents,1);
   assert.equal(characterAffinity(run,id).score,15);
   for(const row of rows){
@@ -19,6 +21,7 @@ test('a spoken outburst can sharply reduce only the selected character affinity 
    if(row.id!==id)assert.equal(Object.entries(row).filter(([key])=>key!=='id').reduce((sum,[,value])=>sum+value,0),0);
   }
  }
+ for(const id of CAST_IDS_V65)assert.ok(deriveCharacterStats(life([release(id)])).every(row=>row.encounters===0),'new people cannot acquire retroactive e30 conversations');
 });
 
 test('ignored words use their resolved relationship evidence rather than the incidental mood or team ledger',()=>{

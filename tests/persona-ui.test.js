@@ -10,7 +10,7 @@ import {getRageV20,rageTargetForV20} from '../dist/rage-v20.js';
 import {getRageV16} from '../dist/rage-v16.js';
 
 test('all named game characters have stable IDs, public aliases and original portrait paths',()=>{
- const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'瑞克',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友',sophie:'紅茶',jonathan:'強哥',owen:'歐文',sam:'山姆',cindy:'辛蒂',professor:'林老師',annie_yu:'安妮余',princess:'公主',joyce:'914',janet:'Janet',captain:'船長'};
+ const expected={wing:'翅膀',spencer:'屎潘蛇',erich:'法師',sonny:'阿福',jenjen:'真真',rick:'瑞克',kind:'阿良',hope:'希望',jack:'傑克',meimei:'水蛇',helen:'前女友',sophie:'紅茶',jonathan:'強哥',owen:'歐文',sam:'山姆',cindy:'辛蒂',professor:'林老師',annie_yu:'安妮余',princess:'公主',joyce:'914',janet:'Janet',captain:'船長',zoe:'201',action:'順哥',hester:'海姐',simon:'丁哥',james:'詹姆士',johnny:'強尼'};
  assert.deepEqual(Object.fromEntries(Object.keys(PERSONAS).map(id=>[id,displayName(id)])),expected);
  for(const [id,person]of Object.entries(PERSONAS)){
   assert.equal(person.image,`./assets/${id}.png`);
@@ -43,7 +43,7 @@ test('the five new character identities use supplied titles and display-only ali
 
 test('every public character has a concise neutral introduction without precise schools, brands or private rumors',()=>{
  const introductions=Object.values(PERSONAS).map(person=>person.about);
- assert.equal(introductions.length,22);assert.equal(new Set(introductions).size,22);
+ assert.equal(introductions.length,28);assert.equal(new Set(introductions).size,Object.keys(PERSONAS).length);
  for(const about of introductions){
   assert.equal(typeof about,'string');assert.ok(about.length>=20&&about.length<=65);
   assert.doesNotMatch(about,/台大|臺大|成大|多倫多|特斯拉|Tesla|Netflix|約跑|夫妻|小三|欠錢|歧視|趕走|幹走|睡覺|午睡|沒什麼在上班/);

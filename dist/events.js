@@ -1,3 +1,4 @@
+import {CAST_EVENTS_V65} from './events-cast-v65.js';
 // Satirical adaptation of private recollections. Every Wing line, choice and outcome
 // is original fictional dialogue; sourceIds identify inspiration, never verified accusations.
 import { IMAGE_EVENTS } from './events-images.js';
@@ -1308,3 +1309,6 @@ EVENTS.push(...CAST_EVENTS_V35_A, ...CAST_EVENTS_V35_B);
 // The advisor becomes an encountered character only in new e37 lives.
 EVENTS.push(...PROFESSOR_EVENTS_V37);
 EVENTS.push(...CAST_EVENTS_V39);
+
+// Fresh expansion lives own these original colleague scenes.
+EVENTS.push(...CAST_EVENTS_V65);

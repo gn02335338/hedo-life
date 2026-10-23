@@ -1,4 +1,5 @@
 import {ACTIVITY_PLAY_CONTENT_V55,getActivityPlayV55} from './activity-play-v55.js';
+import {camelBodyHTMLV65,dietTeamHTMLV65} from './activity-play-view-v65.js';
 
 // Only uncommitted gestures and plans live in this controller. The shared
 // resolver, not this view, decides the story and every resource consequence.
@@ -11,7 +12,7 @@ const roadOptions=content.roadshow.options,roadCards=content.roadshow.cards;
 const dishes=content.dinner.options.map((name,i)=>({name,symbol:['🍚','🥬','🐟','◌'][i],cost:content.dinner.costs[i]}));
 const basketballMoves=content.basketball.options;
 const evidenceNames=content.review.options,reviewQuestions=content.review.cards;
-const icons=Object.freeze({arm:'✊',diet:'▦',roadshow:'↗',dinner:'🍽',banquet:'♪',basketball:'●',review:'✓'});
+const icons=Object.freeze({arm:'✊',diet:'▦',roadshow:'↗',dinner:'🍽',banquet:'♪',basketball:'●',review:'✓',camel:'♞'});
 const titles=Object.freeze({arm:'這一局，手上見真章。',diet:'排一週自己過得下去的日子。',roadshow:'人潮不是商機。先把問題接對。',dinner:'六道菜，十二格預算。',banquet:'First Love 搶麥決鬥，現在接拍。',basketball:'半場五波，先看誰擋在前面。',review:'委員問什麼，就把證據放上去。'});
 const intros=Object.freeze({
  arm:'不用再選「我要比」。這次真的按下去，留下你的八秒對決紀錄。保持節奏，猛按也會累；阿福的賽後聲明，等比完再說。',
@@ -25,11 +26,11 @@ const intros=Object.freeze({
 const button=(command,text,extra='')=>`<button type="button" data-play-command="${command}" ${extra}>${text}</button>`;
 const radioButtons=(command,options,selected,extra='')=>`<div class="play-segment" role="group">${options.map((name,i)=>button(command,esc(name),`data-play-value="${i}" aria-pressed="${selected===i}" ${extra}`)).join('')}</div>`;
 const count=(values)=>values.filter(value=>value!==null).length;
-const blankState=(id,descriptor)=>({id,roadPresentation:id==='roadshow'&&Array.isArray(descriptor?.optionDetails)?descriptor:null,phase:'ready',mode:'tap',taps:[],beats:[],elapsed:0,selected:0,days:Array.from({length:7},()=>({meal:null,exercise:null})),matches:Array(6).fill(null),plates:Array(6).fill(null),moves:[],evidence:Array(4).fill(null),message:'',locked:false});
+const blankState=(id,descriptor)=>({id,roadPresentation:id==='roadshow'&&Array.isArray(descriptor?.optionDetails)?descriptor:null,dietPresentation:id==='diet'&&Array.isArray(descriptor?.teams)?descriptor:null,camelPresentation:id==='camel'?descriptor:null,prediction:[...(descriptor?.prediction||[0,1,2])],camelMove:null,phase:'ready',mode:'tap',taps:[],beats:[],elapsed:0,selected:0,days:Array.from({length:7},()=>({meal:null,exercise:null})),matches:Array(6).fill(null),plates:Array(6).fill(null),moves:[],evidence:Array(4).fill(null),message:'',locked:false});
 const pill=(text,kind='')=>`<span class="play-pill ${kind}">${text}</span>`;
 const progress=(label,value,max)=>`<div class="play-progress"><span>${esc(label)} <b data-play-count>${value} / ${max}</b></span><div class="play-progress-track" role="progressbar" aria-label="${esc(label)}" aria-valuemin="0" aria-valuemax="${max}" aria-valuenow="${value}"><i style="width:${Math.max(0,Math.min(100,value/max*100))}%"></i></div></div>`;
-const readiness=state=>state.id==='arm'||state.id==='banquet'?state.phase==='finished':state.id==='diet'?state.days.every(day=>day.meal!==null&&day.exercise!==null):state.id==='roadshow'?count(state.matches)===6:state.id==='dinner'?count(state.plates)===6:state.id==='basketball'?state.moves.length===5:count(state.evidence)===4;
-const formFooter=(state)=>`<div class="play-submit-row">${button('reset',state.id==='arm'?'重比一局 ↺':state.id==='banquet'?'重新接拍 ↺':'重新安排 ↺','class="play-reset"')}<button type="button" class="play-submit" data-play-command="commit"${readiness(state)&&!state.locked?'':' disabled'}>${state.locked?'正在記下這一幕…':'交出這一幕的紀錄'} <span aria-hidden="true">→</span></button></div><p class="play-save-note">交出後才揭曉劇情與數值。尚未交出的操作不會保存，離開此頁可重新開始。</p>`;
+const readiness=state=>state.id==='camel'?Number.isInteger(state.camelMove)&&state.camelMove>=0&&state.camelMove<=2:state.id==='arm'||state.id==='banquet'?state.phase==='finished':state.id==='diet'?state.days.every(day=>day.meal!==null&&day.exercise!==null):state.id==='roadshow'?count(state.matches)===6:state.id==='dinner'?count(state.plates)===6:state.id==='basketball'?state.moves.length===5:count(state.evidence)===4;
+const formFooter=(state)=>state.id==='camel'?`<div class="camel-game-v65"><div class="play-submit-row">${button('reset','重選這一輪 ↺','class="play-reset"')}<button type="button" class="play-submit" data-play-command="commit"${readiness(state)&&!state.locked?'':' disabled'}>${state.locked?'骰子正在揭曉…':'擲骰，揭曉這一輪'} <span aria-hidden="true">⚄</span></button></div><p class="play-save-note">選擇支持不會決定骰色。送出後才揭曉骰色、點數與移動；已揭曉的輪次不會重擲。活動點只記在這場遊戲，不花個人存款。</p></div>`:`<div class="play-submit-row">${button('reset',state.id==='arm'?'重比一局 ↺':state.id==='banquet'?'重新接拍 ↺':'重新安排 ↺','class="play-reset"')}<button type="button" class="play-submit" data-play-command="commit"${readiness(state)&&!state.locked?'':' disabled'}>${state.locked?'正在記下這一幕…':'交出這一幕的紀錄'} <span aria-hidden="true">→</span></button></div><p class="play-save-note">交出後才揭曉劇情與數值。尚未交出的操作不會保存，離開此頁可重新開始。</p>`;
 
 function armBody(state){
  const steady=state.mode==='steady',n=state.taps.length,active=state.phase==='playing',strain=state.taps.filter((stamp,i)=>i>0&&stamp-state.taps[i-1]<160).length;
@@ -38,7 +39,7 @@ function armBody(state){
 
 function dietBody(state){
  const completed=state.days.filter(day=>day.meal!==null&&day.exercise!==null).length,day=state.days[state.selected];
- return `${progress('本週已排妥',completed,7)}<div class="diet-calendar" role="group" aria-label="七天飲食與活動行事曆">${state.days.map((row,i)=>button('diet-day',`<span>DAY ${i+1}</span><b>${i===5?'六':i===6?'日':['一','二','三','四','五'][i]}</b><small>${row.meal===null?'＋ 飲食':esc(mealNames[row.meal])}</small><small>${row.exercise===null?'＋ 活動':esc(moveNames[row.exercise])}</small>`,`data-play-value="${i}" class="${state.selected===i?'selected':''} ${row.meal!==null&&row.exercise!==null?'planned':''}" aria-pressed="${state.selected===i}" aria-label="第 ${i+1} 天，${row.meal===null?'飲食未安排':mealNames[row.meal]}，${row.exercise===null?'活動未安排':moveNames[row.exercise]}"`)).join('')}</div><div class="play-editor diet-editor"><div class="play-editor-heading"><span class="play-day-stamp">${state.selected+1}</span><div><span class="play-kicker">DAY ${state.selected+1} / MY CALENDAR</span><h3>今天怎麼過？</h3></div></div><fieldset><legend>飲食安排</legend>${radioButtons('diet-meal',mealNames,day.meal)}</fieldset><fieldset><legend>活動安排</legend>${radioButtons('diet-exercise',moveNames,day.exercise)}</fieldset><div class="diet-editor-bottom"><p>這是虛構辦公室比賽，不需要填真實身體資料。</p>${button('diet-copy','這樣過一天，複製到未排的日子 →',`class="play-small-button"${day.meal!==null&&day.exercise!==null?'':' disabled'}`)}</div></div>`;
+ return `${dietTeamHTMLV65(state.dietPresentation)}${progress('本週已排妥',completed,7)}<div class="diet-calendar" role="group" aria-label="七天飲食與活動行事曆">${state.days.map((row,i)=>button('diet-day',`<span>DAY ${i+1}</span><b>${i===5?'六':i===6?'日':['一','二','三','四','五'][i]}</b><small>${row.meal===null?'＋ 飲食':esc(mealNames[row.meal])}</small><small>${row.exercise===null?'＋ 活動':esc(moveNames[row.exercise])}</small>`,`data-play-value="${i}" class="${state.selected===i?'selected':''} ${row.meal!==null&&row.exercise!==null?'planned':''}" aria-pressed="${state.selected===i}" aria-label="第 ${i+1} 天，${row.meal===null?'飲食未安排':mealNames[row.meal]}，${row.exercise===null?'活動未安排':moveNames[row.exercise]}"`)).join('')}</div><div class="play-editor diet-editor"><div class="play-editor-heading"><span class="play-day-stamp">${state.selected+1}</span><div><span class="play-kicker">DAY ${state.selected+1} / MY CALENDAR</span><h3>今天怎麼過？</h3></div></div><fieldset><legend>飲食安排</legend>${radioButtons('diet-meal',mealNames,day.meal)}</fieldset><fieldset><legend>活動安排</legend>${radioButtons('diet-exercise',moveNames,day.exercise)}</fieldset><div class="diet-editor-bottom"><p>這是虛構辦公室比賽，不需要填真實身體資料。</p>${button('diet-copy','這樣過一天，複製到未排的日子 →',`class="play-small-button"${day.meal!==null&&day.exercise!==null?'':' disabled'}`)}</div></div>`;
 }
 
 function roadBody(state){
@@ -68,16 +69,16 @@ function reviewBody(state){
  return `${progress('已備妥回答',count(state.evidence),4)}<div class="review-board"><div class="review-questions" role="group" aria-label="審查追問">${reviewQuestions.map((question,i)=>button('review-question',`<span class="play-index">Q${i+1}</span><b>${esc(question)}</b><small>${state.evidence[i]===null?'尚未放入資料':`📎 ${evidenceNames[state.evidence[i]]}`}</small>`,`data-play-value="${i}" class="review-question${state.selected===i?' selected':''}" aria-pressed="${state.selected===i}"`)).join('')}</div><div class="review-files"><span class="play-kicker">Q${state.selected+1} / 請拿出佐證</span><h3>${esc(reviewQuestions[state.selected])}</h3><p>點一份資料，放進這一題的回答。</p>${evidenceNames.map((name,i)=>button('review-file',`<span class="file-tab" aria-hidden="true">${['✓','§','＄'][i]}</span><b>${name}</b><small>${['測試版本、條件與驗收標準','授權範圍、資料來源與同意','時數、人員與經費對照'][i]}</small>`,`data-play-value="${i}" class="review-file" aria-pressed="${state.evidence[state.selected]===i}"`)).join('')}<p class="review-file-note">玩具鵝的名片不在證據清單。<br>同一份佐證可回答不只一題。</p></div></div>`;
 }
 
-function bodyFor(state){return ({arm:armBody,diet:dietBody,roadshow:roadBody,dinner:dinnerBody,banquet:banquetBody,basketball:basketballBody,review:reviewBody})[state.id](state);}
+function bodyFor(state){return ({arm:armBody,diet:dietBody,roadshow:roadBody,dinner:dinnerBody,banquet:banquetBody,basketball:basketballBody,review:reviewBody,camel:camelBodyHTMLV65})[state.id](state);}
 function contentHTML(state){
- return `<div class="activity-play-heading"><span class="play-kicker"><i aria-hidden="true"></i> PLAY THE MOMENT / 動手玩這一幕</span><span class="play-heading-icon" aria-hidden="true">${icons[state.id]}</span><h2>${state.roadPresentation?esc(state.roadPresentation.title):titles[state.id]}</h2><p>${state.roadPresentation?esc(state.roadPresentation.instructions):intros[state.id]}</p></div><div class="activity-play-board play-board-${state.id}">${bodyFor(state)}</div><p class="play-feedback" data-play-feedback role="status" aria-live="polite" aria-atomic="true">${esc(state.message||'操作先記在這裡，劇情結果還沒揭曉。')}</p>${formFooter(state)}`;
+ return `<div class="activity-play-heading"><span class="play-kicker"><i aria-hidden="true"></i> PLAY THE MOMENT / 動手玩這一幕</span><span class="play-heading-icon" aria-hidden="true">${icons[state.id]}</span><h2>${state.camelPresentation||state.dietPresentation?esc((state.camelPresentation||state.dietPresentation).title):state.roadPresentation?esc(state.roadPresentation.title):titles[state.id]}</h2><p>${state.camelPresentation||state.dietPresentation?esc((state.camelPresentation||state.dietPresentation).instructions):state.roadPresentation?esc(state.roadPresentation.instructions):intros[state.id]}</p></div><div class="activity-play-board play-board-${state.id}">${bodyFor(state)}</div><p class="play-feedback" data-play-feedback role="status" aria-live="polite" aria-atomic="true">${esc(state.message||'操作先記在這裡，劇情結果還沒揭曉。')}</p>${formFooter(state)}`;
 }
 
 export function renderActivityPlayHTMLV55(run,event){
  const descriptor=getActivityPlayV55(run);
  if(!descriptor||event?.id!==`activity44-${descriptor.id}-1`)return'';
  const state=blankState(descriptor.id,descriptor);
- return `<section class="activity-play" data-activity-play-v55="${descriptor.id}" aria-label="${esc(state.roadPresentation?.title||titles[descriptor.id])}">${contentHTML(state)}</section>`;
+ return `<section class="activity-play" data-activity-play-v55="${descriptor.id}" aria-label="${esc(state.camelPresentation?.title||state.dietPresentation?.title||state.roadPresentation?.title||titles[descriptor.id])}">${contentHTML(state)}</section>`;
 }
 
 export function mountActivityPlayV55({root,run,event,onCommit}={}){
@@ -118,19 +119,21 @@ export function mountActivityPlayV55({root,run,event,onCommit}={}){
   query(`[data-play-command="${state.id==='arm'?'arm-tap':'song-hit'}"]`)?.focus({preventScroll:true});
   if(state.mode!=='steady')frame=win.requestAnimationFrame(updateClock);
  };
- const inputFor=()=>state.id==='arm'?{kind:'arm',mode:state.mode,taps:[...state.taps]}:state.id==='diet'?{kind:'diet',days:state.days.map(day=>({...day}))}:state.id==='roadshow'?{kind:'roadshow',matches:[...state.matches]}:state.id==='dinner'?{kind:'dinner',plates:[...state.plates]}:state.id==='banquet'?{kind:'banquet',beats:[...state.beats]}:state.id==='basketball'?{kind:'basketball',moves:[...state.moves]}:{kind:'review',evidence:[...state.evidence]};
+ const inputFor=()=>state.id==='camel'?{kind:'camel',move:state.camelMove,prediction:[...state.prediction]}:state.id==='arm'?{kind:'arm',mode:state.mode,taps:[...state.taps]}:state.id==='diet'?{kind:'diet',days:state.days.map(day=>({...day}))}:state.id==='roadshow'?{kind:'roadshow',matches:[...state.matches]}:state.id==='dinner'?{kind:'dinner',plates:[...state.plates]}:state.id==='banquet'?{kind:'banquet',beats:[...state.beats]}:state.id==='basketball'?{kind:'basketball',moves:[...state.moves]}:{kind:'review',evidence:[...state.evidence]};
  const afterSelection=message=>{state.message=message;paint();};
  const onClick=event=>{
   const target=event.target.closest?.('[data-play-command]');if(!target||!panel.contains(target))return;
   event.stopPropagation();
   if(!alive||state.locked||target.disabled)return;
   const command=target.dataset.playCommand,value=Number(target.dataset.playValue);
-  if(command==='reset'){cancelFrame();const mode=state.mode;state=blankState(descriptor.id,descriptor);state.mode=mode;paint();query('[data-play-command="start"]')?.focus({preventScroll:true});return;}
+  if(command==='reset'){cancelFrame();const mode=state.mode;state=blankState(descriptor.id,descriptor);state.mode=mode;paint();query(state.id==='camel'?'[data-play-command="camel-support"]':'[data-play-command="start"]')?.focus({preventScroll:true});return;}
   if(command==='commit'){
    if(!readiness(state))return;
    state.locked=true;paint();feedback('正在記下這一幕，接著揭曉結果。');
    try{Promise.resolve(onCommit(inputFor())).then(result=>{if(result===false&&alive){state.locked=false;paint();feedback('目前進度已有變動，這份操作尚未送出。確認這一幕後，可以重新交出。');}}).catch(()=>{if(alive){state.locked=false;paint();feedback('這一幕還沒送出。請再試一次，或重新整理確認目前進度。');}});}catch{state.locked=false;paint();feedback('這一幕還沒送出。請確認目前進度後再試。');}return;
   }
+  if(command==='camel-support'){if(state.id!=='camel'||!Number.isInteger(value)||value<0||value>2)return;state.camelMove=value;afterSelection(`這輪先支持${descriptor.names[value]}。骰色和點數還沒揭曉。`);return;}
+  if(command==='camel-up'||command==='camel-down'){if(state.id!=='camel'||descriptor.prediction||!Number.isInteger(value)||value<0||value>2)return;const destination=value+(command==='camel-up'?-1:1);if(destination<0||destination>2)return;[state.prediction[value],state.prediction[destination]]=[state.prediction[destination],state.prediction[value]];afterSelection('整場名次預測已調整，第一輪送出前都能修改。');return;}
   if(command==='start'){start();return;}
   if(command==='arm-mode'||command==='song-mode'){if(state.phase==='playing')return;cancelFrame();state=blankState(descriptor.id,descriptor);state.mode=value===1?'steady':'tap';paint();return;}
   if(command==='arm-tap'){

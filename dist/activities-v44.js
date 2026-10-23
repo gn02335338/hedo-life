@@ -1,9 +1,13 @@
+import {isExpansionV65} from './expansion-profile-v65.js';
+import {getCamelSceneV65,resolveCamelChoiceV65} from './camel-v65.js';
+import {withDietSceneV65,dietChoiceV65} from './diet-v65.js';
 // Optional, replayable activity scenes. Recollections supply the motifs; all
 // dialogue, scores, draws and later developments are original game fiction.
 // No RNG, storage or engine mutation belongs in this presentation/resolver.
 import {isRoadshowV63,ROADSHOW_PARTICIPANTS_V63,ROADSHOW_STAGES_V63,roadshowChoiceCopyV63} from './roadshow-v63.js';
-export const ACTIVITY_IDS_V44=Object.freeze(['arm','diet','roadshow','dinner','banquet','basketball','review']);
+export const ACTIVITY_IDS_V44=Object.freeze(['arm','diet','roadshow','dinner','banquet','basketball','review','camel']);
 export const ACTIVITY_META_V44=Object.freeze({
+ camel:{name:'真人駱駝大賽',teaser:'丁哥開局，名牌負責跑，理由負責疊。',mechanic:'名牌進場 → 六輪骰袋與疊堆 → 活動點結算',stages:3,scene:'meeting'},
  arm:{name:'腕力大賽',teaser:'十秒鐘的比賽，三輪以上的賽前聲明。',mechanic:'議定規則 → 十秒對決 → 賽後記者會',stages:3,scene:'arm_wrestling'},
  diet:{name:'減肥比賽',teaser:'比賽才剛開始，蛋塔已經抵達。',mechanic:'選定步調 → 午餐誘惑 → 結算習慣',stages:3,scene:'dinner'},
  roadshow:{name:'Roadshow',teaser:'台上展示產品，台下尋找真的能用的人。',mechanic:'配置展位 → 接待提問 → 整理有效名單',stages:3,scene:'public_stage'},
@@ -15,7 +19,7 @@ export const ACTIVITY_META_V44=Object.freeze({
 const clamp=(n,min=0,max=12)=>Math.max(min,Math.min(max,n));
 const ctx=run=>{
  const x=run?.activityContext;
- if(!x||x.version!==1||!ACTIVITY_IDS_V44.includes(x.id)||!Number.isInteger(x.stage)||x.stage<0||x.stage>=ACTIVITY_META_V44[x.id].stages)throw new Error('Invalid activity context');
+ if(!x||x.version!==1||!ACTIVITY_IDS_V44.includes(x.id)||(x.id==='camel'&&!isExpansionV65(run))||!Number.isInteger(x.stage)||x.stage<0||x.stage>=ACTIVITY_META_V44[x.id].stages)throw new Error('Invalid activity context');
  return x;
 };
 const c=(text,extra={})=>({text,...extra});
@@ -39,7 +43,7 @@ const scene=(run,title,body,speaker,wing,choices,extra={})=>{
   activity:{id:x.id,stage:x.stage,total:meta.stages,mechanic:meta.mechanic,scoreMax:12,pressureMax:12,scoreLabel:extra.scoreLabel||'累積進展',score:scoreOf(x),pressureLabel:extra.pressureLabel||'累積插曲',pressure:pressureOf(x)},...extra};
 };
 
-export function getActivityEventV44(run){
+function getActivityEventPublishedV44(run){
  const x=ctx(run),s=x.stage;
  if(x.id==='arm'){
   if(s===0)return scene(run,'手還沒上桌，規則先開三次會。','傑克把桌面清空，阿福先問有沒有錄影，再說今天吃太飽。披薩盒裡又少了一片。你們提議只比十秒，平手算阿福贏；他想了一下，說開始的那一秒也要先定義。','sonny','先說好，抽筋跟拉到是兩件事，不能混在一起。',[
@@ -175,7 +179,7 @@ export function getActivityEventV44(run){
 
 // A ticket is provided by the canonical engine. Scores describe this activity,
 // never promotion credentials, medical outcomes or an official review decision.
-export function resolveActivityChoiceV44(run,index,ticket){
+function resolveActivityChoicePublishedV44(run,index,ticket){
  const x=ctx(run),event=getActivityEventV44(run);
  if(!Number.isInteger(index)||index<0||index>=event.choices.length||event.choices[index].available===false)throw new Error('Unavailable activity choice');
  if(!Number.isFinite(ticket)||ticket<0||ticket>1)throw new Error('Invalid activity ticket');
@@ -270,3 +274,6 @@ export function resolveActivityChoiceV44(run,index,ticket){
  if(done)flags.push(`activity44_${x.id}_completed`);
  return roadshowChoiceCopyV63(run,index,{result,label,delta,flags,score,pressure,plan,done});
 }
+
+export function getActivityEventV44(run){if(run?.activityContext?.id==='camel'){ctx(run);return getCamelSceneV65(run);}return withDietSceneV65(getActivityEventPublishedV44(run),run);}
+export function resolveActivityChoiceV44(run,index,ticket){if(run?.activityContext?.id==='camel')return resolveCamelChoiceV65(run,index);return dietChoiceV65(run,index,resolveActivityChoicePublishedV44(run,index,ticket));}

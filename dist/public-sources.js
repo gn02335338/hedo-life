@@ -39,6 +39,7 @@ export const SOURCES = {
   interns: privateChapter('實習履歷盲選'),
   characterFiction: { title: '角色設定與平行職場', url: null, date: null, dateLabel: '原創遊戲設定', summary: '依創作需求設計的角色互動與職場諷刺，並非真實逐字引言、公司制度或法律事實。' },
   castFictionV39: { title: '五位同事的職場支線', url: null, date: null, dateLabel: '史冊主題與角色設定延伸', summary: '從可辨識的工作、表單、活動安排與同名笑話延伸的原創事件，搭配玩家指定的合成角色。每人三十場不代表三十件獨立史實；不將私人感情傳聞或未確認的財務指控寫成事實。' },
+  castFictionV65: { title: '六位同事與福委會活動', url: null, date: null, dateLabel: '玩家回憶與角色設定延伸', summary: '從玩家提供的主持、回鍋、設計、專案與投資話題延伸的原創事件。對白、因果、活動規則與結果均經遊戲改編，不代表逐字紀錄或已查證的人物評價。' },
   professorFiction: { title: '產學顧問：研究、畢業與上線日期', url: null, date: null, dateLabel: '史冊與玩家回憶延伸', summary: '從介紹教授的留任說法、辦公室網路片段，以及玩家提供的產學合作、學生修業時間與半天顧問回憶延伸。事件、對白、選項與結果為虛構，不代表三十件獨立史實，也不將回憶中的評價視為已查證事實。' },
   companyFiction: { title: '公司願景的平行宇宙', url: null, date: null, dateLabel: '原創幻想分支', summary: '取材自上市、收購願景與跨國團隊協作的回憶，延伸為原創幻想。遊戲裡的交易、掛牌、董事席次與夜間事業均為虛構，不代表任何真實公司的計畫或實際人員比例。' },
   verifiedQuiz: { title: '同事大問答：職場記憶改編', url: null, date: null, dateLabel: '私人題庫改編', summary: '取材自創作者整理的私人題庫；角色使用別稱，對話、選擇與結果為原創遊戲情境，不附原始題庫、答案表或私人資料。' },

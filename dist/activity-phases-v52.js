@@ -4,6 +4,7 @@ const escape=(value='')=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<
 const phaseName=id=>id==='basketball'?'下班球局':ACTIVITY_META_V44[id].name;
 const legacyBanquetStages=Object.freeze(['banquet-welcome','banquet-draw','banquet-afterparty']);
 const copy=Object.freeze({
+ camel:{start:'丁哥的真人駱駝大賽開始，先看紙名牌與骰袋規則，再猜六輪排名。',end:'骰袋、名牌和活動點都已收好，這場到此結束。'},
  arm:{start:'你來到比賽桌邊。先把規則講清楚，再進入下一幕。',end:'賽事和賽後聲明都告一段落。這是本場最後一幕的結果。'},
  diet:{start:'你已加入減肥比賽。先選自己的參賽步調，再面對接下來的午餐與紀錄。',end:'這幾輪的習慣紀錄已結算，減肥比賽到此收尾。'},
  roadshow:{start:'你已來到展示現場。先安排展位，再接待提問，最後整理名單與承諾。',end:'最後一批名單與承諾已有交代，這場 Roadshow 收攤了。'},

@@ -161,7 +161,7 @@ for(const mobile of [false,true]){
  test(`${device}: all seven published multi-stage activities keep their saved progress and return to work`,async()=>{
   // Published, unscheduled e39 action lists still replay their original opener.
   // They are rendered directly here; no new invitation is forced into a save.
-  for(const id of activities.ACTIVITY_IDS_V44){
+  for(const id of activities.ACTIVITY_IDS_V44.filter(id=>id!=='camel')){
    const source=legacySourceRun(id==='review'?'design':'sales'),opened=engine.requestActivity(source,id),app=await harness(mobile);app.render(opened);
    assert.equal(opened.actions.length,source.actions.length+1);
    assert.match(app.html(),/aria-label="目前活動進度"/);assert.match(app.html(),/先完成目前活動/);noActivityPicker(app.html());
@@ -180,7 +180,7 @@ for(const mobile of [false,true]){
   }
  });
  test(`${device}: starting a new life enables the calendar before the first work transition`,async()=>{
-  const app=await harness(mobile),seed=app.randomSeed();assert.match(seed,/^e39-r63-n-[a-f\d]{22}$/);assert.equal(seed.length,32);
+  const app=await harness(mobile),seed=app.randomSeed();assert.match(seed,/^e39-r65-n-[a-f\d]{22}$/);assert.equal(seed.length,32);
   const candidate=engine.createRun('sales',seed);app.candidate(candidate);await app.action('start');
   const expected=engine.enableActivitySchedule(candidate),actual=plain(app.state());delete actual.runId;
   assert.deepEqual(actual,plain(expected));assert.equal(actual.eventId,'onboarding');

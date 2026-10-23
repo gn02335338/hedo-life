@@ -57,7 +57,7 @@ async function harness(mobile,{fetcher=async()=>imageResponse(),artTimeoutMs}={}
  };
 }
 
-test('all 865 authored events and 93 modal IDs map to the 42 produced plates, with a safe old-scene fallback',()=>{
+test('published scene maps and new authored events use the 42 produced plates, with a safe old-scene fallback',()=>{
  assert.equal(artMap.SCENE_PLATES_V38.length,42);
  assert.equal(new Set(artMap.SCENE_PLATES_V38).size,42);
  assert.equal(Object.keys(artMap.EVENT_SCENES_V38).length,865);
@@ -126,12 +126,16 @@ for(const mobile of [false,true]){
  test(`${device}: every authored scene renders an original environment and current cast without altering the life`,async()=>{
   const app=await harness(mobile);
   for(const event of allEvents){
-   const roleId=event.roles?.[0]||'system',cohort=event.minRules>=39?'e39':'e37',run=engine.createRun(roleId,`${cohort}-art-${event.id}`);
+   const roleId=event.roles?.[0]||'system',cohort=event.minRules>=39?'e39':'e37';
+   // New cast scenes require their real cohort. Rendering an art fixture does
+   // not make the frozen e39 event pool eligible for unpublished characters.
+   const seed=event.requiresCastV65?'e39-r65-n-0000000000000000000000':`${cohort}-art-${event.id}`,run=engine.createRun(roleId,seed);
    run.actualRoleId=roleId;run.eventId=event.id;run.turn=12;
    if(event.requireGender)run.characterGender=event.requireGender;
    const before=JSON.stringify(run),html=app.render(run);
    assert.match(html,/class="story-illustration/);assert.match(html,/src="\.\/assets\/scenes\/[^"/]+\.webp"/);
    assert.ok(html.includes(`data-scene-role="${run.actualRoleId}"`));
+   if(event.requiresCastV65)assert.equal(art.sceneIllustration(event).theme,event.scene,event.id);
    assert.doesNotMatch(html,/assets\/endings\//,'no future ending image in work scene');
    assert.equal(JSON.stringify(run),before,event.id);
   }

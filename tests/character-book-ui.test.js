@@ -34,9 +34,9 @@ function bookHarness(cloud,cache=null){
   return {book,dialog,store,focus,get html(){return html;},replace(value){html=value;},change(id,value){handlers.get('change')({target:{id,value}});},toggleRanking(open){handlers.get('toggle')({target:{id:'character-ranking-details',open}});},focusCharacter(id){handlers.get('click')({target:{closest:selector=>selector==='[data-character-focus]'?{dataset:{characterFocus:id}}:null}});},retry(){handlers.get('click')({target:{closest:selector=>selector==='[data-character-retry]'?{}:null}});}};
 }
 
-test('the cast archive contains twenty-two public portraits and never lists locked endings',()=>{
+test('the cast archive contains the current public portraits and never lists locked endings',()=>{
  const html=characterBookHTML();
- assert.equal([...html.matchAll(/class="character-card"/g)].length,22);
+ assert.equal([...html.matchAll(/class="character-card"/g)].length,CHARACTER_IDS.length);
  for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));assert.ok(html.includes(persona.displayName(id)));}
  assert.doesNotMatch(html,/Wing|Spencer|Erich|Sonny|JenJen|Rick|Hope|Kind|Jack|美美/);
  assert.doesNotMatch(html,/納斯達克幻想|自願離職陷阱|勉強通關|成功率/);
@@ -56,7 +56,7 @@ test('the cast archive contains twenty-two public portraits and never lists lock
 
 test('every public card shows its neutral introduction and current alias while the sealed identity stays hidden',()=>{
  const html=characterBookHTML();
- assert.equal([...html.matchAll(/class="character-bio"/g)].length,22);
+ assert.equal([...html.matchAll(/class="character-bio"/g)].length,CHARACTER_IDS.length);
  for(const id of CHARACTER_IDS){
   const person=persona.displayPersona(id);
   assert.ok(html.includes(`<p class="character-bio">${person.about}</p>`),id);

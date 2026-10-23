@@ -8,11 +8,15 @@ import {verbalTargetsV30} from '../dist/verbal-v30.js';
 import {VERBAL_SCENE_IDS,verbalSceneLine} from '../dist/verbal-scene-copy.js';
 import {displayChronicleEvent} from '../dist/chronicle-scene-copy.js';
 import {getBanquet} from '../dist/banquet.js';
+import {CAST_IDS_V65} from '../dist/cast-v65.js';
+import {castVerbalLineV65} from '../dist/verbal-cast-v65.js';
 
 const phases=['event','result'];
 const copy=value=>JSON.parse(JSON.stringify(value));
 const sample=createRun('ai','e39-verbal-scene-copy');
 const rendered=event=>({...event,speaker:event.speaker||'wing'});
+const publishedEvents=EVENTS.filter(event=>!event.requiresCastV65);
+const publishedPeople=Object.keys(PERSONAS).filter(id=>!CAST_IDS_V65.includes(id));
 const source=id=>{const event=EVENTS.find(row=>row.id===id);assert.ok(event,id);return rendered(event);};
 const quote=(event,target,run=sample,phase='event')=>verbalSceneLine({event,target,run,phase});
 const both=(id,target,run=sample)=>phases.map(phase=>quote({id,speaker:target},target,run,phase));
@@ -22,8 +26,8 @@ const validLine=(line,id)=>{
 };
 
 test('all 861 daily and four fantasy scenes have distinct, deterministic speech in both phases',()=>{
- assert.equal(EVENTS.length,861);assert.equal(FANTASY_EVENTS.length,4);
- const events=[...EVENTS,...FANTASY_EVENTS].map(rendered),targets=new Set();
+ assert.equal(publishedEvents.length,861);assert.equal(FANTASY_EVENTS.length,4);
+ const events=[...publishedEvents,...FANTASY_EVENTS].map(rendered),targets=new Set();
  for(const phase of phases){
   const lines=[];
   for(const event of events){
@@ -38,7 +42,7 @@ test('all 861 daily and four fantasy scenes have distinct, deterministic speech 
   }
   assert.equal(new Set(lines).size,events.length,`${phase}: no two scenes recycle an identical quote`);
  }
- assert.deepEqual([...targets].sort(),[...Object.keys(PERSONAS),'self'].sort());
+ assert.deepEqual([...targets].sort(),[...publishedPeople,'self'].sort());
 });
 
 test('explicit scene IDs refer to real daily or dynamically generated scenes, never typo-only overrides',()=>{
@@ -129,7 +133,7 @@ test('First Love remains Jack versus Meimei, armwrestling remains Sonny’s excu
 
 test('all twenty-one non-professor meal guests get individual, meal-specific replies in both phases',()=>{
  const lines=[];
- for(const target of Object.keys(PERSONAS).filter(id=>id!=='professor')){
+ for(const target of publishedPeople.filter(id=>id!=='professor')){
   const [event,result]=both(`meal-with-${target}`,target);validLine(event,target);validLine(result,target);
   assert.match(`${event} ${result}`,/飯|餐|湯|麵|菜|筷|吃|點|鍋|甜點|砂鍋|結帳|收銀|便當/);assert.notEqual(event,result,target);lines.push(event,result);
  }
@@ -138,6 +142,16 @@ test('all twenty-one non-professor meal guests get individual, meal-specific rep
  for(const phase of phases){assert.doesNotMatch(quote(event,'kind',{...sample,characterGender:'female'},phase),/暗黑|四手|鋼琴/);}
  assert.match(quote({...event,body:'阿良又提起私房暗黑行程。'},'kind'),/暗黑/);
  assert.notEqual(...both('kind-workday','kind'));
+});
+
+test('new r65 meal guests use their cohort-specific wrapper while published speech stays frozen',()=>{
+ const run=createRun('ai','e39-r65-n-0000000000000000000000'),lines=[];
+ for(const target of CAST_IDS_V65)for(const phase of phases){
+  const event={id:`meal-with-${target}`,speaker:target,scope:'private',title:'下班一起吃飯。'},line=castVerbalLineV65(run,event,target,phase);
+  validLine(line,`${target}/${phase}`);assert.match(line,/吃飯|飯局|私下安排|下班/);assert.ok(line.startsWith(`${PERSONAS[target].name}，`));lines.push(line);
+  assert.equal(castVerbalLineV65(sample,event,target,phase),null,'a published life cannot acquire a new voice');
+ }
+ assert.equal(new Set(lines).size,CAST_IDS_V65.length*2);
 });
 
 test('multi-person PIP, dismissal, patronage and back-office scenes distinguish the selected person’s role',()=>{

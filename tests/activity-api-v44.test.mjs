@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ROLE_MAP} from '../dist/roles.js';
-import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
+import {ACTIVITY_IDS_V44 as CURRENT_ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
+const ACTIVITY_IDS_V44=CURRENT_ACTIVITY_IDS_V44.filter(id=>id!=='camel'); // This fixture cohort published seven activities.
 import {ApiError,validateCompletion} from '../worker/http.js';
 
 const proof=(action,seed='e39-activity-envelope')=>({runId:'50abfbe0-fd37-498a-af91-d5542de39b87',roleId:'system',seed,actions:[action]});

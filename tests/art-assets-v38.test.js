@@ -45,9 +45,9 @@ test('all 42 neutral scenes, 68 narrative masters and 13 job illustrations ship 
  assert.equal(new Set(records.map(record=>record.sha256)).size,records.length);
 });
 
-test('20 supplied-photo remakes have alpha and bounded size; the 2 original executive portraits stay unchanged',async()=>{
- assert.equal(manifest.portraits.length,22);
- assert.equal(manifest.portraits.filter(item=>item.referenceRemake).length,20);
+test('26 supplied-photo remakes have alpha and bounded size; the 2 original executive portraits stay unchanged',async()=>{
+ assert.equal(manifest.portraits.length,28);
+ assert.equal(manifest.portraits.filter(item=>item.referenceRemake).length,26);
  const originals={wing:'970d74ebddbfee57276abce482f93a80f021556f3a7c6a76b5a2ace37b4d3082',spencer:'3bccde30cfac000dd3e30c1789c30f01f75e266e90b7cabbd4289e7819537dc3'};
  for(const record of manifest.portraits){
   const bytes=await readFile(file(record.path)),meta=await sharp(bytes).metadata();

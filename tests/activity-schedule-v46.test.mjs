@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {ACTIVITY_WINDOWS_V46,scheduledActivityV46,getActivityInvitationEventV46,invitationResultV46,calendarDailyAllowedV46} from '../dist/activity-schedule-v46.js';
+import {ACTIVITY_WINDOWS_V46 as CURRENT_ACTIVITY_WINDOWS_V46,scheduledActivityV46,getActivityInvitationEventV46,invitationResultV46,calendarDailyAllowedV46} from '../dist/activity-schedule-v46.js';
+const ACTIVITY_WINDOWS_V46=Object.fromEntries(Object.entries(CURRENT_ACTIVITY_WINDOWS_V46).filter(([id])=>id!=='camel')); // Frozen seven-activity calendar.
 import {PERSONAS} from '../dist/persona.js';
 import {EVENTS} from '../dist/events.js';
 

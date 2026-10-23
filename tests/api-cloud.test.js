@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { randomUUID, webcrypto } from 'node:crypto';
 import { createRun, applyChoice, advance, validRun } from '../dist/engine.js';
-import { deriveCharacterStats } from '../dist/character-stats.js';
+import { CHARACTER_IDS,CHARACTER_METRICS,deriveCharacterStats } from '../dist/character-stats.js';
 import { ORIGINAL_CHARACTER_IDS_V37 } from './character-compat.mjs';
 
 const source = (await readFile(new URL('../dist/cloud.js', import.meta.url), 'utf8')).replace('export const cloud=', 'globalThis.cloud=');
@@ -271,7 +271,7 @@ test('an eleven-character verified cache survives offline until the expanded cou
  for(const {id} of fresh.slice(11))assert.ok(!c.cloud.state.characters.some(row=>row.id===id),'missing counters are unknown, not zero');
  online=true;await c.cloud.retry();
  assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),fresh);
- const verified=JSON.parse(c.saved.get('hedo-character-cache-v1'));assert.equal(verified.characters.length,22);assert.equal(verified.ownerHash,ownerHash);
+ const verified=JSON.parse(c.saved.get('hedo-character-cache-v1'));assert.equal(verified.characters.length,CHARACTER_IDS.length);assert.equal(verified.ownerHash,ownerHash);
  const reloaded=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved]});await reloaded.cloud.init();
  assert.deepEqual(JSON.parse(JSON.stringify(reloaded.cloud.state.characters)),fresh);
  assert.equal(reloaded.cloud.state.charactersVerifiedAt,verified.verifiedAt);
@@ -314,4 +314,19 @@ test('a sixteen-character verified cache stays intact offline and gains real pro
  const reloaded=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved]});await reloaded.cloud.init();
  assert.deepEqual(JSON.parse(JSON.stringify(reloaded.cloud.state.characters)),fresh);
  assert.equal(reloaded.saved.get('hedo-anonymous-v1'),original.saved.get('hedo-anonymous-v1'));
+});
+
+test('a verified twenty-two-character cache stays historical offline and appends the six zero-value newcomers only when the full authenticated roster arrives',async()=>{
+ const legacy=characterRows().slice(0,22).map((row,index)=>({...row,encounters:index+3,affinityGained:index,affinityUpEvents:index?1:0}));
+ assert.equal(legacy.length,22,'the cache fixture describes the published v39 roster');
+ const original=client([],()=>withCharacters(legacy));await original.cloud.init();
+ const serialized=original.saved.get('hedo-character-cache-v1'),oldCache=JSON.parse(serialized),newIds=CHARACTER_IDS.filter(id=>!legacy.some(row=>row.id===id));
+ assert.deepEqual(newIds,['zoe','action','hester','simon','james','johnny']);
+ const added=newIds.map(id=>({id,...Object.fromEntries(CHARACTER_METRICS.map(metric=>[metric,0]))})),full=[...legacy,...added];let online=false;
+ const c=client([],()=>{if(!online)throw new TypeError('offline');return withCharacters(full);},{savedEntries:[...original.saved]});await c.cloud.init();
+ assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),legacy);assert.equal(c.saved.get('hedo-character-cache-v1'),serialized);assert.equal(c.cloud.state.charactersVerifiedAt,oldCache.verifiedAt);assert.equal(c.cloud.state.characterTrackingSince,oldCache.trackingSince);
+ online=true;await c.cloud.retry();assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),full);
+ const fresh=JSON.parse(c.saved.get('hedo-character-cache-v1'));assert.equal(fresh.characters.length,CHARACTER_IDS.length);assert.equal(fresh.ownerHash,oldCache.ownerHash);assert.equal(fresh.trackingSince,oldCache.trackingSince);assert.deepEqual(fresh.characters.slice(0,22),legacy);assert.deepEqual(fresh.characters.slice(22),added);
+ const offline=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved]});await offline.cloud.init();assert.deepEqual(JSON.parse(JSON.stringify(offline.cloud.state.characters)),full);assert.equal(offline.cloud.state.charactersVerifiedAt,fresh.verifiedAt);
+ const stranger=client([],()=>{throw new TypeError('offline');},{savedEntries:[...c.saved,['hedo-anonymous-v1','2'.repeat(64)]]});await stranger.cloud.init();assert.deepEqual(JSON.parse(JSON.stringify(stranger.cloud.state.characters)),[]);
 });

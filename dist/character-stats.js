@@ -3,13 +3,15 @@ import { isPatronageV49, isPatronageApplicationOutcomeV49 } from './patronage-v4
 import { isRecruitmentOutcomeV60 } from './recruitment-v60.js';
 import { isOfficeTreatOutcomeV61 } from './office-treats-v61.js';
 import { isEventDepartureOutcomeV63 } from './event-departure-v63.js';
+import {CAST_IDS_V65,isCastV65} from './cast-v65.js';
+import {isBlockchainOutcomeV65} from './blockchain-v65.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
 export const CHARACTER_STATS_VERSION=1;
 export const CHARACTER_IDS=Object.freeze(Object.keys(PERSONAS));
 export const CHARACTER_METRICS=Object.freeze(['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents']);
-const known=id=>CHARACTER_IDS.includes(id);
+const known=(id,run)=>CHARACTER_IDS.includes(id)&&(!CAST_IDS_V65.includes(id)||isCastV65(run));
 const verbalKinds=new Set(['ignored','relationship','retort','support','personnel','legal']);
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 const choiceDelta=row=>{
@@ -24,7 +26,7 @@ export function isPatronageOutcomeV43(run,row){
  const evidence=row?.patronageOutcome;
  return /^e(?:29|30|31|32|33|34|35|36|37|38|39)-/.test(run?.seed||'')&&Boolean(evidence)&&typeof evidence==='object'&&!Array.isArray(evidence)
   &&Object.keys(evidence).sort().join(',')==='affinityDelta,mode,origin,reaction,target,version'
-  &&evidence.version===1&&known(evidence.target)&&row.speaker===evidence.target
+  &&evidence.version===1&&known(evidence.target,run)&&row.speaker===evidence.target
   &&row.eventId==='patronage-reply'&&row.kind==='patronage'&&row.choiceIndex===0
   &&!Object.hasOwn(row,'verbalOutcome')&&!Object.hasOwn(row,'mealOutcome')
   &&typeof evidence.origin==='string'&&evidence.origin.trim().length>0&&evidence.origin.length<=100
@@ -38,7 +40,7 @@ export function isMealOutcomeV36(run,row){
  const evidence=row?.mealOutcome,labels={warm:'聊得很開',neutral:'平常吃飯',mine:'不小心踩雷'};
  return /^e(?:36|37|38|39)-/.test(run?.seed||'')&&Boolean(evidence)&&typeof evidence==='object'&&!Array.isArray(evidence)
   &&Object.keys(evidence).sort().join(',')==='affinityDelta,reaction,replyIndex,target,version'
-  &&evidence.version===1&&known(evidence.target)&&(evidence.target!=='professor'||/^e(?:37|38|39)-/.test(run?.seed||''))&&row.speaker===evidence.target
+  &&evidence.version===1&&known(evidence.target,run)&&(evidence.target!=='professor'||/^e(?:37|38|39)-/.test(run?.seed||''))&&row.speaker===evidence.target
   &&row.kind==='self-care'&&row.eventId===`meal-with-${evidence.target}`&&!row.verbalOutcome
   &&[0,1].includes(row.choiceIndex)&&evidence.replyIndex===row.choiceIndex
   &&Object.hasOwn(labels,evidence.reaction)&&row.eventOutcome?.label==='餐桌氣氛'&&row.eventOutcome.result===labels[evidence.reaction]
@@ -51,10 +53,15 @@ export function characterHistoryChanges(run){
  for(const [historyIndex,row] of (Array.isArray(run?.history)?run.history:[]).entries()){
   if(!row||!Number.isInteger(row.choiceIndex)||row.choiceIndex<0)continue;
   if(row.kind==='event-departure'||Object.hasOwn(row,'departureOutcome')){
-   if(!isEventDepartureOutcomeV63(run,row)||!known(row.departureOutcome.target)||row.speaker!==row.departureOutcome.target)continue;
+   if(!isEventDepartureOutcomeV63(run,row)||!known(row.departureOutcome.target,run)||row.speaker!==row.departureOutcome.target)continue;
    const id=row.departureOutcome.target,score=clamp(scores[id]+row.departureOutcome.affinityDelta,0,100),affinityDelta=score-scores[id];scores[id]=score;
    changes.push({historyIndex,id,encounters:1,imaginedHits:0,realHits:0,affinityDelta});
    continue;
+  }
+  if(row.kind==='blockchain'||Object.hasOwn(row,'blockchainOutcome')){
+   if(!isBlockchainOutcomeV65(run,row)||!known(row.blockchainOutcome.target,run)||row.speaker!==row.blockchainOutcome.target)continue;
+   const id=row.blockchainOutcome.target,score=clamp(scores[id]+row.blockchainOutcome.affinityDelta,0,100),affinityDelta=score-scores[id];scores[id]=score;
+   changes.push({historyIndex,id,encounters:1,imaginedHits:0,realHits:0,affinityDelta});continue;
   }
   // The player's employment confirmation is not another NPC conversation.
   if(/^e(?:38|39)-/.test(run.seed||'')&&row.eventId==='chapter-resolution')continue;
@@ -68,7 +75,7 @@ export function characterHistoryChanges(run){
    if(!isPatronageOutcomeV43(run,row))continue;
    patronage=row.patronageOutcome;
   }
-  let ids=known(row.speaker)?[row.speaker]:row.speaker==='exit-team'?['erich','jenjen','sonny']:[];
+  let ids=known(row.speaker,run)?[row.speaker]:row.speaker==='exit-team'?['erich','jenjen','sonny']:[];
   if(application)ids.push('rick');
   let recruitment=null;
   if(Object.hasOwn(row,'recruitmentOutcome')||row.kind==='recruitment'){
@@ -98,7 +105,7 @@ export function characterHistoryChanges(run){
    verbal=evidence;
   }
   if(row.eventId==='rage-release'){
-   if(row.kind!=='rage'||row.choiceIndex!==0||!known(row.speaker))continue;
+   if(row.kind!=='rage'||row.choiceIndex!==0||!known(row.speaker,run))continue;
    mode=row.eventOutcome?.result==='腦內劇場'?'imagined':row.eventOutcome?.result==='真的失控了'?'real':null;
    if(!mode)continue;
    ids=[row.speaker];

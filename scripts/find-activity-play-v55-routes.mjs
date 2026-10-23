@@ -1,6 +1,7 @@
 import {writeFileSync} from 'node:fs';
 import * as E from '../dist/engine.js';
-import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
+import {ACTIVITY_IDS_V44 as CURRENT_ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
+const ACTIVITY_IDS_V44=CURRENT_ACTIVITY_IDS_V44.filter(id=>id!=='camel'); // This fixture cohort published seven activities.
 
 // Search alternatives solely to find reproducible public-action witnesses.
 // No character stats, flags, date, event, invitation or random state is edited.

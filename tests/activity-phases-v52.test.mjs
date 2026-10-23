@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import * as engine from '../dist/engine.js';
-import {ACTIVITY_IDS_V44,ACTIVITY_META_V44} from '../dist/activities-v44.js';
+import {ACTIVITY_IDS_V44 as CURRENT_ACTIVITY_IDS_V44,ACTIVITY_META_V44} from '../dist/activities-v44.js';
+const ACTIVITY_IDS_V44=CURRENT_ACTIVITY_IDS_V44.filter(id=>id!=='camel'); // This fixture cohort published seven activities.
 import {activityProgressHTMLV44} from '../dist/activity-ui-v44.js';
 import {activityPhaseV52,activityPhaseNoticeHTMLV52,activityReturnNoticeHTMLV52} from '../dist/activity-phases-v52.js';
 

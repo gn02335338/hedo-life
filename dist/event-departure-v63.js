@@ -1,12 +1,13 @@
 import {isParticipationV63} from './participation-profile-v63.js';
 
 export {isParticipationV63} from './participation-profile-v63.js';
-const categories=['gap','onboarding','activity','invitation','treats','shareholder','recruitment','hidden','meal','rest','salary','patronage','company','wealth','personnel','pip-review','pip-passed','collapse','chapter','rage','verbal','career','work','private'];
+const categories=['blockchain','gap','onboarding','activity','invitation','treats','shareholder','recruitment','hidden','meal','rest','salary','patronage','company','wealth','personnel','pip-review','pip-passed','collapse','chapter','rage','verbal','career','work','private'];
 const personnel=new Set(['crisis-boss','paperwork','dismissal-final','labor-claim','labor-mediation','floor-notice','watch-review','watch-future','education-scrutiny']);
-const knownTargets=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','hidden-visitor']);
+const knownTargets=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','hidden-visitor','zoe','action','hester','simon','james','johnny']);
 
 export function eventDepartureCategoryV63(run,event){
  if(event?.id==='work-gap-v50')return 'gap';
+ if(run?.blockchainContext)return 'blockchain';
  if(run?.activityInvitationContext)return 'invitation';
  if(run?.activityContext)return 'activity';
  if(run?.treatsContext)return 'treats';
@@ -41,6 +42,7 @@ export function eventDepartureDescriptorV63(run,event){
  if(!event||run.actions.length>=299)return no('先完成眼前已經開始的收尾。');
  const category=eventDepartureCategoryV63(run,event);
  const words={
+  blockchain:['這輪我先退出，資料留給原負責人。','離開目前的跨部門計畫，不替尚未確認的工作點頭。'],
   gap:['結束這段空檔，回去上班。','只結束目前的空檔，下一件工作還沒作答。'],
   onboarding:['這份任用我不接受，現在離開。','拒絕這份任用，結束今天的報到。'],
   activity:['我先離場，這場不繼續了。','中止目前的活動；已發生的花費與經過會保留。'],
@@ -67,7 +69,7 @@ export function eventDepartureDescriptorV63(run,event){
   private:['這攤我先走，你們繼續。','結束自己的參與；已經發生的花費與人情往來會保留。']
  };
  if(category==='activity'){
-  const labels={arm:'手先收回來，這場我不比了。',diet:'這張排名表先別算我，我退出。',roadshow:'我先離場，這輪請另找人接手。',dinner:'我先離席，這桌你們慢慢吃。',banquet:'今晚先到這裡，我先走了。',basketball:'我下場了，這波請換人。',review:'這輪我先退出，後續請改用書面。'};
+  const labels={camel:'這場駱駝我先下車，名牌還你。',arm:'手先收回來，這場我不比了。',diet:'這張排名表先別算我，我退出。',roadshow:'我先離場，這輪請另找人接手。',dinner:'我先離席，這桌你們慢慢吃。',banquet:'今晚先到這裡，我先走了。',basketball:'我下場了，這波請換人。',review:'這輪我先退出，後續請改用書面。'};
   words.activity=[labels[run.activityContext.id]||words.activity[0],'結束自己的參與，先前已發生的經過照常留下。'];
  }
  if(category==='treats')words.treats=[{ 'jack-drinks':'這杯先不用幫我算，我先走。','company-tea':'下午茶我先退場，你們繼續。','birthday-cake':'生日快樂，我先走了。'}[run.treatsContext.id],words.treats[1]];
@@ -86,11 +88,12 @@ export function resolveEventDepartureV63(run,event,ticket){
   delta={boss:furious?-22:quiet?-3:-11,trust:furious?-8:-3,mood:2};affinityDelta=target=== 'wing'?(furious?-12:quiet?0:-5):target?-3:0;
   result=quiet?'你直接收起東西，留下今天還沒交付的工作。這次沒有人當場追出來，但缺席還是留在紀錄上；你沒有提出離職，也沒有完成這一天的工作。':furious?'你轉身就走，翅膀隨後收到擅離的消息，當場要求人事記下來。這不是自願離職書，卻也不會被寫成完成交付；後續通知還得面對。':'你說今天不接了，走出工作現場。同事得重新安排眼前的交辦，翅膀也收到消息。這一天沒有工作收入、沒有完成交付，你仍然是這間公司的員工。';
   if(run.pip?.active)result+=' 這也是一個改善日：缺席記零分，期限照樣少一天，評核不會等你回來才開始。';
- }else if(category==='onboarding'){delta={mood:5};result='你明確表示不接受這份任用，把還沒收下的名片放回桌上。今天的報到到此結束，沒有替自己補簽任何新職稱或新薪資；這是你拒絕任用，並非公司資遣。';}
+ }else if(category==='blockchain'){affinityDelta=target?-4:0;result='你明確表示退出這輪區塊鏈計畫，交還已整理的資料，把尚未同意的範圍分開。順哥重新安排剩下的待辦，沒有替你簽下免費兼任；這次離開的是計畫現場，原本的工作與已發生的經過仍保留。';}
+ else if(category==='onboarding'){delta={mood:5};result='你明確表示不接受這份任用，把還沒收下的名片放回桌上。今天的報到到此結束，沒有替自己補簽任何新職稱或新薪資；這是你拒絕任用，並非公司資遣。';}
  else if(category==='gap')result='你結束這段空檔，準備接著處理下一件工作。還沒有新的選擇被作答，也沒有多算一個工作日。';
  else if(category==='activity'){
   affinityDelta=target?(ticket<.65?-2:-7):0;
-  const reactions={arm:'你把手收回來，表示這場不比了。阿福立刻補一句「我本來也沒有要比」，彷彿退出名單才是今天真正的冠軍榜。',diet:'你請主辦把自己從排名裡移除。比賽少一位參賽者，正常吃飯並沒有一起被取消，也沒有人能再替你的便當打分數。',roadshow:'你告知現場需要換人，水蛇只好臨時接手這輪訪客。人沒有因為你離開就少來一批，後面的分工又得重排。',dinner:'你向同桌的人打聲招呼，先離席。大家繼續吃，你沒有把餐桌變成離職面談，也沒把已上桌的消費變成退款單。',banquet:'你拿好自己的東西，提早離開尾牙。麥克風還在傳，抽獎也不替你暫停；沒出發的續攤沒有收費，今晚先到這裡。',basketball:'你跟傑克說先下場，他招手叫候補補進來。阿福繼續當移動迷宮，歐文的拐子留給場上處理，你沒有再硬撐下一波碰撞。',review:'你表示這輪退出，請後續改用書面。窗口重新安排回覆人，沒有把你的空位寫成「審查通過」，還沒回答的問題仍留在清單上。'};
+  const reactions={camel:'你向丁哥說先走，把紙名牌還到桌上。已抽過的骰色與位置保留，沒有完成六輪就不補排名，也不把活動點換成現金。',arm:'你把手收回來，表示這場不比了。阿福立刻補一句「我本來也沒有要比」，彷彿退出名單才是今天真正的冠軍榜。',diet:'你請主辦把自己從排名裡移除。比賽少一位參賽者，正常吃飯並沒有一起被取消，也沒有人能再替你的便當打分數。',roadshow:'你告知現場需要換人，水蛇只好臨時接手這輪訪客。人沒有因為你離開就少來一批，後面的分工又得重排。',dinner:'你向同桌的人打聲招呼，先離席。大家繼續吃，你沒有把餐桌變成離職面談，也沒把已上桌的消費變成退款單。',banquet:'你拿好自己的東西，提早離開尾牙。麥克風還在傳，抽獎也不替你暫停；沒出發的續攤沒有收費，今晚先到這裡。',basketball:'你跟傑克說先下場，他招手叫候補補進來。阿福繼續當移動迷宮，歐文的拐子留給場上處理，你沒有再硬撐下一波碰撞。',review:'你表示這輪退出，請後續改用書面。窗口重新安排回覆人，沒有把你的空位寫成「審查通過」，還沒回答的問題仍留在清單上。'};
   result=(reactions[run.activityContext.id]||'你跟現場的人說先走，退出這場活動。')+' 先前的操作與花費照樣留下，這次沒有完成整場，也不會再重開同一場。';
   if(['roadshow','review'].includes(run.activityContext.id))delta={trust:ticket<.65?-3:-7,boss:ticket<.65?-2:-5};
  }else if(category==='invitation')result='你明確回覆這次不參加，對方把你從這次人數裡劃掉。你沒有出發、沒有付新的活動費用，回去接著處理原本的事。';

@@ -16,6 +16,7 @@ const turnValue = value => Number.isInteger(value) && value >= 0 ? value : null;
 function sampleLabel(row) {
  const id = typeof row?.eventId === 'string' ? row.eventId : '';
  if (row?.kind === 'event-departure') return '事件離場';
+ if (row?.kind === 'blockchain') return '區塊鏈計畫';
  if (row?.kind === 'shareholder') return row.shareholderOutcome?.stage === 'offer' ? '員工認股' : '股東會';
  if (row?.kind === 'office-treat') return '點心插曲';
  if (row?.kind === 'recruitment') return '入職介紹';
