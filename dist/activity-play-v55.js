@@ -1,6 +1,7 @@
 // Player inputs are bounded evidence of a local game, never a trusted score.
 // The canonical engine derives performance and draws the fictional outcome.
-export const isActivityPlayV55=run=>/^e39-cal46-kin49-g-e-s-m-/.test(typeof run==='string'?run:run?.seed||'');
+import {isRecruitmentV60} from './seed-profile-v60.js';
+export const isActivityPlayV55=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-g-e-s-m-/.test(typeof run==='string'?run:run?.seed||'');
 const ids=['arm','diet','roadshow','dinner','banquet','basketball','review'];
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 export const ACTIVITY_PLAY_CONTENT_V55=Object.freeze({

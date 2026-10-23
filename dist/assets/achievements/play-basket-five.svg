@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="play-basket-five-title play-basket-five-desc" data-art-version="60">
+ <title id="play-basket-five-title">傳球不用再跑一輪會簽。</title>
+ <desc id="play-basket-five-desc">五波球路都對上配合，籃球直接找到舉手的空檔隊友。</desc>
+ <rect width="240" height="200" rx="28" fill="#edf8f6"/>
+ <circle cx="120" cy="98" r="76" fill="#cce7df"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#5a9c8c" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><circle r="42" fill="#75bba9"/><path d="M-42 0h84M0-42v84M-28-31q42 31 0 62m56-62q-42 31 0 62" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#edf8f6" stroke="#5a9c8c" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-36" y="-41" width="72" height="86" rx="7" fill="#fffaf4"/><path d="M-12-17h34m-34 23h34m-34 23h34" fill="none"/><path d="m-25-20 4 5 8-10m-12 28 4 5 8-10m-12 28 4 5 8-10" stroke="#75bba9" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-27 35v-29q0-14 12-14v-27q0-11 10-11t10 11v27-35q0-11 10-11t10 11v36-27q0-11 10-11t10 11v34-16q0-11 10-11t10 11v33q-1 18-18 30v13H-8V48z" fill="#75bba9"/></g><circle cx="183" cy="47" r="21" fill="#fffaf4" stroke="#5a9c8c" stroke-width="3"/><text x="183" y="54" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="18">5</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#75bba9" stroke-width="3" stroke-linecap="round"/>
+</svg>

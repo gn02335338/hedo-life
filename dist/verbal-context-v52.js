@@ -4,6 +4,7 @@ import {verbalSceneLine} from './verbal-scene-copy.js';
 import {hasAuthoredVerbalV52} from './verbal-authored-v52.js';
 import {verbalEditorialLineV52} from './verbal-editorial-v52.js';
 import {displayArmVerbalLineV51} from './arm-verbal-copy-v51.js';
+import {recruitmentVerbalLineV60} from './recruitment-v60.js';
 
 // Presentation never changes the published random stream or action protocol.
 // Authored speech takes priority. A fallback answers the visible quote, not a
@@ -50,6 +51,8 @@ function anchoredLine(event,target,phase){
 
 export function displayContextVerbalLineV52(line,{event,target,run,phase='event'}={}){
  if(typeof line!=='string'||!line||!event?.id||!['event','result'].includes(phase)||!(target==='self'||Object.hasOwn(PERSONAS,target)))return line;
+ const recruitment=recruitmentVerbalLineV60(run,event,target,phase);
+ if(recruitment)return recruitment;
  const source=visible(event);
  if(source.id==='video-referee-committee'&&target==='self')return displayArmVerbalLineV51(line,{eventId:source.id,target,phase});
  const editorial=verbalEditorialLineV52({event:source,target,run,phase});

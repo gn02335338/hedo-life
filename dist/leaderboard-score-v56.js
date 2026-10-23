@@ -1,4 +1,5 @@
 import { ENDINGS } from './endings.js';
+import { isRecruitmentV60 } from './seed-profile-v60.js';
 
 // A read-only projection of a completed engine replay. The worker must replay
 // the seed and actions before calling this module; never score posted stats.
@@ -73,7 +74,7 @@ function completedEnding(run) {
 export function leaderboardEligibilityV56(run) {
   try { completedEnding(run); }
   catch { return { eligible: false, reason: '先完成這次人生，再決定要不要留名。' }; }
-  if (!CURRENT_SEASON_SEED.test(run.seed || '')) return {
+  if (!CURRENT_SEASON_SEED.test(run.seed || '') && !isRecruitmentV60(run)) return {
     eligible: false,
     reason: '本季排行榜採用新版活動與體力規則。這局仍可看分數；開一段新人生就能參賽。'
   };

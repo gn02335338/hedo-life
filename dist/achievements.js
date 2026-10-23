@@ -5,6 +5,7 @@ import { resolvedRageAttempts } from './rage-achievements.js';
 import { WEALTH_ACHIEVEMENTS, deriveWealthAchievements } from './wealth-achievements.js';
 import { ACHIEVEMENTS_V32, deriveAchievementsV32, hasCompanyFinaleV32 } from './achievements-v32.js';
 import { ACHIEVEMENTS_V48, deriveAchievementsV48 } from './achievements-v48.js';
+import { ACHIEVEMENTS_V60, deriveAchievementsV60 } from './achievements-v60.js';
 const badge=(id,title,description,group,options={})=>Object.freeze({id,title,description,group,image:`./assets/achievements/${id}.svg`,...options});
 const realBadge=(person,title,description)=>badge(`real-hit-${person}`,title,description,'rage',{mode:'real',image:`./assets/achievements/rage-${person}.svg`});
 const modeBadge=(id,title,description,mode,art)=>badge(id,title,description,'rage',{mode,image:`./assets/achievements/${art||id}.svg`});
@@ -71,7 +72,8 @@ export const ACHIEVEMENTS=Object.freeze([
  ...WEALTH_ACHIEVEMENTS,
  badge('ai-auto-increment','原來公司的AI是Auto Increment','以 AI 工程師身分修好資料匯入，發現被叫作 AI 的東西，其實是主鍵的自動編號。','craft'),
  ...ACHIEVEMENTS_V32,
- ...ACHIEVEMENTS_V48
+ ...ACHIEVEMENTS_V48,
+ ...ACHIEVEMENTS_V60
 ]);
 export const ACHIEVEMENT_MAP=Object.freeze(Object.fromEntries(ACHIEVEMENTS.map(item=>[item.id,item])));
 export const ACHIEVEMENT_RECORD_MAP=Object.freeze({...LEGACY_RAGE_ACHIEVEMENT_MAP,...ACHIEVEMENT_MAP});
@@ -128,5 +130,6 @@ export function deriveAchievements(run){
  for(const id of deriveWealthAchievements(run))ids.add(id);
  for(const id of deriveAchievementsV32(run))ids.add(id);
  for(const id of deriveAchievementsV48(run))ids.add(id);
+ for(const id of deriveAchievementsV60(run))ids.add(id);
  return ACHIEVEMENTS.filter(item=>ids.has(item.id)).map(item=>item.id);
 }

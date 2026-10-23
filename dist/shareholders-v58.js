@@ -1,5 +1,6 @@
 // A new seed cohort owns this interlude. Historical replays never enter it.
-export const isShareholderV58=run=>/^e39-cal46-kin49-g-e-s-m-h-[a-f0-9]{6}$/.test(typeof run==='string'?run:run?.seed||'');
+import {isRecruitmentV60} from './seed-profile-v60.js';
+export const isShareholderV58=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-g-e-s-m-h-[a-f0-9]{6}$/.test(typeof run==='string'?run:run?.seed||'');
 export const SHAREHOLDER_CAST_V58=Object.freeze(['wing','spencer','erich','jenjen','janet','sonny']);
 const hash=value=>{let h=2166136261;for(const c of String(value))h=Math.imul(h^c.charCodeAt(0),16777619)>>>0;return h;};
 const option=(text,available=true)=>({text,available,result:'',delta:{}});

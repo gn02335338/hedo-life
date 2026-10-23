@@ -825,3 +825,32 @@ The hearing does not pay salary, spend another workday, tick PIP, or force an
 employment ending. All meeting results restore the suspended work scene. Public
 statistics retain their existing aggregate behavior; raw dialogue and documents
 are not added to server storage. No new secret or database table is required.
+
+
+## Random recruitment and direct appointment (v60)
+
+New browser profiles use `e39-r60-[nsd]-` and 22 hexadecimal entropy characters,
+within the existing 32-character seed limit. This compact profile retains the
+calendar, patronage eligibility, warning rest, fatigue buffer, interactive
+activities, shareholder hearing and current leaderboard season. Published
+profiles retain their exact replay paths. The browser's ordinary-profession bag
+continues across rerolls and new applications in the same page session; rare
+management and special-appointment tickets are drawn separately. The bag is not
+server evidence or a guarantee of human random selection.
+
+Special `s`/`d` profiles derive a fixed ordinary professional record and character
+gender from the seed. They do not add role IDs, ending dimensions or public role
+filters. The candidate is shown a special vacancy; only reporting reveals the
+appointment. Accepting writes the existing patronage structure and salary
+formula. Declining ends employment without appointing the character. Two
+mandatory introduction scenes then use ordinary choice envelopes and committed
+`recruitmentOutcome` rows, with no extra workday, wage or PIP tick. Other menus
+cannot interrupt the introductions. Full canonical replay rejects supplied
+appointments, genders, relationship deltas, omitted scenes and altered histories.
+
+The 32 new achievements read committed action/history evidence for the shareholder
+hearing, interactive activities and special appointments. Character affinity uses
+the validated recruitment outcome, keeping Rick's jealousy separate from
+Wing's mood and from imagined or actual hits. Existing achievement, character
+and completion APIs, anonymous ownership, storage and opt-in rankings remain in
+use; no new credential or database migration is required.

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="kin-application-rejected-title kin-application-rejected-desc" data-art-version="60">
+ <title id="kin-application-rejected-title">職缺沒上，黑名單先上。</title>
+ <desc id="kin-application-rejected-desc">沒有獲准的申請信與瑞克的聯絡清單同框，職稱沒換，關係先變。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><rect x="-43" y="-29" width="86" height="60" rx="7" fill="#fffaf4"/><path d="m-41-26 41 32 41-32m-82 55 28-25m54 25L13 4" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-25" y="-46" width="50" height="92" rx="9" fill="#fffaf4"/><path d="M-10-35h20m-24 12h28m-28 12H8m-22 12h22" fill="none"/><circle cy="33" r="4" fill="#d9b657"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-45-24v-14h35l10 14h45v64h-90z" fill="#d9b657"/><path d="M-33-18h61v46h-61z" fill="#fffaf4"/><path d="M-45-8h99L40 47h-88z" fill="#d9b657"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

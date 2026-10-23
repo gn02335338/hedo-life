@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="play-diet-weekend-title play-diet-weekend-desc" data-art-version="60">
+ <title id="play-diet-weekend-title">行事曆終於有飯，也有空。</title>
+ <desc id="play-diet-weekend-desc">七天行事曆裡有正餐，週末也保留一張能好好休息的椅子。</desc>
+ <rect width="240" height="200" rx="28" fill="#edf8f6"/>
+ <circle cx="120" cy="98" r="76" fill="#cce7df"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#5a9c8c" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><rect x="-39" y="-37" width="78" height="80" rx="8" fill="#fffaf4"/><path d="M-39-14h78m-59-36v25m40-25v25" fill="none"/><path d="M-23 0h13m8 0h13m8 0h8M-23 15h13m8 0h13m8 0h8M-23 30h13m8 0h13" fill="none" stroke="#75bba9"/></g><circle cx="177" cy="139" r="27" fill="#edf8f6" stroke="#5a9c8c" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><ellipse cy="23" rx="50" ry="16" fill="#fffaf4"/><path d="M-33 8q26-31 57-6l18-15v32L24 8Q-8 34-33 8z" fill="#75bba9"/><circle cx="-19" cy="7" r="2.5" fill="#273144" stroke="none"/><path d="M-6-5q9 11 0 25" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><rect x="-30" y="-43" width="60" height="53" rx="12" fill="#75bba9"/><path d="M-40 8v16h80V8M-28 10v12m56-12v12M0 24v27m-29 0h58" fill="#fffaf4"/><circle cx="-30" cy="54" r="4"/><circle cx="30" cy="54" r="4"/></g><circle cx="183" cy="47" r="21" fill="#fffaf4" stroke="#5a9c8c" stroke-width="3"/><text x="183" y="54" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="18">7</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#75bba9" stroke-width="3" stroke-linecap="round"/>
+</svg>

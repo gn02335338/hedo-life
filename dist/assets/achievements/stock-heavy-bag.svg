@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="stock-heavy-bag-title stock-heavy-bag-desc" data-art-version="60">
+ <title id="stock-heavy-bag-title">加碼的不是信心，是生活費。</title>
+ <desc id="stock-heavy-bag-desc">厚厚的認股硬幣壓住錢包與收據，五十格生活費比願景先到位。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><rect x="-43" y="-29" width="86" height="65" rx="9" fill="#d9b657"/><path d="M-36-29v-12l65-7v19" fill="#fffaf4"/><path d="M17-11h31v29H17q-12-14 0-29z" fill="#fffaf4"/><circle cx="29" cy="4" r="3" stroke="none" fill="#273144"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><ellipse cy="31" rx="39" ry="13" fill="#d9b657"/><path d="M-39 9v22q0 13 39 13T39 31V9" fill="#d9b657"/><ellipse cy="9" rx="39" ry="13" fill="#fffaf4"/><path d="M-31-13V9q0 13 31 13T31 9v-22" fill="#d9b657"/><ellipse cy="-13" rx="31" ry="12" fill="#fffaf4"/><path d="M0-43v29m10-22h-15q-11 0-10 8t12 8h8q12 0 12 8-1 9-12 9h-17" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-31-44h62v88l-10-6-10 6-11-6-11 6-10-6-10 6z" fill="#fffaf4"/><path d="M-19-27h38m-38 13h22m-22 17h38m-38 14h22M10 9v18m7-14H6q-8 0-7 5t8 5h5" fill="none"/></g><circle cx="183" cy="47" r="21" fill="#fffaf4" stroke="#b79537" stroke-width="3"/><text x="183" y="54" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="18">50</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

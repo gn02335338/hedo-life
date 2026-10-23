@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="play-arm-twenty-eight-title play-arm-twenty-eight-desc" data-art-version="60">
+ <title id="play-arm-twenty-eight-title">手點二十八下，理由不設上限。</title>
+ <desc id="play-arm-twenty-eight-desc">出力手臂、點按的手掌與計時器一起留下二十八次持續操作。</desc>
+ <rect width="240" height="200" rx="28" fill="#edf8f6"/>
+ <circle cx="120" cy="98" r="76" fill="#cce7df"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#5a9c8c" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><path d="m-42 37 8-44 12-28q6-13 18-7l12 6q10 4 4 16l-4 7-14-8-5 21Q17-19 36-1q15 15 8 38z" fill="#75bba9"/><path d="M-11 0q-12 4-15 16m34-29q9 11 7 25M-34 26H36" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#edf8f6" stroke="#5a9c8c" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-27 35v-29q0-14 12-14v-27q0-11 10-11t10 11v27-35q0-11 10-11t10 11v36-27q0-11 10-11t10 11v34-16q0-11 10-11t10 11v33q-1 18-18 30v13H-8V48z" fill="#75bba9"/></g><g transform="translate(51 143) scale(0.34)"><circle r="42" fill="#fffaf4"/><path d="M0-29V0l20 13M0-42v7m42 7h-7M0 42v-7m-42-7h7" fill="none"/><circle r="5" fill="#75bba9"/></g><circle cx="183" cy="47" r="21" fill="#fffaf4" stroke="#5a9c8c" stroke-width="3"/><text x="183" y="54" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="18">28</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#75bba9" stroke-width="3" stroke-linecap="round"/>
+</svg>

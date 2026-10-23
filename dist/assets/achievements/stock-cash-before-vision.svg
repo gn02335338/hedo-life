@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="stock-cash-before-vision-title stock-cash-before-vision-desc" data-art-version="60">
+ <title id="stock-cash-before-vision-title">大企業請先，我的房租也很大。</title>
+ <desc id="stock-cash-before-vision-desc">錢包留在保護盾後，認股攤位還在遠處，生活費沒有先匯出去。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><rect x="-43" y="-29" width="86" height="65" rx="9" fill="#d9b657"/><path d="M-36-29v-12l65-7v19" fill="#fffaf4"/><path d="M17-11h31v29H17q-12-14 0-29z" fill="#fffaf4"/><circle cx="29" cy="4" r="3" stroke="none" fill="#273144"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M0-47q17 13 36 13v34q-2 31-36 48Q-34 31-36 0v-34q19 0 36-13z" fill="#d9b657"/><path d="m-18 0 12 13 25-29" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-43-10h86v59h-86z" fill="#fffaf4"/><path d="M-51-34h102v26H-51z" fill="#d9b657"/><path d="M-34-34v26m23-26v26m22-26v26m23-26v26M-31 8h36v22h-36m48-22h14v41M-51 49H51" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

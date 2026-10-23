@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="stock-receipt-title stock-receipt-desc" data-art-version="60">
+ <title id="stock-receipt-title">願景刷卡，收據留底。</title>
+ <desc id="stock-receipt-desc">認股收據旁放著實付的硬幣與資料夾，投資先留下自己的付款紀錄。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><path d="M-31-44h62v88l-10-6-10 6-11-6-11 6-10-6-10 6z" fill="#fffaf4"/><path d="M-19-27h38m-38 13h22m-22 17h38m-38 14h22M10 9v18m7-14H6q-8 0-7 5t8 5h5" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><ellipse cy="31" rx="39" ry="13" fill="#d9b657"/><path d="M-39 9v22q0 13 39 13T39 31V9" fill="#d9b657"/><ellipse cy="9" rx="39" ry="13" fill="#fffaf4"/><path d="M-31-13V9q0 13 31 13T31 9v-22" fill="#d9b657"/><ellipse cy="-13" rx="31" ry="12" fill="#fffaf4"/><path d="M0-43v29m10-22h-15q-11 0-10 8t12 8h8q12 0 12 8-1 9-12 9h-17" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-45-24v-14h35l10 14h45v64h-90z" fill="#d9b657"/><path d="M-33-18h61v46h-61z" fill="#fffaf4"/><path d="M-45-8h99L40 47h-88z" fill="#d9b657"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

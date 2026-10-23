@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="play-dinner-shared-title play-dinner-shared-desc" data-art-version="60">
+ <title id="play-dinner-shared-title">比目魚有到，白飯不用兼職。</title>
+ <desc id="play-dinner-shared-desc">六道共享菜轉到桌上，比目魚有份，預算與座位都照顧到了。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><ellipse cy="23" rx="50" ry="16" fill="#fffaf4"/><path d="M-33 8q26-31 57-6l18-15v32L24 8Q-8 34-33 8z" fill="#ed6995"/><circle cx="-19" cy="7" r="2.5" fill="#273144" stroke="none"/><path d="M-6-5q9 11 0 25" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><ellipse cy="31" rx="39" ry="13" fill="#ed6995"/><path d="M-39 9v22q0 13 39 13T39 31V9" fill="#ed6995"/><ellipse cy="9" rx="39" ry="13" fill="#fffaf4"/><path d="M-31-13V9q0 13 31 13T31 9v-22" fill="#ed6995"/><ellipse cy="-13" rx="31" ry="12" fill="#fffaf4"/><path d="M0-43v29m10-22h-15q-11 0-10 8t12 8h8q12 0 12 8-1 9-12 9h-17" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><rect x="-30" y="-43" width="60" height="53" rx="12" fill="#ed6995"/><path d="M-40 8v16h80V8M-28 10v12m56-12v12M0 24v27m-29 0h58" fill="#fffaf4"/><circle cx="-30" cy="54" r="4"/><circle cx="30" cy="54" r="4"/></g><circle cx="183" cy="47" r="21" fill="#fffaf4" stroke="#c67898" stroke-width="3"/><text x="183" y="54" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="18">6</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

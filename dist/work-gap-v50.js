@@ -1,11 +1,12 @@
 // A published seed keeps its original timing. New lives have a real pause
 // between completed work scenes; the selected next scene stays unrevealed.
+import {isRecruitmentV60} from './seed-profile-v60.js';
 export const WORK_GAP_EVENT_V50='work-gap-v50';
-export const isWorkGapV50=run=>/^e39-cal46-kin49-g-/.test(typeof run==='string'?run:run?.seed||'');
+export const isWorkGapV50=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-g-/.test(typeof run==='string'?run:run?.seed||'');
 
 export function workGapSurfaceSafeV50(run,source){
  if(!isWorkGapV50(run)||run.flags?.work_gap_open!==1||run.pending||run.completed||run.pendingFamily||!['daily','fantasy'].includes(source?.kind))return false;
- if(run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.raiseContext||run.patronageContext||run.mealContext||run.personnelPending)return false;
+ if(run.recruitmentContext||run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.raiseContext||run.patronageContext||run.mealContext||run.personnelPending)return false;
  if(run.resumeEventId||run.exitReturnEventId||run.breakReturnEventId||run.banquetReturnEventId||run.meltdownReturnEventId||run.wealthReturnEventId||run.salaryAdvice?.status==='open'||run.salaryAdvice?.status==='queued')return false;
  return run.stats.mood>0&&run.stats.energy>0&&run.stats.cash>0;
 }

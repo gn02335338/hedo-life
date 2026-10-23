@@ -13,3 +13,6 @@ export const LEGACY_ROLES = [
 export const ROLES = [...LEGACY_ROLES,...BACKOFFICE_ROLES_V28];
 export const ROLE_MAP = Object.fromEntries(ROLES.map(r=>[r.id,r]));
 export const ROLE_ORDER = ROLES.map(r=>r.id);
+
+// Special random-entry tickets reuse one ordinary professional record.
+export const RANDOM_BASE_ROLE_IDS_V60=Object.freeze(ROLES.filter(role=>role.id!=='executive').map(role=>role.id));

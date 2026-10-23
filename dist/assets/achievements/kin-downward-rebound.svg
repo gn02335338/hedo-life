@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="kin-downward-rebound-title kin-downward-rebound-desc" data-art-version="60">
+ <title id="kin-downward-rebound-title">名片很大，對方照樣回嘴。</title>
+ <desc id="kin-downward-rebound-desc">擺架子的擴音器收到回嘴，特殊工作證沒有把別人的聲音關掉。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><path d="m-35-15 55-23V30l-55-22z" fill="#ed6995"/><path d="M-35-15h-12V8h12m15 6 5 28h17L-2 20M31-14l15-6m-15 22h19m-19 16 15 6" fill="#fffaf4"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-43-31h86v54H-8l-22 22V23h-13z" fill="#fffaf4"/><path d="M-26-12h52m-52 16H8" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#ed6995"/><path d="M-19 33q2-17 19-17t19 17" fill="#ed6995"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="shareholder-own-chair-title shareholder-own-chair-desc" data-art-version="60">
+ <title id="shareholder-own-chair-title">錢進得去，人也進得去。</title>
+ <desc id="shareholder-own-chair-desc">認股收據與自己的會場椅子相連，門已為付款的人打開。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><rect x="-30" y="-43" width="60" height="53" rx="12" fill="#ed6995"/><path d="M-40 8v16h80V8M-28 10v12m56-12v12M0 24v27m-29 0h58" fill="#fffaf4"/><circle cx="-30" cy="54" r="4"/><circle cx="30" cy="54" r="4"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-31-44h62v88l-10-6-10 6-11-6-11 6-10-6-10 6z" fill="#fffaf4"/><path d="M-19-27h38m-38 13h22m-22 17h38m-38 14h22M10 9v18m7-14H6q-8 0-7 5t8 5h5" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-40 50v-99h75v99" fill="#fffaf4"/><path d="m-22-34 42-12v96h-42z" fill="#ed6995"/><circle cx="8" cy="7" r="3" fill="#273144" stroke="none"/><path d="M-49 50h99" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="shareholder-seven-files-title shareholder-seven-files-desc" data-art-version="60">
+ <title id="shareholder-seven-files-title">七份附件，比股票有流動性。</title>
+ <desc id="shareholder-seven-files-desc">七份資料收入打開的文件夾，紙張已經能流通，股票仍在等待。</desc>
+ <rect width="240" height="200" rx="28" fill="#edf8f6"/>
+ <circle cx="120" cy="98" r="76" fill="#cce7df"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#5a9c8c" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><path d="M-45-24v-14h35l10 14h45v64h-90z" fill="#75bba9"/><path d="M-33-18h61v46h-61z" fill="#fffaf4"/><path d="M-45-8h99L40 47h-88z" fill="#75bba9"/></g><circle cx="177" cy="139" r="27" fill="#edf8f6" stroke="#5a9c8c" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><rect x="-36" y="-41" width="72" height="86" rx="7" fill="#fffaf4"/><path d="M-12-17h34m-34 23h34m-34 23h34" fill="none"/><path d="m-25-20 4 5 8-10m-12 28 4 5 8-10m-12 28 4 5 8-10" stroke="#75bba9" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-31-44h62v88l-10-6-10 6-11-6-11 6-10-6-10 6z" fill="#fffaf4"/><path d="M-19-27h38m-38 13h22m-22 17h38m-38 14h22M10 9v18m7-14H6q-8 0-7 5t8 5h5" fill="none"/></g><circle cx="183" cy="47" r="21" fill="#fffaf4" stroke="#5a9c8c" stroke-width="3"/><text x="183" y="54" text-anchor="middle" fill="#273144" stroke="none" font-family="system-ui,sans-serif" font-weight="800" font-size="18">7</text></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#75bba9" stroke-width="3" stroke-linecap="round"/>
+</svg>

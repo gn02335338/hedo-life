@@ -15,7 +15,7 @@ const runs=routes.map(route=>({route,run:replayRun(route.roleId,route.seed,route
 test('sixty illustrated milestones append after every published achievement ID',()=>{
  assert.equal(ACHIEVEMENTS_V48.length,60);
  assert.equal(new Set(ids).size,60);
- assert.deepEqual(ACHIEVEMENTS.slice(149),ACHIEVEMENTS_V48);
+ assert.deepEqual(ACHIEVEMENTS.slice(149,209),ACHIEVEMENTS_V48);
  const artwork=new Set();
  for(const item of ACHIEVEMENTS_V48){
   assert.equal(ACHIEVEMENT_MAP[item.id],item);

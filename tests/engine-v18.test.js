@@ -87,6 +87,6 @@ test('seven cash uses have different real effects, reject unaffordable choices a
 });
 
 test('legacy e18 natural witnesses remain authoritative, bounded, and compatible with the expanded collection',()=>{
- assert.equal(ACHIEVEMENTS.length,209);const report={routes:JSON.parse(readFileSync(new URL('./fixtures/legacy-e18-routes.json',import.meta.url))).filter(route=>!route.ending.startsWith('feature-'))};assert.equal(report.routes.length,314);
+ assert.equal(ACHIEVEMENTS.length,241);const report={routes:JSON.parse(readFileSync(new URL('./fixtures/legacy-e18-routes.json',import.meta.url))).filter(route=>!route.ending.startsWith('feature-'))};assert.equal(report.routes.length,314);
  for(const route of report.routes){assert.ok(route.seed.startsWith('e18-'));const run=replayRun(route.roleId,route.seed,route.actions);assert.equal(run.endingId,route.ending);assert.equal(validRun(copy(run)),true);assert.ok(sum(run.stats)<=180);assert.ok(deriveAchievements(run).every(id=>ACHIEVEMENTS.some(item=>item.id===id)));}
 });

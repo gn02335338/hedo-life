@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="kin-direct-daughter-title kin-direct-daughter-desc" data-art-version="60">
+ <title id="kin-direct-daughter-title">組織圖多一格，親戚少一位。</title>
+ <desc id="kin-direct-daughter-desc">新的特殊任用稱謂搭配已領取的工作證，組織圖正式多了一格。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><path d="m-40-30 21 20 19-34 19 34 21-20-8 65h-64z" fill="#d9b657"/><path d="M-32 18h64" fill="none"/><circle cx="-40" cy="-34" r="5" fill="#fffaf4"/><circle cy="-48" r="5" fill="#fffaf4"/><circle cx="40" cy="-34" r="5" fill="#fffaf4"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#d9b657"/><path d="M-19 33q2-17 19-17t19 17" fill="#d9b657"/></g><g transform="translate(51 143) scale(0.34)"><path d="M0-28q-18-16-43-7v72q25-9 43 7 18-16 43-7v-72Q18-44 0-28z" fill="#fffaf4"/><path d="M0-28v72m-31-61 20 5m-20 12 20 5m22-5 20-5m-20-12 20-5" fill="none"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="kin-upward-applause-title kin-upward-applause-desc" data-art-version="60">
+ <title id="kin-upward-applause-title">階級向上，語氣自動調整。</title>
+ <desc id="kin-upward-applause-desc">往高層遞出的諂媚對話真的得到正面回應，掌聲沿階級往上走。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><path d="m-40-30 21 20 19-34 19 34 21-20-8 65h-64z" fill="#ed6995"/><path d="M-32 18h64" fill="none"/><circle cx="-40" cy="-34" r="5" fill="#fffaf4"/><circle cy="-48" r="5" fill="#fffaf4"/><circle cx="40" cy="-34" r="5" fill="#fffaf4"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-43-31h86v54H-8l-22 22V23h-13z" fill="#fffaf4"/><path d="M-26-12h52m-52 16H8" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="m0-46 14 30 33 4-24 24 5 34L0 30l-28 16 5-34-24-24 33-4z" fill="#ed6995"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

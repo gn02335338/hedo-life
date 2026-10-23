@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="kin-offer-declined-title kin-offer-declined-desc" data-art-version="60">
+ <title id="kin-offer-declined-title">這份親情，謝絕錄取。</title>
+ <desc id="kin-offer-declined-desc">特殊任用錄取信留在門內，工作證未領，玩家選擇離開。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff8df"/>
+ <circle cx="120" cy="98" r="76" fill="#eddfa3"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#b79537" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><rect x="-43" y="-29" width="86" height="60" rx="7" fill="#fffaf4"/><path d="m-41-26 41 32 41-32m-82 55 28-25m54 25L13 4" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff8df" stroke="#b79537" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-40 50v-99h75v99" fill="#fffaf4"/><path d="m-22-34 42-12v96h-42z" fill="#d9b657"/><circle cx="8" cy="7" r="3" fill="#273144" stroke="none"/><path d="M-49 50h99" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><path d="M-16-39v-13h32v13" fill="none"/><rect x="-33" y="-39" width="66" height="85" rx="9" fill="#fffaf4"/><path d="M-33-16h66" fill="none"/><circle cy="5" r="11" fill="#d9b657"/><path d="M-19 33q2-17 19-17t19 17" fill="#d9b657"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#d9b657" stroke-width="3" stroke-linecap="round"/>
+</svg>

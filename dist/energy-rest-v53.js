@@ -1,9 +1,10 @@
 import {getWorkGapEventV50} from './work-gap-v50.js';
+import {isRecruitmentV60} from './seed-profile-v60.js';
 
 // Only new lives use warning-triggered intervals. Published seeds keep the
 // same choices and timing that their server-validated replays were given.
 export const ENERGY_REST_WARNING_V53=30;
-export const isEnergyRestV53=run=>/^e39-cal46-kin49-g-e-/.test(typeof run==='string'?run:run?.seed||'');
+export const isEnergyRestV53=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-g-e-/.test(typeof run==='string'?run:run?.seed||'');
 export const energyRestWarningV53=run=>Number.isFinite(run?.stats?.energy)&&run.stats.energy>0&&run.stats.energy<=ENERGY_REST_WARNING_V53;
 
 export function getEnergyRestEventV53(run){

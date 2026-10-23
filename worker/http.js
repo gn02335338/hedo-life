@@ -1,6 +1,7 @@
 import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
 import {isActivityPlayV55,deriveActivityPlayV55} from '../dist/activity-play-v55.js';
 import {isShareholderV58,validateShareholderInputV58} from '../dist/shareholders-v58.js';
+import {isRecruitmentV60} from '../dist/seed-profile-v60.js';
 
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
@@ -138,11 +139,11 @@ export function validateCompletion(body, roleMap) {
       throw new ApiError(400, 'invalid_actions', '活動操作紀錄無效。');
     }
     if (action.type === 'activity-schedule') {
-      if (/^e39-cal46-/.test(body.seed)&&Object.keys(action).sort().join(',')==='type,version'&&action.version===1) continue;
+      if ((/^e39-cal46-/.test(body.seed)||isRecruitmentV60(body.seed))&&Object.keys(action).sort().join(',')==='type,version'&&action.version===1) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
     if (action.type === 'activity-invitation') {
-      if (/^e39-cal46-/.test(body.seed)&&Object.keys(action).sort().join(',')==='eventId,type,version'&&action.version===1
+      if ((/^e39-cal46-/.test(body.seed)||isRecruitmentV60(body.seed))&&Object.keys(action).sort().join(',')==='eventId,type,version'&&action.version===1
           &&typeof action.eventId==='string'&&action.eventId.trim().length>0&&action.eventId.length<=100) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
@@ -152,7 +153,7 @@ export function validateCompletion(body, roleMap) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
     if (action.type === 'activity') {
-      if (/^e39-/.test(body.seed)&&!/^e39-cal46-/.test(body.seed)&&Object.keys(action).sort().join(',')==='activityId,type,version'
+      if (/^e39-/.test(body.seed)&&!/^e39-cal46-/.test(body.seed)&&!isRecruitmentV60(body.seed)&&Object.keys(action).sort().join(',')==='activityId,type,version'
           &&action.version===1&&ACTIVITY_IDS_V44.includes(action.activityId)) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }

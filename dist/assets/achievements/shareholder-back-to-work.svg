@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-labelledby="shareholder-back-to-work-title shareholder-back-to-work-desc" data-art-version="60">
+ <title id="shareholder-back-to-work-title">股東散會，員工繼續。</title>
+ <desc id="shareholder-back-to-work-desc">會議收據收進工作電腦旁，散會後的時鐘重新指向員工工時。</desc>
+ <rect width="240" height="200" rx="28" fill="#fff3f7"/>
+ <circle cx="120" cy="98" r="76" fill="#f8d7e4"/>
+ <path d="M35 172q85 14 170 0" fill="none" stroke="#c67898" opacity=".55" stroke-width="4" stroke-linecap="round"/>
+ <g stroke="#273144" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(111 101) scale(1.02)"><path d="M-36-35h72v57h-72z" fill="#fffaf4"/><path d="M-36 22h72l14 15q0 8-8 8h-84q-8 0-8-8z" fill="#ed6995"/><path d="M-23-20h46m-46 13H3m-26 13h39M-10 31h20" fill="none"/></g><circle cx="177" cy="139" r="27" fill="#fff3f7" stroke="#c67898" stroke-width="2.5"/><g transform="translate(177 139) scale(0.43)"><path d="M-31-44h62v88l-10-6-10 6-11-6-11 6-10-6-10 6z" fill="#fffaf4"/><path d="M-19-27h38m-38 13h22m-22 17h38m-38 14h22M10 9v18m7-14H6q-8 0-7 5t8 5h5" fill="none"/></g><g transform="translate(51 143) scale(0.34)"><circle r="42" fill="#fffaf4"/><path d="M0-29V0l20 13M0-42v7m42 7h-7M0 42v-7m-42-7h7" fill="none"/><circle r="5" fill="#ed6995"/></g></g>
+ <path d="M205 85h10m-5-5v10M26 116h10" fill="none" stroke="#ed6995" stroke-width="3" stroke-linecap="round"/>
+</svg>

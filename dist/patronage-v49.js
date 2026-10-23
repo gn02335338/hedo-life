@@ -1,8 +1,9 @@
 import {PATRONAGE_EVENT_V29,patronageEligibleV29,withPatronageEntryV29,getPatronageEventV29} from './patronage-v29.js';
+import {isRecruitmentV60} from './seed-profile-v60.js';
 
 // Existing lives keep their original invitations and deterministic outcomes.
 // The calendar prefix remains intact so this rule also uses scheduled events.
-export const isPatronageV49=run=>/^e39-cal46-kin49-/.test(run?.seed||'');
+export const isPatronageV49=run=>isRecruitmentV60(run)||/^e39-cal46-kin49-/.test(run?.seed||'');
 export const PATRONAGE_REQUIREMENTS_V49=Object.freeze({lick:70,boss:65});
 export function patronageEligibleV49(run){
  return patronageEligibleV29(run)&&(!isPatronageV49(run)||(run.stats.lick>=PATRONAGE_REQUIREMENTS_V49.lick&&run.stats.boss>=PATRONAGE_REQUIREMENTS_V49.boss));
