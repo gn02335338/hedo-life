@@ -233,7 +233,14 @@ function uiOverWorker(h, p, run, { losePublishReceipt = false, loseWithdrawalRec
     }
   };
 }
-async function settleUI() { for (let i = 0; i < 12; i++) await new Promise(resolve => setImmediate(resolve)); }
+// Worker authentication uses WebCrypto, whose thread-pool completion is not
+// tied to a fixed number of event-loop turns. Await the observable result that
+// each interaction promises, with a bounded timeout for a useful failure.
+async function waitForUI(condition, description) {
+  const deadline = Date.now() + 15_000;
+  while (!condition() && Date.now() < deadline) await new Promise(resolve => setTimeout(resolve, 5));
+  assert.ok(condition(), `UI did not finish: ${description}`);
+}
 
 test('leave-name, rename and confirmed withdrawal work end-to-end through UI controller and real Worker receipts', async t => {
   const h = harness(); t.after(() => h.db.close());
@@ -242,23 +249,21 @@ test('leave-name, rename and confirmed withdrawal work end-to-end through UI con
   await flow.ui.open();
   assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM leaderboard_entries').one().n, 0);
   flow.command('skip'); flow.command('unskip');
-  await settleUI();
   assert.equal(flow.calls.filter(row => row.method === 'POST').length, 0, 'opening, skipping and reopening the prompt never publishes');
   flow.submit('第一個化名'); flow.submit('第一個化名');
-  await settleUI();
+  await waitForUI(() => /留名已確認/.test(flow.ending()), 'publication acknowledgement');
   assert.equal(flow.calls.filter(row => row.method === 'POST').length, 1);
   assert.match(flow.ending(), /留名已確認/);
   const before = h.sql.exec('SELECT * FROM leaderboard_entries').one();
   flow.submit('修改後的化名', { scope: 'mine' });
-  await settleUI();
+  await waitForUI(() => /修改後的化名/.test(flow.html()) && /留名已確認/.test(flow.html()), 'metadata rename acknowledgement');
   assert.equal(flow.calls.filter(row => row.method === 'PATCH').length, 1);
   assert.deepEqual({ ...h.sql.exec('SELECT * FROM leaderboard_entries').one() }, { ...before, nickname: '修改後的化名' });
   assert.match(flow.html(), /修改後的化名/);
   flow.command('withdraw', 'mine');
-  await settleUI();
   assert.equal(flow.calls.filter(row => row.method === 'DELETE').length, 0, 'opening confirmation is read-only');
   flow.command('withdraw-confirm', 'mine'); flow.command('withdraw-confirm', 'mine');
-  await settleUI();
+  await waitForUI(() => /目前沒有公開留名/.test(flow.html()), 'confirmed withdrawal acknowledgement');
   assert.equal(flow.calls.filter(row => row.method === 'DELETE').length, 1);
   assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM leaderboard_entries').one().n, 0);
   assert.match(flow.html(), /目前沒有公開留名/);
@@ -271,20 +276,20 @@ test('UI recovers lost successful publish and withdrawal receipts by querying, w
   const flow = uiOverWorker(h, p, run, { losePublishReceipt: true, loseWithdrawalReceipt: true });
   await flow.ui.open();
   flow.submit('封包迷路但有上榜');
-  await settleUI();
+  await waitForUI(() => /還不能確認結果/.test(flow.ending()), 'lost publication receipt error');
   assert.match(flow.ending(), /還不能確認結果/);
   assert.doesNotMatch(flow.ending(), /留名已確認|這局已以/);
   assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM leaderboard_entries').one().n, 1);
   flow.command('mine-refresh');
-  await settleUI();
+  await waitForUI(() => /這局已以/.test(flow.ending()), 'authenticated read after lost publication receipt');
   assert.match(flow.ending(), /這局已以/);
   assert.match(flow.ending(), /封包迷路但有上榜/);
   flow.command('withdraw'); flow.command('withdraw-confirm');
-  await settleUI();
+  await waitForUI(() => /還不能確認結果/.test(flow.ending()), 'lost withdrawal receipt error');
   assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM leaderboard_entries').one().n, 0);
   assert.match(flow.ending(), /還不能確認結果/);
   flow.command('mine-refresh');
-  await settleUI();
+  await waitForUI(() => !/這局已以|正在確認這局是否已留名/.test(flow.ending()), 'authenticated read after lost withdrawal receipt');
   assert.doesNotMatch(flow.ending(), /這局已以/);
   assert.equal(flow.calls.filter(row => row.method === 'POST').length, 1);
   assert.equal(flow.calls.filter(row => row.method === 'DELETE').length, 1);
