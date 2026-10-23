@@ -9,6 +9,8 @@ import {isMealOutcomeV36} from './character-stats.js';
 import {resolvedRageAttempts} from './rage-achievements.js';
 import {isEventDepartureOutcomeV63} from './event-departure-v63.js';
 import {isOfficeTreatOutcomeV61} from './office-treats-v61.js';
+import {isExpansionV65} from './expansion-profile-v65.js';
+import {isExpansionV66} from './expansion-profile-v66.js';
 
 const badge=spec=>Object.freeze({id:spec.id,title:spec.title,description:spec.description,group:spec.group,image:`./assets/achievements/${spec.id}.svg`,...(spec.mode?{mode:spec.mode}:{})});
 const name=id=>displayPersona(id)?.name||'這位同事';
@@ -93,7 +95,7 @@ export function deriveAchievementsV66(run){
  const pipPassed=history.findIndex(row=>ordinary(row)&&row.eventId==='pip-review'&&row.chanceOutcome==='success'),pipFailed=history.findIndex(row=>ordinary(row)&&row.eventId==='pip-review'&&row.chanceOutcome==='setback');
  const earned=[];
  for(const spec of ACHIEVEMENT_RULES_V66){let yes=false;
-  if(spec.kind==='character'||spec.kind==='profession')yes=normal.some(({row})=>row.eventId===spec.eventId&&row.choiceIndex===spec.choiceIndex&&row.speaker===spec.speaker&&(spec.kind!=='profession'||run.actualRoleId===spec.owner)&&(!authored.get(row.eventId)?.requiresCastV66||/^e39-r66-/.test(run.seed)));
+  if(spec.kind==='character'||spec.kind==='profession')yes=normal.some(({row})=>row.eventId===spec.eventId&&row.choiceIndex===spec.choiceIndex&&row.speaker===spec.speaker&&(spec.kind!=='profession'||run.actualRoleId===spec.owner)&&(!authored.get(row.eventId)?.requiresCastV66||isExpansionV66(run)));
   else if(spec.kind==='social'){
    if(spec.goal==='warm'||spec.goal==='mine')yes=meals.some(({row,index})=>row.mealOutcome.target===spec.person&&row.mealOutcome.reaction===spec.goal&&laterWork(history,index));
    if(spec.goal==='dream-work'||spec.goal==='real-work')yes=rage.some(item=>item.person===spec.person&&item.mode===(spec.goal==='dream-work'?'imagined':'real')&&laterWork(history,item.historyIndex));
@@ -103,7 +105,7 @@ export function deriveAchievementsV66(run){
    const finish=history.findIndex(row=>ordinary(row)&&row.kind==='activity'&&row.activityOutcome?.id===spec.activityId&&row.activityOutcome.done===true&&row.choiceIndex===spec.finish);
    const setup=history.findIndex((row,index)=>index<finish&&ordinary(row)&&row.kind==='activity'&&row.activityOutcome?.id===spec.activityId&&row.activityOutcome.stage===0&&row.choiceIndex===spec.setup);
    const submitted=plays.filter(item=>item.index>setup&&item.index<finish&&item.row.activityOutcome.id===spec.activityId);
-   yes=finish>=0&&setup>=0&&submitted.length>0&&(spec.activityId!=='camel'||submitted.length===6&&submitted.at(-1).row.activityOutcome.camel?.done===true)&&(spec.activityId!=='diet'||/^e39-r(?:65|66)-/.test(run.seed));
+   yes=finish>=0&&setup>=0&&submitted.length>0&&(spec.activityId!=='camel'||submitted.length===6&&submitted.at(-1).row.activityOutcome.camel?.done===true)&&(spec.activityId!=='diet'||isExpansionV65(run));
   }else{
    const id=spec.id,purchase=stock.find(item=>item.row.shareholderOutcome.stage==='offer'&&item.row.delta.cash<0),loanPayments=history.flatMap(row=>row.breakdown||[]).filter(part=>part.source==='shareholder-loan'&&part.delta?.cash<0),loan=run.shareholderLoan,loanPaid=loanPayments.reduce((sum,part)=>sum-part.delta.cash,0);
    if(id==='finance-own-share')yes=!!purchase&&stock.some(item=>item.index>purchase.index&&item.row.shareholderOutcome.stage==='hearing')&&stock.some(item=>item.index>purchase.index&&item.row.shareholderOutcome.stage==='hearing'&&item.row.shareholderOutcome.round===3&&item.row.shareholderOutcome.done)&&stock.some(item=>item.index>purchase.index&&item.row.shareholderOutcome.stage==='finish');

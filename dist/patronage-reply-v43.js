@@ -1,5 +1,6 @@
 import {PERSONAS} from './persona.js';
 import {isExpansionV65} from './expansion-profile-v65.js';
+import {withPatronageOutcomesV67} from './patronage-reply-v67.js';
 
 // Original fictional replies for the special appointment. This module only
 // supplies text and weights: the engine owns the single roll and saved proof.
@@ -254,7 +255,7 @@ export function patronageReplyOutcomesV43(run,event,target,{affinity=50}={}){
   if(boss>=70){weights[0]+=6;weights[1]-=6;weights[3]+=8;}
   if(boss<30){weights[1]+=12;weights[2]+=6;weights[3]-=5;}
  }
- return REACTIONS.map((reaction,index)=>{
+ const outcomes=REACTIONS.map((reaction,index)=>{
   const privateReactions=PRIVATE_REACTIONS[target]||(isExpansionV65(run)?PRIVATE_REACTIONS_V65[target]:null);
   let result=social&&privateReactions?privateReactions[index]:v[reaction];
   if(social&&mode==='flattery')result=target==='wing'?[
@@ -279,4 +280,5 @@ export function patronageReplyOutcomesV43(run,event,target,{affinity=50}={}){
   // complaint stays social even when that person could report at work.
   return {reaction,weight:Math.max(2,weights[index]),label:social?PRIVATE_LABELS[reaction]:mode==='flattery'?['順手再交一件','馬屁拍出新功課','當眾追加表現','難得被聽進去'][index]:LABELS[reaction],result,delta,affinityDelta:(mode==='flattery'?[5,-6,2,9]:[-7,-13,-10,7])[index]};
  });
+ return withPatronageOutcomesV67(run,event,target,outcomes);
 }

@@ -1,5 +1,6 @@
 import {ROLE_MAP,RANDOM_BASE_ROLE_IDS_V60} from './roles.js';
 import {isRecruitmentV60} from './seed-profile-v60.js';
+import {appointmentPayV67,isPatronageBenefitsV67} from './patronage-benefits-v67.js';
 export {isRecruitmentV60} from './seed-profile-v60.js';
 const hash=value=>{let result=2166136261;for(const char of String(value))result=Math.imul(result^char.charCodeAt(0),16777619)>>>0;return result;};
 // A special ticket preserves an existing professional record and ending family.
@@ -14,7 +15,8 @@ export const entryLabelV60=run=>directEntryV60(run)?'特別任用職缺':ROLE_MA
 const choice=(text,result,delta={},extra={})=>({text,result,delta,effect:null,flags:[],detail:'',...extra});
 export function withRecruitmentOnboardingV60(event,run){
  const entry=directEntryV60(run);if(!entry||event?.id!=='onboarding')return event;
- return {...event,title:'錄取的是特別職缺，報到才知道親屬稱謂。',body:`錄取通知只寫「特別任用職缺」，總經理室說工作內容報到再談，專業履歷仍以${ROLE_MAP[run.roleId].name}建檔。你剛放下包包，翅膀就把新名片推過來：${entry.title}。希望說這是特殊任用，不是升上主管；原來的專業履歷保留，月薪會按新任用調整。瑞克的手機正好響起，他看了名片一眼，接電話時把椅子往翅膀那邊挪了一點。`,wing:`以後就是自己人。工作可以慢慢熟，先讓我知道你站哪邊。`,participants:['wing','hope','rick'],choices:[
+ const terms=isPatronageBenefitsV67(run)?`希望把待遇另外列清楚：接受任用後月薪 ${appointmentPayV67(run,run.pay)}K，另給一次安家補助，之後每完成兩個工作回合發生活津貼。補助與津貼使用存款指數，仍受 100 上限限制。`:'';
+ return {...event,title:'錄取的是特別職缺，報到才知道親屬稱謂。',body:`錄取通知只寫「特別任用職缺」，總經理室說工作內容報到再談，專業履歷仍以${ROLE_MAP[run.roleId].name}建檔。你剛放下包包，翅膀就把新名片推過來：${entry.title}。希望說這是特殊任用，不是升上主管；原來的專業履歷保留，月薪會按新任用調整。${terms}瑞克的手機正好響起，他看了名片一眼，接電話時把椅子往翅膀那邊挪了一點。`,wing:`以後就是自己人。工作可以慢慢熟，先讓我知道你站哪邊。`,participants:['wing','hope','rick'],choices:[
   choice(`收下${entry.title}名片，請希望把任用與薪資寫清楚。`,`你收下新名片，請希望把職稱與月薪一併確認。翅膀說自己人不用那麼見外，瑞克卻把自己的名片翻了過來。你還沒坐穩，這個沒有公開招募的職缺已經有了同業競爭。`,{boss:5,mood:9,trust:-8,lick:3},{effect:'directPatronageAppoint'}),
   choice('先替組織圖加一條家譜線，並註明這不是血緣鑑定。',`希望替組織圖另存一版，沒有替任何人補出血緣。翅膀對「自己人」三個字很滿意，也同意照新任用列薪資；瑞克說椅子已經很擠，你只好先確認自己是不是得連辦公椅一起應徵。`,{boss:3,mood:7,trust:-5,lick:2},{effect:'directPatronageAppoint',wild:true}),
   {...event.choices[2],text:'這個職缺跟想像的不一樣。名片先留著，我今天就離開。',result:'你把名片留在桌上，明確拒絕這份特殊任用。希望收回尚未生效的薪資表，翅膀還在說機會難得，你已經走出門口；瑞克這次沒有出聲挽留。'}
@@ -47,7 +49,7 @@ export function recruitmentOutcomeV60(run,event,index,effect){
 export function isRecruitmentOutcomeV60(run,row){
  const entry=directEntryV60(run),o=row?.recruitmentOutcome;
  if(!entry||!o||typeof o!=='object'||Array.isArray(o)||Object.keys(o).sort().join(',')!=='affinityDelta,kind,target,variant,version'||o.version!==1||o.variant!==entry.kind||!Number.isInteger(row.choiceIndex)||row.verbalOutcome!==undefined||row.patronageApplicationOutcome!==undefined)return false;
- if(o.kind==='appointment')return row.eventId==='onboarding'&&row.kind==='onboarding'&&row.speaker==='wing'&&[0,1].includes(row.choiceIndex)&&o.target==='rick'&&o.affinityDelta===-18&&row.jobTitle===entry.title&&Number.isInteger(row.pay)&&row.pay===Math.min(500,Math.max(createEntryPayV60(run)+8,Math.round(createEntryPayV60(run)*1.15)));
+ if(o.kind==='appointment')return row.eventId==='onboarding'&&row.kind==='onboarding'&&row.speaker==='wing'&&[0,1].includes(row.choiceIndex)&&o.target==='rick'&&o.affinityDelta===-18&&row.jobTitle===entry.title&&Number.isInteger(row.pay)&&row.pay===appointmentPayV67(run,createEntryPayV60(run));
  if(o.kind==='declined')return row.eventId==='onboarding'&&row.kind==='onboarding'&&row.speaker==='wing'&&row.choiceIndex===2&&o.target==='rick'&&o.affinityDelta===0;
  const scene=WELCOME.find(copy=>copy.id===row.eventId),pick=scene?.choices[row.choiceIndex];
  return Boolean(o.kind==='welcome'&&row.kind==='recruitment'&&scene?.speaker===row.speaker&&pick&&o.target===scene.speaker&&o.affinityDelta===pick.affinityDelta);
@@ -66,6 +68,6 @@ export function recruitmentVerbalLineV60(run,event,target,phase='event'){
 export function withRecruitmentVerbalDecisionV60(event,run){
  const entry=directEntryV60(run),ctx=run?.verbalContext;
  if(!entry||event?.id!=='verbal-v2-decision'||ctx?.eventId!=='onboarding'||ctx.phase!=='event')return event;
- const fromPay=run.pay,appointedPay=Math.min(500,Math.max(fromPay+8,Math.round(fromPay*1.15)));
+ const fromPay=run.pay,appointedPay=appointmentPayV67(run,fromPay);
  return {...event,title:'嗆完還沒算報到，這份特殊任用由你決定。',body:`翅膀把「${entry.title}」的新名片推回來，希望將兩份薪資條件分開放好：原先談的是${fromPay}K，若接受特殊任用，月薪才會調整為${appointedPay}K。你剛才那句已經說出口，這份任用卻還沒有生效；現在決定要不要留下，不必讓家譜替你點頭。`,choices:event.choices.map(choice=>choice.sourceIndex===0?{...choice,text:`我接受${entry.title}的特殊任用與任命後月薪${appointedPay}K，完成報到。`}:choice)};
 }

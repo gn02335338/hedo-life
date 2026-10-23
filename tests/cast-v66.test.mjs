@@ -34,7 +34,12 @@ test('r66 keeps the complete inherited profile without accepting malformed or fu
   assert.equal(recruitmentSeedV60('a'.repeat(32),marker==='n'?'normal':marker==='s'?'godson':'goddaughter',66),seed);
   assert.equal(hiddenStoryCountV66(seed),31);
  }
- for(const seed of ['e39-r65-n-'+'a'.repeat(22),'e39-r67-n-'+'a'.repeat(22),'e39-r66-x-'+'a'.repeat(22),'e39-r66-n-'+'a'.repeat(21),'e39-r66-n-'+'a'.repeat(23)])assert.equal(isExpansionV66(seed),false);
+ for(const seed of ['e39-r65-n-'+'a'.repeat(22),'e39-r68-n-'+'a'.repeat(22),'e39-r66-x-'+'a'.repeat(22),'e39-r66-n-'+'a'.repeat(21),'e39-r66-n-'+'a'.repeat(23)])assert.equal(isExpansionV66(seed),false);
+ for(const marker of ['n','s','d']){
+  const seed=`e39-r67-${marker}-${'a'.repeat(22)}`;
+  for(const check of [isRecruitmentV60,isExpansionV65,isExpansionV66,isOfficeTreatsV61,isLifeBalanceV62,isParticipationV63])assert.equal(check(seed),true);
+  assert.equal(recruitmentSeedV60('a'.repeat(32),marker==='n'?'normal':marker==='s'?'godson':'goddaughter',67),seed);assert.equal(hiddenStoryCountV66(seed),31);
+ }
  const old={seed:'e39-r65-n-'+'b'.repeat(22)};assert.equal(hiddenStoryCountV66(old),8);assert.equal(hiddenStoryV66(old,8),null);
 });
 

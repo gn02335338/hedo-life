@@ -30,6 +30,14 @@ export function advanceCurrentV66(run){
  return next;
 }
 export const currentSeedV66=(role,target,attempt)=>'e39-r66-n-'+createHash('sha256').update(`current66:${role}:${target}:${attempt}`).digest('hex').slice(0,22);
+// The default remains the published r66 search. New cohorts may reuse the
+// same public navigation strategy with their own strict seed and proof label.
+const DEFAULT_PROFILE_V66=Object.freeze({id:'e39-r66-n',strategyVersion:CURRENT_ENDING_SEARCH_VERSION_V66,method:CURRENT_ENDING_METHOD_V66,seedFactory:currentSeedV66,isEnabled:isExpansionV65,testSeed:seed=>/^e39-r66-n-[0-9a-f]{22}$/.test(seed||'')});
+const checkedProfile=profile=>{
+ const selected=profile||DEFAULT_PROFILE_V66;
+ if(typeof selected.id!=='string'||!Number.isSafeInteger(selected.strategyVersion)||selected.strategyVersion<1||typeof selected.method!=='string'||!['seedFactory','isEnabled','testSeed'].every(key=>typeof selected[key]==='function')||selected.beforeStep!==undefined&&typeof selected.beforeStep!=='function')throw new Error('Invalid current search profile');
+ return selected;
+};
 const VERBAL_GUESTS=Object.freeze({verbal_wing_concession:'wing',verbal_boardroom:'spencer',verbal_rick_awake:'rick',verbal_hr_rewrite:'hope',verbal_legal_letter:'erich',verbal_sonny_statement:'sonny',verbal_kind_ghost:'kind',verbal_colleague_solidarity:'jack',verbal_viral:'wing',verbal_mutual_mute:'wing',verbal_apology:'wing'});
 export function stepCurrentV66(run,target,{attempt=0}={}){
  if(target==='merged_out'&&run.roleId==='executive'&&attempt%2===1&&!run.flags.merge_notice&&(run.flags.departure63_work||0)<4){
@@ -71,20 +79,22 @@ export function currentUtilityBonusV66(run,preview,target){
  const remainingPaydays=Math.max(0,Math.floor((24-run.turn)/3));
  return (Math.round(preview.pay/10)-Math.round(run.pay/10))*remainingPaydays*6;
 }
-export function simulateCurrentV66(role,target,attempt){
- if(!isExpansionV65(currentSeedV66(role,target,attempt)))throw new Error('Current profile is not enabled yet');
- const result=simulate(role,target,attempt,{seedPrefix:'e39',seedFactory:currentSeedV66,initialiseRun:E.enableActivitySchedule,advanceRun:advanceCurrentV66,beforeStep:(run,target)=>stepCurrentV66(run,target,{attempt}),utilityBonus:currentUtilityBonusV66,genericVerbal:true});
+export function simulateCurrentV66(role,target,attempt,{profile=null}={}){
+ const selected=checkedProfile(profile),seed=selected.seedFactory(role,target,attempt);
+ if(!selected.testSeed(seed)||!selected.isEnabled(seed))throw new Error('Current profile is not enabled yet');
+ const result=simulate(role,target,attempt,{seedPrefix:'e39',seedFactory:selected.seedFactory,initialiseRun:E.enableActivitySchedule,advanceRun:advanceCurrentV66,beforeStep:(run,target)=>(selected.beforeStep||stepCurrentV66)(run,target,{attempt}),utilityBonus:currentUtilityBonusV66,genericVerbal:true});
  if(result.run.actions[0]?.type!=='activity-schedule')throw new Error('Missing current calendar');
  return {...result,route:{...result.route,actions:result.run.actions}};
 }
-export function findCurrentEndingsV66({maxAttempts=100,roles=ROLES.map(row=>row.id),families=FAMILIES.map(row=>row.id),resume=null,discardDriftedResume=false,onProgress=console.log,onCheckpoint=()=>{}}={}){
+export function findCurrentEndingsV66({maxAttempts=100,roles=ROLES.map(row=>row.id),families=FAMILIES.map(row=>row.id),resume=null,discardDriftedResume=false,onProgress=console.log,onCheckpoint=()=>{},profile=null}={}){
+ const selected=checkedProfile(profile);
  if(!Number.isSafeInteger(maxAttempts)||maxAttempts<1)throw new Error('maxAttempts must be a positive integer');
  if(!roles.length||roles.some(role=>!ROLES.some(row=>row.id===role))||!families.length||families.some(family=>!FAMILIES.some(row=>row.id===family)))throw new Error('Unknown role or ending family');
- if(!isExpansionV65(currentSeedV66(roles[0],families[0],0)))throw new Error('Current profile is not enabled yet');
+ if(!selected.isEnabled(selected.seedFactory(roles[0],families[0],0)))throw new Error('Current profile is not enabled yet');
  const found=new Map(),attempts=new Map(),discardedResume=[],discardedTargets=new Set(),expected=ENDINGS.filter(row=>roles.includes(row.roleId)&&families.includes(row.family));
  for(const route of resume?.routes||[]){
   try{
-   if(!/^e39-r66-n-[0-9a-f]{22}$/.test(route.seed)||!ENDINGS.some(row=>row.id===route.ending&&row.roleId===route.roleId))throw new Error('Invalid current resume route');
+   if(!selected.testSeed(route.seed)||!ENDINGS.some(row=>row.id===route.ending&&row.roleId===route.roleId))throw new Error('Invalid current resume route');
    const replay=E.replayRun(route.roleId,route.seed,route.actions);
    if(!replay.completed||replay.endingId!==route.ending||!E.validRun(replay))throw new Error(`Invalid resumed witness ${route.ending}`);
    found.set(route.ending,{...route,turn:replay.turn,rank:replay.rank,stats:replay.stats});
@@ -94,14 +104,14 @@ export function findCurrentEndingsV66({maxAttempts=100,roles=ROLES.map(row=>row.
    const ending=ENDINGS.find(row=>row.id===route.ending);if(ending)discardedTargets.add(`${ending.roleId}:${ending.family}`);
   }
  }
- for(const row of resume?.strategyVersion===CURRENT_ENDING_SEARCH_VERSION_V66?resume.attempts||[]:[]){
+ for(const row of resume?.strategyVersion===selected.strategyVersion&&(!resume.profile||resume.profile===selected.id)?resume.attempts||[]:[]){
   const key=`${row.roleId}:${row.family}`;
   if(!discardedTargets.has(key)&&Number.isSafeInteger(row.attempts)&&row.attempts>=0)attempts.set(key,row);
  }
  const sourceSha256=currentSourceSha256V66();
  const report=()=>{
   const missing=expected.filter(row=>!found.has(row.id)).map(row=>row.id);
-  return {method:CURRENT_ENDING_METHOD_V66,profile:'e39-r66-n',strategyVersion:CURRENT_ENDING_SEARCH_VERSION_V66,complete:missing.length===0,expected:expected.length,found:found.size,missing,attempts:[...attempts.values()],...(discardedResume.length?{discardedResume}:{}),sourceSha256,routes:[...found.values()].sort((a,b)=>a.ending.localeCompare(b.ending))};
+  return {method:selected.method,profile:selected.id,strategyVersion:selected.strategyVersion,complete:missing.length===0,expected:expected.length,found:found.size,missing,attempts:[...attempts.values()],...(discardedResume.length?{discardedResume}:{}),sourceSha256,routes:[...found.values()].sort((a,b)=>a.ending.localeCompare(b.ending))};
  };
  const save=run=>{
   if(!run.completed||found.has(run.endingId))return;
@@ -113,22 +123,23 @@ export function findCurrentEndingsV66({maxAttempts=100,roles=ROLES.map(row=>row.
   const ending=`${family}-${role}`,key=`${role}:${family}`;if(!ENDINGS.some(row=>row.id===ending)||found.has(ending))continue;
   let attempt=attempts.get(key)?.attempts||0;
   for(;attempt<maxAttempts&&!found.has(ending);attempt++){
-   const {run}=simulateCurrentV66(role,family,attempt);save(run);
+   const {run}=simulateCurrentV66(role,family,attempt,{profile:selected});save(run);
    if((attempt+1)%25===0){attempts.set(key,{roleId:role,family,attempts:attempt+1,found:found.has(ending),total:found.size});onCheckpoint(report());}
   }
   const row={roleId:role,family,attempts:attempt,found:found.has(ending),total:found.size};attempts.set(key,row);onProgress(JSON.stringify(row));onCheckpoint(report());
  }
  return report();
 }
-export function currentEndingFixtureV66(report){
+export function currentEndingFixtureV66(report,{profile=null}={}){
+ const selected=checkedProfile(profile);
  const ids=new Set(report?.routes?.map(route=>route.ending)||[]);
  if(!report?.complete||report.expected!==ENDINGS.length||report.routes.length!==ENDINGS.length||ids.size!==ENDINGS.length||ENDINGS.some(ending=>!ids.has(ending.id)))throw new Error('Current catalog proof is incomplete');
  for(const route of report.routes){
-  if(!/^e39-r66-n-[0-9a-f]{22}$/.test(route.seed)||route.actions?.[0]?.type!=='activity-schedule')throw new Error(`Invalid current witness ${route.ending}`);
+  if(!selected.testSeed(route.seed)||route.actions?.[0]?.type!=='activity-schedule')throw new Error(`Invalid current witness ${route.ending}`);
   const replay=E.replayRun(route.roleId,route.seed,route.actions);
   if(!replay.completed||replay.endingId!==route.ending||!E.validRun(replay))throw new Error(`Invalid current witness ${route.ending}`);
  }
- return {method:CURRENT_ENDING_METHOD_V66,profile:report.profile,strategyVersion:report.strategyVersion,choiceIndexBase:0,sourceSha256:currentSourceSha256V66(),routes:report.routes.map(({ending,roleId,seed,actions})=>({ending,roleId,seed,actions}))};
+ return {method:selected.method,profile:report.profile,strategyVersion:report.strategyVersion,choiceIndexBase:0,sourceSha256:currentSourceSha256V66(),routes:report.routes.map(({ending,roleId,seed,actions})=>({ending,roleId,seed,actions}))};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){
  const arg=name=>{const prefix=`--${name}=`;return process.argv.find(value=>value.startsWith(prefix))?.slice(prefix.length);};

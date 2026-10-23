@@ -1,2 +1,2 @@
 // New scenes belong only to this fresh cohort; published lives stay frozen.
-export const isExpansionV65=value=>/^e39-r6[56]-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
+export const isExpansionV65=value=>/^e39-r6[567]-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
