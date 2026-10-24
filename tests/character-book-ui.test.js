@@ -101,6 +101,8 @@ test('opening shows loading, then real results; filters and ranking use only the
  personal.resolve({characters:state.characters});global.resolve({version:1,characters:rows({meimei:{realHits:3,encounters:5},wing:{imaginedHits:8,encounters:10}}),trackingSince:'2026-10-20T00:00:00.000Z'});
  await opened;
  assert.doesNotMatch(app.html,/正在取得角色互動紀錄/);assert.match(app.html,/已驗證雲端紀錄/);
+ assert.ok(app.html.indexOf('data-character-focus="wing"')<app.html.indexOf('data-character-focus="meimei"'));
+ app.change('character-metric','realHits');
  assert.ok(app.html.indexOf('data-character-focus="meimei"')<app.html.indexOf('data-character-focus="wing"'));
  app.change('character-metric','imaginedHits');
  assert.ok(app.html.indexOf('data-character-focus="wing"')<app.html.indexOf('data-character-focus="meimei"'));
