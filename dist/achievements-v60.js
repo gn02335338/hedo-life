@@ -158,7 +158,7 @@ export function deriveAchievementsV60(run){
   }
  }
  for(const row of history){
-  if(!committed(row)||!isPatronageOutcomeV43(run,row)||!run.actions.some(action=>action?.type==='patronage-reply'&&action.version===1&&action.eventId===row.patronageOutcome.origin&&action.target===row.patronageOutcome.target))continue;
+  if(!committed(row)||!isPatronageOutcomeV43(run,row)||!run.actions.some(action=>action?.type==='patronage-reply'&&action.version===row.patronageOutcome.version&&action.eventId===row.patronageOutcome.origin&&action.target===row.patronageOutcome.target))continue;
   const outcome=row.patronageOutcome;
   add('kin-upward-applause',outcome.mode==='flattery'&&outcome.reaction==='welcomed'&&outcome.affinityDelta>0);
   add('kin-downward-rebound',outcome.mode==='entitled'&&['retort','reported'].includes(outcome.reaction)&&outcome.affinityDelta<0);

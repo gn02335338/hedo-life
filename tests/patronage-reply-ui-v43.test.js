@@ -18,6 +18,7 @@ import {polishDreamText} from '../dist/copy-v15.js';
 import * as jobTitles from '../dist/job-titles-v42.js';
 import {polishVerbalHistoryV41} from '../dist/verbal-presentation-v41.js';
 import {renderEndingTransition} from '../dist/ending-transition-v40.js';
+import {isPatronageProgressV69} from '../dist/patronage-progress-v69.js';
 
 const appSource=(await readFile(new URL('../dist/app.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
 const plain=value=>JSON.parse(JSON.stringify(value));
@@ -32,7 +33,7 @@ async function harness(mobile){
    showModal(){this.open=true;},close(){this.open=false;for(const callback of dialogListeners.get('close')||[])callback({target:this});},
   });return nodes.get(selector);
  };
- const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,...jobTitles,polishDreamText,polishVerbalHistoryV41,renderEndingReport,renderEndingTransition,
+ const context=vm.createContext({...roles,...sources,...endings,...legacy,...engine,...achievements,...career,...currentCareer,...persona,...characterStats,...jobTitles,polishDreamText,polishVerbalHistoryV41,renderEndingReport,renderEndingTransition,isPatronageProgressV69,
   requestPatronageReply(...args){calls.patronage.push(args[1]);return engine.requestPatronageReply(...args);},
   requestVerbal(...args){calls.verbal.push({argsLength:args.length,target:args[1],phase:args[0].pending?'result':'event'});return engine.requestVerbal(...args);},
   advance(run){calls.advance++;return engine.advance(run);},
@@ -60,8 +61,30 @@ function appointed(gender,group=false){
  const route=patronageFixtures.find(row=>row.id===`application-${gender}-success`),suffix=group?['reading-list-rush','system-weekend','kind-workday','system-printer','jonathan-today-release'].map(eventId=>({type:'choice',eventId,index:2})):[];
  return {...engine.replayRun(route.roleId,route.seed,[...route.actions,...suffix]),runId:webcrypto.randomUUID()};
 }
+function freshAppointedV69(kind){
+ const seed=`e39-r69-${kind==='godson'?'s':'d'}-${'ab'.repeat(11)}`,entry=engine.directEntryV60(seed);
+ let run=engine.enableActivitySchedule(engine.createRun(entry.roleId,seed));
+ for(let step=0;step<3;step++)run=engine.advance(engine.applyChoice(run,0));
+ assert.equal(engine.canRequestPatronageReply(run),true);assert.equal(engine.validRun(run),true);
+ return {...run,runId:webcrypto.randomUUID()};
+}
 for(const mobile of [false,true]){
  const device=mobile?'mobile':'desktop';
+ test(`${device}: r69 treats the family reply as the complete answer and continues past that source scene`,async()=>{
+  for(const kind of ['godson','goddaughter']){
+   const source=freshAppointedV69(kind),target=engine.getPatronageReplyTargets(source)[0],app=await harness(mobile),line=engine.getPatronageReplyLine(source,target),expected=engine.requestPatronageReply(source,target),result=expected.history.at(-1).result;
+   const html=app.render(source);assert.match(html,/這次就用這句回應，說完繼續後面的事/);assert.ok(!html.includes(esc(result)));
+   await app.action('patronage-reply');if(app.dialog().open)await app.action('patronage-target',target);
+   await app.action('patronage-reply');assert.deepEqual(plain(app.state()),plain(expected));assert.deepEqual(app.calls.patronage,[target]);
+   assert.equal(app.html().split(esc(line)).length-1,1);assert.equal(app.html().split(esc(result)).length-1,1);
+   assert.match(app.html(),/data-action="next">繼續 <span>/);assert.doesNotMatch(app.html(),/data-choice="|data-action="patronage-reply"|回到原本的事/);
+   assert.equal(app.state().history.length,source.history.length+1);assert.equal(app.state().history.at(-1).patronageOutcome.version,2);assert.ok(!app.state().patronageReplyContext);
+   const pending=plain(app.state());app.render(pending);assert.deepEqual(plain(app.state()),pending);assert.equal(engine.validRun(pending),true);
+   await app.action('next');assert.equal(engine.validRun(plain(app.state())),true);assert.equal(app.state().turn,source.turn+1);assert.notEqual(app.state().eventId,source.eventId);
+   assert.equal(app.state().history.filter(row=>row.eventId===source.eventId&&row.turn===source.turn).length,1);
+   const actual=plain(app.state());delete actual.runId;assert.deepEqual(engine.replayRun(source.roleId,source.seed,actual.actions),actual);
+  }
+ });
  test(`${device}: appointed reply previews the right tone and reveals only the committed reaction`,async()=>{
   for(const [gender,target,stance]of [['male','wing','向上表忠'],['female','helen','擺點架子']]){
    const source=appointed(gender),app=await harness(mobile),snapshot=JSON.stringify(source),line=engine.getPatronageReplyLine(source,target),expected=engine.requestPatronageReply(source,target),result=expected.history.at(-1).result;

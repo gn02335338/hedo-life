@@ -152,7 +152,7 @@ function commitDecision(run,decision){
 }
 
 export function simulatePlayerV68({gender='male',index=0,policy='careful',profile=67,maxDecisions=240}={}){
- if(!['male','female'].includes(gender)||!PLAYER_POLICIES_V68.includes(policy)||![67,68].includes(profile))throw new Error('Invalid player policy/profile');
+ if(!['male','female'].includes(gender)||!PLAYER_POLICIES_V68.includes(policy)||![67,68,69].includes(profile))throw new Error('Invalid player policy/profile');
  const seed=seedFor(gender,index,profile),entry=directEntryV60(seed),rng=policyRandom(policy,gender,index);
  if(!entry)throw new Error(`The r${profile} direct-entry cohort is not enabled`);
  let run=E.enableActivitySchedule(E.createRun(entry.roleId,seed)),work=0,reachedFantasy=false,steps=0;

@@ -3,6 +3,8 @@ import {castVerbalLineV65,withCastVerbalScenarioV65} from './verbal-cast-v65.js'
 import {castVerbalLineV66} from './verbal-cast-v66.js';
 import {isExpansionV66} from './expansion-profile-v66.js';
 import {isPatronageBenefitsV67,appointmentPayV67,PATRONAGE_APPOINTMENT_CASH_V67,patronageAllowanceDueV67,patronageDailyAllowedV67} from './patronage-benefits-v67.js';
+import {isPatronageProgressV69,patronageProgressEffectV69} from './patronage-progress-v69.js';
+import {patronageReplyResultV69} from './patronage-copy-v69.js';
 import {PATRONAGE_EVENTS_V67,getPatronageEventV67} from './patronage-events-v67.js';
 import {hiddenStoryCountV66} from './hidden-stories-v66.js';
 import {withEmployeeAcquisitionV66,withConsultantInvitationV66} from './company-v66.js';
@@ -383,12 +385,20 @@ export function applyChoice(run,index){
   const chosen=applyChoice(next,option.sourceIndex);chosen.actions.pop();return chosen;
  }
 
- const event=getSourceEventV50(run),originalChoice=event.choices[index];if(!Number.isInteger(index)||!originalChoice||originalChoice.available===false)throw new Error('Unavailable choice');
+ return applyChoiceCore(run,index);
+}
+// Both ordinary choices and a committed r69 reply resolve the same workday.
+// The alternative is supplied only by requestPatronageReply after its checks;
+// it is never exposed as a selectable source index or a client-provided delta.
+function applyChoiceCore(run,index,reply=null){
+ const event=getSourceEventV50(run),originalChoice=reply?.choice||event.choices[index];if(!Number.isInteger(index)||!originalChoice||originalChoice.available===false)throw new Error('Unavailable choice');
+ const responseEvent=reply?{...event,speaker:reply.target}:event;
  const scenarioRelease=run.verbalContext?.version===2&&run.verbalContext.stage==='release';
  const next=structuredClone(run);const before={...run.stats},modern=rules2(run),breakdown=[];let spentThisChoice=0;next.lastWeather=null;
  const change=(source,label,delta)=>{const actual={};for(const [key,value]of Object.entries(delta)){const previous=next.stats[key];next.stats[key]=clamp(previous+value);if(next.stats[key]!==previous)actual[key]=next.stats[key]-previous;if(contentRules(next)>=18&&key==='cash'&&next.stats[key]<previous)spentThisChoice+=previous-next.stats[key];}if(modern&&Object.keys(actual).length)breakdown.push({source,label,delta:actual});};
- next.actions.push({type:'choice',eventId:event.id,index});
- let chanceOutcome=null,choice=originalChoice,eventOutcome=null;
+ next.actions.push(reply?{type:'patronage-reply',version:2,eventId:event.id,target:reply.target}:{type:'choice',eventId:event.id,index});
+ if(reply){flag(next,'patronage_replies');next.flags.patronage_reply_last_turn=run.turn+1;}
+ let chanceOutcome=null,choice=originalChoice,eventOutcome=reply?{label:'自己人發話之後',result:reply.selected.label}:null;
  if(contentRules(run)>=4&&choice.draw){
   let ticket=roll(next)*choice.draw.outcomes.reduce((total,outcome)=>total+outcome.weight,0);
   const selected=choice.draw.outcomes.find(outcome=>(ticket-=outcome.weight)<0)||choice.draw.outcomes.at(-1);
@@ -396,7 +406,9 @@ export function applyChoice(run,index){
  }
  if(choice.check){const passed=roll(next)<choice.check.chance;choice={...choice,...choice.check[passed?'success':'failure']};chanceOutcome=passed?'success':'setback';}
  const choiceDelta=Object.fromEntries(STAT_KEYS.map(k=>[k,choice.delta[k]||0]));
- if(contentRules(next)>=18){choiceDelta.boss=scopedBossDeltaV18(event,choiceDelta.boss,{source:'choice',target:run.rageContext?.target,effect:choice.effect,result:choice.result});if(!['self-care','rage','rage-world',...(contentRules(next)>=30?['verbal']:[])].includes(event.kind)&&!['mood-collapse','crisis-mood',...(contentRules(next)>=25?['mood-self-destruct']:[])].includes(event.id))for(const key of ['mood','energy'])choiceDelta[key]=Math.round(choiceDelta[key]*1.35);}
+ // Reply outcomes already scope Wing's own mood to the selected person.
+ // Ordinary choices still use the source scene; later luck uses that speaker.
+ if(contentRules(next)>=18){if(!reply)choiceDelta.boss=scopedBossDeltaV18(event,choiceDelta.boss,{source:'choice',target:run.rageContext?.target,effect:choice.effect,result:choice.result});if(!['self-care','rage','rage-world',...(contentRules(next)>=30?['verbal']:[])].includes(event.kind)&&!['mood-collapse','crisis-mood',...(contentRules(next)>=25?['mood-self-destruct']:[])].includes(event.id))for(const key of ['mood','energy'])choiceDelta[key]=Math.round(choiceDelta[key]*1.35);}
  if(contentRules(next)>=20&&!scenarioRelease&&!(contentRules(next)>=30&&event.kind==='verbal')&&!(contentRules(next)>=39&&isPrivateSceneV39(event))){const provocation=freshPersonnelProvocation(run,event,choiceDelta);if(provocation&&(!next.personnelPending||provocation.reason==='post-pip'))next.personnelPending=provocation;}
  change('choice',eventOutcome?`${eventOutcome.label}：${eventOutcome.result}`:'選擇結果',choiceDelta);
  for(const name of choice.flags||[])flag(next,name);
@@ -408,11 +420,11 @@ export function applyChoice(run,index){
   const luck=roll(next),capability=before[specialty],goodChance=.13+capability*.0014,badChance=.28-before.slack*.0012;
   if(luck<goodChance){
    chanceOutcome='lucky';const bonus=specialty==='lick'?{boss:9,mood:3}:specialty==='slack'?{energy:7,mood:5}:{skill:4,boss:5,mood:3};
-   if(contentRules(next)>=18&&bonus.boss)bonus.boss=scopedBossDeltaV18(event,bonus.boss,{source:'rng',result:choice.result});change('rng','臨場好運',bonus);
+   if(contentRules(next)>=18&&bonus.boss)bonus.boss=scopedBossDeltaV18(responseEvent,bonus.boss,{source:'rng',result:choice.result});change('rng','臨場好運',bonus);
    result+=specialty==='lick'?' 恰好，這句話踩中他今天想聽的版本。對方自己替你把後半段補成了優點。':specialty==='slack'?' 剛好有人把會議延後，你安靜回收了一小段人生。今天的省電模式，沒有被發現。':' 剛好有人替你的成果說了一句話。事情本身沒變，待遇突然順了一點。';
   }else if(luck>1-badChance){
    chanceOutcome='setback';const extra=specialty==='lick'?{boss:-10,trust:-4}:specialty==='slack'?{boss:-9,mood:-4}:{energy:-6,mood:-5,boss:-4};
-   if(contentRules(next)>=18&&extra.boss)extra.boss=scopedBossDeltaV18(event,extra.boss,{source:'rng',result:choice.result});change('rng','臨場變數',extra);
+   if(contentRules(next)>=18&&extra.boss)extra.boss=scopedBossDeltaV18(responseEvent,extra.boss,{source:'rng',result:choice.result});change('rng','臨場變數',extra);
    result+=specialty==='lick'?' 不巧，他今天把稱讚聽成了敷衍。你說同一句話，得到跟上次相反的表情。':specialty==='slack'?' 不巧，那扇門就在你最不像在忙的時候打開。你和老闆完成了一次不必要的眼神交接。':' 不巧，臨時插進來的交辦把原定節奏打散。沒有人改期限，只有你重新排時間。';
   }else chanceOutcome='ordinary';
   const weather=WEATHER[Math.floor(roll(next)*WEATHER.length)];change('weather',contentRules(next)>=18?'翅膀今日天氣':'老闆今日天氣',{boss:weather.delta});next.lastWeather={...weather};
@@ -541,7 +553,7 @@ export function applyChoice(run,index){
  if(contentRules(run)>=5){result=polishEngineText(result);if(next.lastWeather)next.lastWeather.text=polishEngineText(next.lastWeather.text);}
  if(contentRules(run)>=16){result=replayText(result);if(next.lastWeather)next.lastWeather.text=replayText(next.lastWeather.text);}
  const patronageApplicationOutcome=patronageApplicationOutcomeV49(run,effect),recruitmentOutcome=recruitmentOutcomeV60(run,event,index,effect);
- next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:scenarioRelease?run.verbalContext.sourceChoiceCount:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{}),...(patronageApplicationOutcome?{patronageApplicationOutcome}:{}),...(recruitmentOutcome?{recruitmentOutcome}:{}),...(contentRules(next)>=36&&choice.mealOutcome?{mealOutcome:{...choice.mealOutcome}}:{}),...(contentRules(next)>=30&&event.id==='verbal-release'?{verbalOutcome:{kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{}),...(scenarioRelease?{verbalOutcome:{version:2,kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{})});
+ next.history.push({eventId:event.id,kind:event.kind,title:event.title,body:event.body,wing:event.wing||'',speaker:reply?.target||event.speaker||'wing',sourceIds:event.sourceIds||[],turn:next.turn,choiceIndex:scenarioRelease?run.verbalContext.sourceChoiceCount:index,choiceText:choice.text,result,chanceOutcome,delta:Object.fromEntries(STAT_KEYS.map(k=>[k,next.stats[k]-before[k]])),weather:next.lastWeather,jobTitle:jobTitle(next),pay:next.pay,...(modern?{breakdown}:{}),...(eventOutcome?{eventOutcome}:{}),...(reply?{patronageOutcome:{version:2,origin:event.id,target:reply.target,mode:patronageReplyModeV43(reply.target),reaction:reply.selected.reaction,affinityDelta:reply.selected.affinityDelta}}:{}),...(patronageApplicationOutcome?{patronageApplicationOutcome}:{}),...(recruitmentOutcome?{recruitmentOutcome}:{}),...(contentRules(next)>=36&&choice.mealOutcome?{mealOutcome:{...choice.mealOutcome}}:{}),...(contentRules(next)>=30&&event.id==='verbal-release'?{verbalOutcome:{kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{}),...(scenarioRelease?{verbalOutcome:{version:2,kind:choice.verbalKind,target:next.verbalContext.target,affinityDelta:choice.affinityDelta,origin:next.verbalContext.eventId,phase:next.verbalContext.phase}}:{})});
  if(contentRules(next)>=24&&(!next.salaryAdvice||next.salaryAdvice.status==='queued')){
   if(next.pay>=30)next.salaryAdvice=null;
   else if(next.pay<run.pay)next.salaryAdvice={from:run.pay,to:next.pay,historyIndex:next.history.length-1,returnEventId:null,status:'queued'};
@@ -1399,6 +1411,7 @@ export function canRequestPatronageReply(run){if(run?.blockchainContext)return f
  if(isWorkGapOpenV50(run))return false;
  if(!run||run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||contentRules(run)<29||!run.patronage||run.pending||run.completed||run.pendingFamily||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0||run.actions.length>=299||run.flags.patronage_reply_last_turn===run.turn+1)return false;
  const event=getSourceEventV50(run);
+ if(isPatronageProgressV69(run)&&!patronageProgressEffectV69(run,event))return false;
  return !!event&&!['rage','rage-world','verbal','patronage'].includes(event.kind)&&!['self-care','exit-menu','rank-exit','career-exit','story-exit',...WEALTH_EVENTS_V27].includes(event.id)&&!/^meal-guests-/.test(event.id)&&verbalTargetsV30(event).some(id=>Object.hasOwn(PERSONAS,id));
 }
 export function getPatronageReplyTargets(run){return canRequestPatronageReply(run)?verbalTargetsV30(getSourceEventV50(run)).filter(id=>Object.hasOwn(PERSONAS,id)):[];}
@@ -1412,6 +1425,14 @@ export function requestPatronageReply(run,target){
  const outcomes=patronageReplyOutcomesV43(run,event,target,{affinity:characterAffinity(run,target).score});
  let ticket=roll(next)*outcomes.reduce((total,outcome)=>total+outcome.weight,0);
  const selected=outcomes.find(outcome=>(ticket-=outcome.weight)<0)||outcomes.at(-1),breakdown=[];
+ if(isPatronageProgressV69(run)){
+  const flow=patronageProgressEffectV69(run,event);
+  const choice={text:patronageReplyLineV43(run,event,target),result:patronageReplyResultV69(selected.result)+(flow.closing?' '+flow.closing:''),delta:selected.delta,flags:[],effect:flow.effect};
+  // Carry forward the single reply draw, then use the ordinary choice
+  // pipeline. Keeping run's pre-choice stats/history preserves real deltas.
+  const input={...run,rng:next.rng};
+  return applyChoiceCore(input,event.choices.length,{target,selected,choice});
+ }
  const change=(source,label,delta)=>{
   const actual={};for(const [key,value]of Object.entries(delta)){
    const previous=next.stats[key];next.stats[key]=['mood','energy'].includes(key)?Math.max(1,clamp(previous+value)):clamp(previous+value);
@@ -1551,8 +1572,9 @@ function replayActions(roleId,seed,actions,count=actions.length){
    const next=requestSalaryAdvice(run);if(next===run)throw new Error('Unavailable salary advice');run=next;
   }
   else if(action.type==='patronage-reply'){
-   if(Object.keys(action).sort().join(',')!=='eventId,target,type,version'||action.version!==1||action.eventId!==run.eventId||typeof action.target!=='string')throw new Error('Patronage reply mismatch');
-   const next=requestPatronageReply(run,action.target);if(next===run)throw new Error('Unavailable patronage reply');run=advance(next);
+   if(Object.keys(action).sort().join(',')!=='eventId,target,type,version'||action.version!==(isPatronageProgressV69(run)?2:1)||action.eventId!==run.eventId||typeof action.target!=='string')throw new Error('Patronage reply mismatch');
+   const next=requestPatronageReply(run,action.target);if(next===run)throw new Error('Unavailable patronage reply');
+   run=isPatronageProgressV69(run)&&['rage','verbal'].includes(following?.type)&&following.phase==='result'?next:advance(next);
   }
   else if(action.type==='verbal'){
    const selected=Object.hasOwn(action,'target');

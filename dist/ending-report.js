@@ -22,7 +22,7 @@ function sampleLabel(row) {
  if (row?.kind === 'recruitment') return '入職介紹';
  if (id === 'mood-self-destruct') return '自爆';
  if (id === 'mood-collapse') return '崩潰';
- if (id === 'patronage-reply' && row?.kind === 'patronage') return '自己人發話';
+ if (id === 'patronage-reply' && row?.kind === 'patronage' || row?.patronageOutcome?.version === 2) return '自己人發話';
  if (id.startsWith('meal-')) return '飯局';
  if (id.startsWith('wealth-')) return '離職後規劃';
  if (id.startsWith('company-v32-')) return '公司未來';
@@ -90,7 +90,7 @@ function historyMatchesActions(run, history) {
   }
   if (action.type === 'patronage-reply') {
    spokenSource = null;
-   return action.version === 1 && isPatronageOutcomeV43(run,row) &&
+   return action.version === row?.patronageOutcome?.version && isPatronageOutcomeV43(run,row) &&
     row.patronageOutcome.origin === action.eventId && row.patronageOutcome.target === action.target;
   }
   if (action.type === 'verbal') {

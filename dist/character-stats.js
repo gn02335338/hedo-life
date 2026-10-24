@@ -5,6 +5,7 @@ import { isOfficeTreatOutcomeV61 } from './office-treats-v61.js';
 import { isEventDepartureOutcomeV63 } from './event-departure-v63.js';
 import {CAST_IDS_V65,isCastV65} from './cast-v65.js';
 import {isBlockchainOutcomeV65} from './blockchain-v65.js';
+import {isPatronageProgressV69} from './patronage-progress-v69.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
@@ -24,10 +25,17 @@ const choiceDelta=row=>{
 // the appointment and scene presence before the Worker projects these rows.
 export function isPatronageOutcomeV43(run,row){
  const evidence=row?.patronageOutcome;
+ const sourceV69=evidence?.version===2&&isPatronageProgressV69(run)&&evidence.origin===row?.eventId&&Number.isInteger(row?.choiceIndex)&&row.choiceIndex>=1&&(
+  row.kind==='daily'&&typeof row.eventId==='string'&&!['onboarding','patronage-reply','finale'].includes(row.eventId)||
+  row.kind==='fantasy'&&['road','runway','audit'].includes(row.eventId)||
+  row.kind==='career'&&['patronage67-education','patronage67-pay-review','patronage67-smalltalk'].includes(row.eventId)||
+  row.kind==='self-care'&&['kind-break','kind-workday'].includes(row.eventId)||
+  row.kind==='banquet'&&row.eventId==='banquet-afterparty'
+ )&&['verbalOutcome','mealOutcome','departureOutcome','recruitmentOutcome','activityOutcome','shareholderOutcome','hiddenOutcome','treatsOutcome','blockchainOutcome'].every(key=>row[key]===undefined);
+ const legacy=evidence?.version===1&&row?.eventId==='patronage-reply'&&row.kind==='patronage'&&row.choiceIndex===0;
  return /^e(?:29|30|31|32|33|34|35|36|37|38|39)-/.test(run?.seed||'')&&Boolean(evidence)&&typeof evidence==='object'&&!Array.isArray(evidence)
   &&Object.keys(evidence).sort().join(',')==='affinityDelta,mode,origin,reaction,target,version'
-  &&evidence.version===1&&known(evidence.target,run)&&row.speaker===evidence.target
-  &&row.eventId==='patronage-reply'&&row.kind==='patronage'&&row.choiceIndex===0
+  &&(legacy||sourceV69)&&known(evidence.target,run)&&row.speaker===evidence.target
   &&!Object.hasOwn(row,'verbalOutcome')&&!Object.hasOwn(row,'mealOutcome')
   &&typeof evidence.origin==='string'&&evidence.origin.trim().length>0&&evidence.origin.length<=100
   &&evidence.mode===(['wing','spencer'].includes(evidence.target)?'flattery':'entitled')

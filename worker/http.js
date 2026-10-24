@@ -4,6 +4,7 @@ import {isActivityPlayV55,deriveActivityPlayV55} from '../dist/activity-play-v55
 import {isShareholderV58,validateShareholderInputV58} from '../dist/shareholders-v58.js';
 import {isRecruitmentV60} from '../dist/seed-profile-v60.js';
 import {isParticipationV63} from '../dist/participation-profile-v63.js';
+import {isPatronageProgressV69} from '../dist/patronage-progress-v69.js';
 
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
@@ -166,7 +167,7 @@ export function validateCompletion(body, roleMap) {
     }
     if (action.type === 'patronage-reply') {
       if (/^e(?:29|30|31|32|33|34|35|36|37|38|39)-/.test(body.seed)
-          &&Object.keys(action).sort().join(',')==='eventId,target,type,version'&&action.version===1
+          &&Object.keys(action).sort().join(',')==='eventId,target,type,version'&&action.version===(isPatronageProgressV69(body.seed)?2:1)
           &&typeof action.eventId==='string'&&action.eventId.trim().length>0&&action.eventId.length<=100
           &&RAGE_TARGET_IDS.has(action.target)) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');

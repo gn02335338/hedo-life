@@ -1,6 +1,7 @@
 import { ROLES, ROLE_MAP } from './roles.js';
 import {isPatronageBenefitsV67} from './patronage-benefits-v67.js';
 import {patronageLegacyNoticeV68} from './patronage-notice-v68.js';
+import {isPatronageProgressV69} from './patronage-progress-v69.js';
 import { SOURCES } from './public-sources.js';
 import { ENDINGS, FAMILIES } from './endings.js';
 import { LEGACY_ENDINGS } from './legacy.js';
@@ -98,7 +99,7 @@ const leaderboardUI=typeof createLeaderboardUIV56==='function'?createLeaderboard
 const pad=n=>String(n).padStart(2,'0');
 function randomSeed(kind='normal'){
  const entropy=typeof crypto.getRandomValues==='function'?Array.from(crypto.getRandomValues(new Uint8Array(11)),byte=>byte.toString(16).padStart(2,'0')).join(''):crypto.randomUUID().replaceAll('-','').slice(0,22);
- return typeof recruitmentSeedV60==='function'?recruitmentSeedV60(entropy,kind,68):`e39-r68-${({normal:'n',executive:'n',godson:'s',goddaughter:'d'})[kind]}-${entropy}`;
+ return typeof recruitmentSeedV60==='function'?recruitmentSeedV60(entropy,kind,69):`e39-r69-${({normal:'n',executive:'n',godson:'s',goddaughter:'d'})[kind]}-${entropy}`;
 }
 const randomRecruiter=typeof createRandomRecruiterV60==='function'?createRandomRecruiterV60():null;
 const applicationTitle=state=>typeof entryLabelV60==='function'?entryLabelV60(state):ROLE_MAP[state.roleId].name;
@@ -205,11 +206,11 @@ function verbalControl(){
 }
 function patronageControl(){
  if(!run?.patronage||run.pending||run.completed||typeof canRequestPatronageReply!=='function')return'';
- const available=canRequestPatronageReply(run),targets=available?getPatronageReplyTargets(run):[];
- if(!available&&run.flags.patronage_reply_last_turn!==run.turn+1)return'';
+ const available=canRequestPatronageReply(run),targets=available?getPatronageReplyTargets(run):[],progress=typeof isPatronageProgressV69==='function'&&isPatronageProgressV69(run);
+ if(!available&&(progress||run.flags.patronage_reply_last_turn!==run.turn+1))return'';
  const target=targets.length===1?targets[0]:null,line=target?getPatronageReplyLine(run,target):'';
  const stance=target?(['wing','spencer'].includes(target)?'向上表忠':'擺點架子'):'';
- return `<button class="choice patronage-trigger" data-action="patronage-reply" ${available?'':'disabled'}${available?'':' title="這個工作回合已發過話，先繼續眼前的事。"'}><span class="patronage-icon" aria-hidden="true">♛</span><span class="choice-text"><b>自己人發話${stance?` · ${stance}`:''}</b><small class="patronage-role">${esc(run.patronage.title)}專屬回應</small>${line?`<span class="patronage-choice-line">「${esc(line)}」</span>`:available?'<span class="patronage-choice-line">選一位在場的人，拿自己人的名片開口。</span>':'<span class="patronage-choice-line">這回合已經發過話，先處理原本的事。</span>'}</span><span class="choice-arrow" aria-hidden="true">↗</span></button>`;
+ return `<button class="choice patronage-trigger" data-action="patronage-reply" ${available?'':'disabled'}${available?'':' title="這個工作回合已發過話，先繼續眼前的事。"'}><span class="patronage-icon" aria-hidden="true">♛</span><span class="choice-text"><b>自己人發話${stance?` · ${stance}`:''}</b><small class="patronage-role">${esc(run.patronage.title)}專屬回應${progress?' · 這次就用這句回應，說完繼續後面的事。':''}</small>${line?`<span class="patronage-choice-line">「${esc(line)}」</span>`:available?'<span class="patronage-choice-line">選一位在場的人，拿自己人的名片開口。</span>':'<span class="patronage-choice-line">這回合已經發過話，先處理原本的事。</span>'}</span><span class="choice-arrow" aria-hidden="true">↗</span></button>`;
 }
 function collapseBanner(event){
  if(!/^e(?:25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed))return '<div class="collapse-banner" role="alert"><span aria-hidden="true">!</span><div><b>當場崩潰</b><p>不是腦內劇場，這次真的失控了。</p></div></div>';
@@ -287,7 +288,7 @@ function beginPatronageReply(){
  if(targets.length===1){commitPatronageReply(targets[0]);return;}
  if(targets.length<2)return;
  patronagePickerContext={run,actionsLength:run.actions.length,eventId:run.eventId,viewRevision:gameViewRevision,targets};
- openDialog(`<section class="rage-target-picker patronage-target-picker" data-patronage-target-picker><span class="eyebrow">自己人，也是分對象的。</span><h2 id="dialog-title">這張名片，要遞給誰看？</h2><p class="dialog-lead">對同事擺架子，對翅膀和董事長換一副口氣。先看要說的話，再決定要不要開口。</p><div class="rage-target-grid targets-${targets.length}">${targets.map(id=>`<button type="button" class="rage-person-card patronage-person-card" data-action="patronage-target" data-patronage-target="${id}">${avatar(id,'rage-person-avatar')}<span class="rage-person-title">${escapeHTML(PEOPLE[id].title)}</span><b>${esc(PERSONAS[id].name)}</b><small>${['wing','spencer'].includes(id)?'向上表忠':'擺點架子'}</small><span class="patronage-choice-line">「${esc(getPatronageReplyLine(run,id))}」</span><span class="rage-person-action">就對他說 <span aria-hidden="true">↗</span></span></button>`).join('')}</div><button type="button" class="secondary" data-action="patronage-cancel">先不擺，回去好好說話 <span>←</span></button></section>`);
+ openDialog(`<section class="rage-target-picker patronage-target-picker" data-patronage-target-picker><span class="eyebrow">自己人，也是分對象的。</span><h2 id="dialog-title">這張名片，要遞給誰看？</h2><p class="dialog-lead">對同事擺架子，對翅膀和董事長換一副口氣。先看要說的話，再決定要不要開口。${typeof isPatronageProgressV69==='function'&&isPatronageProgressV69(run)?'選定後就以這句回應當下的事，看完結果再繼續。':''}</p><div class="rage-target-grid targets-${targets.length}">${targets.map(id=>`<button type="button" class="rage-person-card patronage-person-card" data-action="patronage-target" data-patronage-target="${id}">${avatar(id,'rage-person-avatar')}<span class="rage-person-title">${escapeHTML(PEOPLE[id].title)}</span><b>${esc(PERSONAS[id].name)}</b><small>${['wing','spencer'].includes(id)?'向上表忠':'擺點架子'}</small><span class="patronage-choice-line">「${esc(getPatronageReplyLine(run,id))}」</span><span class="rage-person-action">就對他說 <span aria-hidden="true">↗</span></span></button>`).join('')}</div><button type="button" class="secondary" data-action="patronage-cancel">先不擺，回去好好說話 <span>←</span></button></section>`);
 }
 function confirmPatronageTarget(target){
  const context=patronagePickerContext;if(!context||!isPatronagePickerOpen())return;
@@ -338,7 +339,7 @@ function outcomeHTML(h,compact=false){const chips=deltaChips(h.delta),shown=show
 function rageReality(history){if(history?.hiddenOutcome?.version===1&&['imagined','real'].includes(history.hiddenOutcome.mode))return history.hiddenOutcome.mode;if(history?.eventId!=='rage-release')return null;const result=history.eventOutcome?.result;return result==='腦內劇場'?'imagined':result==='真的失控了'?'real':null;}
 function displayHistoryResult(history){const shown=shownHistory(history);return rageReality(history)?polishDreamText(shown.result):shown.result;}
 function realityHTML(history,compact=false){if(history?.hiddenOutcome?.mode==='verbal'||history?.verbalOutcome?.version===2||history?.eventId==='verbal-release'&&history.kind==='verbal'&&history.verbalOutcome)return `<div class="reality-indicator reality-verbal ${compact?'compact':''}"><span class="reality-symbol" aria-hidden="true">！</span><div><b>真的說出口</b><span>這是口頭衝突，沒有動手</span></div></div>`;const reality=rageReality(history);if(!reality)return'';const imagined=reality==='imagined';return `<div class="reality-indicator reality-${reality} ${compact?'compact':''}"><span class="reality-symbol" aria-hidden="true">${imagined?'☾':'!'}</span><div><b>${imagined?'腦內夢境':'現實失控'}</b><span>${imagined?'現實沒有動手':'事情真的發生了'}</span></div>${imagined?'<span class="dream-sleep" aria-hidden="true">z z Z</span>':''}</div>`;}
-function spokenLineHTML(history){return (history?.verbalOutcome?.version===2||history?.patronageOutcome?.version===1||history?.hiddenOutcome?.mode==='verbal')?`<blockquote class="spoken-line" aria-label="你說出口的話"><span>你說</span><p>「${esc(shownHistory(history).choiceText)}」</p></blockquote>`:'';}
+function spokenLineHTML(history){return (history?.verbalOutcome?.version===2||[1,2].includes(history?.patronageOutcome?.version)||history?.hiddenOutcome?.mode==='verbal')?`<blockquote class="spoken-line" aria-label="你說出口的話"><span>你說</span><p>「${esc(shownHistory(history).choiceText)}」</p></blockquote>`:'';}
 function sourceLine(ids){const src=(ids||[]).map(id=>SOURCES[id]).filter(Boolean);return src.length?src.map(s=>s.url?`<a href="${escapeHTML(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)} ↗</a>`:esc(s.title)).join(' · '):'原創職場平行宇宙';}
 function speakerFor(event){if(event.speaker&&PEOPLE[event.speaker])return event.speaker;return 'wing';}
 function visibleChoices(){
@@ -429,7 +430,7 @@ function leaveEventV63(expectedView=gameViewRevision){
 }
 function activityReturnNotice(event){const treat=typeof officeTreatReturnHTMLV61==='function'?officeTreatReturnHTMLV61(run,event):'';return treat||(typeof activityReturnNoticeHTMLV52==='function'?activityReturnNoticeHTMLV52(run,event):'');}
 function activityEndNotice(event){if(run?.pending&&typeof officeTreatPhaseV61==='function'&&officeTreatPhaseV61(run,event)?.phase==='end')return officeTreatPhaseHTMLV61(run,event);return run?.pending&&typeof activityPhaseV52==='function'&&activityPhaseV52(run,event)?.phase==='end'?activityPhaseNoticeHTMLV52(run,event):'';}
-function activityNextLabel(event){const treat=typeof officeTreatNextLabelV61==='function'?officeTreatNextLabelV61(run,event):null;if(treat)return treat;if(typeof activityPhaseV52!=='function')return'繼續';const phase=activityPhaseV52(run,event);return phase?.phase==='end'?'回到原本的事':phase?'繼續活動':'繼續';}
+function activityNextLabel(event){if(run.pending&&run.history?.at(-1)?.patronageOutcome?.version===2)return'繼續';const treat=typeof officeTreatNextLabelV61==='function'?officeTreatNextLabelV61(run,event):null;if(treat)return treat;if(typeof activityPhaseV52!=='function')return'繼續';const phase=activityPhaseV52(run,event);return phase?.phase==='end'?'回到原本的事':phase?'繼續活動':'繼續';}
 
 function mobileWorkbar(){return `<div class="mobile-workbar"><button data-action="work-card">工作證與數值 ↑</button><span>心情 ${run.stats.mood} · 體力 ${run.stats.energy} · 存款 ${run.stats.cash}${run.pip?.active?` · PIP 剩 ${run.pip.remaining} 回合`:''}${/^e(?:20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(run.seed)&&run.flags.floor_watch?' · 三樓看門中':''}</span></div>${typeof patronageLegacyNoticeV68==='function'?patronageLegacyNoticeV68(run):''}`;}
 // This reads only current resources. It never evaluates choices, rolls RNG,
@@ -451,7 +452,7 @@ function resourceWarningHTML(){
  return `<section class="resource-warning ${critical?'critical':'caution'}" data-resource-warning role="alert" aria-atomic="true"><span class="resource-warning-icon" aria-hidden="true">!</span><div class="resource-warning-content"><b class="resource-warning-title">${critical?'快撐不住了，先顧自己。':'電量偏低，別只顧著上班。'}</b><ul>${risks.map(key=>`<li data-warning-stat="${key}"><b>${STAT_LABELS[key]}剩 ${run.stats[key]} / 100</b><span>${key==='energy'?'體力耗盡可能讓這段人生直接結束。':modern?'心情歸零會真正失控，記得留時間照顧自己。':'心情再降下去，會遇到情緒危機。'}</span></li>`).join('')}</ul><p>${advice}</p>${canRest?'<button type="button" class="resource-rest-button" data-action="break">查看休息安排 <span aria-hidden="true">↗</span></button>':''}</div></section>`;
 }
 function usesEnergySafety(state=run){return typeof isEnergySafetyV54==='function'?isEnergySafetyV54(state):/^e39-cal46-kin49-g-e-s-/.test(state?.seed||'');}
-function usesLifeBalance(state=run){return typeof isLifeBalanceV62==='function'?isLifeBalanceV62(state):/^e39-r6[235678]-[nsd]-[0-9a-f]{22}$/.test(state?.seed||'');}
+function usesLifeBalance(state=run){return typeof isLifeBalanceV62==='function'?isLifeBalanceV62(state):/^e39-r6[2356789]-[nsd]-[0-9a-f]{22}$/.test(state?.seed||'');}
 function usesEnergyRest(state=run){return typeof isEnergyRestV53==='function'?isEnergyRestV53(state):/^e39-cal46-kin49-g-e-/.test(state?.seed||'');}
 function usesWorkGap(state=run){return typeof isWorkGapV50==='function'?isWorkGapV50(state):/^e39-cal46-kin49-g-/.test(state?.seed||'');}
 function workGapIsOpen(state=run){return typeof isWorkGapOpenV50==='function'&&isWorkGapOpenV50(state);}
@@ -494,7 +495,7 @@ function endingTextForRun(ending){
  ending=shownEnding(ending);
  if(typeof chapterDepartureCopyV38==='function')ending=chapterDepartureCopyV38(run,ending);
  if(ending&&typeof isOnboardingDeclineV66==='function'&&isOnboardingDeclineV66(run))return {...ending,title:'名片先別拆，我沒有要接。',subtitle:'這份任用，到報到桌前為止。',body:'你看完實際職稱與交辦方式，決定不接受這份任用。名片留在桌上，尚未生效的條件也沒有簽下去。翅膀還在說機會難得，你已經走出門口；今天沒有開始受僱，這次結局記下的是拒絕這份工作。'};
- if(ending&&/^e39-r(?:63|65|66|67|68)-/.test(run?.seed||'')&&run.flags?.departure63_onboarding_declined&&ending.family==='ragequit'&&['onboarding','verbal'].includes(run.history?.at(-1)?.departureOutcome?.category))return {...ending,title:'名片先別拆，我沒有要接。',subtitle:'這次報到，由你提早喊停。',body:'你把還沒收下的名片留在桌上，說這份任用不接受。翅膀還準備繼續交代，你已經轉身走向門口。今天沒有完成報到，也沒有補簽別的職稱或薪資。這段人生停在你決定不留下的那一刻。'};
+ if(ending&&/^e39-r(?:63|65|66|67|68|69)-/.test(run?.seed||'')&&run.flags?.departure63_onboarding_declined&&ending.family==='ragequit'&&['onboarding','verbal'].includes(run.history?.at(-1)?.departureOutcome?.category))return {...ending,title:'名片先別拆，我沒有要接。',subtitle:'這次報到，由你提早喊停。',body:'你把還沒收下的名片留在桌上，說這份任用不接受。翅膀還準備繼續交代，你已經轉身走向門口。今天沒有完成報到，也沒有補簽別的職稱或薪資。這段人生停在你決定不留下的那一刻。'};
  if(!ending||!/^e(?:32|33|34|35|36|37|38|39)-/.test(run?.seed||'')||ending.family!=='taiwan')return ending;
  // The published generic Taiwan card stays intact for old saves/collections;
  // this cohort's actual company scene specifically resolves an OTC listing.
