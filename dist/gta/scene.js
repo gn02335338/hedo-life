@@ -1,11 +1,12 @@
 import * as THREE from '../island/vendor/three.module.js';
 import { ROAD_LINES, SPAWN, BUILDINGS, LOCATIONS } from './world.js';
 import { createCityVisualKit } from './visual-city.js';
-import { createPersonVisualFactory, animatePersonVisual } from './visual-people.js';
+import { createPersonVisualFactory, animatePersonVisual, setPersonArmFlex } from './visual-people.js';
 import { createVehicleVisualFactory, animateVehicleVisual, resolveVehicleVariant } from './visual-vehicles.js';
 import { createVehicleDamageVisuals } from './visual-damage.js';
 import { addGarageVisuals } from './visual-garage.js';
 import { addCollectionVisuals } from './visual-collection.js';
+import { createRacingVisuals } from './visual-racing.js';
 import { createCrowd } from './crowd.js';
 
 // The city and all of its textures are drawn locally. No remote model or image is used.
@@ -111,6 +112,7 @@ export async function createCityScene({ container, onReady } = {}) {
     materials.set(texture.uuid, material);
     const mesh = new THREE.Mesh(planeGeometry, material); mesh.scale.set(width, height, 1); scene.add(mesh); return mesh;
   }
+  const racingVisuals=createRacingVisuals({THREE,scene,mat,geometries,materials,boxGeometry,sign,location:LOCATIONS.find(place=>place.id==='racing')});
 
   // The raised city sits within a continuous river and a low mountain horizon.
   const waterMaterial = mat('#468789', { metalness: 0.25, roughness: 0.4 });
@@ -484,6 +486,7 @@ export async function createCityScene({ container, onReady } = {}) {
     for (const arm of walker.arms) arm.rotation.z = 0;
     walkerShadow.visible = !dead;
     if (armed && weaponRaise > 0.1) {
+      setPersonArmFlex(walker, 0);
       walker.group.rotation.y = -aimYaw;
       walker.arms[1].rotation.x = 1.1 * weaponRaise; walker.arms[1].rotation.z = -0.22 * weaponRaise;
       walker.arms[0].rotation.x = 1.18 * weaponRaise; walker.arms[0].rotation.z = 0.7 * weaponRaise;
@@ -514,6 +517,7 @@ export async function createCityScene({ container, onReady } = {}) {
       for (const arm of model.arms) arm.rotation.z = 0;
       animatePerson(model, t * 6, state.speed ? 0.25 : 0);
       if (model.weapon.visible) {
+        setPersonArmFlex(model, 0);
         model.arms[1].rotation.x = 1.1; model.arms[1].rotation.z = -0.22;
         model.arms[0].rotation.x = 1.18; model.arms[0].rotation.z = 0.7;
         model.weapon.rotation.x = !quiet && state.firing ? 0.06 : 0;
@@ -632,7 +636,7 @@ export async function createCityScene({ container, onReady } = {}) {
     time = 0, dt: suppliedDt, walking = true, controlledId = null, fleet = [], crowd = previewCrowd, transition = null,
     cameraYaw, cameraPitch, lookActive = false, quality = 'auto', selectedCarId = null,
     night = false, target = null, heat = 0, cinematic = false, cameraMode = 'chase',
-    combat = null, combatants = [], tracers = null, aiming = false, aimYaw, vehicleDamage = null,
+    combat = null, combatants = [], tracers = null, aiming = false, aimYaw, vehicleDamage = null, race = null,
   } = {}) {
     if (disposed) return;
     const clock = Number.isFinite(time) ? time : 0;
@@ -813,6 +817,7 @@ export async function createCityScene({ container, onReady } = {}) {
     if (walking && !transition && !cinematic && Math.hypot(camera.position.x - px, camera.position.z - pz) < 1.15) walker.group.visible = false;
     camera.lookAt(cameraTarget); camera.updateProjectionMatrix();
     damageVisuals.update(fleet, vehicleDamage, { time: t, low: qualityLow, reducedMotion: Boolean(reducedMotion?.matches), x: px, z: pz, camera });
+    racingVisuals.update(race,{time:t,low:qualityLow,reducedMotion:Boolean(reducedMotion?.matches)});
     for (const model of officerModels.values()) if (model.healthBar.visible) {
       inverseOfficerRotation.copy(model.group.quaternion).invert(); model.healthBar.quaternion.copy(inverseOfficerRotation).multiply(camera.quaternion);
     }
@@ -834,6 +839,7 @@ export async function createCityScene({ container, onReady } = {}) {
       quality: qualityMode, reduced: qualityLow, averageFrameMs: Math.round(frameAverage * 10000) / 10,
       officerModels: officerModels.size, officerPool: officerPool.length, effects: { tracers: tracerMesh.count, muzzles: muzzleMesh.count, impacts: impactMesh.count },
       damageEffects: damageVisuals.getStats(),
+      racingEffects: racingVisuals.getStats(),
       fleetModels: fleetModels.size, policeModels: [...fleetModels.values()].filter(model => model.police).length,
       pedestrianModels: pedestrians.length, visiblePedestrians: pedestrians.filter(model => model.group.visible).length,
       geometryCount: renderer.info.memory.geometries, textureCount: renderer.info.memory.textures, camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
@@ -843,6 +849,7 @@ export async function createCityScene({ container, onReady } = {}) {
   function dispose() {
     if (disposed) return; disposed = true;
     damageVisuals.dispose();
+    racingVisuals.dispose();
     scene.traverse(object => { if (object.isInstancedMesh) object.dispose(); });
     geometries.forEach(g=>g.dispose()); materials.forEach(m=>m.dispose()); textures.forEach(t=>t.dispose());
     renderer.dispose(); renderer.domElement.remove();

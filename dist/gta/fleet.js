@@ -28,13 +28,13 @@ const crossRoute = rectangleRoute(-116, -56, 116, 56);
 export function createFleet() {
   const parked = [
     ['starter-sedan', '禾多小黃', 0xf1c967, 4, 20, 0, true],
-    ['city-hatch', '薄荷小車', 0x84b5a2, -7, -30, Math.PI, false],
-    ['coffee-coupe', '奶茶轎車', 0xb99478, -64, 26, Math.PI, true],
-    ['finance-wagon', '紫色旅行車', 0xa49ec8, 64, 82, 0, false],
+    ['city-hatch', '歐文的黑色 Tesla Model Y', 0x171c24, -7, -30, Math.PI, false, 'tesla-model-y'],
+    ['coffee-coupe', '翅膀的 BMW', 0xb9c3cf, -64, 26, Math.PI, true, 'bmw-executive'],
+    ['finance-wagon', '董事長的藍色 Maserati', 0x245aab, 64, 82, 0, false, 'maserati-gt'],
     ['harbor-sedan', '碼頭白車', 0xdce0e6, -4, 98, Math.PI, false],
     ['lab-compact', '夜班小車', 0x789cab, -56, -96, 0, true],
-  ].map(([id, name, color, x, z, heading, occupied]) => ({
-    id, name, color, x, z, heading, speed: 0, occupied, stolen: false, kind: 'parked',
+  ].map(([id, name, color, x, z, heading, occupied, variant]) => ({
+    id, name, color, x, z, heading, speed: 0, occupied, stolen: false, kind: 'parked', ...(variant ? { variant } : {}),
   }));
   const traffic = [
     ['traffic-coral', '珊瑚轎車', 0xd08070, 4, 76, 0, eastRoute, 21, 7],

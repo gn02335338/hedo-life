@@ -233,7 +233,7 @@ test('completion is sequential, idempotent and derives rewards without mutating 
   }
   assert.deepEqual(progress.completed, MISSIONS.map(mission => mission.id));
   assert.equal(progress.money, 500 + MISSIONS.reduce((total, mission) => total + mission.reward, 0));
-  assert.deepEqual(initial, { version: 3, completed: [], money: 500, ledger: [], customizations: {},
+  assert.deepEqual(initial, { version: 4, completed: [], money: 500, ledger: [], customizations: {},
     ownedVehicleIds: [], selectedOwnedId: null, ownedVehicleHealth: {} });
 });
 
@@ -251,7 +251,7 @@ test('storage projects known progress, strips ephemeral data and preserves other
 });
 
 test('invalid records, unavailable storage and throwing accessors fail safely', () => {
-  for (const value of [null, 1, [], 'progress', {}, { version: 4, completed: [] }, { version: 1, completed: null },
+  for (const value of [null, 1, [], 'progress', {}, { version: 5, completed: [] }, { version: 1, completed: null },
     Object.create({ version: 1, completed: [MISSIONS[0].id] }),
     Object.defineProperty({ version: 1 }, 'completed', { get() { throw new Error('broken accessor'); } })]) {
     assert.deepEqual(sanitizeProgress(value), freshProgress());

@@ -1,6 +1,7 @@
 import { LOCATIONS, MISSIONS } from './world.js';
 import { createFleet } from './fleet.js';
 import { OWNED_CAR_CATALOG, PRIVATE_GARAGE_RULES } from './ownership-catalog.js';
+import { RACE_CATALOG, validRaceReceipt } from './racing-catalog.js';
 
 export const GARAGE_PALETTE = Object.freeze([
   { id: 'pearl', name: '珍珠白', color: 0xe8e9e3 },
@@ -19,7 +20,7 @@ export const GARAGE_CATALOG = Object.freeze({
     handling: Object.freeze({ name: '操控', prices: Object.freeze([160, 280]), maxLevel: 2 }),
   }),
 });
-export const GARAGE_RULES = Object.freeze({ radius: 6, maxSpeed: 1, maxLedger: 128, startingMoney: 500 });
+export const GARAGE_RULES = Object.freeze({ radius: 6, maxSpeed: 1, maxLedger: 256, startingMoney: 500 });
 const originalCars = new Map([...createFleet(), ...OWNED_CAR_CATALOG].map(car => [car.id, { color: car.color }]));
 const ownedCars = new Map(OWNED_CAR_CATALOG.map(car => [car.id, car]));
 const colors = new Map(GARAGE_PALETTE.map(color => [color.id, color]));
@@ -53,7 +54,7 @@ export function getPerformanceProfile(tuning = {}) {
 }
 
 export function createGarageProgress() {
-  return { version: 3, completed: [], money: GARAGE_RULES.startingMoney, ledger: [], customizations: {},
+  return { version: 4, completed: [], money: GARAGE_RULES.startingMoney, ledger: [], customizations: {},
     ownedVehicleIds: [], selectedOwnedId: null, ownedVehicleHealth: {} };
 }
 
@@ -80,7 +81,7 @@ function actionDetails(customization, vehicleId, action) {
 export function replayGarageProgress(raw) {
   const progress = createGarageProgress();
   try {
-    if (!isRecord(raw) || !Object.hasOwn(raw, 'version') || ![1, 2, 3].includes(raw.version)
+    if (!isRecord(raw) || !Object.hasOwn(raw, 'version') || ![1, 2, 3, 4].includes(raw.version)
       || !Object.hasOwn(raw, 'completed') || !Array.isArray(raw.completed)) return progress;
     const completed = new Set(raw.completed.slice(0, 64).filter(id => typeof id === 'string'));
     for (const mission of MISSIONS) {
@@ -92,7 +93,7 @@ export function replayGarageProgress(raw) {
   let entries;
   try { entries = Object.hasOwn(raw, 'ledger') && Array.isArray(raw.ledger) ? raw.ledger.slice(0, GARAGE_RULES.maxLedger) : []; }
   catch { return progress; }
-  let spent = 0, lastMissionCount = 0;
+  let spent = 0, raceEarnings = 0, lastMissionCount = 0;
   const transactionIds = new Set();
   for (const entry of entries) {
     try {
@@ -102,21 +103,26 @@ export function replayGarageProgress(raw) {
       const owned = progress.ownedVehicleIds.includes(entry.vehicleId), catalog = ownedCars.get(entry.vehicleId);
       let action;
       if (entry.kind === 'purchase') {
-        if (raw.version !== 3 || !catalog || owned || progress.ownedVehicleIds.length >= PRIVATE_GARAGE_RULES.capacity) break;
+        if (raw.version < 3 || !catalog || owned || progress.ownedVehicleIds.length >= PRIVATE_GARAGE_RULES.capacity) break;
         action = { ok: true, kind: 'purchase', cost: catalog.price };
       } else if (entry.kind === 'recover') {
-        if (raw.version !== 3 || !catalog || !owned) break;
+        if (raw.version < 3 || !catalog || !owned) break;
         action = { ok: true, kind: 'recover', cost: PRIVATE_GARAGE_RULES.recoverPrice };
+      } else if (entry.kind === 'race') {
+        if (raw.version < 4 || !catalog || !owned || !validRaceReceipt(entry)) break;
+        action = { ok: true, kind: 'race', cost: 0, reward: RACE_CATALOG.find(race => race.id === entry.raceId).reward };
       } else {
         if (catalog && !owned) break;
         action = actionDetails(customization, entry.vehicleId, entry);
       }
-      const available = GARAGE_RULES.startingMoney + MISSIONS.slice(0, entry.missionCount).reduce((sum, mission) => sum + mission.reward, 0) - spent;
+      const available = GARAGE_RULES.startingMoney + MISSIONS.slice(0, entry.missionCount).reduce((sum, mission) => sum + mission.reward, 0) + raceEarnings - spent;
       if (!action.ok || available < action.cost) break;
       const record = { id: entry.id, vehicleId: entry.vehicleId, kind: action.kind,
-        ...(action.value ? { value: action.value } : {}), missionCount: entry.missionCount };
+        ...(action.value ? { value: action.value } : {}), missionCount: entry.missionCount,
+        ...(action.kind === 'race' ? { raceId: entry.raceId, elapsedMs: entry.elapsedMs, rank: entry.rank, checkpointTimes: [...entry.checkpointTimes] } : {}) };
       progress.ledger.push(record); transactionIds.add(record.id);
       lastMissionCount = record.missionCount; spent += action.cost;
+      raceEarnings += action.reward || 0;
       if (action.kind === 'purchase') progress.ownedVehicleIds.push(record.vehicleId);
       if (action.kind === 'purchase' || action.kind === 'recover' || catalog && action.kind === 'repair') progress.ownedVehicleHealth[record.vehicleId] = 100;
       if (action.kind === 'paint') customization.colorId = action.value;
@@ -124,7 +130,7 @@ export function replayGarageProgress(raw) {
       if (action.kind === 'paint' || action.kind === 'upgrade') progress.customizations[record.vehicleId] = customization;
     } catch { break; }
   }
-  progress.money -= spent;
+  progress.money += raceEarnings - spent;
   // Ownership and purchase costs are ledger-derived. The small health snapshot
   // is deliberately separate: storing or switching a car must retain damage.
   for (const id of progress.ownedVehicleIds) {

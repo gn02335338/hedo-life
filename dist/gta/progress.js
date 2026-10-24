@@ -6,7 +6,8 @@ export function freshProgress() {
   return createGarageProgress();
 }
 
-// Purchases and mission completions are replayed into a projection. Owned-car
+// Purchases, race receipts and mission completions replay into a projection.
+// Race winnings become available only after their receipt in the ledger. Owned-car
 // health is a bounded snapshot; selection is only a preference, never a spawn.
 // Position, active deliveries and cached money/customizations are not trusted.
 export function sanitizeProgress(raw) {

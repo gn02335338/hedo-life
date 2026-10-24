@@ -13,6 +13,7 @@ export const LOCATIONS = Object.freeze([
   { id: 'finance', name: '財務收件站', x: 64, z: 86, color: 0xc0a0e6 },
   { id: 'garage', name: '禾多修車廠', x: -90, z: 18, color: 0x78b6a0 },
   { id: 'collection', name: '私人車庫', x: -30, z: 78, color: 0xb7a1cf },
+  { id: 'racing', name: '禾多街頭賽', x: -30, z: 60, color: 0xf2a87f },
 ].map(Object.freeze));
 
 const blockCenters = [-90, -30, 30, 90];
