@@ -191,7 +191,7 @@ function playerShot(state, context, input) {
   state.hostile = true; state.lastShotTime = state.time;
   const hit = getAimTarget(state, input); state.aimPoint = hit;
   tracer(state, context.player, hit, 'player', hit.kind);
-  emit(state, { type: 'shot', shooter: 'player', weaponId: weapon.id });
+  emit(state, { type: 'shot', shooter: 'player', weaponId: weapon.id, position: point(context.player) });
   if (state.crimeCooldown <= 1e-8) {
     emit(state, { type: 'crime', crime: 'gunfire', position: point(context.player) });
     state.crimeCooldown = COMBAT_RULES.gunfireCrimeSeconds;
@@ -235,7 +235,7 @@ function returnFire(state, context, dt) {
     const missYaw = yaw + (record.shotIndex % 2 ? 1 : -1) * Math.atan2(2.3, Math.max(range, 1));
     const end = accurate ? heightPoint(context.player) : castRay(officer, missYaw, range + 2, context, [], officer.unitId, !context.walking);
     tracer(state, officer, end, 'police', accurate ? 'player' : end.kind, officer.unitId);
-    emit(state, { type: 'shot', shooter: 'police', weaponId: 'pistol', unitId: officer.unitId });
+    emit(state, { type: 'shot', shooter: 'police', weaponId: 'pistol', unitId: officer.unitId, position: point(officer) });
     if (accurate) damage(state, COMBAT_RULES.officerDamage, 'police', officer.unitId);
   }
 }

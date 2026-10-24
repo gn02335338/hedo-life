@@ -1,6 +1,8 @@
 import { ROAD_LINES, WORLD_LIMIT, LOCATIONS, BUILDINGS, MISSIONS } from './world.js';
 import { createVehicle, stepVehicle, createPedestrian, stepPedestrian } from './driving.js';
 import { createFleet, stepFleet, findNearbyCar, takeCar, parkCar } from './fleet.js';
+import { createCrowd, stepCrowd } from './crowd.js';
+import { createAwareness, stepAwareness } from './awareness.js';
 import { createGameInput } from './input.js';
 import { createPoliceState, reportCrime, stepPolice } from './police.js';
 import { createCombatState, selectWeapon, startReload, stepCombat, applyDamage, getPoliceCombatants } from './combat.js';
@@ -18,6 +20,7 @@ try { storage = window.localStorage; } catch { storage = null; }
 let progress = storage ? loadProgress(storage) : freshProgress();
 let actor = createPedestrian(FOOT_SPAWN);
 let fleet = createFleet(), controlledId = null, transition = null, hasDriven = false;
+let crowd = createCrowd(), awareness = createAwareness();
 let police = createPoliceState(), pendingArrest = false;
 let combat = createCombatState(), pendingDeath = false, aiming = false;
 let combatants = [], lastWeaponHint = -10;
@@ -161,6 +164,7 @@ function showHelp() {
   wrap.append(el('h3','','別忘了，警察也會開槍。'));
   wrap.append(el('p','help-note','按 Tab 或「武器」選擇裝備，Q 快速切換。步行持槍時，先點街景鎖定滑鼠，再按左鍵射擊；右鍵或 Z 瞄準，X 也能射擊，R 換彈。手機點「瞄準」鎖定瞄準姿態，拖右側轉向，按住「射擊」開火。駕駛時會收起武器。'));
   wrap.append(el('p','help-note','開槍會升高通緝；兩星以上警方會武裝反擊。警員先瞄準再射擊，建物與其他車輛能擋住火線。血量低時先躲掩護，解除通緝後回總部，在武器選單補給。血量歸零會顯示 WASTED，可重生為滿血行人，補滿彈藥；委託、完成紀錄與基金都保留。'));
+  wrap.append(el('p','help-note','附近路人聽到槍聲會驚嚇、沿人行道逃離，安靜一段時間後才恢復步行。車流會為行人與阻路車輛減速，在空間足夠時側移避讓；連續交火期間會保持戒備。'));
   wrap.append(el('h3', '', '搶得到車，也要甩得掉警察。'));
   wrap.append(el('p', 'help-note', '搶車或高速碰撞會增加通緝星數，撞上警車會引來更多警力。警車會沿街道追捕；紅藍標記是警車，搜索時的橘色圓圈是你最後被目擊的位置。繞過街角、利用建物遮住視線，持續避開警方搜索，星數才會逐顆下降。被看見或再次犯案會中斷倒數。'));
   wrap.append(el('p', 'help-note', '警車靠近時若停住，逮捕進度會上升；持續移動、拉開距離可中斷逮捕。被捕後車輛會被扣留，以行人返回總部，委託、完成紀錄與跑腿基金保留。通緝期間不能使用「回到路邊」或交接委託。'));
@@ -361,6 +365,7 @@ function finishTransition() {
 }
 function resetSession() {
   actor=createPedestrian(FOOT_SPAWN);fleet=createFleet();controlledId=null;transition=null;
+  crowd=createCrowd();awareness=createAwareness();
   walking=true;hasDriven=false;active=null;waypoint=null;police=createPoliceState();pendingArrest=false;lastImpact=-10;cameraYaw=0;cameraPitch=.34;accumulator=0;
   combat=createCombatState();combatants=[];pendingDeath=false;aiming=false;
   document.body.classList.add('on-foot');needsRender=true;
@@ -390,6 +395,7 @@ function recoverFromArrest() {
   controlledId=null;transition=null;pendingArrest=false;police=createPoliceState();
   actor=createPedestrian(FOOT_SPAWN);walking=true;cameraYaw=0;cameraPitch=.34;lastImpact=-10;
   combat=createCombatState();combatants=[];
+  awareness={...awareness,threats:[]};
   clearInput();updateHud();
   notify('已返回總部路邊。通緝解除，委託和完成進度保留。');
 }
@@ -409,6 +415,7 @@ function recoverFromDeath() {
   controlledId=null;transition=null;pendingDeath=false;pendingArrest=false;
   actor=createPedestrian(FOOT_SPAWN);walking=true;police=createPoliceState();
   combat=createCombatState();combatants=[];cameraYaw=0;cameraPitch=.34;lastImpact=-10;
+  awareness={...awareness,threats:[]};
   clearInput();updateHud();needsRender=true;
   notify('已重生。血量與彈藥恢復，委託和獎勵保留。');
 }
@@ -533,8 +540,13 @@ function playShot(policeShot=false) {
 function simulate(dt, controls) {
   if(pendingArrest||pendingDeath)return;
   time += dt;
-  fleet=stepFleet([...fleet,...police.units],dt,{controlledId,reservedId:transition?.carId,player:walking?actor:null}).filter(car=>car.kind!=='police');
-  if(!started)return;
+  fleet=stepFleet([...fleet,...police.units],dt,{controlledId,reservedId:transition?.carId,player:walking?actor:null,pedestrians:crowd,threats:awareness.threats}).filter(car=>car.kind!=='police');
+  if(!started){
+    awareness=stepAwareness(awareness,[],dt);
+    crowd=stepCrowd(crowd,dt,{vehicles:fleet});
+    return;
+  }
+  const cityEvents=[];
   aiming=walking&&combat.weaponId!=='unarmed'&&!transition&&Boolean(controls.aiming);
   if(transition){
     transition.progress=Math.min(1,transition.progress+dt/transition.duration);
@@ -553,6 +565,7 @@ function simulate(dt, controls) {
         const hitPolice=touchingPolice(actor);
         police=reportCrime(police,{type:hitPolice?'police-collision':'collision',position:{x:actor.x,z:actor.z}});
         combat=applyDamage(combat,Math.min(30,Math.max(0,(Math.abs(speedBefore)-8)*1.5)));
+        cityEvents.push({type:'collision',position:{x:actor.x,z:actor.z}});
         lastImpact=time;
         notify(hitPolice?'撞上警車！警方呼叫支援，通緝升高。':'碰撞引來報案！通緝升高，先離開現場。');
       }
@@ -573,6 +586,8 @@ function simulate(dt, controls) {
     if(event.type==='unitDown')notify('警員失去戰鬥能力。支援仍會到場，趁現在拉開距離。');
   }
   combatants=getPoliceCombatants(police,combat,BUILDINGS,fleet);
+  awareness=stepAwareness(awareness,[...cityEvents,...combat.events],dt);
+  crowd=stepCrowd(crowd,dt,{threats:awareness.threats,vehicles:[...fleet,...police.units],player:walking?actor:null});
   if(combat.dead){handleDeath();return;}
   if(police.phase==='busted'){handleArrest();return;}
   if(controls.fire&&walking&&combat.weaponId!=='unarmed'&&!combat.reload&&combat.weapons[combat.weaponId].mag===0&&time-lastWeaponHint>2.5){
@@ -595,7 +610,7 @@ function tick(now) {
     while(accumulator>=fixedStep){simulate(fixedStep,controls);accumulator-=fixedStep;}
   } else {accumulator=0;pendingJump=false;}
   if(scene&&!document.hidden&&(!paused||needsRender)){
-    scene.update(actor,{time,dt:paused?0:dt,walking,controlledId,fleet:[...fleet,...police.units],transition,cameraYaw,cameraPitch,lookActive:time<lookUntil,quality,night:false,target:targetPlace(),heat:police.level,cinematic:!started,cameraMode,selectedCarId:nearbyCar()?.id,combat,combatants,aiming,aimYaw:cameraYaw});
+    scene.update(actor,{time,dt:paused?0:dt,walking,controlledId,fleet:[...fleet,...police.units],crowd,transition,cameraYaw,cameraPitch,lookActive:time<lookUntil,quality,night:false,target:targetPlace(),heat:police.level,cinematic:!started,cameraMode,selectedCarId:nearbyCar()?.id,combat,combatants,aiming,aimYaw:cameraYaw});
     needsRender=false;
   }
   updateCombatEffects();

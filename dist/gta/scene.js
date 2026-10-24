@@ -3,6 +3,7 @@ import { ROAD_LINES, SPAWN, BUILDINGS, LOCATIONS } from './world.js';
 import { createCityVisualKit } from './visual-city.js';
 import { createPersonVisualFactory, animatePersonVisual } from './visual-people.js';
 import { createVehicleVisualFactory, animateVehicleVisual } from './visual-vehicles.js';
+import { createCrowd } from './crowd.js';
 
 // The city and all of its textures are drawn locally. No remote model or image is used.
 export async function createCityScene({ container, onReady } = {}) {
@@ -387,10 +388,11 @@ export async function createCityScene({ container, onReady } = {}) {
   const person = createPersonVisualFactory({ THREE, scene, mat, M, geo, part, mergeFixedParts, boxGeometry, sphereGeometry });
   const walker = person(); walker.group.name = 'player-character'; walker.group.scale.setScalar(1.08); const walkerShadow = contact(walker.group, 0.44, 0.38);
   const displacedDriver = person('#8aaeb8', true); displacedDriver.group.visible = false;
-  const pedestrians = [];
-  for (let i = 0; i < 12; i++) {
+  const previewCrowd = createCrowd(), pedestrians = [];
+  for (let i = 0; i < previewCrowd.length; i++) {
     const p = person(['#ddaa8b','#b4c5aa','#80b8b2','#d6c380'][i%4], true);
-    pedestrians.push({...p, x: (i%4-1.5)*60, z: (Math.floor(i/4)%4-1.5)*60, offset: seed(i+800)*35, side: i%2?1:-1});
+    p.group.name = `pedestrian:${previewCrowd[i].id}`;
+    pedestrians.push(p);
   }
 
   // Weapon templates and officer pools are local, original procedural models. Only
@@ -613,7 +615,7 @@ export async function createCityScene({ container, onReady } = {}) {
   }
   const animatePerson = animatePersonVisual;
   function update(actor = SPAWN, {
-    time = 0, dt: suppliedDt, walking = true, controlledId = null, fleet = [], transition = null,
+    time = 0, dt: suppliedDt, walking = true, controlledId = null, fleet = [], crowd = previewCrowd, transition = null,
     cameraYaw, cameraPitch, lookActive = false, quality = 'auto', selectedCarId = null,
     night = false, target = null, heat = 0, cinematic = false, cameraMode = 'chase',
     combat = null, combatants = [], tracers = null, aiming = false, aimYaw,
@@ -726,10 +728,19 @@ export async function createCityScene({ container, onReady } = {}) {
       selectionMaterial.opacity = 0.7 + Math.sin(t * 4) * 0.15;
     }
     for (let i = 0; i < pedestrians.length; i++) {
-      const person = pedestrians[i], walk = ((t * 0.65 + person.offset) % 34) - 17;
-      person.group.position.set(person.x + person.side * 20.7, 0.35, person.z + walk);
-      person.group.visible = (cameraMode === 'aerial' || Math.hypot(person.group.position.x - px, person.group.position.z - pz) < (qualityLow ? 48 : 78)) && (!qualityLow || i % 2 === 0);
-      if (person.group.visible) { person.group.rotation.y = Math.PI; animatePerson(person, t * 4 + i, 0.3); }
+      const person = pedestrians[i], state = crowd[i];
+      if (!state) { person.group.visible = false; continue; }
+      person.group.position.set(state.x, 0.35, state.z);
+      person.group.visible = (cameraMode === 'aerial' || Math.hypot(state.x - px, state.z - pz) < (qualityLow ? 48 : 78)) && (!qualityLow || i % 2 === 0);
+      if (person.group.visible) {
+        person.group.rotation.y = -state.heading;
+        animatePerson(person, state.phase, Math.min(.78, state.speed * .23));
+        const startled = state.mode === 'startled', fleeing = state.mode === 'flee';
+        person.chest.rotation.x = fleeing ? -.075 : startled ? -.025 : 0;
+        person.arms[0].rotation.z = startled ? -.22 : 0;
+        person.arms[1].rotation.z = startled ? .22 : 0;
+        if (startled) person.arms[0].rotation.x = person.arms[1].rotation.x = 2.05;
+      }
     }
     const darkness = typeof night === 'number' ? clamp(night, 0, 1) : night ? 1 : 0;
     cityVisuals.update(darkness);
@@ -804,6 +815,7 @@ export async function createCityScene({ container, onReady } = {}) {
       quality: qualityMode, reduced: qualityLow, averageFrameMs: Math.round(frameAverage * 10000) / 10,
       officerModels: officerModels.size, officerPool: officerPool.length, effects: { tracers: tracerMesh.count, muzzles: muzzleMesh.count, impacts: impactMesh.count },
       fleetModels: fleetModels.size, policeModels: [...fleetModels.values()].filter(model => model.police).length,
+      pedestrianModels: pedestrians.length, visiblePedestrians: pedestrians.filter(model => model.group.visible).length,
       geometryCount: renderer.info.memory.geometries, textureCount: renderer.info.memory.textures, camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
       target: { x: cameraTarget.x, y: cameraTarget.y, z: cameraTarget.z } };
   }
