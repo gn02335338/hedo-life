@@ -129,18 +129,22 @@ function blocked(point, radius, obstacle) {
 }
 function finitePoint(point) { return point && Number.isFinite(point.x) && Number.isFinite(point.z); }
 
-export function isWalkable(point, radius = PLAYER_RADIUS) {
+/** Per-scene extra obstacles are circles {x,z,radius}; static geometry is never mutated. */
+export function isWalkable(point, radius = PLAYER_RADIUS, extraObstacles = []) {
   if (!finitePoint(point) || !Number.isFinite(radius) || radius < 0) return false;
   if (!surfaces.some(polygon => within(point, polygon))) return false;
   if (boundary.some(([a, b]) => segmentDistanceSquared(point, a, b) < radius * radius - EPSILON)) return false;
-  return !obstacles.some(obstacle => blocked(point, radius, obstacle));
+  if(!Array.isArray(extraObstacles)) return false;
+  return !obstacles.some(obstacle => blocked(point, radius, obstacle))
+    && !extraObstacles.some(obstacle => !finitePoint(obstacle) || !Number.isFinite(obstacle.radius)
+      || obstacle.radius < 0 || blocked(point, radius, obstacle));
 }
 
 /** Input is world-space x/z, capped to unit magnitude (analog input stays analog).
  * Time is in seconds, capped at 100 ms; 6 cm substeps prevent wall tunneling.
  * The returned point is fresh. A blocked diagonal slides along a free axis.
  */
-export function movePlayer(position, input, dt, speed = 4.5) {
+export function movePlayer(position, input, dt, speed = 4.5, extraObstacles = []) {
   const result = finitePoint(position) ? { x: position.x, z: position.z } : { ...PLAYER_SPAWN };
   if (!finitePoint(input) || !Number.isFinite(dt) || dt <= 0 || !Number.isFinite(speed) || speed <= 0) return result;
   const magnitude = Math.hypot(input.x, input.z);
@@ -150,9 +154,9 @@ export function movePlayer(position, input, dt, speed = 4.5) {
   const dx = input.x / magnitude * distance / steps, dz = input.z / magnitude * distance / steps;
   for (let step = 0; step < steps; step++) {
     const next = { x: result.x + dx, z: result.z + dz };
-    if (isWalkable(next)) { result.x = next.x; result.z = next.z; continue; }
-    if (isWalkable({ x: result.x + dx, z: result.z })) result.x += dx;
-    if (isWalkable({ x: result.x, z: result.z + dz })) result.z += dz;
+    if (isWalkable(next, PLAYER_RADIUS, extraObstacles)) { result.x = next.x; result.z = next.z; continue; }
+    if (isWalkable({ x: result.x + dx, z: result.z }, PLAYER_RADIUS, extraObstacles)) result.x += dx;
+    if (isWalkable({ x: result.x, z: result.z + dz }, PLAYER_RADIUS, extraObstacles)) result.z += dz;
   }
   return result;
 }

@@ -3,6 +3,7 @@ import { readProgress, writeProgress } from './progress.js';
 import { displayPersona } from '../persona.js';
 import { ENCOUNTERS } from './encounters.js';
 import { bindWalkControls } from './walk-controls.js';
+import { bindApplications, residentAvatar } from './applications.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
@@ -26,6 +27,9 @@ let roaming = false;
 let nearby = null;
 let walkControls;
 const encounterChoices = new Map();
+const residentChoices = new Map();
+let residentById = new Map();
+let activeEncounter = null;
 const encounterById = new Map(ENCOUNTERS.map(item => [item.id, item]));
 
 function element(tag, className = '', text) {
@@ -158,7 +162,13 @@ function updateNearby(target) {
   $('#nearby-prompt').hidden = !target || !roaming;
   if (!target) return;
   const district = byId.get(target.districtId);
-  if (target.kind === 'person') {
+  if (target.kind === 'resident') {
+    const resident = residentById.get(target.id);
+    if (!resident) { $('#nearby-prompt').hidden = true; return; }
+    $('#nearby-name').textContent = resident.nickname;
+    $('#nearby-greeting').textContent = resident.greeting;
+    $('#interact-label').textContent = '聊聊';
+  } else if (target.kind === 'person') {
     const encounter = encounterById.get(target.id);
     $('#nearby-name').textContent = displayPersona(target.id).name;
     $('#nearby-greeting').textContent = encounter?.greeting || '一起聊聊島上的日常。';
@@ -170,6 +180,8 @@ function updateNearby(target) {
   }
 }
 function renderEncounter(target) {
+  activeEncounter = target;
+  if (target.kind === 'resident') return renderResidentEncounter(target);
   const district = byId.get(target.districtId);
   const isPerson = target.kind === 'person';
   const story = isPerson ? encounterById.get(target.id) : district.story;
@@ -206,11 +218,43 @@ function renderEncounter(target) {
     $('#encounter-leave').textContent = '先聊到這裡，繼續走走 →';
   }
 }
+function renderResidentEncounter(target) {
+  const resident = residentById.get(target.id);
+  if (!resident) return;
+  const district = byId.get(resident.districtId), content = $('#encounter-content');
+  content.replaceChildren();
+  $('#encounter-place').textContent = `${district.number} / ${district.name} · 新島民偶遇`;
+  const speaker = element('div', 'encounter-speaker'); speaker.append(residentAvatar(resident.outfit), element('strong', '', resident.nickname));
+  const title = element('h2', '', '在島上，認識一位新鄰居'); title.id = 'encounter-title';
+  content.append(speaker, title, element('p', 'encounter-opening', resident.greeting));
+  if (residentChoices.has(resident.id)) {
+    const response = element('div', 'story-response'); response.id = 'encounter-response'; response.tabIndex = -1;
+    response.append(element('b', '', '你說：想聽聽你的島上故事。'), element('p', '', resident.introduction)); content.append(response);
+  } else {
+    const choices = element('div', 'story-choices');
+    choices.append(button('', '想聽聽你的島上故事。', () => { residentChoices.set(resident.id, true); renderEncounter(target); $('#encounter-response').focus({ preventScroll: true }); }));
+    content.append(choices);
+  }
+  $('#encounter-leave').textContent = '下次見，繼續散步 →';
+}
+function meetResident(resident) {
+  if (!residentById.has(resident.id)) return;
+  renderEncounter({ kind: 'resident', id: resident.id, districtId: resident.districtId, key: `resident:${resident.id}` });
+  openDialog($('#encounter-dialog'));
+}
+function updateResidents(residents) {
+  residentById = new Map(residents.map(row => [row.id, row]));
+  for (const id of residentChoices.keys()) if (!residentById.has(id)) residentChoices.delete(id);
+  if (activeEncounter?.kind === 'resident' && !residentById.has(activeEncounter.id) && $('#encounter-dialog').open) closeDialog($('#encounter-dialog'));
+  scene?.setResidents(residents);
+  if (nearby?.kind === 'resident' && !residentById.has(nearby.id)) updateNearby(null);
+}
 function interactNearby() {
   if (!canWalk()) return;
   const target = scene?.interactNearby();
   if (!target) return;
   if (target.kind === 'person' && !encounterById.has(target.id)) return;
+  if (target.kind === 'resident' && !residentById.has(target.id)) return;
   if (!progress.visited.includes(target.districtId)) { progress.visited.push(target.districtId); save(); syncProgress(); }
   renderEncounter(target); openDialog($('#encounter-dialog'));
 }
@@ -414,6 +458,7 @@ window.addEventListener('pagehide', () => { walkControls.destroy(); scene?.destr
 // A bfcache restoration needs a fresh renderer after pagehide teardown.
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 
+const applications = bindApplications({ storage, openDialog, closeDialog, onResidents: updateResidents, onMeet: meetResident, stopTour });
 renderList(); syncProgress(); updatePause(); setSidebar(!mobile.matches);
 // Test storage availability without touching the career game's keys.
 save();
@@ -422,6 +467,7 @@ if (byId.has(initialId)) selectDistrict(initialId, { moveFocus: false });
 try {
   const { createIslandScene } = await import('./scene.js');
   scene = await createIslandScene({ container: $('#scene'), districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onNearby: updateNearby, onRoamChange: syncRoaming });
+  scene.setResidents(applications.getResidents());
   $('#loading').hidden = true;
   $('#roam-toggle').disabled = false;
   setHour(hour); updatePause(); scene.setConnections(connections); scene.setTopView(topView);

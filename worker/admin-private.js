@@ -51,8 +51,8 @@ export function validatePrivateArchive(body){
 }
 
 export class AdminPrivateStore{
- constructor(sql,env,{now=()=>Date.now()}={}){
-  this.sql=sql;this.env=env;this.now=now;
+ constructor(sql,env,{now=()=>Date.now(),getIslandStore=null}={}){
+  this.sql=sql;this.env=env;this.now=now;this.getIslandStore=getIslandStore;
   sql.exec(`CREATE TABLE IF NOT EXISTS private_admin_sessions (token_hash TEXT PRIMARY KEY,csrf_hash TEXT NOT NULL,verifier_tag TEXT NOT NULL,expires_at INTEGER NOT NULL);
    CREATE TABLE IF NOT EXISTS private_admin_attempts (bucket_hash TEXT PRIMARY KEY,count INTEGER NOT NULL,until_at INTEGER NOT NULL);
    CREATE TABLE IF NOT EXISTS private_archive (id INTEGER PRIMARY KEY CHECK(id=1),card_json TEXT NOT NULL,portrait_mime TEXT NOT NULL,portrait BLOB NOT NULL,updated_at TEXT NOT NULL);`);
@@ -104,6 +104,13 @@ export class AdminPrivateStore{
    const path=new URL(request.url).pathname,config=await this.configuration();
    if(path==='/api/admin/login'&&request.method==='POST')return await this.login(request,config);
    const session=await this.authenticate(request,config);
+   if(path==='/api/admin/island-applications'&&request.method==='GET'&&this.getIslandStore)return response(this.getIslandStore().list(new URL(request.url).searchParams));
+   const islandReview=/^\/api\/admin\/island-applications\/([^/]+)\/review$/.exec(path);
+   if(islandReview&&request.method==='POST'&&this.getIslandStore){
+    await this.writeGuard(request,session);
+    if(new URL(request.url).search)throw new ApiError(400,'invalid_island_query','審核端點不接受額外查詢欄位。');
+    return response(this.getIslandStore().review(islandReview[1],await readJson(request,{maxBytes:4096})));
+   }
    if(path==='/api/admin/session'&&request.method==='GET')return response({authenticated:true,csrfToken:session.csrfToken,expiresAt:new Date(session.expiresAt).toISOString()});
    if(path==='/api/admin/logout'&&request.method==='POST'){await this.writeGuard(request,session);this.sql.exec('DELETE FROM private_admin_sessions WHERE token_hash = ?',session.hash);return response({authenticated:false},200,{'Set-Cookie':cookie('',0)});}
    if(path==='/api/admin/archive'&&request.method==='GET')return this.archive();
@@ -117,7 +124,7 @@ export class AdminPrivateStore{
     const row=this.sql.exec('SELECT portrait_mime,portrait FROM private_archive WHERE id = 1').toArray()[0];if(!row)throw new ApiError(404,'private_portrait_unavailable','目前沒有私人圖片。');
     return new Response(row.portrait,{status:200,headers:{...headers,'Content-Type':row.portrait_mime}});
    }
-   if(['/api/admin/login','/api/admin/session','/api/admin/logout','/api/admin/archive','/api/admin/portrait'].includes(path))throw new ApiError(405,'admin_method','這個端點不接受此操作。');
+   if(['/api/admin/login','/api/admin/session','/api/admin/logout','/api/admin/archive','/api/admin/portrait','/api/admin/island-applications'].includes(path)||islandReview)throw new ApiError(405,'admin_method','這個端點不接受此操作。');
    throw new ApiError(404,'admin_not_found','找不到這個私人端點。');
   }catch(error){
    const failed=errorResponse(error),out=new Headers(failed.headers);

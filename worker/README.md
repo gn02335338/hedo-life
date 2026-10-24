@@ -1043,11 +1043,11 @@ It is a standalone original 3D miniature with nine districts, 27 district dialog
 choices and a six-stop day tour. Walking mode adds a controllable visitor,
 connected bridges and nine public colleagues with 27 separate encounter choices.
 Keyboard and touch controls release movement when interrupted; conversations and
-the open district list stop walking. The application makes no API calls and adds
-no server-side records or migrations. Existing career identity, saved games,
-collections and archive behavior are unchanged.
+the open district list stop walking. Public resident profiles are loaded from the
+approved-only island API described below. Career saved games, collections and
+replay validation remain unchanged.
 
-Only the browser-local `hedo-island-v1` key is read or written. Its version 1
+Island exploration reads and writes the browser-local `hedo-island-v1` key. Its version 1
 record contains visited district IDs and selected choice indexes (0–2), with no
 credentials, free text or dialogue transcripts. Reads and writes project onto
 known districts, deduplicate visits and discard invalid indexes or choices for
@@ -1070,6 +1070,79 @@ fallback retains the list, stories and passport.
 After `npm start`, open `http://127.0.0.1:4173/island/`. Run the island checks with
 `node --test tests/island-*.test.mjs`, and
 the repository checks with `npm test` and `npm run build:check`.
+
+
+## Island applications and approved residents
+
+The public `/island/` entry includes an application form, live public-profile
+preview, owner status/history and withdrawal. `/island/review/` is a separate
+administrator queue using the existing private-admin session cookie, login intent
+and CSRF token. It never requests the private archive blob or portraits. Admin
+credentials stay in session memory; logout, expiry and pagehide clear private UI.
+Submissions are enabled only when the existing admin verifier is configured; no
+new production secret, binding, Durable Object migration or GitHub workflow is
+needed. The UI has no email notifications; applicants return to the same browser
+to check the result.
+
+| Method | Path | Access / behavior |
+| --- | --- | --- |
+| GET | `/api/island/config` | Public enabled flag and field/capacity limits; no verifier data |
+| GET | `/api/island/residents` | Approved-only `{version:1,residents}` |
+| POST | `/api/island/applications` | Existing anonymous bearer; validated version-1 application; returns 202 `{application}` |
+| GET | `/api/island/applications/mine` | Existing bearer; only that owner's receipts |
+| DELETE | `/api/island/applications/:id` | Owner only; withdraw pending/approved, repeat withdrawal is idempotent |
+| GET | `/api/admin/island-applications?status=pending` | Admin cookie; status filter and optional opaque `after` cursor, 100 per page |
+| POST | `/api/admin/island-applications/:id/review` | Admin cookie + same-origin + CSRF; `{decision:'approve'|'reject'|'revoke',note}` |
+
+Applications carry a UUID `submissionId`, `version:1`, `nickname` (2–16 Unicode
+code points), `districtId` (one of nine), `outfit` (`teal`, `amber`, `coral`,
+`lavender`, `navy`, `cream`), `greeting` (2–80), `introduction` (10–240), private
+`reason` (10–500), and `consent:true`. Input is normalized with NFKC and trimmed;
+control/hidden characters, markup, URLs and common private-contact patterns are
+rejected server-side. Browser drafts remain in page memory. An uncertain receipt
+retains the exact request ID/body for an explicit retry; it is never automatically
+submitted in the background.
+
+Browsing the roster creates no anonymous player. The separate application client
+reads only `hedo-anonymous-v1` when checking the owner; on explicit submission it
+reuses or persists a credential and registers via `/api/player`. Blocked storage
+prevents submission rather than losing ownership. The career cloud module,
+proof queues and caches are never imported, read, flushed or rewritten.
+
+`IslandApplicationStore` lazily creates dedicated SQLite tables in `global-v3`.
+It does not use `FeedbackStore` or the GitHub publication outbox. An owner may
+have only one pending/approved application. UTC-day quotas are 3 submissions per
+owner, 10 per salted network hash and 100 globally; pending queue capacity is 200.
+Raw IPs are not stored. Old quota salts/counters are pruned, and rejected/withdrawn
+content is deleted on subsequent island access after 90 days. Existing feedback
+alarms are untouched. Pending and approved records remain until a review or
+withdrawal; pending capacity is bounded. Schema uniqueness and transactions
+serialize active-owner checks, review transitions and the three approved slots
+per district. Stale decisions return 409; no existing resident is evicted.
+
+Approval creates a separate random public resident UUID. The public projection
+contains only that UUID, nickname, districtId, outfit, greeting, introduction and
+slot (0–2). Application IDs, owner identity, private reasons and review notes
+never appear in public responses. All island API responses use no-store; admin
+responses retain the existing private headers. Withdrawal/revocation removes the
+row from the public projection immediately; already-open pages refresh on return
+to the tab or via the roster refresh control. The owner's withdrawal also
+invalidates in-flight roster reads before refreshing the local scene.
+
+The renderer accepts at most 27 fully validated records, uses predetermined safe
+positions, and reuses a bounded set of models. Resident collisions and targets
+are separate from the original nine colleagues. Removing a resident clears its
+interaction and obstacle; loading around a player relocates them to a walkable
+spot if needed. Conversations reveal the introduction only after a choice, and
+resident choices stay in their own in-memory map. The ordinary nine-encounter
+counter and existing island passport schema remain unchanged. The accessible
+resident directory and application flow work when WebGL is unavailable.
+
+Tests include actual SQLite routing for owner isolation, idempotency, quotas,
+capacity, restart, private-field projection, stale decisions and admin auth/CSRF,
+plus public-client retries/storage failures, reviewer session cleanup, and all
+27 resident approach positions with existing bridges/entrances preserved. Use
+synthetic applications only in local tests, never to seed the production queue.
 
 
 ## Hodo domain migration

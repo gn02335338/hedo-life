@@ -9,6 +9,7 @@ import { AchievementStore } from './achievements.js';
 import { CharacterStore } from './characters.js';
 import { ObservationStore } from './observations.js';
 import { AdminPrivateStore } from './admin-private.js';
+import { IslandApplicationStore, validateIslandApplication } from './island-applications.js';
 import { LeaderboardStore, validateLeaderboardFilter, validateLeaderboardNickname } from './leaderboards.js';
 import { deriveLeaderboardScoreV56, leaderboardEligibilityV56, SCORE_VERSION_V56 } from '../dist/leaderboard-score-v56.js';
 import { handleDomainMigration } from './domain-migration.js';
@@ -22,6 +23,7 @@ export class HedoArchive extends DurableObject {
     this.rate = new RateGuard();
     this.feedbackEnv = env;
     this.adminPrivate = null;
+    this.islandApplications = null;
     this.leaderboards = null;
     this.sql.exec(`
       CREATE TABLE IF NOT EXISTS players (
@@ -67,6 +69,11 @@ export class HedoArchive extends DurableObject {
   async alarm() {
     this.feedback.cleanup(Date.now());
     await this.scheduleFeedbackCleanup();
+  }
+
+  islandStore() {
+    this.islandApplications ||= new IslandApplicationStore(this.sql, this.ctx.storage, this.feedbackEnv);
+    return this.islandApplications;
   }
 
   playerSnapshot(playerId) {
@@ -264,10 +271,27 @@ export class HedoArchive extends DurableObject {
     try {
       const path = new URL(request.url).pathname;
       if (path.startsWith('/api/admin/')) {
-        this.adminPrivate ||= new AdminPrivateStore(this.sql, this.feedbackEnv);
+        this.adminPrivate ||= new AdminPrivateStore(this.sql, this.feedbackEnv, { getIslandStore: () => this.islandStore() });
         return await this.adminPrivate.fetch(request);
       }
       if (['POST', 'DELETE', 'PATCH'].includes(request.method)) assertSameOrigin(request);
+      if (path.startsWith('/api/island/')) {
+        const params = new URL(request.url).searchParams;
+        if ([...params.keys()].length) throw new ApiError(400, 'invalid_island_query', '上島端點不接受額外查詢欄位。');
+        if (path === '/api/island/config' && request.method === 'GET') return json(this.islandStore().config());
+        if (path === '/api/island/residents' && request.method === 'GET') return json(this.islandStore().residents());
+        if (path === '/api/island/applications' && request.method === 'POST') {
+          const playerId = await this.authenticate(request), payload = validateIslandApplication(await readJson(request, { maxBytes: 8192 }));
+          return json(await this.islandStore().submit(playerId, payload, request.headers.get('CF-Connecting-IP') || ''), 202);
+        }
+        if (path === '/api/island/applications/mine' && request.method === 'GET') return json(this.islandStore().mine(await this.authenticate(request)));
+        if (/^\/api\/island\/applications\/[^/]+$/.test(path) && path !== '/api/island/applications/mine' && request.method === 'DELETE') {
+          return json(this.islandStore().withdraw(await this.authenticate(request), path.slice('/api/island/applications/'.length)));
+        }
+        if (['/api/island/config', '/api/island/residents', '/api/island/applications', '/api/island/applications/mine'].includes(path)
+          || /^\/api\/island\/applications\/[^/]+$/.test(path)) throw new ApiError(405, 'method_not_allowed', '這個端點不接受此操作。');
+        throw new ApiError(404, 'not_found', '找不到這個上島端點。');
+      }
       if (path.startsWith('/api/feedback-publisher/')) {
         const token = /^Bearer (\S+)$/i.exec(request.headers.get('Authorization') || '')?.[1];
         await validatePublisherToken(token, this.feedbackEnv);

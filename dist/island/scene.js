@@ -8,7 +8,9 @@ import { OrbitControls } from './vendor/OrbitControls.js';
 import { mergeGeometries } from './vendor/BufferGeometryUtils.js';
 
 import { displayPersona } from '../persona.js';
-import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, NPC_POSITIONS, movePlayer, nearestInteraction } from './navigation.js';
+import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, NPC_POSITIONS, PLAYER_RADIUS, isWalkable, movePlayer, nearestInteraction } from './navigation.js';
+
+import { OUTFITS, RESIDENT_POSITIONS, normalizeResidents, residentObstacles } from './residents.js';
 
 const COLLEAGUES = Object.freeze({ lobby:'wing', lab:'jack', meeting:'meimei', hr:'hope', finance:'janet', cafe:'jonathan', plaza:'captain', court:'owen', harbor:'cindy' });
 
@@ -91,6 +93,8 @@ export async function createIslandScene({ container, districts = [], onSelect = 
   const people = [];
   const colleagues = [];
   const interactionTargets = [];
+  const residentActors = new Map();
+  let communityObstacles = [];
   let roaming = false, movementEnabled = true, nearby = null;
   let moveInput = { x:0, z:0 };
   let playerPosition = { ...PLAYER_SPAWN };
@@ -636,7 +640,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     const skin = mat(options.skin || from(['#e9b48c','#cc936e','#a77256','#f0c4a3']));
     const shirt = options.shirt || from([palette.white,palette.brick,palette.teal,palette.lilac,palette.gold,palette.navy]);
     const body = group(g);
-    cylinder(body, shirt, 0, .44, 0, .14, .35, 7);
+    const uniform=[cylinder(body, shirt, 0, .44, 0, .14, .35, 7)];
     mesh(body, sphereSmoothG, skin, 0, .76, .015, .14,.16,.14);
     mesh(body, sphereG, mat(options.hair || '#5c4337'), 0, .85, -.02, .15,.09,.15);
     for(const x of [-.049,.049]) ball(body,palette.navy,x,.77,.145,.012);
@@ -647,7 +651,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       box(leg, palette.cream, 0, -.245, .035, .11, .08, .18);
       legs.push(leg);
       const arm = group(body, Math.sign(x)*.19, .57, 0);
-      cylinder(arm, shirt, 0, -.08, 0, .045, .19, 6);
+      uniform.push(cylinder(arm, shirt, 0, -.08, 0, .045, .19, 6));
       ball(arm, skin, 0, -.21, 0, .052);
       arms.push(arm);
     }
@@ -664,7 +668,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       for(const x of [-.095,.095]) box(body,palette.brick,x,.5,.12,.026,.29,.035);
       box(body,palette.white,0,.53,.15,.09,.1,.018);
     }
-    const person = { object:g, body, legs, arms, tile, phase:index*1.74, speed:.07+random()*.035, radius:2.65+random()*.15, index };
+    const person = { object:g, body, uniform, legs, arms, tile, phase:index*1.74, speed:.07+random()*.035, radius:2.65+random()*.15, index };
     if(!options.player) people.push(person);
     return person;
   }
@@ -806,8 +810,50 @@ export async function createIslandScene({ container, districts = [], onSelect = 
   }
   function updateNearby() {
     const next=roaming?nearestInteraction(playerPosition,interactionTargets,nearby?.key):null;
-    if(next?.key!==nearby?.key){nearby=next;needsRender=true;onNearby(next);}
+    const previous=nearby;nearby=next;
+    if(next?.key!==previous?.key || next&&previous&&next!==previous){needsRender=true;onNearby(next);}
     return nearby;
+  }
+  function setResidents(input) {
+    if(destroyed)return [];
+    const residents=normalizeResidents({version:1,residents:input});
+    // Keep one reusable model per physical slot. Repeated refreshes or changed
+    // approvals never accumulate detached geometry, materials or label nodes.
+    for(const actor of residentActors.values()) {actor.object.visible=false;actor.id=null;actor.label.textContent='';actor.label.style.display='none';}
+    for(let i=interactionTargets.length-1;i>=0;i--)if(interactionTargets[i].kind==='resident')interactionTargets.splice(i,1);
+    for(const resident of residents) {
+      const slotKey=`${resident.districtId}:${resident.slot}`;
+      let actor=residentActors.get(slotKey);
+      const tile=LAYOUT.find(d=>d.id===resident.districtId);
+      if(!actor) {
+        actor=makePerson(200+residentActors.size,tile,{shirt:palette.teal,accessory:['coffee','bag','cap'][resident.slot],skin:['#e9b48c','#cc936e','#a77256'][resident.slot],hair:['#5c4337','#39494c','#7b5844'][resident.slot]});
+        actor.fixed=true;actor.resident=true;actor.home=RESIDENT_POSITIONS[resident.districtId][resident.slot];
+        actor.object.scale.setScalar(1.18);
+        actor.object.position.set(actor.home.x,WALK_HEIGHT,actor.home.z);
+        actor.object.rotation.y=.35;
+        const label=document.createElement('div');label.className='map-npc-label map-resident-label';label.setAttribute('aria-hidden','true');label.style.pointerEvents='none';label.style.display='none';overlay.append(label);actor.label=label;
+        residentActors.set(slotKey,actor);
+      }
+      const outfit=OUTFITS.find(item=>item.id===resident.outfit);
+      for(const part of actor.uniform)part.material=mat(outfit.color);
+      actor.id=resident.id;actor.label.textContent=resident.nickname;actor.object.visible=true;
+      interactionTargets.push({kind:'resident',id:resident.id,districtId:resident.districtId,key:`resident:${resident.id}`,position:actor.home,radius:1.15,exitRadius:1.4});
+    }
+    communityObstacles=residentObstacles(residents);
+    // A newly approved character can occupy where the visitor was waiting.
+    // Move the visitor only as far as needed to leave that new solid footprint.
+    if(!isWalkable(playerPosition,PLAYER_RADIUS,communityObstacles)) {
+      let free=null;
+      for(let radius=.12;radius<=2.4&&!free;radius+=.12)for(let i=0;i<32;i++) {
+        const angle=i/32*Math.PI*2,point={x:playerPosition.x+Math.cos(angle)*radius,z:playerPosition.z+Math.sin(angle)*radius};
+        if(isWalkable(point,PLAYER_RADIUS,communityObstacles)){free=point;break;}
+      }
+      playerPosition=free||{...PLAYER_SPAWN};
+      player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);
+      playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
+    }
+    needsRender=true;updateNearby();
+    return residents;
   }
   function getFollowTarget() {
     followTarget.set(playerPosition.x,WALK_HEIGHT+.85,playerPosition.z);
@@ -848,7 +894,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     }else{
       controls.listenToKeyEvents(renderer.domElement);
       controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
-      for(const colleague of colleagues)colleague.label.style.display='none';
+      for(const colleague of people)if(colleague.label)colleague.label.style.display='none';
       moveCamera(homeTarget,1,homeOffset);
     }
     updateNearby();onRoamChange(next);
@@ -868,7 +914,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       if(cameraDown.lengthSq()<.0001)cameraDown.set(-cameraRight.z,0,cameraRight.x);
       else cameraDown.normalize();
       const worldInput={x:cameraRight.x*moveInput.x+cameraDown.x*moveInput.z,z:cameraRight.z*moveInput.x+cameraDown.z*moveInput.z};
-      playerPosition=movePlayer(playerPosition,worldInput,dt,3.8);
+      playerPosition=movePlayer(playerPosition,worldInput,dt,3.8,communityObstacles);
     }
     const dx=playerPosition.x-beforeX,dz=playerPosition.z-beforeZ;
     const moved=Math.hypot(dx,dz);
@@ -885,7 +931,8 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);
     playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
     updateNearby();
-    for(const colleague of colleagues){
+    for(const colleague of people){
+      if(!colleague.fixed||!colleague.object.visible)continue;
       if(Math.hypot(colleague.home.x-playerPosition.x,colleague.home.z-playerPosition.z)>3.3)continue;
       const angle=Math.atan2(playerPosition.x-colleague.home.x,playerPosition.z-colleague.home.z);
       const difference=Math.atan2(Math.sin(angle-colleague.object.rotation.y),Math.cos(angle-colleague.object.rotation.y));
@@ -903,11 +950,19 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       }
     }
   }
-  function positionOverlay(element,position,visible=true) {
+  function positionOverlay(element,position,visible=true,avoidPlayer=false) {
     const projected=position.clone().project(camera);
     visible=visible&&projected.z>-1&&projected.z<1&&projected.x>-1.1&&projected.x<1.1&&projected.y>-1.1&&projected.y<1.1;
     element.style.display=visible?'':'none';
-    if(visible)element.style.transform=`translate(${(projected.x*.5+.5)*width}px, ${(-projected.y*.5+.5)*height}px) translate(-50%, -50%)`;
+    if(visible){
+      const x=(projected.x*.5+.5)*width;let y=(-projected.y*.5+.5)*height;
+      if(avoidPlayer){
+        const playerLabel=new THREE.Vector3(playerPosition.x,WALK_HEIGHT+1.85,playerPosition.z).project(camera);
+        const px=(playerLabel.x*.5+.5)*width,py=(-playerLabel.y*.5+.5)*height;
+        if(Math.abs(x-px)<Math.min(110,element.textContent.length*5+30)&&Math.abs(y-py)<30)y=py-36;
+      }
+      element.style.transform=`translate(${x}px, ${y}px) translate(-50%, -50%)`;
+    }
   }
   function setHour(hour){
     const value=Number(hour);
@@ -934,6 +989,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     if(!paused||!renderedOnce){
     waterUniforms.uTime.value=elapsed;
     for(const person of people){
+      if(!person.object.visible)continue;
       if(person.fixed){person.body.position.y=Math.sin(elapsed*1.6+person.phase)*.012;continue;}
       const a=person.phase+elapsed*person.speed;
       // Rounded paths keep miniature colleagues in the pedestrian plaza.
@@ -969,7 +1025,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     }
     if(roaming){
       positionOverlay(playerMarker,new THREE.Vector3(playerPosition.x,WALK_HEIGHT+1.85,playerPosition.z));
-      for(const colleague of colleagues)positionOverlay(colleague.label,new THREE.Vector3(colleague.home.x,WALK_HEIGHT+1.52,colleague.home.z),Math.hypot(colleague.home.x-playerPosition.x,colleague.home.z-playerPosition.z)<3.8);
+      for(const colleague of people)if(colleague.label&&colleague.object.visible)positionOverlay(colleague.label,new THREE.Vector3(colleague.home.x,WALK_HEIGHT+1.52,colleague.home.z),Math.hypot(colleague.home.x-playerPosition.x,colleague.home.z-playerPosition.z)<3.8,true);
     }
     renderer.render(scene,camera);
     renderedOnce=true;needsRender=false;
@@ -998,6 +1054,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     setRoaming,
     setMoveInput,
     setMovementEnabled,
+    setResidents,
     interactNearby(){return updateNearby();},
     setHour,
     setConnections(value){connectionGroup.visible=Boolean(value);needsRender=true;for(const item of connectionDots)item.dot.position.copy(item.curve.getPoint((elapsed*.12+item.offset)%1));},
