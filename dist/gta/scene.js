@@ -1,5 +1,8 @@
 import * as THREE from '../island/vendor/three.module.js';
 import { ROAD_LINES, SPAWN, BUILDINGS, LOCATIONS } from './world.js';
+import { createCityVisualKit } from './visual-city.js';
+import { createPersonVisualFactory, animatePersonVisual } from './visual-people.js';
+import { createVehicleVisualFactory, animateVehicleVisual } from './visual-vehicles.js';
 
 // The city and all of its textures are drawn locally. No remote model or image is used.
 export async function createCityScene({ container, onReady } = {}) {
@@ -24,15 +27,15 @@ export async function createCityScene({ container, onReady } = {}) {
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  const daylight = new THREE.Color('#e8aaa3');
+  const daylight = new THREE.Color('#d8b8b4');
   const nighttime = new THREE.Color('#211d3b');
   scene.background = daylight.clone();
-  scene.fog = new THREE.FogExp2(daylight, 0.0026);
+  scene.fog = new THREE.FogExp2(daylight, 0.0022);
   const camera = new THREE.PerspectiveCamera(48, 1, 0.15, 1000);
-  const hemi = new THREE.HemisphereLight('#ffe3cf', '#3c3c58', 2.2);
+  const hemi = new THREE.HemisphereLight('#d9e7f5', '#585263', 1.65);
   scene.add(hemi);
-  const sun = new THREE.DirectionalLight('#ffd2a1', 3.5);
-  sun.position.set(-85, 130, 65);
+  const sun = new THREE.DirectionalLight('#ffcf9e', 2.8);
+  sun.position.set(-115, 100, 65);
   sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024);
   sun.shadow.camera.left = -215; sun.shadow.camera.right = 215;
@@ -40,7 +43,7 @@ export async function createCityScene({ container, onReady } = {}) {
   sun.shadow.camera.near = 1; sun.shadow.camera.far = 420;
   sun.shadow.normalBias = 0.32; sun.shadow.bias = -0.00035;
   scene.add(sun, sun.target);
-  const rim = new THREE.DirectionalLight('#b9b4e8', 1.2);
+  const rim = new THREE.DirectionalLight('#a7bedb', .85);
   rim.position.set(70, 50, -100); scene.add(rim);
 
   const materials = new Map();
@@ -78,19 +81,9 @@ export async function createCityScene({ container, onReady } = {}) {
   const box = (m, x, y, z, w, h, d, ry = 0, cast = true) => addBatch(boxGeometry, m, x, y, z, w, h, d, 0, ry, 0, cast);
   const cylinder = (m, x, y, z, r, h, ry = 0) => addBatch(cylinderGeometry, m, x, y, z, r, h, r, 0, ry, 0);
   const seed = n => { const v = Math.sin(n * 127.1 + 81.73) * 43758.5453123; return v - Math.floor(v); };
-  function tree(x, z, size = 1, palm = false) {
-    cylinder(M.bark, x, size * 1.7, z, size * 0.22, size * 3.4);
-    if (palm) {
-      for (let k = 0; k < 5; k++) {
-        const a = k * Math.PI * 0.4;
-        addBatch(sphereGeometry, M.leaf, x + Math.cos(a) * 1.1 * size, 3.8 * size, z + Math.sin(a) * 1.1 * size,
-          2.1 * size, 0.45 * size, 0.65 * size, 0, -a, 0.2);
-      }
-    } else {
-      addBatch(sphereGeometry, M.leaf, x, size * 4.5, z, size * 1.8, size * 2.3, size * 1.8);
-      addBatch(sphereGeometry, M.leaf2, x + size * 0.6, size * 4.8, z + size * 0.5, size * 1.2, size * 1.65, size * 1.3);
-    }
-  }
+  const cityVisuals = createCityVisualKit({ THREE, scene, renderer, materials, textures, geometries, mat, M,
+    box, cylinder, addBatch, boxGeometry, sphereGeometry, planeGeometry, seed });
+  const tree = cityVisuals.tree;
   function lamp(x, z, angle = 0) {
     cylinder(M.metal, x, 3.7, z, 0.1, 7.4);
     const dx = Math.sin(angle), dz = Math.cos(angle);
@@ -127,13 +120,15 @@ export async function createCityScene({ container, onReady } = {}) {
     const x = side < 2 ? a : (side === 2 ? b : -b); const z = side < 2 ? (side === 0 ? b : -b) : a;
     box(waterShine, x, -1.45, z, 3 + seed(i) * 14, 0.01, 0.12, 0, false);
   }
-  for (let i = 0; i < 26; i++) {
-    const a = i / 26 * Math.PI * 2; const r = 380 + seed(i + 8) * 100;
-    const h = 45 + seed(i + 21) * 95;
-    addBatch(coneGeometry, mat(i % 2 ? '#789797' : '#8da5a2'), Math.cos(a) * r, h / 2 - 4, Math.sin(a) * r,
-      70 + seed(i) * 55, h, 70 + seed(i) * 55, 0, a, 0, false);
+  const hillGeometry = new THREE.SphereGeometry(1, 12, 7); geometries.add(hillGeometry);
+  for (let i = 0; i < 18; i++) {
+    const a = i / 18 * Math.PI * 2; const r = 420 + seed(i + 8) * 100;
+    const h = 32 + seed(i + 21) * 35;
+    addBatch(hillGeometry, mat(i % 2 ? '#7c9296' : '#a2aaa9'), Math.cos(a) * r, -18, Math.sin(a) * r,
+      80 + seed(i) * 65, h, 65 + seed(i) * 55, 0, a, 0, false);
   }
-  const sunDisk = new THREE.Mesh(sphereGeometry, new THREE.MeshBasicMaterial({ color: '#ffdf9c' }));
+  const sunGeometry = new THREE.SphereGeometry(1, 24, 16); geometries.add(sunGeometry);
+  const sunDisk = new THREE.Mesh(sunGeometry, new THREE.MeshBasicMaterial({ color: '#ffe2bc' }));
   materials.set('sunDisk', sunDisk.material); sunDisk.position.set(-235, 135, -340); sunDisk.scale.setScalar(31); scene.add(sunDisk);
 
   // Repeating street rhythm: marked lanes, zebra crossings, signal poles and corners.
@@ -195,8 +190,7 @@ export async function createCityScene({ container, onReady } = {}) {
 
   BUILDINGS.forEach((b, index) => {
     const h = Math.max(8, b.h || 20);
-    const bodyColor = new THREE.Color(b.color || '#3e6b73').lerp(new THREE.Color('#294c58'), 0.55);
-    const body = mat(`#${bodyColor.getHexString()}`);
+    const body = cityVisuals.wall(index);
     const isHQ = b.kind === 'hq';
     const isCafe = b.kind === 'coffee' || b.kind === 'cafe';
     const isCourt = b.kind === 'court';
@@ -208,8 +202,8 @@ export async function createCityScene({ container, onReady } = {}) {
     // Long storefront glazing makes the scale legible at street level.
     for (const side of [-1, 1]) {
       for (let i = -3; i <= 3; i++) {
-        box(M.glass, b.x + i * 4.8, 2.8, b.z + side * (b.d / 2 + 0.02), 4.4, 3.4, 0.05, 0, false);
-        box(M.glass, b.x + side * (b.w / 2 + 0.02), 2.8, b.z + i * 4.8, 0.05, 3.4, 4.4, 0, false);
+        box(cityVisuals.storefront, b.x + i * 4.8, 2.8, b.z + side * (b.d / 2 + 0.02), 4.4, 3.4, 0.05, 0, false);
+        box(cityVisuals.storefront, b.x + side * (b.w / 2 + 0.02), 2.8, b.z + i * 4.8, 0.05, 3.4, 4.4, 0, false);
       }
       box(M.lit, b.x, 4.6, b.z + side * (b.d / 2 + 0.08), b.w - 1, 0.13, 0.14, 0, false);
     }
@@ -239,11 +233,12 @@ export async function createCityScene({ container, onReady } = {}) {
       hoop.rotation.x = -Math.PI / 2; hoop.position.set(b.x, 5.77, b.z); scene.add(hoop);
       for (const sx of [-1, 1]) box(M.metal, b.x + sx * 19, 7.5, b.z, 0.1, 3.6, 38);
     }
+    cityVisuals.detailBuilding(b, index, { tw, td, podiumHeight, h });
     // Trees, planters and benches stay on the visible sidewalk edge.
     for (const s of [-1, 1]) {
       const tx = b.x + s * 20.65, tz = b.z + 14;
       box(M.roof, tx, 0.65, tz, 1.1, 0.65, 2.2);
-      tree(tx, tz, 0.68);
+      tree(tx, tz, .8, index % 3 !== 0);
       lamp(b.x + s * 20.7, b.z - 14, s > 0 ? Math.PI / 2 : -Math.PI / 2);
     }
     const facadeX = b.x - b.w / 2 - 0.12;
@@ -252,7 +247,8 @@ export async function createCityScene({ container, onReady } = {}) {
       brand.position.set(b.x, podiumHeight + h - 5, b.z + td / 2 + 0.06);
       const sideBrand = sign('禾多', 'WORK HARD. DRIVE HOME.', 12, 4.5, '#e7fa86');
       sideBrand.position.set(facadeX - 0.03, 9.3, b.z); sideBrand.rotation.y = -Math.PI / 2;
-      box(mat('#a6c95a'), b.x - b.w / 2 - 0.8, 4.1, b.z, 2.0, 0.28, 15);
+      box(mat('#688e8e'), b.x - b.w / 2 - 0.8, 4.1, b.z, 2.0, 0.18, 15);
+      box(M.lit, b.x - b.w / 2 - 1.8, 4.03, b.z, .04, .05, 14.8, 0, false);
       box(M.lit, b.x - tw / 2 - 0.05, podiumHeight + h * 0.5, b.z - td / 2, 0.12, h, 0.2, 0, false);
       box(M.teal, b.x + tw / 2 + 0.05, podiumHeight + h * 0.5, b.z + td / 2, 0.12, h, 0.2, 0, false);
     } else if (isCafe) {
@@ -348,7 +344,7 @@ export async function createCityScene({ container, onReady } = {}) {
       const mesh = new THREE.Mesh(geometry, material); group.add(mesh);
     }
   }
-  const contactMaterial = new THREE.MeshBasicMaterial({ color: '#172c31', transparent: true, opacity: 0.27, depthWrite: false });
+  const contactMaterial = new THREE.MeshBasicMaterial({ color: '#15202d', map: cityVisuals.contactMap, transparent: true, opacity: 0.46, depthWrite: false });
   materials.set('contactShadow', contactMaterial);
   const contactGeometry = geo('contact', () => new THREE.CircleGeometry(1, 20));
   function contact(parent, x, z) {
@@ -377,91 +373,18 @@ export async function createCityScene({ container, onReady } = {}) {
   const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   materials.set('policeRedOn', policeRedOn); materials.set('policeBlueOn', policeBlueOn);
   materials.set('policeRedDim', policeRedDim); materials.set('policeBlueDim', policeBlueDim);
-  function car(color, kind = null, id = '') {
-    const police = kind === 'police'; const ownedGeometries = new Set();
-    const group = new THREE.Group(); group.name = `vehicle:${id}`;
-    const paint = mat(police ? '#17232e' : color || '#b5c7b8', { metalness: 0.28, roughness: 0.32 });
-    const rubber = mat('#182329'); const chrome = mat('#6f8a8c', { metalness: 0.75, roughness: 0.3 });
-    part(group, boxGeometry, rubber, [0, 0.38, 0], [1.82, 0.38, 3.65]);
-    part(group, boxGeometry, paint, [0, 0.62, 0], [1.95, 0.28, 3.92]);
-    part(group, boxGeometry, paint, [0, 0.86, -1.31], [1.93, 0.27, 1.3]);
-    part(group, boxGeometry, paint, [0, 0.87, 1.4], [1.93, 0.3, 1.08]);
-    const cabinGeometry = geo('cabin', () => {
-      const v = new Float32Array([-0.8,0,-0.95, 0.8,0,-0.95, 0.8,0,1.05, -0.8,0,1.05, -0.65,0.64,-0.5, 0.65,0.64,-0.5, 0.65,0.64,0.57, -0.65,0.64,0.57]);
-      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(v,3));
-      // Both side openings belong to working doors, including a safe passenger-side exit.
-      g.setIndex([0,4,5,0,5,1,2,6,7,2,7,3,4,7,6,4,6,5]); g.computeVertexNormals(); return g;
-    });
-    part(group, cabinGeometry, M.glass, [0, 0.98, 0.04], [1, 1, 1]);
-    part(group, boxGeometry, police ? policeWhite : paint, [0, 1.64, 0.08], [1.34, 0.09, 1.12]);
-    for (const x of [-0.99, 0.99]) for (const z of [-1.21, 1.21]) {
-      part(group, geo('wheel', () => new THREE.CylinderGeometry(0.43, 0.43, 0.28, 12)), rubber, [x, 0.44, z], [1,1,1], [0,0,Math.PI/2]);
-      part(group, geo('rim', () => new THREE.CylinderGeometry(0.24, 0.24, 0.29, 8)), chrome, [x, 0.44, z], [1,1,1], [0,0,Math.PI/2]);
-    }
-    for (const x of [-0.65, 0.65]) {
-      part(group, boxGeometry, M.lit, [x, 0.83, -1.976], [0.52, 0.16, 0.04]);
-      part(group, boxGeometry, M.red, [x, 0.84, 1.978], [0.51, 0.13, 0.04]);
-      part(group, boxGeometry, paint, [x < 0 ? -1.02 : 1.02, 1.13, -0.5], [0.2, 0.15, 0.3]);
-    }
-    part(group, boxGeometry, rubber, [0, 0.48, -2.0], [1.56, 0.12, 0.06]);
-    part(group, boxGeometry, rubber, [0, 0.48, 2.0], [1.56, 0.12, 0.06]);
-    part(group, boxGeometry, M.white, [0, 0.66, 1.995], [0.52, 0.15, 0.02]);
-    if (police) {
-      for (const side of [-1, 1]) part(group, boxGeometry, policeWhite, [side * 0.985, 0.65, 0], [0.075, 0.17, 2.05]);
-      part(group, boxGeometry, rubber, [0, 1.76, 0.05], [1.43, 0.15, 0.43]);
-      part(group, planeGeometry, policeDecal(), [0, 1.005, -1.33], [1.45, 0.66, 1], [-Math.PI / 2, 0, 0]);
-    }
-    mergeFixedParts(group, ownedGeometries);
-    const door = new THREE.Group(); door.position.set(-0.96, 0.73, -0.88); group.add(door);
-    part(door, boxGeometry, police ? policeWhite : paint, [0, 0.13, 0.78], [0.11, 0.44, 1.57]);
-    part(door, boxGeometry, M.glass, [0.1, 0.62, 0.76], [0.06, 0.55, 1.16]);
-    part(door, boxGeometry, chrome, [-0.065, police ? 0.33 : 0.25, 1.19], [0.035, 0.06, 0.22]);
-    mergeFixedParts(door, ownedGeometries);
-    const passengerDoor = door.clone(); passengerDoor.position.x = 0.96; passengerDoor.scale.x = -1; group.add(passengerDoor);
-    let redFlash = null, blueFlash = null;
-    if (police) {
-      part(door, planeGeometry, policeDecal(), [-0.061, 0.13, 0.78], [1.32, 0.38, 1], [0, -Math.PI / 2, 0]);
-      // Mirror the passenger lettering as well as the door so it reads normally outside.
-      part(passengerDoor, planeGeometry, policeDecal(), [-0.061, 0.13, 0.78], [-1.32, 0.38, 1], [0, -Math.PI / 2, 0]);
-      redFlash = part(group, boxGeometry, policeRedOff, [-0.38, 1.92, 0.05], [0.61, 0.2, 0.35]);
-      blueFlash = part(group, boxGeometry, policeBlueOff, [0.38, 1.92, 0.05], [0.61, 0.2, 0.35]);
-    }
-    const occupant = new THREE.Group(); group.add(occupant);
-    // A small side silhouette makes occupied cars distinguishable before taking one.
-    part(occupant, sphereGeometry, mat('#c99070'), [-0.77, 1.37, 0.03], [0.12, 0.16, 0.14]);
-    part(occupant, boxGeometry, mat(police ? '#243b55' : '#8aaeb8'), [-0.77, 1.13, 0.08], [0.13, 0.29, 0.3]);
-    contact(group, 1.32, 2.4);
-    scene.add(group); return { group, door, passengerDoor, occupant, police, redFlash, blueFlash, ownedGeometries, flashOffset: [...String(id)].reduce((n, char) => n + char.charCodeAt(0), 0) % 8 };
-  }
+  const car = createVehicleVisualFactory({ THREE, scene, mat, M, geo, part, mergeFixedParts, contact,
+    boxGeometry, planeGeometry, sphereGeometry, policeDecal, policeWhite, policeRedOff, policeBlueOff, environment: cityVisuals.environment });
   // This is the authoritative fleet supplied by game physics, including parked cars.
   // No visual-only traffic or permanently owned player vehicle is created.
   const fleetModels = new Map(); const visibleFleetIds = new Set();
   function releaseCar(id, model) {
-    scene.remove(model.group);
+    scene.remove(model.group); model.dispose?.();
     for (const geometry of model.ownedGeometries) { geometry.dispose(); geometries.delete(geometry); }
     model.ownedGeometries.clear(); fleetModels.delete(id);
   }
 
-  function person(tint = '#e6d79f', small = false) {
-    const group = new THREE.Group(); const shirt = mat(tint); const skin = mat('#c99070'); const trousers = mat('#283c4a');
-    part(group, boxGeometry, shirt, [0,1.29,0], [0.55,0.68,0.31]);
-    part(group, sphereGeometry, skin, [0,1.88,0], [0.22,0.26,0.23]);
-    part(group, boxGeometry, M.metal, [0,2.06,0.04], [0.43,0.12,0.42]);
-    const legs = [];
-    for (const s of [-1,1]) {
-      const leg = new THREE.Group(); leg.position.set(s * 0.16,0.98,0); group.add(leg);
-      part(leg, boxGeometry, trousers, [0,-0.37,0], [0.21,0.74,0.25]);
-      part(leg, boxGeometry, M.white, [0,-0.78,-0.075], [0.25,0.12,0.39]); legs.push(leg);
-    }
-    const arms = [];
-    for (const s of [-1,1]) {
-      const arm = new THREE.Group(); arm.position.set(s * 0.36,1.56,0); group.add(arm);
-      part(arm, boxGeometry, shirt, [0,-0.19,0], [0.17,0.44,0.22]);
-      part(arm, boxGeometry, skin, [0,-0.46,0], [0.16,0.2,0.19]); arms.push(arm);
-    }
-    if (!small) part(group, boxGeometry, mat('#a1c969'), [0,1.34,0.25], [0.43,0.5,0.2]);
-    scene.add(group); return { group, legs, arms };
-  }
+  const person = createPersonVisualFactory({ THREE, scene, mat, M, geo, part, mergeFixedParts, boxGeometry, sphereGeometry });
   const walker = person(); walker.group.name = 'player-character'; walker.group.scale.setScalar(1.08); const walkerShadow = contact(walker.group, 0.44, 0.38);
   const displacedDriver = person('#8aaeb8', true); displacedDriver.group.visible = false;
   const pedestrians = [];
@@ -503,11 +426,7 @@ export async function createCityScene({ container, onReady } = {}) {
   materials.set('officerBarBackground', barBackground); materials.set('officerBarFill', barFill);
   function makeOfficer() {
     const model = person('#24354e', true);
-    part(model.group, boxGeometry, mat('#172736'), [0, 1.32, -0.18], [0.58, 0.49, 0.12]);
-    part(model.group, boxGeometry, M.lit, [-0.16, 1.47, -0.25], [0.1, 0.13, 0.025]);
-    part(model.group, boxGeometry, mat('#24354e'), [0, 2.05, -0.18], [0.46, 0.07, 0.28]);
-    mergeFixedParts(model.group);
-    part(model.group, planeGeometry, policeDecal(), [0, 1.38, 0.165], [0.47, 0.16, 1]);
+    part(model.group, planeGeometry, policeDecal(), [0, 1.38, 0.195], [0.47, 0.16, 1]);
     model.weapon = weaponModel('pistol'); model.weapon.position.set(0.31, 1.45, -0.56); model.group.add(model.weapon);
     model.shadow = contact(model.group, 0.43, 0.36);
     model.healthBar = new THREE.Group(); model.healthBar.position.y = 2.55; model.group.add(model.healthBar);
@@ -692,10 +611,7 @@ export async function createCityScene({ container, onReady } = {}) {
     }
     if (distanceFraction < 1) to.copy(from).addScaledVector(boom, distanceFraction);
   }
-  function animatePerson(model, phase, stride) {
-    model.legs[0].rotation.x = -Math.sin(phase) * stride; model.legs[1].rotation.x = Math.sin(phase) * stride;
-    model.arms[0].rotation.x = Math.sin(phase) * stride * 0.8; model.arms[1].rotation.x = -Math.sin(phase) * stride * 0.8;
-  }
+  const animatePerson = animatePersonVisual;
   function update(actor = SPAWN, {
     time = 0, dt: suppliedDt, walking = true, controlledId = null, fleet = [], transition = null,
     cameraYaw, cameraPitch, lookActive = false, quality = 'auto', selectedCarId = null,
@@ -732,6 +648,7 @@ export async function createCityScene({ container, onReady } = {}) {
       if (model && model.police !== (state.kind === 'police')) { releaseCar(state.id, model); model = null; }
       if (!model) { model = car(state.color, state.kind, state.id); fleetModels.set(state.id, model); }
       model.group.position.set(state.x, 0.04, state.z); model.group.rotation.y = -state.heading;
+      animateVehicleVisual(model, state, dt);
       model.group.visible = Math.hypot(state.x - px, state.z - pz) < (qualityLow ? 105 : 150) || cameraMode === 'aerial' || cinematic;
       model.occupant.visible = Boolean(state.occupied) && state.id !== controlledId;
       model.door.rotation.y = model.passengerDoor.rotation.y = 0;
@@ -815,10 +732,11 @@ export async function createCityScene({ container, onReady } = {}) {
       if (person.group.visible) { person.group.rotation.y = Math.PI; animatePerson(person, t * 4 + i, 0.3); }
     }
     const darkness = typeof night === 'number' ? clamp(night, 0, 1) : night ? 1 : 0;
+    cityVisuals.update(darkness);
     if (darkness !== lastNight) {
       scene.background.copy(daylight).lerp(nighttime, darkness); scene.fog.color.copy(scene.background);
-      hemi.intensity = 2.2 - darkness * 1.15; sun.intensity = 3.5 - darkness * 3.05;
-      rim.intensity = 1.2 - darkness * 0.4; renderer.toneMappingExposure = 1.18 - darkness * 0.14;
+      hemi.intensity = 1.65 - darkness * .8; sun.intensity = 2.8 - darkness * 2.4;
+      rim.intensity = .85 - darkness * .2; renderer.toneMappingExposure = 1.18 - darkness * 0.14;
       M.lit.emissiveIntensity = 0.7 + darkness * 1.3; M.dim.emissiveIntensity = 0.15 + darkness * 0.35;
       sunDisk.visible = darkness < 0.65; lastNight = darkness;
     }
@@ -892,7 +810,7 @@ export async function createCityScene({ container, onReady } = {}) {
 
   function dispose() {
     if (disposed) return; disposed = true;
-    tracerMesh.dispose(); muzzleMesh.dispose(); impactMesh.dispose();
+    scene.traverse(object => { if (object.isInstancedMesh) object.dispose(); });
     geometries.forEach(g=>g.dispose()); materials.forEach(m=>m.dispose()); textures.forEach(t=>t.dispose());
     renderer.dispose(); renderer.domElement.remove();
   }
