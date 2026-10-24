@@ -216,3 +216,56 @@ test('zero time is a no-op, inputs remain pure, and frame rates produce stable s
   assert.deepEqual(input, inputSnapshot);
   assert.deepEqual(stepPolice(createPoliceState(), input, 0.1), createPoliceState());
 });
+
+test('gunfire and officer hits escalate reports while disabled units lose sight and arrest powers', () => {
+  const gunfire = reportCrime(createPoliceState(), { type: 'gunfire', position: { x: 0, z: 0 } });
+  assert.equal(gunfire.level, 2);
+  assert.equal(reportCrime(gunfire, { type: 'police-hit' }).level, 3);
+  const initial = active({ dispatchRemaining: 100, lastKnown: { x: 0, z: -3 } });
+  const input = { player: { x: 0, z: -3, speed: 0 }, walking: true, obstacles: [], disabledUnitIds: ['police-1'] };
+  const down = simulate(initial, input, 5);
+  assert.equal(down.seen, false);
+  assert.equal(down.phase, 'search');
+  assert.equal(down.arrestProgress, 0);
+  assert.equal(down.units[0].disabled, true);
+  assert.equal(down.units[0].siren, false);
+  assert.equal(canSeePlayer(down.units[0], input.player, []), false);
+  near(down.units[0].x, initial.units[0].x);
+  near(down.units[0].z, initial.units[0].z);
+  const removed = simulate(down, input, 3.2);
+  assert.equal(removed.units.length, 0);
+});
+
+test('armed-response patrols stop at firing range and do not also build arrest progress', () => {
+  const initial = active({ lastKnown: { x: 0, z: 0 }, units: [patrol({ z: 40, target: { x: 0, z: 0 }, route: [{ x: 0, z: 0 }] })] });
+  const context = { player: { x: 0, z: 0, speed: 0 }, walking: true, obstacles: [], armedHostile: true };
+  const stopped = simulate(initial, context, 10);
+  assert.equal(stopped.phase, 'pursuit');
+  assert.equal(stopped.arrestProgress, 0);
+  near(stopped.units[0].z, POLICE_RULES.armedStandoffDistance);
+  assert.equal(stopped.units[0].speed, 0);
+});
+
+test('replacement police IDs stay unique while active and retained patrol counts remain bounded', () => {
+  let state = reportCrime(createPoliceState(), { type: 'gunfire', position: { x: 4, z: 20 } });
+  state = reportCrime(state, { type: 'gunfire' });
+  state = reportCrime(state, { type: 'police-hit' });
+  const context = { player: { x: 4, z: 20, speed: 10 }, armedHostile: true };
+  state = simulate(state, context, 7);
+  const allIds = new Set(state.units.map(unit => unit.id));
+  let largestId = Math.max(...state.units.map(unit => Number(unit.id.split('-').at(-1))));
+  for (let frame = 0; frame < 14 * 60; frame += 1) {
+    const previousIds = new Set(state.units.map(unit => unit.id));
+    state = stepPolice(state, { ...context, disabledUnitIds: state.units.map(unit => unit.id) }, 1 / 60);
+    assert.ok(state.units.length <= POLICE_RULES.maxRetainedUnits);
+    assert.ok(state.units.filter(unit => !unit.disabled).length <= 4);
+    assert.equal(new Set(state.units.map(unit => unit.id)).size, state.units.length);
+    for (const unit of state.units) if (!previousIds.has(unit.id)) {
+      assert.equal(allIds.has(unit.id), false, 'a cleaned-up officer identity was reused');
+      const serial = Number(unit.id.split('-').at(-1));
+      assert.ok(serial > largestId);
+      largestId = serial; allIds.add(unit.id);
+    }
+  }
+  assert.ok(allIds.size >= 10);
+});

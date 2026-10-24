@@ -24,12 +24,12 @@ export async function createCityScene({ container, onReady } = {}) {
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  const daylight = new THREE.Color('#e8b89e');
-  const nighttime = new THREE.Color('#192840');
+  const daylight = new THREE.Color('#e8aaa3');
+  const nighttime = new THREE.Color('#211d3b');
   scene.background = daylight.clone();
   scene.fog = new THREE.FogExp2(daylight, 0.0026);
   const camera = new THREE.PerspectiveCamera(48, 1, 0.15, 1000);
-  const hemi = new THREE.HemisphereLight('#ffe3c1', '#355f69', 2.2);
+  const hemi = new THREE.HemisphereLight('#ffe3cf', '#3c3c58', 2.2);
   scene.add(hemi);
   const sun = new THREE.DirectionalLight('#ffd2a1', 3.5);
   sun.position.set(-85, 130, 65);
@@ -40,7 +40,7 @@ export async function createCityScene({ container, onReady } = {}) {
   sun.shadow.camera.near = 1; sun.shadow.camera.far = 420;
   sun.shadow.normalBias = 0.32; sun.shadow.bias = -0.00035;
   scene.add(sun, sun.target);
-  const rim = new THREE.DirectionalLight('#adc8e2', 1.2);
+  const rim = new THREE.DirectionalLight('#b9b4e8', 1.2);
   rim.position.set(70, 50, -100); scene.add(rim);
 
   const materials = new Map();
@@ -462,12 +462,158 @@ export async function createCityScene({ container, onReady } = {}) {
     if (!small) part(group, boxGeometry, mat('#a1c969'), [0,1.34,0.25], [0.43,0.5,0.2]);
     scene.add(group); return { group, legs, arms };
   }
-  const walker = person(); walker.group.scale.setScalar(1.08); const walkerShadow = contact(walker.group, 0.44, 0.38);
+  const walker = person(); walker.group.name = 'player-character'; walker.group.scale.setScalar(1.08); const walkerShadow = contact(walker.group, 0.44, 0.38);
   const displacedDriver = person('#8aaeb8', true); displacedDriver.group.visible = false;
   const pedestrians = [];
   for (let i = 0; i < 12; i++) {
     const p = person(['#ddaa8b','#b4c5aa','#80b8b2','#d6c380'][i%4], true);
     pedestrians.push({...p, x: (i%4-1.5)*60, z: (Math.floor(i/4)%4-1.5)*60, offset: seed(i+800)*35, side: i%2?1:-1});
+  }
+
+  // Weapon templates and officer pools are local, original procedural models. Only
+  // authoritative combatants are shown; a patrol never creates decorative enemies.
+  const weaponTemplates = new Map();
+  function weaponModel(kind) {
+    if (!weaponTemplates.has(kind)) {
+      const model = new THREE.Group(); const steel = mat('#485869', { metalness: 0.65, roughness: 0.38 });
+      const grip = mat('#17212c'), accent = mat('#d4b0a4');
+      if (kind === 'smg') {
+        part(model, boxGeometry, steel, [0, 0, -0.09], [0.17, 0.18, 0.57]);
+        part(model, boxGeometry, grip, [0, -0.17, 0.09], [0.12, 0.28, 0.15], [-0.2, 0, 0]);
+        part(model, boxGeometry, grip, [0, -0.2, -0.12], [0.11, 0.32, 0.15]);
+        part(model, boxGeometry, grip, [0, 0, 0.32], [0.14, 0.13, 0.32]);
+        part(model, boxGeometry, steel, [0, 0.02, -0.43], [0.09, 0.09, 0.22]);
+        part(model, boxGeometry, accent, [0, 0.12, -0.05], [0.075, 0.06, 0.28]);
+      } else {
+        part(model, boxGeometry, steel, [0, 0.02, -0.07], [0.13, 0.12, 0.4]);
+        part(model, boxGeometry, grip, [0, -0.13, 0.05], [0.115, 0.25, 0.14], [-0.18, 0, 0]);
+        part(model, boxGeometry, accent, [0, 0.1, -0.19], [0.045, 0.035, 0.06]);
+      }
+      mergeFixedParts(model); weaponTemplates.set(kind, model);
+    }
+    return weaponTemplates.get(kind).clone();
+  }
+  const playerWeapons = { pistol: weaponModel('pistol'), smg: weaponModel('smg') };
+  const playerWeaponEntries = Object.entries(playerWeapons);
+  for (const [kind, weapon] of playerWeaponEntries) { weapon.name = `player-weapon:${kind}`; weapon.visible = false; walker.group.add(weapon); }
+  const officerModels = new Map(), officerPool = [], activeOfficerIds = new Set();
+  const MAX_OFFICERS = 8, MAX_EFFECTS = 32;
+  const barBackground = new THREE.MeshBasicMaterial({ color: '#171727', depthWrite: false });
+  const barFill = new THREE.MeshBasicMaterial({ color: '#ff9b8b', depthWrite: false, toneMapped: false });
+  materials.set('officerBarBackground', barBackground); materials.set('officerBarFill', barFill);
+  function makeOfficer() {
+    const model = person('#24354e', true);
+    part(model.group, boxGeometry, mat('#172736'), [0, 1.32, -0.18], [0.58, 0.49, 0.12]);
+    part(model.group, boxGeometry, M.lit, [-0.16, 1.47, -0.25], [0.1, 0.13, 0.025]);
+    part(model.group, boxGeometry, mat('#24354e'), [0, 2.05, -0.18], [0.46, 0.07, 0.28]);
+    mergeFixedParts(model.group);
+    part(model.group, planeGeometry, policeDecal(), [0, 1.38, 0.165], [0.47, 0.16, 1]);
+    model.weapon = weaponModel('pistol'); model.weapon.position.set(0.31, 1.45, -0.56); model.group.add(model.weapon);
+    model.shadow = contact(model.group, 0.43, 0.36);
+    model.healthBar = new THREE.Group(); model.healthBar.position.y = 2.55; model.group.add(model.healthBar);
+    part(model.healthBar, planeGeometry, barBackground, [0, 0, 0], [0.67, 0.075, 1]);
+    model.healthFill = part(model.healthBar, planeGeometry, barFill, [0, 0, 0.005], [0.63, 0.045, 1]);
+    model.group.visible = false; model.active = false; officerPool.push(model); return model;
+  }
+  function acquireOfficer(id) {
+    let model = officerPool.find(item => !item.active);
+    if (!model && officerPool.length < MAX_OFFICERS) model = makeOfficer();
+    if (!model) return null;
+    model.active = true; model.group.name = `combatant:${id}`; officerModels.set(id, model); return model;
+  }
+  const effectMaterial = new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.73, depthWrite: false, toneMapped: false });
+  const muzzleMaterial = new THREE.MeshBasicMaterial({ color: '#ffe6b5', transparent: true, opacity: 0.85, depthWrite: false, toneMapped: false });
+  const impactMaterial = new THREE.MeshBasicMaterial({ color: '#ffe2ba', transparent: true, opacity: 0.65, depthWrite: false, toneMapped: false });
+  materials.set('combatTracer', effectMaterial); materials.set('combatMuzzle', muzzleMaterial); materials.set('combatImpact', impactMaterial);
+  function effectPool(geometry, material) {
+    const mesh = new THREE.InstancedMesh(geometry, material, MAX_EFFECTS);
+    mesh.count = 0; mesh.frustumCulled = false; mesh.castShadow = mesh.receiveShadow = false; scene.add(mesh); return mesh;
+  }
+  const tracerMesh = effectPool(boxGeometry, effectMaterial);
+  const muzzleMesh = effectPool(geo('combatMuzzle', () => new THREE.OctahedronGeometry(1)), muzzleMaterial);
+  const impactMesh = effectPool(sphereGeometry, impactMaterial);
+  const effectTransform = new THREE.Object3D(), effectDirection = new THREE.Vector3(), effectUp = new THREE.Vector3(0, 1, 0);
+  const effectColor = new THREE.Color(), playerTracerColor = new THREE.Color('#ffdfb1'), policeTracerColor = new THREE.Color('#ff9b8b');
+  let weaponRaise = 0, deathElapsed = 0, lastDead = false;
+  function animateCombat(combat, combatants, tracers, aiming, aimYaw, walking, transition, actor, dt, t) {
+    const dead = Boolean(combat?.dead), quiet = Boolean(reducedMotion?.matches);
+    deathElapsed = dead ? lastDead ? deathElapsed + dt : 0 : 0; lastDead = dead;
+    const armed = walking && !transition && !dead && Boolean(playerWeapons[combat?.weaponId]);
+    const shots = tracers || combat?.tracers || [];
+    let recoil = 0;
+    for (const shot of shots) if (shot.source === 'player' && shot.ttl > 0) recoil = Math.max(recoil, shot.ttl / Math.max(0.001, shot.maxTtl || 0.1));
+    const raiseTarget = armed && (aiming || recoil > 0 || combat?.reload) ? 1 : 0;
+    if (dt > 0) weaponRaise += (raiseTarget - weaponRaise) * (1 - Math.exp(-dt * 20));
+    if (!armed) weaponRaise = 0;
+    walker.group.rotation.x = walker.group.rotation.z = 0;
+    for (const arm of walker.arms) arm.rotation.z = 0;
+    walkerShadow.visible = !dead;
+    if (armed && weaponRaise > 0.1) {
+      walker.group.rotation.y = -aimYaw;
+      walker.arms[1].rotation.x = 1.1 * weaponRaise; walker.arms[1].rotation.z = -0.22 * weaponRaise;
+      walker.arms[0].rotation.x = 1.18 * weaponRaise; walker.arms[0].rotation.z = 0.7 * weaponRaise;
+      if (combat.reload) { walker.arms[0].rotation.x = 0.85; walker.arms[0].rotation.z = 0.5; }
+    }
+    for (const [kind, weapon] of playerWeaponEntries) {
+      weapon.visible = armed && combat.weaponId === kind;
+      weapon.position.set(0.4 - weaponRaise * 0.09, 1.02 + weaponRaise * 0.43, -0.12 - weaponRaise * 0.44);
+      weapon.rotation.set(-1.2 * (1 - weaponRaise) + (quiet ? 0 : recoil * 0.055), 0, 0);
+    }
+    if (dead && walking && !transition) {
+      const fall = quiet ? 1 : ease(deathElapsed / 0.55);
+      walker.group.rotation.z = -Math.PI / 2 * fall; walker.group.position.y = 0.05 + fall * 0.29;
+      walker.legs[0].rotation.x = -0.35; walker.legs[1].rotation.x = 0.3;
+      walker.arms[0].rotation.x = walker.arms[1].rotation.x = 0.3;
+    } else if (!quiet && combat?.damageFlash > 0 && walking && !transition) walker.group.rotation.x = -Math.min(0.08, combat.damageFlash * 0.2);
+
+    activeOfficerIds.clear();
+    for (let i = 0; i < Math.min(MAX_OFFICERS, combatants.length); i++) activeOfficerIds.add(combatants[i].id);
+    for (const [id, model] of officerModels) if (!activeOfficerIds.has(id)) { model.active = false; model.group.visible = false; officerModels.delete(id); }
+    for (let i = 0; i < Math.min(MAX_OFFICERS, combatants.length); i++) {
+      const state = combatants[i]; const model = officerModels.get(state.id) || acquireOfficer(state.id); if (!model) continue;
+      const down = Boolean(state.down || state.health <= 0);
+      model.group.position.set(state.x, down ? 0.34 : 0.05 + (state.y || 0), state.z);
+      model.group.rotation.set(0, -(state.heading || 0), down ? -Math.PI / 2 : 0);
+      model.group.visible = Math.hypot(state.x - actor.x, state.z - actor.z) < (qualityLow ? 75 : 115);
+      model.weapon.visible = Boolean(state.armed) && !down; model.shadow.visible = !down;
+      for (const arm of model.arms) arm.rotation.z = 0;
+      animatePerson(model, t * 6, state.speed ? 0.25 : 0);
+      if (model.weapon.visible) {
+        model.arms[1].rotation.x = 1.1; model.arms[1].rotation.z = -0.22;
+        model.arms[0].rotation.x = 1.18; model.arms[0].rotation.z = 0.7;
+        model.weapon.rotation.x = !quiet && state.firing ? 0.06 : 0;
+      }
+      if (down) { model.legs[0].rotation.x = -0.35; model.legs[1].rotation.x = 0.25; }
+      const health = clamp((state.health ?? 75) / 75, 0, 1);
+      model.healthBar.visible = !down && (aiming || health < 1 || state.firing);
+      model.healthFill.scale.x = 0.63 * health; model.healthFill.position.x = -0.315 * (1 - health);
+    }
+    let tracerCount = 0, muzzleCount = 0, impactCount = 0;
+    for (let i = Math.max(0, shots.length - MAX_EFFECTS); i < shots.length; i++) {
+      const shot = shots[i]; if (!(shot.ttl > 0) || !shot.from || !shot.to) continue;
+      const age = Math.max(0, (shot.maxTtl || 0.1) - shot.ttl), fade = clamp(shot.ttl / Math.max(0.001, shot.maxTtl || 0.1), 0, 1);
+      effectDirection.set(shot.to.x - shot.from.x, (shot.to.y ?? 1.45) - (shot.from.y ?? 1.45), shot.to.z - shot.from.z);
+      const length = effectDirection.length(); if (length < 0.001) continue;
+      effectDirection.multiplyScalar(1 / length); effectTransform.quaternion.setFromUnitVectors(effectUp, effectDirection);
+      effectTransform.position.set((shot.from.x + shot.to.x) / 2, ((shot.from.y ?? 1.45) + (shot.to.y ?? 1.45)) / 2, (shot.from.z + shot.to.z) / 2);
+      effectTransform.scale.set(quiet ? 0.018 : 0.026, length, quiet ? 0.018 : 0.026); effectTransform.updateMatrix();
+      tracerMesh.setMatrixAt(tracerCount, effectTransform.matrix);
+      effectColor.copy(shot.source === 'police' ? policeTracerColor : playerTracerColor).multiplyScalar(quiet ? 0.5 : 0.3 + fade * 0.7);
+      tracerMesh.setColorAt(tracerCount++, effectColor);
+      if (!quiet && age < 0.045) {
+        effectTransform.position.set(shot.from.x + effectDirection.x * 0.88 - effectDirection.z * 0.22, (shot.from.y ?? 1.45), shot.from.z + effectDirection.z * 0.88 + effectDirection.x * 0.22);
+        effectTransform.scale.set(0.085, 0.18, 0.085); effectTransform.updateMatrix(); muzzleMesh.setMatrixAt(muzzleCount++, effectTransform.matrix);
+      }
+      if (shot.hit && !quiet) {
+        effectTransform.position.set(shot.to.x, shot.to.y ?? 1.45, shot.to.z);
+        effectTransform.scale.setScalar(0.07 + (1 - fade) * 0.12); effectTransform.updateMatrix(); impactMesh.setMatrixAt(impactCount++, effectTransform.matrix);
+      }
+    }
+    tracerMesh.count = tracerCount; muzzleMesh.count = muzzleCount; impactMesh.count = impactCount;
+    tracerMesh.visible = tracerCount > 0; muzzleMesh.visible = muzzleCount > 0; impactMesh.visible = impactCount > 0;
+    if (tracerCount) { tracerMesh.instanceMatrix.needsUpdate = true; tracerMesh.instanceColor.needsUpdate = true; }
+    if (muzzleCount) muzzleMesh.instanceMatrix.needsUpdate = true;
+    if (impactCount) impactMesh.instanceMatrix.needsUpdate = true;
   }
 
   const beaconMaterial = new THREE.MeshBasicMaterial({ color: '#e3f58c', transparent: true, opacity: 0.13, depthWrite: false, side: THREE.DoubleSide });
@@ -484,6 +630,7 @@ export async function createCityScene({ container, onReady } = {}) {
   const selectionGeometry = new THREE.RingGeometry(0.48, 0.57, 24); geometries.add(selectionGeometry);
   const vehicleSelection = new THREE.Mesh(selectionGeometry, selectionMaterial);
   vehicleSelection.rotation.x = -Math.PI / 2; vehicleSelection.visible = false; scene.add(vehicleSelection);
+  const inverseOfficerRotation = new THREE.Quaternion();
   const cameraTarget = new THREE.Vector3(); const desiredCamera = new THREE.Vector3(); const desiredTarget = new THREE.Vector3();
   const boom = new THREE.Vector3(); const collisionOrigin = new THREE.Vector3();
   const cameraObstacles = BUILDINGS.map(b => ({
@@ -553,6 +700,7 @@ export async function createCityScene({ container, onReady } = {}) {
     time = 0, dt: suppliedDt, walking = true, controlledId = null, fleet = [], transition = null,
     cameraYaw, cameraPitch, lookActive = false, quality = 'auto', selectedCarId = null,
     night = false, target = null, heat = 0, cinematic = false, cameraMode = 'chase',
+    combat = null, combatants = [], tracers = null, aiming = false, aimYaw,
   } = {}) {
     if (disposed) return;
     const clock = Number.isFinite(time) ? time : 0;
@@ -562,6 +710,8 @@ export async function createCityScene({ container, onReady } = {}) {
     const heading = Number.isFinite(actor.heading) ? actor.heading : 0;
     const speed = Number.isFinite(actor.speed) ? actor.speed : 0;
     const yaw = Number.isFinite(cameraYaw) ? cameraYaw : heading;
+    const weaponYaw = Number.isFinite(aimYaw) ? aimYaw : yaw;
+    const aimActive = Boolean(aiming && walking && !transition && !combat?.dead && playerWeapons[combat?.weaponId]);
     const pitch = clamp(Number.isFinite(cameraPitch) ? cameraPitch : walking ? 0.34 : 0.28, 0.10, 1.05);
     const stamp = performance.now();
     if (dt > 0 && lastFrameStamp) {
@@ -650,6 +800,8 @@ export async function createCityScene({ container, onReady } = {}) {
       animatePerson(walker, t * 8, 0.28 * (transition.kind === 'exit' ? 1 - ease((p - 0.7) / 0.3) : 1));
     }
 
+    animateCombat(combat, combatants, tracers, aimActive, weaponYaw, walking, transition, actor, dt, t);
+
     vehicleSelection.visible = Boolean(walking && selectedCar && !transition);
     if (vehicleSelection.visible) {
       const selectionSide = (px - selectedCar.x) * Math.cos(selectedCar.heading) + (pz - selectedCar.z) * Math.sin(selectedCar.heading) > 0 ? 1 : -1;
@@ -683,6 +835,11 @@ export async function createCityScene({ container, onReady } = {}) {
       const orbit = Math.sin(t * 0.035) * 0.12;
       desiredCamera.set(px - 17 + orbit * 5, 15, pz + 30 + orbit * 4);
       desiredTarget.set(px - 11, 5, pz - 23); desiredFov = 48;
+    } else if (aimActive) {
+      const aimPoint = combat?.aimPoint;
+      desiredTarget.set(aimPoint?.x ?? px + Math.sin(weaponYaw) * 35, aimPoint?.y ?? 1.45, aimPoint?.z ?? pz - Math.cos(weaponYaw) * 35);
+      desiredCamera.set(px - Math.sin(weaponYaw) * 4.4 + Math.cos(weaponYaw) * 0.72, 2.25 + jump * 0.25, pz + Math.cos(weaponYaw) * 4.4 + Math.sin(weaponYaw) * 0.72);
+      desiredFov = 49; collisionOrigin.set(px, 1.5 + jump * 0.2, pz); shortenCamera(collisionOrigin, desiredCamera);
     } else if (cameraMode === 'aerial') {
       desiredCamera.set(px - Math.sin(yaw) * 37, 63, pz + Math.cos(yaw) * 37);
       desiredTarget.set(px, 0, pz); desiredFov = 50;
@@ -705,14 +862,29 @@ export async function createCityScene({ container, onReady } = {}) {
     }
     sceneWasCinematic = cinematic;
     // The interpolated boom also needs collision testing when moving around corners.
-    if (!cinematic && cameraMode !== 'aerial') shortenCamera(collisionOrigin, camera.position);
+    if (!cinematic && (cameraMode !== 'aerial' || aimActive)) shortenCamera(collisionOrigin, camera.position);
     if (walking && !transition && !cinematic && Math.hypot(camera.position.x - px, camera.position.z - pz) < 1.15) walker.group.visible = false;
     camera.lookAt(cameraTarget); camera.updateProjectionMatrix();
+    for (const model of officerModels.values()) if (model.healthBar.visible) {
+      inverseOfficerRotation.copy(model.group.quaternion).invert(); model.healthBar.quaternion.copy(inverseOfficerRotation).multiply(camera.quaternion);
+    }
+    renderer.toneMappingExposure = (1.18 - darkness * 0.14) * (combat?.dead ? 0.86 : 1);
     renderer.render(scene, camera);
+  }
+  const aimProjection = new THREE.Vector3(), aimDirection = new THREE.Vector3();
+  function projectAimPoint(point) {
+    if (!point || disposed) return { x: 0.5, y: 0.5, visible: false };
+    aimProjection.set(point.x, point.y ?? 1.45, point.z).project(camera);
+    return { x: (aimProjection.x + 1) / 2, y: (1 - aimProjection.y) / 2, visible: aimProjection.z > -1 && aimProjection.z < 1 && Math.abs(aimProjection.x) <= 1 && Math.abs(aimProjection.y) <= 1 };
+  }
+  function getAimRay() {
+    camera.getWorldDirection(aimDirection);
+    return { origin: { x: camera.position.x, y: camera.position.y, z: camera.position.z }, direction: { x: aimDirection.x, y: aimDirection.y, z: aimDirection.z } };
   }
   function getStats() {
     return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, pixelRatio: appliedDpr,
       quality: qualityMode, reduced: qualityLow, averageFrameMs: Math.round(frameAverage * 10000) / 10,
+      officerModels: officerModels.size, officerPool: officerPool.length, effects: { tracers: tracerMesh.count, muzzles: muzzleMesh.count, impacts: impactMesh.count },
       fleetModels: fleetModels.size, policeModels: [...fleetModels.values()].filter(model => model.police).length,
       geometryCount: renderer.info.memory.geometries, textureCount: renderer.info.memory.textures, camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
       target: { x: cameraTarget.x, y: cameraTarget.y, z: cameraTarget.z } };
@@ -720,10 +892,11 @@ export async function createCityScene({ container, onReady } = {}) {
 
   function dispose() {
     if (disposed) return; disposed = true;
+    tracerMesh.dispose(); muzzleMesh.dispose(); impactMesh.dispose();
     geometries.forEach(g=>g.dispose()); materials.forEach(m=>m.dispose()); textures.forEach(t=>t.dispose());
     renderer.dispose(); renderer.domElement.remove();
   }
   resize(); update(SPAWN, { time: 0, dt: 0, walking: true, cinematic: true });
   onReady?.();
-  return { update, resize, dispose, getStats };
+  return { update, resize, dispose, getStats, projectAimPoint, getAimRay };
 }

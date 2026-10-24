@@ -14,6 +14,9 @@ export const POLICE_RULES = Object.freeze({
   capturePlayerMaxSpeed: 2.2,
   captureUnitMaxSpeed: 3.5,
   spawnMinDistance: 45,
+  armedStandoffDistance: 16,
+  disabledCleanupSeconds: 8,
+  maxRetainedUnits: 8,
 });
 
 const RADIUS = 1.65;
@@ -35,7 +38,7 @@ export function createPoliceState() {
     unseenTime: 0, searchTime: 0, escapeProgress: 0, arrestProgress: 0,
     dispatchRemaining: 0, searchRemaining: POLICE_RULES.searchSeconds,
     nextStarAt: POLICE_RULES.searchSeconds, phaseTime: 0, time: 0,
-    seen: false, crimeCount: 0, lastCrimeType: null,
+    seen: false, crimeCount: 0, lastCrimeType: null, nextUnitId: 1,
   };
 }
 
@@ -51,8 +54,8 @@ function copyState(state) {
 
 export function reportCrime(state, crime = {}) {
   const next = copyState(state);
-  if (!['theft', 'collision', 'police-collision'].includes(crime.type) || next.phase === 'busted') return next;
-  const increase = clamp(Math.floor(finite(crime.severity, crime.type === 'police-collision' ? 2 : 1)), 1, 2);
+  if (!['theft', 'collision', 'police-collision', 'gunfire', 'police-hit'].includes(crime.type) || next.phase === 'busted') return next;
+  const increase = clamp(Math.floor(finite(crime.severity, ['police-collision', 'gunfire'].includes(crime.type) ? 2 : 1)), 1, 2);
   next.level = Math.min(POLICE_RULES.maxLevel, next.level + increase);
   next.lastKnown = position(crime.position, next.lastKnown);
   next.phase = next.units.length ? 'pursuit' : 'dispatch';
@@ -62,7 +65,7 @@ export function reportCrime(state, crime = {}) {
   next.seen = false;
   next.crimeCount += 1;
   next.lastCrimeType = crime.type;
-  next.units = next.units.map(unit => ({ ...unit, repathIn: 0, searchIndex: -1, target: copyPoint(next.lastKnown), siren: true }));
+  next.units = next.units.map(unit => ({ ...unit, repathIn: 0, searchIndex: -1, target: copyPoint(next.lastKnown), siren: !unit.disabled }));
   return next;
 }
 
@@ -93,7 +96,7 @@ export function segmentClear(from, to, obstacles = BUILDINGS, padding = 0) {
 }
 
 export function canSeePlayer(unit, player, obstacles = BUILDINGS) {
-  return distance(unit, player) <= POLICE_RULES.sightDistance && segmentClear(unit, player, obstacles);
+  return !unit.disabled && distance(unit, player) <= POLICE_RULES.sightDistance && segmentClear(unit, player, obstacles);
 }
 
 function clearPosition(point, obstacles) {
@@ -174,7 +177,8 @@ function planRoute(from, requestedTarget, obstacles, extraPoints = []) {
 }
 
 function spawnUnit(state, player, obstacles, traffic) {
-  const ordinal = state.units.length;
+  const ordinal = state.units.filter(unit => !unit.disabled).length;
+  const serial = Math.max(state.nextUnitId || 1, ...state.units.map(unit => Number(unit.id.split('-').at(-1)) + 1 || 1));
   const angle = Math.PI + ordinal * Math.PI / 2;
   const preferred = { x: state.lastKnown.x + Math.sin(angle) * 70, z: state.lastKnown.z - Math.cos(angle) * 70 };
   const candidates = spawnPositions.filter(point => clearPosition(point, obstacles)
@@ -187,7 +191,7 @@ function spawnUnit(state, player, obstacles, traffic) {
   const route = planRoute(origin, state.lastKnown, obstacles);
   const target = route[0] || state.lastKnown;
   return {
-    id: `police-${ordinal + 1}`, name: '巡邏警車', kind: 'police', color: 0xe4e9ef,
+    id: `police-${serial}`, name: '巡邏警車', kind: 'police', color: 0xe4e9ef,
     x: origin.x, z: origin.z, heading: Math.atan2(target.x - origin.x, origin.z - target.z),
     speed: 0, occupied: true, stolen: false, siren: true, visible: false,
     ordinal, route, target: copyPoint(state.lastKnown), repathIn: 0.45, searchIndex: -1,
@@ -229,6 +233,7 @@ function trafficDetour(unit, context, neighbours) {
 }
 
 function moveUnit(previous, state, context, dt, neighbours) {
+  if (previous.disabled) return { ...previous, speed: 0, siren: false, visible: false, route: [] };
   const unit = { ...previous, route: previous.route.slice(), repathIn: previous.repathIn - dt,
     visible: canSeePlayer(previous, context.player, context.obstacles),
     siren: state.phase === 'pursuit' || state.phase === 'dispatch' };
@@ -263,7 +268,8 @@ function moveUnit(previous, state, context, dt, neighbours) {
         unit.blockedTime = 0;
       }
     }
-    if (unit.visible) free = Math.min(free, Math.max(0, distance(unit, context.player) - (context.walking ? 3 : 4)));
+    if (unit.visible) free = Math.min(free, Math.max(0, distance(unit, context.player)
+      - (context.armedHostile ? POLICE_RULES.armedStandoffDistance : context.walking ? 3 : 4)));
     desiredSpeed = Math.min(desiredSpeed, Math.sqrt(2 * 9 * free));
     if (unit.route.length > 1 && length < 7) desiredSpeed = Math.min(desiredSpeed, 8);
   }
@@ -296,18 +302,30 @@ export function stepPolice(state, input = {}, dt = 0) {
   const context = {
     player: { ...position(input.player, next.lastKnown), speed: finite(input.player?.speed, 0) },
     walking: input.walking === true,
+    armedHostile: input.armedHostile === true,
     obstacles: Array.isArray(input.obstacles) ? input.obstacles : BUILDINGS,
     traffic: Array.isArray(input.traffic) ? input.traffic : [],
   };
   const steps = Math.ceil(elapsed * 120), slice = elapsed / steps;
+  const disabledIds = new Set(Array.isArray(input.disabledUnitIds) ? input.disabledUnitIds : []);
+  next.units = next.units.map(unit => disabledIds.has(unit.id) && !unit.disabled
+    ? { ...unit, disabled: true, disabledAt: next.time, speed: 0, siren: false, visible: false, route: [] } : unit);
   for (let frame = 0; frame < steps; frame += 1) {
     next.time += slice;
+    next.units = next.units.filter(unit => !unit.disabled || next.time - unit.disabledAt < POLICE_RULES.disabledCleanupSeconds);
     next.phaseTime += slice;
     next.dispatchRemaining = Math.max(0, next.dispatchRemaining - slice);
     const desiredUnits = [0, 1, 2, 2, 3, 4][next.level];
-    if (next.dispatchRemaining <= 1e-8 && next.units.length < desiredUnits) {
+    if (next.dispatchRemaining <= 1e-8 && next.units.filter(unit => !unit.disabled).length < desiredUnits) {
       const unit = spawnUnit(next, context.player, context.obstacles, context.traffic);
-      if (unit) next.units.push(unit);
+      if (unit) {
+        if (next.units.length >= POLICE_RULES.maxRetainedUnits) {
+          const expired = next.units.findIndex(item => item.disabled);
+          if (expired >= 0) next.units.splice(expired, 1);
+        }
+        next.units.push(unit);
+        next.nextUnitId = Number(unit.id.split('-').at(-1)) + 1;
+      }
       next.dispatchRemaining = POLICE_RULES.reinforcementSeconds;
     }
     if (next.phase === 'dispatch' && next.units.length) changePhase(next, 'pursuit');
@@ -326,7 +344,7 @@ export function stepPolice(state, input = {}, dt = 0) {
         if (next.searchTime + 1e-8 >= next.nextStarAt) {
           next.level -= 1;
           next.nextStarAt += POLICE_RULES.starFadeSeconds;
-          if (next.level === 0) { next = { ...createPoliceState(), time: next.time }; break; }
+          if (next.level === 0) { next = { ...createPoliceState(), time: next.time, nextUnitId: next.nextUnitId }; break; }
         }
         const duration = next.nextStarAt === POLICE_RULES.searchSeconds ? POLICE_RULES.searchSeconds : POLICE_RULES.starFadeSeconds;
         next.searchRemaining = Math.max(0, next.nextStarAt - next.searchTime);
@@ -335,8 +353,8 @@ export function stepPolice(state, input = {}, dt = 0) {
     }
     const before = next.units;
     next.units = before.map(unit => moveUnit(unit, next, context, slice, before));
-    const closeEnough = Math.abs(context.player.speed) < POLICE_RULES.capturePlayerMaxSpeed
-      && next.units.some(unit => unit.speed < POLICE_RULES.captureUnitMaxSpeed
+    const closeEnough = !context.armedHostile && Math.abs(context.player.speed) < POLICE_RULES.capturePlayerMaxSpeed
+      && next.units.some(unit => !unit.disabled && unit.speed < POLICE_RULES.captureUnitMaxSpeed
         && distance(unit, context.player) < (context.walking ? POLICE_RULES.captureWalkingDistance : POLICE_RULES.captureDrivingDistance)
         && canSeePlayer(unit, context.player, context.obstacles));
     next.arrestProgress = closeEnough ? Math.min(1, next.arrestProgress + slice / POLICE_RULES.captureSeconds) : 0;

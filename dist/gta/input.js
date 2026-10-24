@@ -1,18 +1,20 @@
 // Input owns gestures only. Movement, camera angles and game state stay in app.js.
-export function createGameInput({ canvas, joystick, knob, lookPad, pedals, isActive = () => true,
-  isWalking = () => true, onAction = () => {}, onLook = () => {}, onUnlock = () => {} } = {}) {
+export function createGameInput({ canvas, joystick, knob, lookPad, pedals, fireButton, isActive = () => true,
+  isWalking = () => true, isArmed = () => false, onAction = () => {}, onLook = () => {}, onUnlock = () => {} } = {}) {
   const keys = new Set();
   const boostPointers = new Set();
   const brakePointers = new Set();
+  const firePointers = new Set();
   const captures = new Map();
   const cleanups = [];
   const pedalPointers = new Map();
-  const movement = new Set(['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight', 'Space']);
-  const actions = { KeyF: 'vehicle', KeyE: 'interact', KeyR: 'reset', KeyM: 'map', KeyJ: 'jobs', KeyV: 'camera', KeyC: 'camera', Escape: 'pause' };
+  const movement = new Set(['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight', 'Space', 'KeyX', 'KeyZ']);
+  const actions = { KeyF: 'vehicle', KeyE: 'interact', KeyR: 'reload', KeyH: 'reset', KeyQ: 'cycleWeapon', Tab: 'weapons', Digit1: 'unarmed', Digit2: 'pistol', Digit3: 'smg', KeyM: 'map', KeyJ: 'jobs', KeyV: 'camera', KeyC: 'camera', Escape: 'pause' };
   let joystickPointer = null, touchLookPointer = null, dragPointer = null;
   let joystickCenter = { x: 0, y: 0 }, joystickRadius = 46;
   let analog = { x: 0, y: 0 }, lastLook = { x: 0, y: 0 }, lastDrag = { x: 0, y: 0 };
   let jumpPending = false, intentionalUnlock = false, wasLocked = false, disposed = false;
+  let mouseFire = false, mouseAim = false, aimLatched = false;
   const pedalButtons = pedals?.dataset?.control ? [pedals]
     : pedals?.querySelectorAll ? [...pedals.querySelectorAll('[data-control]')]
       : pedals ? [...pedals] : [];
@@ -34,6 +36,8 @@ export function createGameInput({ canvas, joystick, knob, lookPad, pedals, isAct
   }
   function clear() {
     keys.clear(); boostPointers.clear(); brakePointers.clear(); jumpPending = false;
+    firePointers.clear(); mouseFire = mouseAim = aimLatched = false;
+    fireButton?.classList.remove('pressed');
     analog = { x: 0, y: 0 }; joystickPointer = touchLookPointer = dragPointer = null;
     pedalPointers.clear(); pedalButtons.forEach(button => button.classList.remove('pressed'));
     joystick?.classList.remove('pressed'); lookPad?.classList.remove('pressed'); moveKnob();
@@ -140,9 +144,9 @@ export function createGameInput({ canvas, joystick, knob, lookPad, pedals, isAct
   listen(canvas, 'pointerdown', event => {
     if (!active() || event.pointerType === 'touch') return;
     focusCanvas();
-    if (event.button === 0) requestLook();
     if (event.button === 2 && document.pointerLockElement !== canvas) {
-      event.preventDefault(); dragPointer = event.pointerId;
+      // Keep the compatibility mousedown: it owns each button in aim/fire chords.
+      dragPointer = event.pointerId;
       lastDrag = { x: event.clientX, y: event.clientY }; capture(canvas, event.pointerId);
     }
   });
@@ -156,6 +160,31 @@ export function createGameInput({ canvas, joystick, knob, lookPad, pedals, isAct
     dragPointer = null; release(event.pointerId);
   };
   for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) listen(canvas, type, stopDrag);
+  // Mouse events report each button in a chord. Pointerdown/up only report the
+  // first press / last release, so they cannot safely own aim+fire together.
+  listen(canvas, 'mousedown', event => {
+    if(!active())return;
+    if(event.button===0){
+      if(document.pointerLockElement===canvas||mouseAim)mouseFire=true;
+      else requestLook(); // First click only captures the view.
+    }
+    if(event.button===2)mouseAim=true;
+  });
+  listen(window, 'mouseup', event => {
+    if (event.button === 0) mouseFire = false;
+    if (event.button === 2) mouseAim = false;
+  });
+  listen(window, 'pointercancel', () => { mouseFire = mouseAim = false; });
+  listen(fireButton, 'pointerdown', event => {
+    if (!active() || !isWalking() || !isArmed() || fireButton.disabled || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    event.preventDefault(); capture(fireButton, event.pointerId); firePointers.add(event.pointerId); fireButton.classList.add('pressed');
+  });
+  const stopFire = event => {
+    firePointers.delete(event.pointerId); release(event.pointerId);
+    if (!firePointers.size) fireButton?.classList.remove('pressed');
+  };
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) listen(fireButton, type, stopFire);
+  listen(fireButton, 'contextmenu', event => event.preventDefault());
 
   listen(lookPad, 'pointerdown', event => {
     if (!active() || touchLookPointer !== null || (event.pointerType === 'mouse' && event.button !== 0)) return;
@@ -175,7 +204,7 @@ export function createGameInput({ canvas, joystick, knob, lookPad, pedals, isAct
   for (const target of [canvas, joystick, lookPad]) listen(target, 'contextmenu', event => event.preventDefault());
 
   function read() {
-    if (!active()) { clear(); return { forward: 0, right: 0, sprint: false, brake: false, jump: false }; }
+    if (!active()) { clear(); return { forward: 0, right: 0, sprint: false, brake: false, jump: false, fire: false, aiming: false }; }
     const forward = Number(keys.has('KeyW') || keys.has('ArrowUp')) - Number(keys.has('KeyS') || keys.has('ArrowDown')) - analog.y;
     const right = Number(keys.has('KeyD') || keys.has('ArrowRight')) - Number(keys.has('KeyA') || keys.has('ArrowLeft')) + analog.x;
     const jump = jumpPending && isWalking(); jumpPending = false;
@@ -183,6 +212,8 @@ export function createGameInput({ canvas, joystick, knob, lookPad, pedals, isAct
       forward: Math.max(-1, Math.min(1, forward)), right: Math.max(-1, Math.min(1, right)),
       sprint: keys.has('ShiftLeft') || keys.has('ShiftRight') || boostPointers.size > 0,
       brake: !isWalking() && (keys.has('Space') || brakePointers.size > 0), jump,
+      fire: isWalking() && isArmed() && (mouseFire || firePointers.size > 0 || keys.has('KeyX')),
+      aiming: isWalking() && isArmed() && (mouseAim || aimLatched || keys.has('KeyZ')),
     };
   }
   function dispose() {
@@ -190,5 +221,5 @@ export function createGameInput({ canvas, joystick, knob, lookPad, pedals, isAct
     clear(); unlock(); disposed = true; cleanups.forEach(cleanup => cleanup());
   }
   moveKnob();
-  return { read, clear, dispose, requestLook, unlock };
+  return { read, clear, dispose, requestLook, unlock, toggleAim() { aimLatched = !aimLatched; return aimLatched; } };
 }

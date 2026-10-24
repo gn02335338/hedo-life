@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#121e27">
-  <meta name="description" content="禾多 GTA：從街上的行人開始，靠近車門搶車、自由駕駛、接同事委託。搶車與碰撞會引來警察，甩開搜索才能解除通緝。">
+  <meta name="theme-color" content="#171528">
+  <meta name="description" content="禾多 GTA：從街上的行人開始，搶車、接同事委託，或切換武器迎戰。留意生命與彈藥，轉過街角甩開警方追捕。">
   <title>禾多 GTA｜下班之前，城市是你的。</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23e5f45b'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-size='40' font-weight='900' fill='%23121e27'%3E禾%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="./gta.css">
   <script type="module" src="./app.js"></script>
 </head>
-<body>
+<body data-weapon="unarmed" data-aiming="false" data-reloading="false" data-health="healthy" data-dead="false">
   <main id="game" aria-label="禾多 GTA 城市遊戲">
     <div id="city" aria-label="禾多市三維街景"></div>
     <div class="grain" aria-hidden="true"></div>
@@ -28,14 +28,14 @@
 
     <section id="welcome" class="welcome" aria-labelledby="welcome-title">
       <div class="intro-copy">
-        <p class="eyebrow"><span>OPEN WORLD</span> 禾多人生・城市番外篇</p>
+        <p class="eyebrow"><span>AFTER HOURS</span> 禾多人生・城市番外篇</p>
         <h1 id="welcome-title">下班之前，<br><em>先狂飆。</em></h1>
-        <p class="intro-description">從一個沒車的下班人開始。<br>走上街頭，找輛車，甩開身後的警笛。</p>
+        <p class="intro-description">從一個沒車的下班人開始。<br>走上街頭，選你的路，甩開身後的警笛。</p>
         <div class="start-actions"><button id="start" class="primary" disabled><span id="start-label">城市準備中</span><span aria-hidden="true">↗</span></button><button id="welcome-help" class="text-btn">怎麼玩 <span>↗</span></button></div>
         <p class="save-note" id="welcome-save">免登入 · 進度只儲存在這台裝置</p>
       </div>
       <div class="city-caption"><span class="coordinates">25° 02′ N &nbsp; 121° 33′ E <i>FICTIONAL CITY</i></span><div><span class="live-dot"></span> 傍晚 17:42 <b>禾多總部周邊</b></div><p>今天不趕 KPI，先趕下一個路口。</p></div>
-      <div class="welcome-footer"><span>03 — 警笛響起</span><p>行人開局 <i>·</i> 警察追捕 <i>·</i> 六段委託</p><span>WASD 移動 / F 搶車 / 滑鼠轉視角</span></div>
+      <div class="welcome-footer"><span>04 — 日落之後</span><p>行人開局 <i>·</i> 街頭交火 <i>·</i> 警察追捕</p><span>WASD 移動 / F 搶車 / Tab 武器</span></div>
     </section>
 
     <section id="hud" class="hud" hidden aria-label="遊戲資訊">
@@ -46,13 +46,17 @@
         <div class="mission-bottom"><span id="mission-step">自由漫遊</span><span id="mission-distance">禾多總部周邊</span></div>
       </div>
       <div class="wallet"><small>跑腿基金</small><strong id="money">$ 500</strong><span id="heat" aria-label="通緝 0 星">☆☆☆☆☆</span><small id="heat-status" aria-live="polite"></small><div id="wanted-meter" class="wanted-meter" role="progressbar" aria-label="解除通緝進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><i id="wanted-bar"></i></div><small id="wanted-hint"></small></div>
-      <div class="map-widget"><button id="open-map" aria-label="開啟城市地圖"><canvas id="minimap" width="360" height="360" aria-label="位置、任務與警方搜索小地圖"></canvas><span class="map-north">N ↑</span><span class="map-name">禾多市 <kbd>M</kbd></span></button><div class="district-line"><span class="live-dot"></span><span id="district">總部大道</span><span id="completed">0 / 6</span></div></div>
-      <div class="drive-panel"><div class="speed"><strong id="speed">WALK</strong><span id="speed-unit">ON FOOT</span></div><div class="drive-meta"><span id="drive-mode">街頭行人</span><button id="camera" title="切換視角 · V">切換視角 <kbd>V</kbd></button></div><div class="drive-actions"><button id="enter-exit"><span id="vehicle-button-label">靠近車輛</span> <kbd>F</kbd></button><button id="reset">回到路邊 <kbd>R</kbd></button></div></div>
+      <div class="map-widget"><button id="open-map" aria-label="開啟城市地圖"><canvas id="minimap" width="360" height="360" aria-label="位置、任務與警方搜索小地圖"></canvas><span class="map-north">N ↑</span><span class="map-name">禾多市 <kbd>M</kbd></span></button><div class="district-line"><span class="live-dot"></span><span id="district">總部大道</span><span id="completed">0 / 6</span></div><div class="health-display"><div class="health-label"><span><b aria-hidden="true">＋</b> 生命</span><strong id="health-value">100</strong></div><div id="health-meter" class="health-meter" role="progressbar" aria-label="生命值" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i id="health-bar"></i></div></div></div>
+      <div class="drive-panel"><div class="speed"><strong id="speed">WALK</strong><span id="speed-unit">ON FOOT</span></div><div class="drive-meta"><span id="drive-mode">街頭行人</span><button id="camera" title="切換視角 · V">切換視角 <kbd>V</kbd></button></div><div class="drive-actions"><button id="enter-exit"><span id="vehicle-button-label">靠近車輛</span> <kbd>F</kbd></button><button id="reset" title="回到路邊 · H">回到路邊 <kbd>H</kbd></button></div></div>
       <div id="look-pad" class="look-pad" aria-label="拖曳右半畫面轉動視角"><span>拖曳轉視角</span></div>
+      <div class="weapon-panel" aria-label="武器與彈藥"><div class="weapon-heading"><span id="weapon-icon" aria-hidden="true">◇</span><strong id="weapon-name">徒手</strong><span class="weapon-shortcut" aria-hidden="true">1 / 2 / 3</span></div><div class="ammo-line" aria-label="彈匣與備彈"><strong id="ammo-mag">—</strong><span class="ammo-divider" aria-hidden="true">/</span><span id="ammo-reserve">—</span><small>AMMO</small></div><small id="ammo-hint">選擇武器，準備上街。</small><div id="reload-progress" class="reload-progress" role="progressbar" aria-label="換彈進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><i id="reload-bar"></i></div></div>
+      <div id="combat-actions" class="combat-actions" role="group" aria-label="武器操作"><button id="weapon-switch" aria-label="開啟武器選單" title="武器選單 · Tab"><span>武器</span><kbd>Tab</kbd></button><button id="reload" aria-label="重新裝填" title="換彈 · R" disabled><span>換彈</span><kbd>R</kbd></button><button id="aim-toggle" aria-label="切換瞄準" aria-pressed="false" title="瞄準 · 滑鼠右鍵" disabled><span>瞄準</span><span class="control-icon" aria-hidden="true">⌖</span></button><button id="fire" data-control="fire" aria-label="按住射擊" title="射擊 · 滑鼠左鍵 / X" disabled><span class="fire-icon" aria-hidden="true">＋</span><span>射擊</span></button></div>
+      <div id="crosshair" class="crosshair" aria-hidden="true" hidden><i></i><i></i><i></i><i></i><b></b></div><div id="hit-marker" class="hit-marker" aria-hidden="true"></div>
       <div class="interaction"><div class="context-actions"><button id="vehicle-action" hidden><kbd>F</kbd><span>搶車</span></button><button id="interact" hidden><kbd>E</kbd><span>接取物品</span></button></div><span id="drive-hint">WASD 移動 · Shift 奔跑 · Space 跳躍 · 滑鼠轉視角</span></div>
       <div id="takeover-progress" class="takeover-progress" hidden role="status"><span id="takeover-label">正在接手車輛</span><div><i id="takeover-bar"></i></div></div>
       <div class="touch-controls" aria-label="觸控移動控制"><div id="move-stick" class="move-stick" role="group" aria-label="移動搖桿，向上前進，左右移動或轉向"><span class="stick-arrows" aria-hidden="true">＋</span><span id="stick-knob"></span><small>移動</small></div><div class="pedals"><button data-control="brake" aria-label="跳躍">跳躍</button><button data-control="boost" aria-label="奔跑">奔跑 ↗</button></div></div>
     </section>
+    <div id="damage-vignette" class="damage-vignette" aria-hidden="true"></div>
     <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
     <div id="load-error" class="error-card" hidden><span class="eyebrow">CITY OFFLINE</span><h2>城市暫時無法啟動</h2><p id="error-message"></p><button onclick="location.reload()" class="primary">重新載入 ↗</button><a href="/">回移動人生</a></div>
   </main>
