@@ -5,7 +5,7 @@ import { createEventCursor } from '../dist/arpg/combat-events.js';
 import { createFeedback } from '../dist/arpg/feedback.js';
 import { createCombatVisuals } from '../dist/arpg/combat-visuals.js';
 import { movementToWorld } from '../dist/arpg/scene.js';
-import { attackPhase } from '../dist/arpg/art-layer.js';
+import { attackPhase, advanceLocomotion } from '../dist/arpg/art-layer.js';
 import { createGame, startGame, stepGame, FIXED_STEP } from '../dist/arpg/engine.js';
 
 test('presentation events play once, skip stale history, and resume after a new run', () => {
@@ -42,6 +42,22 @@ test('each real engine contact already selects the strike pose, including the se
     }
   }
   assert.deepEqual([...found].sort(), [1, 2, 3]);
+});
+
+test('120Hz rendering keeps a continuous gait between 60Hz physics ticks and settles promptly after release', () => {
+  const state = createGame(); state.enemies = []; startGame(state);
+  const gait = { phase: 0, motion: 0 };
+  let previous = state.player.z, started = false;
+  for (let i = 0; i < 80; i++) {
+    stepGame(state, { z: -1 }, 1 / 120);
+    const moved = Math.abs(state.player.z - previous); previous = state.player.z;
+    const walking = advanceLocomotion(gait, moved, 1 / 120);
+    if (moved > 0) started = true;
+    if (started) assert.equal(walking, true, `paint ${i} retains walk even when the simulation has no new position`);
+  }
+  assert.ok(gait.phase > 3);
+  for (let i = 0; i < 7; i++) advanceLocomotion(gait, 0, 1 / 120);
+  assert.equal(gait.motion, 0, 'release settles to idle in under 60ms');
 });
 
 test('20, 30 and 60 fps all preserve a fresh impact frame and dispose their bounded presentation objects', () => {

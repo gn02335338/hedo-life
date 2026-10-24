@@ -11,6 +11,13 @@ export function attackPhase(action, age = action?.elapsed || 0) {
   if (!action.resolved && age + 1e-9 < action.hitAt) return 'windup';
   return age < action.hitAt + 0.15 ? 'strike' : 'recovery';
 }
+export function advanceLocomotion(gait, moved, dt) {
+  gait.phase += Math.max(0, moved);
+  // Combat advances at 60Hz while a phone may paint at 90/120Hz. Retain the
+  // gait between physics ticks rather than flashing idle on every empty frame.
+  gait.motion = moved > 0.001 ? 0.05 : Math.max(0, (gait.motion || 0) - dt);
+  return gait.motion > 0;
+}
 const ACTORS = {
   jack: { file: 'jack-8dir.webp', columns: 4, rows: 2, height: 2.75, baseline: 490 / 512 },
   jackMug: { file: 'jack-mug-8dir.webp', columns: 4, rows: 2, height: 2.75, baseline: 490 / 512 },
@@ -187,7 +194,7 @@ export function createArtLayer({ scene, camera, renderer, materials: targets }) 
     const art = model.art;
     if (!art) return;
     const frameTime = Math.max(0, Math.min(0.1, dt));
-    art.phase += moved;
+    const walking = advanceLocomotion(art, moved, frameTime);
     let actionAge = action?.elapsed || 0;
     if (action && art.actionSerial === action.serial && held && attackPhase(action) === 'strike') actionAge = Math.max(action.hitAt + 0.001, Math.min(art.actionElapsed, action.hitAt + 0.1));
     else { art.actionSerial = action?.serial ?? null; art.actionElapsed = actionAge; }
@@ -198,7 +205,7 @@ export function createArtLayer({ scene, camera, renderer, materials: targets }) 
         const phase = attackPhase(action, actionAge);
         if (phase === 'windup') pose = 'attack-windup';
         else if (phase === 'strike') pose = 'attack-strike';
-      } else if (moved > 0.001) {
+      } else if (walking) {
         const step = Math.floor(art.phase / 0.55) % 4;
         pose = step === 0 ? 'walk-left' : step === 2 ? 'walk-right' : null;
       }
@@ -253,14 +260,14 @@ export function createArtLayer({ scene, camera, renderer, materials: targets }) 
       lean = art.recovery / 0.24 * 0.1; lunge = art.recovery / 0.24 * 0.2;
     }
     const cadence = art.phase / 2.2 * Math.PI * 2;
-    const bob = moved > 0.001 && !reducedMotion ? Math.abs(Math.sin(cadence)) * 0.018 : 0;
+    const bob = walking && !reducedMotion ? Math.abs(Math.sin(cadence)) * 0.018 : 0;
     const hover = art.id === 'paper' && !reducedMotion ? Math.sin(elapsed * 2.5 + art.phase) * 0.07 : 0;
     mesh.scale.set(sheet.height * sheet.aspect, sheet.height, 1);
     const screenHeading = angle - cameraBearing;
     const recoil = Math.min(1, (hitTimer || art.hit) / 0.13) * (art.id === 'jack' ? 0.1 : art.id === 'wing' ? 0.06 : 0.16);
     mesh.position.x = reducedMotion ? 0 : -Math.sin(screenHeading) * lunge + Math.sin(cameraBearing - hitAngle) * recoil;
     mesh.position.y = sheet.height * (sheet.baseline - 0.5) + bob + hover + (reducedMotion ? 0 : -Math.cos(screenHeading) * lunge * 0.35 - recoil * 0.15);
-    mesh.rotation.z = reducedMotion ? 0 : Math.sin(screenHeading) * lean + (moved > 0.001 ? Math.sin(cadence) * 0.012 : 0);
+    mesh.rotation.z = reducedMotion ? 0 : Math.sin(screenHeading) * lean + (walking ? Math.sin(cadence) * 0.012 : 0);
     if (art.outline) {
       art.outline.position.copy(mesh.position); art.outline.scale.copy(mesh.scale); art.outline.rotation.copy(mesh.rotation);
     }
