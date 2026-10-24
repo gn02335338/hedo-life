@@ -2,7 +2,7 @@
 
 一款繁體中文職場黑色幽默遊戲。多種職缺、雙心情、隨機人設、升遷與離場，收集 883 種職業結局與 1,000 枚圖文成就。
 
-**[開始遊戲／史冊補完計畫](https://hedo-life.bvstudio.workers.dev)** · **[探索禾多島](https://hedo-life.bvstudio.workers.dev/island/)** · **[GitHub Issues](https://github.com/gn02335338/hedo-life/issues)**
+**[開始遊戲／史冊補完計畫](https://hedo-life.bvstudio.workers.dev)** · **[禾多暗黑](https://hedo-life.bvstudio.workers.dev/arpg/)** · **[探索禾多島](https://hedo-life.bvstudio.workers.dev/island/)** · **[GitHub Issues](https://github.com/gn02335338/hedo-life/issues)**
 
 ## 這次的人生
 

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101210">
+  <meta name="description" content="禾多原創職場奇幻 ARPG。闖進加班地城，打倒需求怪物、撿裝換裝，挑戰阿福、水蛇與最終魔王翅膀。手機與電腦都能玩。">
+  <title>禾多暗黑｜加班地城</title>
+  <link rel="stylesheet" href="./arpg.css">
+</head>
+<body class="is-ready">
+  <main id="game" aria-label="禾多暗黑加班地城">
+    <div id="scene" class="scene"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="返回禾多人生"><span>禾多暗黑<small>LORDS OF OVERTIME</small></span></a>
+      <div class="location"><span class="eyebrow" id="floor-label">加班地城 · 第一輪</span><strong id="room-name">最後一盞燈</strong><span class="location-line" aria-hidden="true"></span></div>
+      <nav class="utility" aria-label="遊戲選單">
+        <button id="bag-button" class="icon-button" title="裝備背包（I）" aria-label="裝備背包">裝備 <kbd>I</kbd><b id="bag-count">0</b></button>
+        <button id="help-button" class="icon-button" title="操作說明" aria-label="操作說明">手冊</button>
+        <button id="pause-button" class="icon-button" title="暫停（Esc）" aria-label="暫停遊戲">暫停</button>
+      </nav>
+    </header>
+    <aside class="quest" aria-label="目前目標"><span class="eyebrow">QUEST JOURNAL</span><h2 id="quest-title">闖過三道關卡</h2><p id="quest-copy">擊敗這座大樓的三位守關者。</p><span id="quest-progress">0 / 3 位關主</span><div class="boss-steps" id="boss-steps" aria-label="關主進度"></div></aside>
+    <div id="boss-hud" class="boss-hud" hidden><img id="boss-portrait" src="/assets/sonny.png" alt=""><div class="boss-information"><span id="boss-title">FIRST GUARDIAN</span><strong id="boss-name">阿福</strong><div class="boss-track"><i id="boss-fill"></i></div><div class="boss-status"><span id="boss-skill">觀察動作，等待破綻。</span><small id="boss-percent"></small></div></div></div>
+    <div class="run-meta"><img src="/assets/jack.png" alt=""><span class="level-badge" id="level-badge">01</span><div><strong>加班工程師</strong><span id="run-summary">鍵盤是劍，下班是信仰。</span></div></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="damage-flash" class="damage-flash" aria-hidden="true"></div>
+    <footer class="hud" id="hud">
+      <div class="hud-skin" aria-hidden="true"></div>
+      <div class="orb-wrap health-wrap"><div class="orb health-orb"><div class="orb-chamber"><img id="health-fill" src="./assets/orb-health.webp" alt=""></div><strong id="health-text">100</strong></div><span>生命 <small id="health-max">/ 100</small></span></div>
+      <div class="hud-center"><div class="xp-row"><span id="level-text">LV. 1</span><span class="mobile-energy" id="mobile-energy">精神 100</span><div class="xp-track"><i id="xp-fill"></i></div><span class="gold-display"><img src="./assets/item-gold.webp" alt=""><span id="gold-text">0 G</span></span></div><div id="skills" class="skills">
+        <button class="skill main-skill" data-skill="attack" aria-label="鍵盤重擊，空白鍵或 J，可長按"><img class="skill-art" src="./assets/skill-attack.webp" alt=""><span class="skill-cooldown"></span><kbd>SPACE</kbd><strong>鍵盤重擊</strong><small>長按攻擊</small></button>
+        <button class="skill" data-skill="burst" aria-label="需求爆破，Q"><img class="skill-art" src="./assets/skill-burst.webp" alt=""><span class="skill-cooldown"></span><kbd>Q</kbd><strong>需求爆破</strong><small>30 精神</small><span class="cooldown-label"></span></button>
+        <button class="skill" data-skill="dash" aria-label="準時下班，Shift"><img class="skill-art" src="./assets/skill-dash.webp" alt=""><span class="skill-cooldown"></span><kbd>SHIFT</kbd><strong>準時下班</strong><small>16 精神</small><span class="cooldown-label"></span></button>
+        <button class="skill potion-skill" data-skill="potion" aria-label="續命咖啡，E"><img class="skill-art" src="./assets/skill-potion.webp" alt=""><span class="skill-cooldown"></span><kbd>E</kbd><strong>續命咖啡</strong><small id="potion-text">3 杯咖啡</small><span class="cooldown-label"></span></button>
+      </div><div class="hud-caption"><span>W A S D 移動</span><span>靠近拾取</span><span>I 裝備背包</span></div></div>
+      <div class="orb-wrap energy-wrap"><div class="orb energy-orb"><div class="orb-chamber"><img id="energy-fill" src="./assets/orb-energy.webp" alt=""></div><strong id="energy-text">100</strong></div><span>精神 <small id="energy-max">/ 100</small></span></div>
+    </footer>
+    <div class="joystick" id="joystick" aria-label="拖曳移動"><span class="joystick-ring"></span><span id="stick-knob" class="stick-knob"></span><span class="joystick-label">移動</span></div>
+    <div class="save-state" id="save-state">獨立本機存檔</div>
+    <section class="intro" id="intro" aria-labelledby="intro-title"><div class="intro-content"><span class="eyebrow">HEDO · LORDS OF OVERTIME</span><h1 id="intro-title">禾多<span>暗黑</span></h1><p class="intro-pretitle">加 班 地 城</p><p class="intro-description">大樓的燈還亮著。<br>三位關主，擋在你下班的路上。</p><div class="intro-bosses"><figure><img src="/assets/sonny.png" alt="阿福"><figcaption><small>第一關</small>阿福</figcaption></figure><figure><img src="/assets/meimei.png" alt="水蛇"><figcaption><small>第二關</small>水蛇</figcaption></figure><figure><img src="/assets/wing.png" alt="翅膀"><figcaption><small>最終魔王</small>翅膀</figcaption></figure></div><div class="hero-class"><img src="/assets/jack.png" alt="" width="48" height="48"><div><span>你的職業</span><strong>加班工程師</strong></div><small>近戰・爆破・閃避</small></div><button class="primary-button" id="start-button">進入地城</button><p class="intro-note" id="intro-note">單人冒險 · 本機存檔 · 鍵盤與觸控</p></div></section>
+    <dialog id="inventory-dialog" class="panel inventory-panel" aria-labelledby="inventory-title"><div class="panel-heading"><div><span class="eyebrow">EQUIPMENT & INVENTORY</span><h2 id="inventory-title">角色與裝備</h2></div><button class="close-button" data-close aria-label="關閉裝備背包">關閉</button></div><div class="inventory-body"><aside class="equipment"><div class="character-portrait"><img src="/assets/jack.png" alt="加班工程師"></div><h3>加班工程師 <small id="bag-level">LV. 1</small></h3><div class="stat-list" id="stat-list"></div><h4>目前裝備</h4><div id="equipped-list"></div></aside><section class="bag"><div class="bag-heading"><h3>隨身行囊</h3><span id="inventory-count">0 / 60</span></div><p class="bag-note">點選物品檢視屬性與裝備比較。開啟背包時戰鬥暫停。</p><div id="inventory-list" class="inventory-list" aria-label="背包物品"></div><p id="empty-bag" class="empty-bag">行囊空空。深入地城尋找戰利品。</p><section class="item-detail" id="item-detail" aria-live="polite"></section></section></div></dialog>
+    <dialog id="pause-dialog" class="panel small-panel" aria-labelledby="pause-title"><span class="eyebrow">TAKE A BREATH</span><h2 id="pause-title">先喘口氣。</h2><p>地城已暫停。沒有人能趁你休息偷塞需求。</p><button class="primary-button" id="resume-button">繼續冒險 <span>→</span></button><button class="text-button" id="pause-help">查看操作說明</button></dialog>
+    <dialog id="help-dialog" class="panel help-panel" aria-labelledby="help-title"><div class="panel-heading"><div><span class="eyebrow">FIELD MANUAL</span><h2 id="help-title">下班生存指南</h2></div><button class="close-button" data-close aria-label="關閉操作說明">關閉</button></div><div class="help-grid"><div><h3>電腦操作</h3><p><kbd>W A S D</kbd> 或方向鍵移動</p><p><kbd>空白鍵 / J</kbd> 或按住地面斬擊</p><p><kbd>Q</kbd> 需求爆破　<kbd>Shift</kbd> 閃避</p><p><kbd>E</kbd> 續命咖啡　<kbd>I / B</kbd> 背包</p><p><kbd>Esc</kbd> 暫停或關閉面板</p></div><div><h3>手機操作</h3><p>左下搖桿移動，右下按鈕施放技能。</p><p>斬擊可長按，技能會朝附近敵人施放。</p><p>靠近金幣、經驗與裝備即可自動拾取。</p><p>紅色地面是敵人的攻擊預警，離開範圍再反擊。</p></div></div><p class="help-tip">擊敗每區的禾多關主與雜兵，才會打開通往下一區的封印。咖啡數量有限；死亡可帶著已存裝備重新挑戰。本作使用獨立本機進度，與禾多人生存檔分開。</p></dialog>
+    <dialog id="result-dialog" class="panel result-panel" aria-labelledby="result-title"><span class="eyebrow" id="result-eyebrow">AFTER HOURS</span><img class="result-emblem" id="result-emblem" src="./assets/item-charm.webp" alt=""><h2 id="result-title"></h2><p id="result-copy"></p><div class="result-stats" id="result-stats"></div><button class="primary-button" id="retry-button">再次挑戰 <span>→</span></button><button class="text-button" id="result-bag">整理戰利品</button></dialog>
+    <section class="fatal" id="fatal" hidden role="alert"><h1>地城尚未開門</h1><p id="fatal-copy">此裝置無法啟用 3D 圖形，請使用支援 WebGL 的瀏覽器。</p><a href="/">返回禾多人生 →</a></section>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
