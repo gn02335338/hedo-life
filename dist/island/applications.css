@@ -6,3 +6,15 @@
 
 .mobile-home-link{display:none}
 @media(max-width:780px){.side-footnote .mobile-home-link{display:inline}}
+
+.admin-header{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 12px;border:1px solid #bcc8b2;border-radius:5px;font-size:11px;font-weight:600;white-space:nowrap}
+.admin-header:hover{background:#e9eddd}
+@media(min-width:781px) and (max-width:900px){.masthead{padding:0 16px;gap:12px}.header-actions{gap:8px}.admin-header{padding:11px 10px}}
+@media(max-width:780px){.admin-header{font-size:10px;padding:9px 10px}}
+@media(max-width:520px){
+  :root{--header:112px}
+  .masthead{flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;padding:12px 16px}
+  .header-actions{width:100%;margin-left:0;justify-content:space-between;gap:8px}
+  .header-actions .apply-header,.admin-header,.header-actions .plain-button{min-height:44px}
+  .header-actions .plain-button{min-width:40px}
+}
