@@ -237,15 +237,16 @@ async function browserPage(config, { url, local = storage(), session = storage()
     location: { origin: parsed.origin, pathname: parsed.pathname, hash: parsed.hash, replace(value) { navigations.push(value); } },
     URL, JSON, Date, Error, crypto: webcrypto });
   const code = (await readFile(new URL('../dist/domain-migration-ui.js', import.meta.url), 'utf8'))
-    .replace(/import\s*\{([\s\S]*?)\}\s*from\s*'\.\/domain-migration\.js';/, 'const {$1} = __protocol;');
-  vm.runInContext(code, context);
-  const settle = async () => { for (let index = 0; index < 15; index++) await new Promise(resolve => setImmediate(resolve)); };
-  await settle();
+    .replace(/import\s*\{([\s\S]*?)\}\s*from\s*'\.\/domain-migration\.js';/, 'const {$1} = __protocol;')
+    // Expose the real guarded promise to the harness. WebCrypto can finish after
+    // any fixed number of event-loop turns, especially on a busy CI runner.
+    .replace(/\bvoid guarded\(/g, 'guarded(');
+  await vm.runInContext(code, context);
   return { root, body, navigations, submitted, local, session, get cookie() { return cookie; },
     allowCookies() { allowed = true; }, async click(label) {
       const button = root.children.find(child => child.tag === 'button' && child.textContent === label);
       assert.ok(button, `button ${label} exists`);
-      button.listeners.click(); await settle();
+      await button.listeners.click();
     } };
 }
 
