@@ -54,8 +54,8 @@ function copyState(state) {
 
 export function reportCrime(state, crime = {}) {
   const next = copyState(state);
-  if (!['theft', 'collision', 'police-collision', 'gunfire', 'police-hit'].includes(crime.type) || next.phase === 'busted') return next;
-  const increase = clamp(Math.floor(finite(crime.severity, ['police-collision', 'gunfire'].includes(crime.type) ? 2 : 1)), 1, 2);
+  if (!['theft', 'collision', 'police-collision', 'gunfire', 'police-hit', 'explosion'].includes(crime.type) || next.phase === 'busted') return next;
+  const increase = clamp(Math.floor(finite(crime.severity, ['police-collision', 'gunfire', 'explosion'].includes(crime.type) ? 2 : 1)), 1, 2);
   next.level = Math.min(POLICE_RULES.maxLevel, next.level + increase);
   next.lastKnown = position(crime.position, next.lastKnown);
   next.phase = next.units.length ? 'pursuit' : 'dispatch';
@@ -234,6 +234,7 @@ function trafficDetour(unit, context, neighbours) {
 
 function moveUnit(previous, state, context, dt, neighbours) {
   if (previous.disabled) return { ...previous, speed: 0, siren: false, visible: false, route: [] };
+  if (previous.damageStage === 'burning' || previous.damageStage === 'wreck') return { ...previous, speed: 0, siren: false, route: [] };
   const unit = { ...previous, route: previous.route.slice(), repathIn: previous.repathIn - dt,
     visible: canSeePlayer(previous, context.player, context.obstacles),
     siren: state.phase === 'pursuit' || state.phase === 'dispatch' };

@@ -80,3 +80,19 @@ body[data-aiming=true] .mission-panel{opacity:.65}body[data-dead=true] .hud{opac
 @media(max-width:760px) and (max-height:700px) and (min-height:551px){.interaction,.takeover-progress{bottom:283px}}
 @media(max-height:550px){.drive-panel{right:222px}}
 @media(max-height:380px){#toast{top:122px;max-width:230px;font-size:9px}}
+
+/* Vehicle condition replaces the mode caption without adding a HUD row. */
+.drive-meta:has(.vehicle-status:not([hidden])) #drive-mode{display:none}
+.drive-meta:has(.vehicle-status:not([hidden])){margin:7px 0}
+.vehicle-status{flex:1;min-width:0;text-align:left;color:#d4efdf}
+.vehicle-status>div:first-child{display:flex;justify-content:space-between;gap:6px;font-size:9px;line-height:12px;letter-spacing:0}
+.vehicle-status strong{font-size:10px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.vehicle-health-meter{height:2px;background:#fff4eb26;margin-top:3px;overflow:hidden;border-radius:2px}
+.vehicle-health-meter i{display:block;height:100%;width:100%;background:#99c9b8}
+.vehicle-status[data-stage=damaged]{color:#f0cc8e}.vehicle-status[data-stage=damaged] i{background:#f0cc8e}
+.vehicle-status[data-stage=smoking]{color:#ffab7d}.vehicle-status[data-stage=smoking] i{background:#ffab7d}
+.vehicle-status[data-stage=burning],.vehicle-status[data-stage=wreck]{color:#ffc3c8}
+@media(max-width:760px){.drive-meta:has(.vehicle-status:not([hidden])){margin:3px 0 4px;gap:6px}.vehicle-status>div:first-child{font-size:8px;line-height:10px;gap:4px}.vehicle-status strong{font-size:8px}.vehicle-health-meter{margin-top:2px}}
+@media(max-height:550px){.drive-meta:has(.vehicle-status:not([hidden])){margin:3px 0;gap:6px}.vehicle-status>div:first-child{font-size:7px;line-height:9px;gap:3px}.vehicle-status strong{font-size:8px}.vehicle-health-meter{margin-top:2px}}
+@media(min-width:761px) and (min-height:551px) and (hover:hover) and (pointer:fine){.combat-actions{bottom:173px}.weapon-panel{bottom:236px}body[data-weapon=unarmed] .weapon-panel{bottom:244px}}
+@media(max-height:700px) and (max-width:760px) and (min-height:551px){.combat-actions{bottom:257px}.weapon-panel{bottom:326px}body[data-weapon=unarmed] .weapon-panel{bottom:330px}}

@@ -56,6 +56,7 @@ export function findNearbyCar(cars, person, { maxDistance = 4.8, maxSpeed = 4.5,
   if (!person || !Number.isFinite(person.x) || !Number.isFinite(person.z)) return null;
   let nearest = null, distance = maxDistance;
   for (const car of cars) {
+    if (car.damageStage === 'burning' || car.damageStage === 'wreck') continue;
     if (car.id === excludeId || Math.abs(car.speed) > maxSpeed || !Number.isFinite(car.x) || !Number.isFinite(car.z)) continue;
     if (BUILDINGS.some(block => Math.abs(car.x - block.x) < block.w / 2 + 1.4 && Math.abs(car.z - block.z) < block.d / 2 + 1.4)) continue;
     const candidate = Math.hypot(car.x - person.x, car.z - person.z);
@@ -65,7 +66,7 @@ export function findNearbyCar(cars, person, { maxDistance = 4.8, maxSpeed = 4.5,
 }
 
 export function takeCar(cars, id) {
-  return cars.map(car => car.id === id ? { ...car, occupied: false, stolen: true, speed: 0 } : car);
+  return cars.map(car => car.id === id && !['burning', 'wreck'].includes(car.damageStage) ? { ...car, occupied: false, stolen: true, speed: 0 } : car);
 }
 
 export function parkCar(cars, id, state) {
@@ -194,8 +195,8 @@ function reactToThreats(car, threats, slice) {
   const forward = direction(car.routeHeading), right = rightOf(car.routeHeading);
   let ahead = Infinity, frontKind = null, heardAhead = false, heardBehind = false;
   for (const threat of threats) {
-    if (!(threat.remaining > 0) || !['gunshot', 'collision'].includes(threat.kind)) continue;
-    const separation = distance(car, threat), radius = clamp(finite(threat.radius, 0), 0, 60);
+    if (!(threat.remaining > 0) || !['gunshot', 'collision', 'explosion'].includes(threat.kind)) continue;
+    const separation = distance(car, threat), radius = clamp(finite(threat.radius, 0), 0, 72);
     if (separation > radius) continue;
     const dx = threat.x - car.x, dz = threat.z - car.z;
     const along = dx * forward.x + dz * forward.z, across = Math.abs(dx * right.x + dz * right.z);
@@ -206,7 +207,7 @@ function reactToThreats(car, threats, slice) {
       car.threatId = threat.id; car.threatKind = threat.kind; car.threatMemory.push(threat.id); car.threatMemory = car.threatMemory.slice(-8);
       // A driver already leaving the sound continues away. Sustained firing
       // cannot restart this assessment every frame or every fresh event ID.
-      car.threatTimer = along > -3 ? (threat.kind === 'gunshot' ? .65 : .4) : 0;
+      car.threatTimer = along > -3 ? (threat.kind === 'explosion' ? .9 : threat.kind === 'gunshot' ? .65 : .4) : 0;
       car.threatCooldown = 3.8; car.alertTimer = Math.max(car.alertTimer, 3.2);
     }
   }
@@ -236,6 +237,7 @@ export function stepFleet(cars, dt, { controlledId, reservedId, player, pedestri
   for (let step = 0; step < steps; step += 1) {
     const before = result;
     result = before.map(previous => {
+      if (previous.damageStage === 'burning' || previous.damageStage === 'wreck') return { ...previous, speed: 0 };
       if (previous.id === controlledId || previous.id === reservedId || previous.kind !== 'traffic' || previous.stolen || !previous.route?.length) return previous;
       const car = { ...previous, lightClock: finite(previous.lightClock, 0) + slice,
         routeX: finite(previous.routeX, previous.x), routeZ: finite(previous.routeZ, previous.z),

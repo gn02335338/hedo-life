@@ -24,6 +24,9 @@ export function createVehicleVisualFactory(ctx) {
   const wheelMaterial = mat('#ffffff', { vertexColors: true, metalness: .23, roughness: .56 });
   if (ctx.environment) { solid.envMap = ctx.environment; solid.envMapIntensity = .55; }
   const driverMaterial = mat('#ffffff', { vertexColors: true, roughness: .88 });
+  const damagedSolid = mat('#ffffff', { vertexColors: true, metalness: .15, roughness: .76 });
+  const brokenLamp = mat('#363a38', { roughness: .9 });
+  const wheelTint = new THREE.Color();
   const C = { rubber: '#17202a', inset: '#101c28', glass: '#294c61', reflection: '#7896a5', chrome: '#b3c1c5', trim: '#526773', plate: '#e5ebdf', red: '#d44b49', white: '#f1f4e9' };
   const unit = [1, 1, 1];
 
@@ -243,24 +246,51 @@ export function createVehicleVisualFactory(ctx) {
     return bake(`${variant}:wheel-assembly`, pieces);
   }
 
+  // Damage is baked into a separate cached shell. Never recolor the shared
+  // intact geometry/material: two cars with the same paint can have different
+  // health, and repeated police IDs reuse this bounded palette cache.
+  function damageGeometry(original, key, severity, hinge = [0, 0, 0]) {
+    return cache(`damage:${key}:${severity}`, () => {
+      const result = original.clone(), positions = result.attributes.position, colors = result.attributes.color;
+      const charred = severity >= 2, wreck = severity === 3;
+      for (let i = 0; i < positions.count; i += 1) {
+        const x = positions.getX(i) + hinge[0], y = positions.getY(i) + hinge[1], z = positions.getZ(i) + hinge[2];
+        const front = clamp((-z - .85) / 1.25, 0, 1), upper = clamp((y - .8) / .85, 0, 1);
+        const crease = Math.sin(z * 7 + y * 5) * Math.sin(y * 9 - x * 3);
+        const dent = (.045 + (wreck ? .13 : .035)) * front;
+        positions.setXYZ(i, x * (1 - dent) - hinge[0], y - front * (.05 + (wreck ? .2 : .035))
+          - (wreck ? upper * .24 : 0) + crease * front * .025 - hinge[1],
+        z + front * (wreck ? .31 : .12) - hinge[2]);
+        const scrape = y < 1.05 && (front > .45 || Math.abs(x) > .82) && Math.sin(z * 14 + y * 17) > .66;
+        const soot = charred ? .4 * (1 - front * .92) : 1 - front * .24;
+        const gray = scrape ? (charred ? .006 : .09) : 0;
+        if (wreck) colors.setXYZ(i, .006 + colors.getX(i) * .012, .007 + colors.getY(i) * .012, .009 + colors.getZ(i) * .012);
+        else colors.setXYZ(i, colors.getX(i) * soot + gray, colors.getY(i) * soot + gray, colors.getZ(i) * soot + gray);
+      }
+      positions.needsUpdate = colors.needsUpdate = true;
+      result.computeVertexNormals(); result.computeBoundingBox(); result.computeBoundingSphere(); return result;
+    });
+  }
+
   return function createVehicleVisual(color, kind = null, id = '') {
     const police = kind === 'police', variant = variantFor(String(id), police), spec = VARIANTS[variant];
     const paint = police ? '#172a39' : `#${new THREE.Color(color ?? '#b5c7b8').getHexString()}`;
     const shapes = details(spec, variant, paint, police);
     const group = new THREE.Group(); group.name = `vehicle:${id}`;
-    part(group, shapes.body, solid, [0, 0, 0], unit);
-    part(group, shapes.frontLights, M.lit, [0, 0, 0], unit);
-    part(group, shapes.rearLights, M.red, [0, 0, 0], unit);
+    const body = part(group, shapes.body, solid, [0, 0, 0], unit);
+    const frontLights = part(group, shapes.frontLights, M.lit, [0, 0, 0], unit);
+    const rearLights = part(group, shapes.rearLights, M.red, [0, 0, 0], unit);
     const door = new THREE.Group(); door.position.set(...shapes.hinge); group.add(door);
-    part(door, shapes.door, solid, [0, 0, 0], unit);
+    const doorShell = part(door, shapes.door, solid, [0, 0, 0], unit);
     const passengerDoor = door.clone(); passengerDoor.position.x = -shapes.hinge[0]; passengerDoor.scale.x = -1; group.add(passengerDoor);
+    const passengerShell = passengerDoor.children[0], decals = [];
     let redFlash = null, blueFlash = null;
     if (police) {
       const decal = policeDecal();
-      part(group, planeGeometry, decal, [0, spec.belt + .011, -1.28], [1.22, .5, 1], [-Math.PI / 2, 0, 0]);
+      decals.push(part(group, planeGeometry, decal, [0, spec.belt + .011, -1.28], [1.22, .5, 1], [-Math.PI / 2, 0, 0]));
       const localY = spec.belt - .76, localZ = .71;
-      part(door, planeGeometry, decal, [-.012, localY, localZ], [1.03, .25, 1], [0, -Math.PI / 2, 0]);
-      part(passengerDoor, planeGeometry, decal, [-.012, localY, localZ], [-1.03, .25, 1], [0, -Math.PI / 2, 0]);
+      decals.push(part(door, planeGeometry, decal, [-.012, localY, localZ], [1.03, .25, 1], [0, -Math.PI / 2, 0]));
+      decals.push(part(passengerDoor, planeGeometry, decal, [-.012, localY, localZ], [-1.03, .25, 1], [0, -Math.PI / 2, 0]));
       redFlash = part(group, boxGeometry, policeRedOff, [-.36, spec.roof + .29, .05], [.57, .16, .31]);
       blueFlash = part(group, boxGeometry, policeBlueOff, [.36, spec.roof + .29, .05], [.57, .16, .31]);
     }
@@ -276,11 +306,27 @@ export function createVehicleVisualFactory(ctx) {
     add(driverPieces, sphereGeometry, '#263840', [-.83, spec.belt + .43, -.045], [.112, .065, .115]);
     part(occupant, bake(`${variant}:${police ? 'police' : 'civilian'}:occupant`, driverPieces), driverMaterial, [0, 0, 0], unit);
     contact(group, 1.17, 2.18);
-    const model = { group, door, passengerDoor, occupant, police, redFlash, blueFlash,
+    const model = { group, door, passengerDoor, occupant, police, redFlash, blueFlash, damageStage: null,
       ownedGeometries: new Set(), variant,
       flashOffset: [...String(id)].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 8,
       wheels: { mesh: wheelMesh, radius: spec.radius, x: spec.width - .125, front: spec.wheelFront, rear: spec.wheelRear,
         roll: 0, steer: 0, previousHeading: null, transform: new THREE.Object3D() },
+      setDamage(stage) {
+        if (model.damageStage === stage) return;
+        model.damageStage = stage;
+        const severity = stage === 'wreck' ? 3 : stage === 'burning' || stage === 'smoking' ? 2 : stage === 'damaged' ? 1 : 0;
+        const key = `${variant}:${police ? 'police' : paint}`;
+        body.geometry = severity ? damageGeometry(shapes.body, `${key}:body`, severity) : shapes.body;
+        doorShell.geometry = passengerShell.geometry = severity ? damageGeometry(shapes.door, `${key}:door`, severity, shapes.hinge) : shapes.door;
+        body.material = doorShell.material = passengerShell.material = severity ? damagedSolid : solid;
+        frontLights.visible = rearLights.visible = stage !== 'wreck';
+        frontLights.material = severity ? brokenLamp : M.lit;
+        rearLights.material = severity >= 2 ? brokenLamp : M.red;
+        for (const decal of decals) decal.visible = severity < 2;
+        wheelTint.set(stage === 'wreck' ? '#494744' : '#ffffff');
+        for (let i = 0; i < 4; i += 1) wheelMesh.setColorAt(i, wheelTint);
+        wheelMesh.instanceColor.needsUpdate = true;
+      },
       dispose() { wheelMesh.dispose(); },
     };
     animateVehicleVisual(model, { speed: 0, heading: 0 }, 0);
@@ -291,7 +337,9 @@ export function createVehicleVisualFactory(ctx) {
 export function animateVehicleVisual(model, state = {}, dt = 0) {
   const wheels = model?.wheels;
   if (!wheels) return;
-  const elapsed = clamp(finite(dt), 0, .1), speed = finite(state.speed), heading = finite(state.heading);
+  const stage = state.damageStage || 'intact';
+  model.setDamage?.(stage);
+  const elapsed = clamp(finite(dt), 0, .1), speed = stage === 'wreck' || stage === 'burning' ? 0 : finite(state.speed), heading = finite(state.heading);
   const turnRate = elapsed && wheels.previousHeading !== null ? angleDelta(heading, wheels.previousHeading) / elapsed : 0;
   wheels.previousHeading = heading;
   // Player steering is authoritative; NPCs expose heading instead, so infer

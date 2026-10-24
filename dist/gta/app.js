@@ -3,6 +3,7 @@ import { createVehicle, stepVehicle, createPedestrian, stepPedestrian } from './
 import { createFleet, stepFleet, findNearbyCar, takeCar, parkCar } from './fleet.js';
 import { createCrowd, stepCrowd } from './crowd.js';
 import { createAwareness, stepAwareness } from './awareness.js';
+import { createVehicleDamageState, stepVehicleDamage } from './vehicle-damage.js';
 import { createGameInput } from './input.js';
 import { createPoliceState, reportCrime, stepPolice } from './police.js';
 import { createCombatState, selectWeapon, startReload, stepCombat, applyDamage, getPoliceCombatants } from './combat.js';
@@ -21,6 +22,7 @@ let progress = storage ? loadProgress(storage) : freshProgress();
 let actor = createPedestrian(FOOT_SPAWN);
 let fleet = createFleet(), controlledId = null, transition = null, hasDriven = false;
 let crowd = createCrowd(), awareness = createAwareness();
+let vehicleDamage = createVehicleDamageState();
 let police = createPoliceState(), pendingArrest = false;
 let combat = createCombatState(), pendingDeath = false, aiming = false;
 let combatants = [], lastWeaponHint = -10;
@@ -70,7 +72,11 @@ function button(label, className, action) {
   const node = el('button', className, label); node.type = 'button'; node.addEventListener('click', action); return node;
 }
 function targetPlace() {
-  if (!hasDriven) { const car = fleet.find(c => c.id === 'starter-sedan'); return car ? { ...car, id:'first-car', name:'路邊的轎車' } : null; }
+  if (!hasDriven) {
+    const available = fleet.filter(car => !['burning', 'wreck'].includes(car.damageStage));
+    const car = available.find(car => car.id === 'starter-sedan') || available.reduce((near, car) => !near || Math.hypot(car.x-actor.x,car.z-actor.z)<Math.hypot(near.x-actor.x,near.z-actor.z) ? car : near, null);
+    return car ? { ...car, id:'first-car', name:car.name } : null;
+  }
   if (active) return locationById(active.mission[active.stage === 'pickup' ? 'pickup' : 'dropoff']);
   return waypoint ? locationById(waypoint) : null;
 }
@@ -165,6 +171,7 @@ function showHelp() {
   wrap.append(el('p','help-note','按 Tab 或「武器」選擇裝備，Q 快速切換。步行持槍時，先點街景鎖定滑鼠，再按左鍵射擊；右鍵或 Z 瞄準，X 也能射擊，R 換彈。手機點「瞄準」鎖定瞄準姿態，拖右側轉向，按住「射擊」開火。駕駛時會收起武器。'));
   wrap.append(el('p','help-note','開槍會升高通緝；兩星以上警方會武裝反擊。警員先瞄準再射擊，建物與其他車輛能擋住火線。血量低時先躲掩護，解除通緝後回總部，在武器選單補給。血量歸零會顯示 WASTED，可重生為滿血行人，補滿彈藥；委託、完成紀錄與基金都保留。'));
   wrap.append(el('p','help-note','附近路人聽到槍聲會驚嚇、沿人行道逃離，安靜一段時間後才恢復步行。車流會為行人與阻路車輛減速，在空間足夠時側移避讓；連續交火期間會保持戒備。'));
+  wrap.append(el('p','help-note','車輛撞擊或中彈會損壞；瞄準車輛或坐進駕駛座，可查看車況。引擎冒煙代表車況危險，起火後會在三秒內爆炸，請立即下車並遠離。爆炸會波及附近車輛、驚動路人並引來警方；建物可以阻擋爆炸傷害，殘骸無法再駕駛。'));
   wrap.append(el('h3', '', '搶得到車，也要甩得掉警察。'));
   wrap.append(el('p', 'help-note', '搶車或高速碰撞會增加通緝星數，撞上警車會引來更多警力。警車會沿街道追捕；紅藍標記是警車，搜索時的橘色圓圈是你最後被目擊的位置。繞過街角、利用建物遮住視線，持續避開警方搜索，星數才會逐顆下降。被看見或再次犯案會中斷倒數。'));
   wrap.append(el('p', 'help-note', '警車靠近時若停住，逮捕進度會上升；持續移動、拉開距離可中斷逮捕。被捕後車輛會被扣留，以行人返回總部，委託、完成紀錄與跑腿基金保留。通緝期間不能使用「回到路邊」或交接委託。'));
@@ -230,7 +237,7 @@ function drawMap(canvas, full = false) {
   for (const car of fleet) {
     if (car.id === controlledId) continue;
     const [cx, cy] = point(car.x, car.z);
-    context.fillStyle = car.stolen ? '#f5ba51' : '#90b8c0';
+    context.fillStyle = car.damageStage==='wreck'?'#797883':car.damageStage==='burning'?'#ff8d74':car.stolen?'#f5ba51':'#90b8c0';
     context.fillRect(cx - 2, cy - 3, 4, 6);
   }
   if (police.phase === 'search' && police.lastKnown) {
@@ -296,9 +303,12 @@ function interact() {
 }
 function currentCar() { return fleet.find(car => car.id === controlledId) || null; }
 function nearbyCar() { return walking && !transition ? findNearbyCar(fleet, actor) : null; }
+function nearbyUnavailableCar() {
+  return walking&&!transition?fleet.find(car=>['burning','wreck'].includes(car.damageStage)&&Math.hypot(car.x-actor.x,car.z-actor.z)<5.5):null;
+}
 function vehicleBounds(car) {
   const sin = Math.abs(Math.sin(car.heading)), cos = Math.abs(Math.cos(car.heading));
-  return {x:car.x,z:car.z,w:cos*2.05+sin*4.15,d:sin*2.05+cos*4.15};
+  return {x:car.x,z:car.z,w:cos*2.05+sin*4.15,d:sin*2.05+cos*4.15,vehicleId:car.id};
 }
 function carObstacles(excludeId = controlledId) {
   return [...fleet, ...police.units].filter(car => car.id !== excludeId).map(vehicleBounds);
@@ -332,7 +342,10 @@ function switchVehicle() {
     transition={carId:controlledId,kind:'exit',progress:0,duration:.55,from:{...actor},to};
   } else {
     const car=nearbyCar();
-    if (!car) { notify(controlHint('走近車門，等車停下來再按 F。', '走近車門，等車停下來再點「搶車」或「上車」。')); return; }
+    if (!car) {
+      const unavailable=nearbyUnavailableCar();
+      notify(unavailable?unavailable.damageStage==='burning'?'車輛正在起火，無法上車！請立刻遠離。':'這輛車已報廢，請換一輛車。':controlHint('走近車門，等車停下來再按 F。', '走近車門，等車停下來再點「搶車」或「上車」。'));return;
+    }
     if (actor.y > .15) { notify('落地後再接手車輛。'); return; }
     transition={carId:car.id,kind:car.occupied?'steal':'enter',progress:0,duration:car.occupied?1.1:.65,from:{...actor},wasStolen:car.stolen,wasOccupied:car.occupied};
     actor={...actor,speed:0,vx:0,vz:0};
@@ -344,6 +357,10 @@ function finishTransition() {
   const action=transition, car=fleet.find(item=>item.id===action.carId);
   transition=null;
   if (!car) { walking=true;controlledId=null;actor=createPedestrian(FOOT_SPAWN);return; }
+  if (action.kind!=='exit' && ['burning','wreck'].includes(car.damageStage)) {
+    walking=true;controlledId=null;actor=createPedestrian(action.from);
+    clearInput();updateHud();notify('這輛車已無法駕駛，先遠離車身。');return;
+  }
   if (action.kind==='exit') {
     const to=safeExit(car);
     if (!to) {
@@ -366,6 +383,7 @@ function finishTransition() {
 function resetSession() {
   actor=createPedestrian(FOOT_SPAWN);fleet=createFleet();controlledId=null;transition=null;
   crowd=createCrowd();awareness=createAwareness();
+  vehicleDamage=createVehicleDamageState();
   walking=true;hasDriven=false;active=null;waypoint=null;police=createPoliceState();pendingArrest=false;lastImpact=-10;cameraYaw=0;cameraPitch=.34;accumulator=0;
   combat=createCombatState();combatants=[];pendingDeath=false;aiming=false;
   document.body.classList.add('on-foot');needsRender=true;
@@ -476,19 +494,21 @@ function updateWantedHud() {
 }
 function updateHud() {
   const target=targetPlace(),distance=targetDistance(),car=currentCar(),near=nearbyCar();
+  const unavailable=!near?nearbyUnavailableCar():null;
   document.body.classList.toggle('on-foot',walking);
   setText('money','$ '+progress.money.toLocaleString('en-US'));
   setText('completed',progress.completed.length+' / '+MISSIONS.length);
   setText('speed',walking?(actor.speed>5.4?'RUN':'WALK'):String(Math.round(Math.abs(actor.speed)*3.6)).padStart(3,'0'));
   setText('speed-unit',walking?'ON FOOT':'KM/H');
   setText('drive-mode',walking?'街頭行人':car?.name||'駕駛中');
-  const label=transition?'接手中…':walking?(near?(near.occupied?'搶車':'上車'):'靠近車輛'):'下車';
+  const label=transition?'接手中…':walking?(near?(near.occupied?'搶車':'上車'):unavailable?unavailable.damageStage==='burning'?'車輛起火':'車已報廢':'靠近車輛'):'下車';
   setText('vehicle-button-label',label);
   $('enter-exit').disabled=Boolean(transition)||(walking&&!near);
   $('vehicle-action').hidden=!near||Boolean(transition);
   if(near) $('vehicle-action').querySelector('span').textContent=(near.occupied?'搶走 ':'上車 · ')+near.name;
   updateWantedHud();
   updateCombatHud();
+  updateVehicleHud(car,near||unavailable);
   const closest=LOCATIONS.reduce((best,place)=>Math.hypot(actor.x-place.x,actor.z-place.z)<Math.hypot(actor.x-best.x,actor.z-best.z)?place:best,LOCATIONS[0]);
   setText('district',closest.name);
   setText('mission-kicker',!hasDriven?'STREET START':active?active.mission.person+' 的委託':'OFF THE CLOCK');
@@ -509,6 +529,21 @@ function updateHud() {
   if(transition){setText('takeover-label',transition.kind==='steal'?'打開車門，接手駕駛':transition.kind==='exit'?'下車':'上車');$('takeover-bar').style.width=transition.progress*100+'%';}
   drawMap($('minimap'));
 }
+function updateVehicleHud(car,near) {
+  const aimed = walking && combat.weaponId!=='unarmed' && combat.aimPoint?.kind==='vehicle'
+    ? [...fleet,...police.units].find(item=>item.id===combat.aimPoint.targetId) : null;
+  const inspected = car || aimed || near;
+  const status=$('vehicle-status');status.hidden=!inspected;
+  if(!inspected)return;
+  const stage=inspected.damageStage||'intact',health=clamp(inspected.vehicleHealth??100,0,100);
+  status.dataset.stage=stage;
+  const labels={intact:'車況良好',damaged:'車身受損',smoking:'引擎冒煙',burning:car?'起火 · 立即下車':'起火 · 立即遠離',wreck:'殘骸 · 無法駕駛'};
+  setText('vehicle-condition',labels[stage]||labels.intact);
+  setText('vehicle-health',stage==='burning'?Math.max(0,inspected.burnRemaining||0).toFixed(1)+'s':Math.ceil(health)+'%');
+  $('vehicle-health-meter').setAttribute('aria-label',inspected.name+' 車輛耐久');
+  $('vehicle-health-meter').setAttribute('aria-valuenow',String(Math.ceil(health)));
+  $('vehicle-health-bar').style.width=health+'%';
+}
 function toggleSound() {
   if (!audio) {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -525,7 +560,7 @@ function toggleSound() {
   soundEnabled = !soundEnabled; audio.resume().catch(() => {});
   $('sound').setAttribute('aria-pressed', String(soundEnabled));
   $('sound').setAttribute('aria-label', soundEnabled ? '關閉遊戲音效' : '開啟遊戲音效');
-  notify(soundEnabled ? '遊戲音效已開啟：引擎、警笛與射擊。' : '遊戲音效已關閉。');
+  notify(soundEnabled ? '遊戲音效已開啟：引擎、警笛、射擊與爆炸。' : '遊戲音效已關閉。');
 }
 function playShot(policeShot=false) {
   if(!soundEnabled||!audio||panel.open||document.hidden)return;
@@ -537,6 +572,40 @@ function playShot(policeShot=false) {
   voice.connect(gain);gain.connect(audio.destination);voice.start(now);voice.stop(now+.1);
   voice.onended=()=>{voice.disconnect();gain.disconnect();};
 }
+function playExplosion(position) {
+  if(!soundEnabled||!audio||panel.open||document.hidden)return;
+  const strength=clamp(1-Math.hypot(position.x-actor.x,position.z-actor.z)/80,0,1);
+  if(!strength)return;
+  const voice=audio.createOscillator(),gain=audio.createGain(),now=audio.currentTime;
+  voice.type='sawtooth';voice.frequency.setValueAtTime(88,now);voice.frequency.exponentialRampToValueAtTime(24,now+.32);
+  gain.gain.setValueAtTime(.065*strength,now);gain.gain.exponentialRampToValueAtTime(.0001,now+.38);
+  voice.connect(gain);gain.connect(audio.destination);voice.start(now);voice.stop(now+.4);
+  voice.onended=()=>{voice.disconnect();gain.disconnect();};
+}
+function updateVehicleDamage(dt,hits,collisions) {
+  const result=stepVehicleDamage(vehicleDamage,{vehicles:[...fleet,...police.units],hits,collisions,player:actor,controlledId,obstacles:BUILDINGS},dt);
+  vehicleDamage=result.state;
+  fleet=result.vehicles.filter(car=>car.kind!=='police');
+  police={...police,units:result.vehicles.filter(car=>car.kind==='police').map(unit=>unit.damageStage==='wreck'&&!unit.disabled
+    ? {...unit,disabled:true,disabledAt:police.time,siren:false,speed:0,route:[]} : unit)};
+  if(result.playerDamage>0)combat=applyDamage(combat,result.playerDamage);
+  const car=currentCar();
+  if(car&&['burning','wreck'].includes(car.damageStage))actor={...actor,speed:0,steerAngle:0,yawVelocity:0};
+  const events=[];
+  for(const event of vehicleDamage.events){
+    if(event.type==='vehicleBurning'&&event.vehicleId===controlledId)notify(controlHint('車輛起火！按 F 下車，立刻遠離車身。','車輛起火！點「下車」，立刻遠離車身。'));
+    if(event.type==='vehicleExploded'){
+      events.push({type:'explosion',position:event.position});
+      police=reportCrime(police,{type:'explosion',position:event.position});
+      playExplosion(event.position);
+      if(Math.hypot(event.position.x-actor.x,event.position.z-actor.z)<70)notify('車輛爆炸！路人正在逃離，警方已接獲報案。');
+    }
+  }
+  if(transition&&transition.kind!=='exit'&&fleet.some(car=>car.id===transition.carId&&['burning','wreck'].includes(car.damageStage))){
+    actor=createPedestrian(transition.from);transition=null;walking=true;controlledId=null;clearInput();notify('車輛起火，無法上車！立刻遠離。');
+  }
+  return events;
+}
 function simulate(dt, controls) {
   if(pendingArrest||pendingDeath)return;
   time += dt;
@@ -546,25 +615,26 @@ function simulate(dt, controls) {
     crowd=stepCrowd(crowd,dt,{vehicles:fleet});
     return;
   }
-  const cityEvents=[];
+  const cityEvents=[],collisions=[];
   aiming=walking&&combat.weaponId!=='unarmed'&&!transition&&Boolean(controls.aiming);
   if(transition){
     transition.progress=Math.min(1,transition.progress+dt/transition.duration);
     if(transition.progress>=1)finishTransition();
   } else {
     const obstacles=[...BUILDINGS,...carObstacles()];
-    const speedBefore=actor.speed;
     if(walking){
       actor=stepPedestrian(actor,{forward:controls.forward*(aiming ? .58 : 1),right:controls.right*(aiming ? .58 : 1),cameraYaw,sprint:controls.sprint&&!aiming,jump:pendingJump},dt,obstacles);
       if(aiming||controls.fire)actor.heading=cameraYaw;
       pendingJump=false;
     } else {
-      actor=stepVehicle(actor,{throttle:controls.forward,steer:controls.right,brake:controls.brake,boost:controls.sprint},dt,obstacles);
+      const disabled=['burning','wreck'].includes(currentCar()?.damageStage);
+      actor=disabled?{...actor,speed:0,impact:false,impactSpeed:0}:stepVehicle(actor,{throttle:controls.forward,steer:controls.right,brake:controls.brake,boost:controls.sprint},dt,obstacles);
       fleet=fleet.map(car=>car.id===controlledId?{...car,...actor}:car);
-      if(actor.impact&&Math.abs(speedBefore)>5&&time-lastImpact>2.5){
+      if(actor.impact)collisions.push({vehicleId:controlledId,otherId:actor.impactVehicleId,speed:actor.impactSpeed});
+      if(actor.impact&&actor.impactSpeed>5&&time-lastImpact>2.5){
         const hitPolice=touchingPolice(actor);
         police=reportCrime(police,{type:hitPolice?'police-collision':'collision',position:{x:actor.x,z:actor.z}});
-        combat=applyDamage(combat,Math.min(30,Math.max(0,(Math.abs(speedBefore)-8)*1.5)));
+        combat=applyDamage(combat,Math.min(30,Math.max(0,(actor.impactSpeed-8)*1.5)));
         cityEvents.push({type:'collision',position:{x:actor.x,z:actor.z}});
         lastImpact=time;
         notify(hitPolice?'撞上警車！警方呼叫支援，通緝升高。':'碰撞引來報案！通緝升高，先離開現場。');
@@ -576,15 +646,16 @@ function simulate(dt, controls) {
     }
   }
   const previousPhase=police.phase,previousLevel=police.level;
-  const disabledUnitIds=Object.entries(combat.officers).filter(([,officer])=>officer.down).map(([id])=>id);
+  const disabledUnitIds=[...Object.entries(combat.officers).filter(([,officer])=>officer.down).map(([id])=>id),...police.units.filter(unit=>unit.damageStage==='wreck').map(unit=>unit.id)];
   police=stepPolice(police,{player:actor,walking,obstacles:BUILDINGS,traffic:fleet,disabledUnitIds,armedHostile:combat.hostile||police.level>=2},dt);
-  const combatInput={player:actor,walking,aiming,fire:!transition&&Boolean(controls.fire),aimYaw:cameraYaw,police,obstacles:BUILDINGS,traffic:fleet,enabled:true};
+  const combatInput={player:actor,walking,controlledId,aiming,fire:!transition&&Boolean(controls.fire),aimYaw:cameraYaw,police,obstacles:BUILDINGS,traffic:fleet,enabled:true};
   combat=stepCombat(combat,combatInput,dt);
   for(const event of combat.events){
     if(event.type==='crime')police=reportCrime(police,{type:event.crime,position:event.position});
     if(event.type==='shot')playShot(event.shooter==='police');
     if(event.type==='unitDown')notify('警員失去戰鬥能力。支援仍會到場，趁現在拉開距離。');
   }
+  cityEvents.push(...updateVehicleDamage(dt,combat.events,collisions));
   combatants=getPoliceCombatants(police,combat,BUILDINGS,fleet);
   awareness=stepAwareness(awareness,[...cityEvents,...combat.events],dt);
   crowd=stepCrowd(crowd,dt,{threats:awareness.threats,vehicles:[...fleet,...police.units],player:walking?actor:null});
@@ -610,7 +681,7 @@ function tick(now) {
     while(accumulator>=fixedStep){simulate(fixedStep,controls);accumulator-=fixedStep;}
   } else {accumulator=0;pendingJump=false;}
   if(scene&&!document.hidden&&(!paused||needsRender)){
-    scene.update(actor,{time,dt:paused?0:dt,walking,controlledId,fleet:[...fleet,...police.units],crowd,transition,cameraYaw,cameraPitch,lookActive:time<lookUntil,quality,night:false,target:targetPlace(),heat:police.level,cinematic:!started,cameraMode,selectedCarId:nearbyCar()?.id,combat,combatants,aiming,aimYaw:cameraYaw});
+    scene.update(actor,{time,dt:paused?0:dt,walking,controlledId,fleet:[...fleet,...police.units],crowd,vehicleDamage,transition,cameraYaw,cameraPitch,lookActive:time<lookUntil,quality,night:false,target:targetPlace(),heat:police.level,cinematic:!started,cameraMode,selectedCarId:nearbyCar()?.id,combat,combatants,aiming,aimYaw:cameraYaw});
     needsRender=false;
   }
   updateCombatEffects();

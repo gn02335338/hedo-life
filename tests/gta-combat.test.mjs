@@ -201,3 +201,57 @@ test('combat is pure, catches suspended-frame bounds and is stable at 30/60 Hz',
   assert.deepEqual(context, inputSnapshot);
   assert.deepEqual(stepCombat(state, context, 99), stepCombat(state, context, 0.1));
 });
+
+test('player bullets report the closest vehicle shell and stop before any officer behind it', () => {
+  const front = { id: 'front-car', x: -2.8, z: -7, heading: 0, speed: 0 };
+  const back = { id: 'back-car', x: -2.8, z: -11, heading: 0, speed: 0 };
+  const traffic = [back, front], snapshot = structuredClone(traffic);
+  for (const weaponId of ['pistol', 'smg']) {
+    const result = stepCombat(ready(weaponId), input({ fire: true, police: police(), traffic }), 1 / 60);
+    const hits = result.events.filter(event => event.type === 'vehicleHit');
+    assert.equal(hits.length, 1);
+    assert.deepEqual(hits[0], { type: 'vehicleHit', targetId: 'front-car', damage: WEAPONS[weaponId].vehicleDamage,
+      source: 'player', position: { x: -2.8, z: -4.925 } });
+    assert.equal(result.officers['police-1'].health, 75);
+    assert.equal(result.tracers[0].hit, 'vehicle');
+  }
+  assert.deepEqual(traffic, snapshot);
+  const wall = stepCombat(ready(), input({ fire: true, traffic, obstacles: [{ x: -2.8, z: -3, w: 3, d: 1 }] }), 1 / 60);
+  assert.equal(wall.events.some(event => event.type === 'vehicleHit'), false);
+});
+
+test('police fire hits the occupied player car first without also damaging its driver', () => {
+  const driverCar = { id: 'player-car', x: -2.8, z: 0, heading: 0, speed: 0 };
+  const driving = input({ walking: false, controlledId: driverCar.id, traffic: [driverCar], police: police(2) });
+  const result = simulate(createCombatState(), driving, 1.5);
+  const hits = result.events.filter(event => event.type === 'vehicleHit');
+  assert.equal(hits.length, 1);
+  assert.equal(hits[0].targetId, driverCar.id);
+  assert.equal(hits[0].damage, COMBAT_RULES.officerVehicleDamage);
+  assert.equal(hits[0].source, 'police');
+  assert.equal(hits[0].unitId, 'police-1');
+  assert.ok(Math.abs(hits[0].position.z + 2.075) < 1e-8);
+  assert.equal(result.state.health, 100);
+  assert.equal(result.events.some(event => event.type === 'damage'), false);
+  assert.equal(result.state.tracers.at(-1).hit, 'vehicle');
+  const long = simulate(result.state, driving, 5);
+  assert.equal(long.state.health, 100);
+  assert.ok(long.events.filter(event => event.type === 'vehicleHit').length >= 3);
+});
+
+test('buildings, other cars and the officer own patrol shield drivers and pedestrians from return fire', () => {
+  const driverCar = { id: 'player-car', x: -2.8, z: 0, heading: 0, speed: 0 };
+  const cover = { id: 'cover-car', x: -2.8, z: -7, heading: 0, speed: 0 };
+  const cases = [
+    input({ walking: false, controlledId: driverCar.id, traffic: [driverCar, cover], police: police(2) }),
+    input({ walking: false, controlledId: driverCar.id, traffic: [driverCar], police: police(2), obstacles: [{ x: -2.8, z: -7, w: 4, d: 2 }] }),
+    input({ traffic: [cover], police: police(2) }),
+    input({ player: { x: 5, z: -15, speed: 0 }, police: police(2) }),
+  ];
+  for (const blocked of cases) {
+    const result = simulate(createCombatState(), blocked, 4);
+    assert.equal(result.state.health, 100);
+    assert.equal(result.state.officers['police-1'].warning, 0);
+    assert.equal(result.events.some(event => event.type === 'shot' || event.type === 'vehicleHit'), false);
+  }
+});

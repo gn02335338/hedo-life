@@ -3,12 +3,12 @@ import { segmentClear } from './police.js';
 
 export const WEAPONS = Object.freeze({
   unarmed: Object.freeze({ id: 'unarmed', name: '徒手', magSize: 0, damage: 0, range: 65, cadence: 0, reloadSeconds: 0 }),
-  pistol: Object.freeze({ id: 'pistol', name: '手槍', magSize: 12, damage: 34, range: 65, cadence: 0.24, reloadSeconds: 1.2 }),
-  smg: Object.freeze({ id: 'smg', name: '衝鋒槍', magSize: 30, damage: 18, range: 55, cadence: 0.09, reloadSeconds: 1.65 }),
+  pistol: Object.freeze({ id: 'pistol', name: '手槍', magSize: 12, damage: 34, vehicleDamage: 18, range: 65, cadence: 0.24, reloadSeconds: 1.2 }),
+  smg: Object.freeze({ id: 'smg', name: '衝鋒槍', magSize: 30, damage: 18, vehicleDamage: 9, range: 55, cadence: 0.09, reloadSeconds: 1.65 }),
 });
 export const COMBAT_RULES = Object.freeze({
   maxHealth: 100, officerHealth: 75, officerWarningSeconds: 1.4,
-  officerRange: 38, officerCadence: 0.9, officerDamage: 7,
+  officerRange: 38, officerCadence: 0.9, officerDamage: 7, officerVehicleDamage: 10,
   gunfireCrimeSeconds: 2.5, hostilityClearSeconds: 3,
   maxTracers: 32, maxEvents: 32, aimAssistRadians: 0.055,
 });
@@ -135,9 +135,10 @@ function contextFor(input) {
     police: input.police || { level: 0, phase: 'clear', units: [] },
     obstacles: Array.isArray(input.obstacles) ? input.obstacles : BUILDINGS,
     traffic: Array.isArray(input.traffic) ? input.traffic : [], walking: input.walking === true,
+    controlledId: input.controlledId ?? null,
     aiming: input.aiming === true, aimYaw: finite(input.aimYaw, finite(input.player?.heading)) };
 }
-function castRay(origin, yaw, range, context, combatants = [], ignoredCarId = null, ignoreOccupiedPlayerCar = false) {
+function castRay(origin, yaw, range, context, combatants = []) {
   const direction = { x: Math.sin(yaw), z: -Math.cos(yaw) };
   let nearest = range, kind = null, targetId = null, unitId = null;
   for (const building of context.obstacles) {
@@ -147,7 +148,6 @@ function castRay(origin, yaw, range, context, combatants = [], ignoredCarId = nu
   }
   const vehicles = new Map([...context.traffic, ...(context.police.units || [])].map(car => [car.id, car]));
   for (const car of vehicles.values()) {
-    if (car.id === ignoredCarId || ignoreOccupiedPlayerCar && distance(car, context.player) < 1.75) continue;
     const hit = rayVehicle(origin, direction, car, nearest);
     if (hit !== null && hit < nearest) { nearest = hit; kind = 'vehicle'; targetId = car.id; unitId = car.kind === 'police' ? car.id : null; }
   }
@@ -192,6 +192,10 @@ function playerShot(state, context, input) {
   const hit = getAimTarget(state, input); state.aimPoint = hit;
   tracer(state, context.player, hit, 'player', hit.kind);
   emit(state, { type: 'shot', shooter: 'player', weaponId: weapon.id, position: point(context.player) });
+  if (hit.kind === 'vehicle') {
+    emit(state, { type: 'vehicleHit', targetId: hit.targetId, damage: weapon.vehicleDamage, source: 'player', position: point(hit) });
+    state.hitMarker = .12;
+  }
   if (state.crimeCooldown <= 1e-8) {
     emit(state, { type: 'crime', crime: 'gunfire', position: point(context.player) });
     state.crimeCooldown = COMBAT_RULES.gunfireCrimeSeconds;
@@ -223,8 +227,11 @@ function returnFire(state, context, dt) {
     if (officer.down || !officer.armed || context.police.phase === 'clear' || context.police.phase === 'busted') { record.warning = 0; continue; }
     const range = distance(officer, context.player);
     const yaw = Math.atan2(context.player.x - officer.x, officer.z - context.player.z);
-    const clearRay = castRay(officer, yaw, range, context, [], officer.unitId, !context.walking);
-    if (range > COMBAT_RULES.officerRange || clearRay.distance < range - 0.1) { record.warning = 0; continue; }
+    const clearRay = castRay(officer, yaw, range, context);
+    const targetCar = !context.walking && context.traffic.find(car => context.controlledId
+      ? car.id === context.controlledId : insideVehicle(context.player, car));
+    const seesDriverCar = targetCar && clearRay.kind === 'vehicle' && clearRay.targetId === targetCar.id;
+    if (range > COMBAT_RULES.officerRange || clearRay.distance < range - 0.1 && !seesDriverCar) { record.warning = 0; continue; }
     record.aimYaw = yaw;
     record.warning = Math.min(COMBAT_RULES.officerWarningSeconds, record.warning + dt);
     if (record.warning + 1e-8 < COMBAT_RULES.officerWarningSeconds || record.cooldown > 1e-8 || state.dead) continue;
@@ -233,10 +240,13 @@ function returnFire(state, context, dt) {
     record.shotIndex += 1;
     const accurate = Math.abs(context.player.speed) > 4 ? record.shotIndex % 3 === 0 : record.shotIndex % 4 !== 0;
     const missYaw = yaw + (record.shotIndex % 2 ? 1 : -1) * Math.atan2(2.3, Math.max(range, 1));
-    const end = accurate ? heightPoint(context.player) : castRay(officer, missYaw, range + 2, context, [], officer.unitId, !context.walking);
-    tracer(state, officer, end, 'police', accurate ? 'player' : end.kind, officer.unitId);
+    const end = accurate ? clearRay : castRay(officer, missYaw, range + 2, context);
+    const hitsPlayer = accurate && !seesDriverCar && end.distance >= range - .1;
+    tracer(state, officer, end, 'police', hitsPlayer ? 'player' : end.kind, officer.unitId);
     emit(state, { type: 'shot', shooter: 'police', weaponId: 'pistol', unitId: officer.unitId, position: point(officer) });
-    if (accurate) damage(state, COMBAT_RULES.officerDamage, 'police', officer.unitId);
+    if (end.kind === 'vehicle') emit(state, { type: 'vehicleHit', targetId: end.targetId,
+      damage: COMBAT_RULES.officerVehicleDamage, source: 'police', unitId: officer.unitId, position: point(end) });
+    if (hitsPlayer) damage(state, COMBAT_RULES.officerDamage, 'police', officer.unitId);
   }
 }
 export function stepCombat(state, input = {}, dt = 0) {

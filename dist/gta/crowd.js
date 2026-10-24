@@ -189,7 +189,7 @@ export function stepCrowd(crowd, dt, { threats = [], vehicles = [], player = nul
   if (!elapsed) return next;
   const activeThreats = (Array.isArray(threats) ? threats : []).filter(threat => validPoint(threat)
     && (typeof threat.id === 'string' || Number.isFinite(threat.id))
-    && ['gunshot', 'collision'].includes(threat.kind) && Number.isFinite(threat.radius) && threat.radius > 0
+    && ['gunshot', 'collision', 'explosion'].includes(threat.kind) && Number.isFinite(threat.radius) && threat.radius > 0
     && Number.isFinite(threat.remaining) && threat.remaining > 0).slice(-CROWD_RULES.maxThreats);
   const blockers = blockersFor(vehicles, player);
   const steps = Math.max(1, Math.ceil(elapsed * 120 - 1e-8)), slice = elapsed / steps;

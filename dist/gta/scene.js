@@ -3,6 +3,7 @@ import { ROAD_LINES, SPAWN, BUILDINGS, LOCATIONS } from './world.js';
 import { createCityVisualKit } from './visual-city.js';
 import { createPersonVisualFactory, animatePersonVisual } from './visual-people.js';
 import { createVehicleVisualFactory, animateVehicleVisual } from './visual-vehicles.js';
+import { createVehicleDamageVisuals } from './visual-damage.js';
 import { createCrowd } from './crowd.js';
 
 // The city and all of its textures are drawn locally. No remote model or image is used.
@@ -376,6 +377,7 @@ export async function createCityScene({ container, onReady } = {}) {
   materials.set('policeRedDim', policeRedDim); materials.set('policeBlueDim', policeBlueDim);
   const car = createVehicleVisualFactory({ THREE, scene, mat, M, geo, part, mergeFixedParts, contact,
     boxGeometry, planeGeometry, sphereGeometry, policeDecal, policeWhite, policeRedOff, policeBlueOff, environment: cityVisuals.environment });
+  const damageVisuals = createVehicleDamageVisuals({ THREE, scene, geo, materials, textures });
   // This is the authoritative fleet supplied by game physics, including parked cars.
   // No visual-only traffic or permanently owned player vehicle is created.
   const fleetModels = new Map(); const visibleFleetIds = new Set();
@@ -618,7 +620,7 @@ export async function createCityScene({ container, onReady } = {}) {
     time = 0, dt: suppliedDt, walking = true, controlledId = null, fleet = [], crowd = previewCrowd, transition = null,
     cameraYaw, cameraPitch, lookActive = false, quality = 'auto', selectedCarId = null,
     night = false, target = null, heat = 0, cinematic = false, cameraMode = 'chase',
-    combat = null, combatants = [], tracers = null, aiming = false, aimYaw,
+    combat = null, combatants = [], tracers = null, aiming = false, aimYaw, vehicleDamage = null,
   } = {}) {
     if (disposed) return;
     const clock = Number.isFinite(time) ? time : 0;
@@ -652,19 +654,19 @@ export async function createCityScene({ container, onReady } = {}) {
       model.group.position.set(state.x, 0.04, state.z); model.group.rotation.y = -state.heading;
       animateVehicleVisual(model, state, dt);
       model.group.visible = Math.hypot(state.x - px, state.z - pz) < (qualityLow ? 105 : 150) || cameraMode === 'aerial' || cinematic;
-      model.occupant.visible = Boolean(state.occupied) && state.id !== controlledId;
+      model.occupant.visible = Boolean(state.occupied) && state.id !== controlledId && state.damageStage !== 'wreck' && state.damageStage !== 'burning';
       model.door.rotation.y = model.passengerDoor.rotation.y = 0;
       if (model.police) {
         // Alternate just twice per second; reduced-motion uses steady dim colors.
         // Shared unlit materials keep this independent of dynamic light/shadow passes.
         const flash = Math.floor(t * 2 + model.flashOffset) % 2;
-        const siren = state.siren !== false;
+        const siren = state.siren !== false && state.damageStage !== 'wreck';
         const steady = reducedMotion?.matches;
         model.redFlash.material = !siren ? policeRedOff : steady ? policeRedDim : flash === 0 ? policeRedOn : policeRedOff;
         model.blueFlash.material = !siren ? policeBlueOff : steady ? policeBlueDim : flash === 1 ? policeBlueOn : policeBlueOff;
       }
       if (state.id === transition?.carId) transitionCar = state;
-      if (state.id === selectedCarId && state.kind !== 'police') selectedCar = state;
+      if (state.id === selectedCarId && state.kind !== 'police' && state.damageStage !== 'wreck' && state.damageStage !== 'burning') selectedCar = state;
     }
     const jump = Number.isFinite(actor.y) ? Math.max(0, actor.y) : 0;
     walker.group.visible = walking || Boolean(transition);
@@ -794,6 +796,7 @@ export async function createCityScene({ container, onReady } = {}) {
     if (!cinematic && (cameraMode !== 'aerial' || aimActive)) shortenCamera(collisionOrigin, camera.position);
     if (walking && !transition && !cinematic && Math.hypot(camera.position.x - px, camera.position.z - pz) < 1.15) walker.group.visible = false;
     camera.lookAt(cameraTarget); camera.updateProjectionMatrix();
+    damageVisuals.update(fleet, vehicleDamage, { time: t, low: qualityLow, reducedMotion: Boolean(reducedMotion?.matches), x: px, z: pz, camera });
     for (const model of officerModels.values()) if (model.healthBar.visible) {
       inverseOfficerRotation.copy(model.group.quaternion).invert(); model.healthBar.quaternion.copy(inverseOfficerRotation).multiply(camera.quaternion);
     }
@@ -814,6 +817,7 @@ export async function createCityScene({ container, onReady } = {}) {
     return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, pixelRatio: appliedDpr,
       quality: qualityMode, reduced: qualityLow, averageFrameMs: Math.round(frameAverage * 10000) / 10,
       officerModels: officerModels.size, officerPool: officerPool.length, effects: { tracers: tracerMesh.count, muzzles: muzzleMesh.count, impacts: impactMesh.count },
+      damageEffects: damageVisuals.getStats(),
       fleetModels: fleetModels.size, policeModels: [...fleetModels.values()].filter(model => model.police).length,
       pedestrianModels: pedestrians.length, visiblePedestrians: pedestrians.filter(model => model.group.visible).length,
       geometryCount: renderer.info.memory.geometries, textureCount: renderer.info.memory.textures, camera: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
@@ -822,6 +826,7 @@ export async function createCityScene({ container, onReady } = {}) {
 
   function dispose() {
     if (disposed) return; disposed = true;
+    damageVisuals.dispose();
     scene.traverse(object => { if (object.isInstancedMesh) object.dispose(); });
     geometries.forEach(g=>g.dispose()); materials.forEach(m=>m.dispose()); textures.forEach(t=>t.dispose());
     renderer.dispose(); renderer.domElement.remove();

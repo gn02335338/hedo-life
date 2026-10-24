@@ -19,6 +19,8 @@ export function createVehicle(overrides = {}) {
     steerAngle: clamp(finite(overrides.steerAngle, 0), -1, 1),
     yawVelocity: clamp(finite(overrides.yawVelocity, 0), -4, 4),
     impact: false,
+    impactSpeed: 0,
+    impactVehicleId: null,
     distance: Math.max(0, finite(overrides.distance, 0)),
   };
 }
@@ -148,7 +150,23 @@ export function stepVehicle(state, input = {}, dt = 0, obstacles = BUILDINGS) {
     vehicle.x = moveAxis(vehicle.x, vehicle.z, dx, 'x', CAR_RADIUS, collisionBlocks);
     vehicle.z = moveAxis(vehicle.z, vehicle.x, dz, 'z', CAR_RADIUS, collisionBlocks);
     vehicle.distance += Math.hypot(vehicle.x - previousX, vehicle.z - previousZ);
-    if (Math.abs(vehicle.x - previousX - dx) > 1e-7 || Math.abs(vehicle.z - previousZ - dz) > 1e-7) {
+    const blockedX = Math.abs(vehicle.x - previousX - dx) > 1e-7;
+    const blockedZ = Math.abs(vehicle.z - previousZ - dz) > 1e-7;
+    if (blockedX || blockedZ) {
+      // Damage follows the speed into the contacted surface, not braking or
+      // motion along a wall. Retain the strongest contact of this fixed step.
+      const impactSpeed = Math.hypot(blockedX ? dx / slice : 0, blockedZ ? dz / slice : 0);
+      if (impactSpeed > vehicle.impactSpeed) {
+        vehicle.impactSpeed = impactSpeed;
+        const hit = collisionBlocks.find(block => {
+          if (!block || !(block.w > 0 && block.d > 0)) return false;
+          const xEdge = block.x - Math.sign(dx) * (block.w / 2 + CAR_RADIUS);
+          const zEdge = block.z - Math.sign(dz) * (block.d / 2 + CAR_RADIUS);
+          return blockedX && Math.abs(vehicle.x - xEdge) < 1e-5 && Math.abs(previousZ - block.z) < block.d / 2 + CAR_RADIUS
+            || blockedZ && Math.abs(vehicle.z - zEdge) < 1e-5 && Math.abs(vehicle.x - block.x) < block.w / 2 + CAR_RADIUS;
+        });
+        vehicle.impactVehicleId = hit?.vehicleId || null;
+      }
       if (!vehicle.impact) vehicle.speed *= 0.18;
       vehicle.impact = true;
     }
