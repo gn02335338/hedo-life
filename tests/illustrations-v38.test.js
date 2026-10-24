@@ -133,7 +133,7 @@ for(const mobile of [false,true]){
    const roleId=event.roles?.[0]||'system',cohort=event.minRules>=39?'e39':'e37';
    // New cast scenes require their real cohort. Rendering an art fixture does
    // not make the frozen e39 event pool eligible for unpublished characters.
-   const seed=event.requiresCastV66?'e39-r66-n-0000000000000000000000':event.requiresCastV65?'e39-r65-n-0000000000000000000000':`${cohort}-art-${event.id}`,run=engine.createRun(roleId,seed);
+   const seed=event.requiresCareerV71?'e39-r71-n-0000000000000000000000':event.requiresCastV66?'e39-r66-n-0000000000000000000000':event.requiresCastV65?'e39-r65-n-0000000000000000000000':`${cohort}-art-${event.id}`,run=engine.createRun(roleId,seed);
    run.actualRoleId=roleId;run.eventId=event.id;run.turn=12;
    if(event.requireGender)run.characterGender=event.requireGender;
    const before=JSON.stringify(run),html=app.render(run);

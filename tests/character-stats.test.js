@@ -31,7 +31,7 @@ function directPlay(roleId,seed,actions,saved=false){
 }
 
 test('character projection always returns the current public IDs and bounded integer metrics without accepting supplied totals',()=>{
- assert.deepEqual(CHARACTER_IDS,Object.keys(PERSONAS));assert.equal(CHARACTER_IDS.length,28);
+ assert.deepEqual(CHARACTER_IDS,Object.keys(PERSONAS));assert.equal(CHARACTER_IDS.length,29);
  assert.deepEqual(CHARACTER_METRICS,['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents']);
  for(const value of [null,undefined,{},[],{history:null},{characters:[{id:'wing',realHits:999}],flags:{rage_real:999,rage_target_wing:999}}]){
   const result=deriveCharacterStats(value);assert.equal(result.length,CHARACTER_IDS.length);

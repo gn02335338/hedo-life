@@ -42,10 +42,11 @@ test('ordinary saves and session storage do not interrupt another game tab', () 
 });
 
 test('every game loads the session guard before its application', async () => {
-  for (const path of ['index.html', 'island/index.html', 'arpg/index.html', 'gta/index.html']) {
+  for (const path of ['index.html', 'island/index.html', 'arpg/index.html', 'gta/index.html', 'cards/index.html']) {
     const html = await readFile(new URL(`../dist/${path}`, import.meta.url), 'utf8');
     const guard = html.indexOf('src="/domain-session-guard.js"');
     assert.ok(guard >= 0, path);
-    assert.ok(guard < html.indexOf('src="./app.js"'), path);
+    const application = html.search(/<script[^>]*type="module"[^>]*src="(?:\.\/|\/cards\/)app\.js"/);
+    assert.ok(application >= 0 && guard < application, path);
   }
 });

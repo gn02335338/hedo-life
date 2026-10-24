@@ -1,6 +1,6 @@
 // A complete alternative answer is available only where a conversation can
 // finish without consenting to paperwork, spending money or choosing a finale.
-export const isPatronageProgressV69=value=>/^e39-r(?:69|70)-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
+export const isPatronageProgressV69=value=>/^e39-r(?:69|7[01])-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
 const ownScenes=new Set(['patronage67-education','patronage67-pay-review','patronage67-smalltalk']);
 const fantasyScenes=new Set(['road','runway','audit']);
 export function patronageProgressEffectV69(run,event){

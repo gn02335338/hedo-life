@@ -1,6 +1,7 @@
 import {PERSONAS} from './persona.js';
 import {isExpansionV65} from './expansion-profile-v65.js';
 import {withPatronageOutcomesV67} from './patronage-reply-v67.js';
+import {isCareerContentV71} from './career-content-v71.js';
 
 // Original fictional replies for the special appointment. This module only
 // supplies text and weights: the engine owns the single roll and saved proof.
@@ -151,7 +152,21 @@ const VOICES_V65=Object.freeze({
   '強尼把優先順序交給各案負責人確認，把你的要求完整放進變更紀錄。你沒能一句話把所有行程推開，倒是成了這次調整最清楚的發起人；下一輪追進度，大家知道先來問誰。',
   '你肯先挑一件最急的，強尼就把能動的時段排出來。甘特圖少了一條什麼都要的橫線，事情也終於有機會做完；你收回最高優先那句，他則替你留下一個真的有人能接的時間。')
 });
-const voiceFor=(run,target)=>Object.hasOwn(PERSONAS,target)?VOICES[target]||(isExpansionV65(run)?VOICES_V65[target]:null):null;
+const ALICE_VOICE_V71=voice(
+ '愛麗絲，這輪先聽我的。自己人的安排不用再抽一次，你把眼前這項先替我接好。',
+ '愛麗絲，今晚我排。卡池先收起來，自己人這桌先照我的節奏走。',
+ '愛麗絲把眼前那項先接過來，也把需要你本人確認的部分留在旁邊。你叫動了一次幫忙，沒有抽到永久跟班；手機上的保底寫得很清楚，這份同事之間的方便卻只限這一輪。',
+ '愛麗絲把手機放下，問你的名片是不是還附贈替別人決定時間的權限。你想直接定調，先收到一段沒有抽卡特效的反問；自己人的稱號在場，對方願不願意配合仍得自己回答。',
+ '愛麗絲找原本的負責窗口確認分工，把你剛才指定的範圍一起列上。這回沒有打電話給翅膀，只有那句先聽我的被完整記住；接下來誰負責，不能只靠你名片上的字比較親。',
+ '你把真正急的那項說清楚，愛麗絲便替你接了一段。兩人一邊核對一邊把多餘指令收回去，這輪終於不用每句話都拿職稱比稀有度；你少跑一點，原本該你確認的事仍由你回答。'
+);
+const ALICE_PRIVATE_V71=Object.freeze([
+ '愛麗絲先收起手機，跟著你的安排坐了一段，後來卻只回必要的幾句。你得到一點面子，沒有得到整晚的私人陪玩；這頓飯仍在，只是原本輕鬆的話題先少了幾個。',
+ '愛麗絲說下班沒有自己人專用卡池，也沒有替你排隊開房間的職缺。你拿出名片，對方把選擇留回每個人手裡；今晚沒有誰失去工作，只多了一段需要自己收回去的架子。',
+ '愛麗絲轉去問其他人想玩什麼，沒有再等你的行程表。沒人把這桌送去公司請示，大家只是各自選擇下一站；你仍坐在飯桌旁，自己的優先順序卻沒有排進別人的私人時間。',
+ '你把命令改成問愛麗絲要不要一起玩，對方反而替你留了位置。這回沒有動用家譜，也沒有人需要答應整個晚上；你們講好一局就收，飯與牌都停在本人願意的位置。'
+]);
+const voiceFor=(run,target)=>Object.hasOwn(PERSONAS,target)?target==='alice'?(isCareerContentV71(run)?ALICE_VOICE_V71:null):VOICES[target]||(isExpansionV65(run)?VOICES_V65[target]:null):null;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 function contextOf(event){
  const id=String(event?.id||'');
@@ -256,7 +271,7 @@ export function patronageReplyOutcomesV43(run,event,target,{affinity=50}={}){
   if(boss<30){weights[1]+=12;weights[2]+=6;weights[3]-=5;}
  }
  const outcomes=REACTIONS.map((reaction,index)=>{
-  const privateReactions=PRIVATE_REACTIONS[target]||(isExpansionV65(run)?PRIVATE_REACTIONS_V65[target]:null);
+  const privateReactions=target==='alice'&&isCareerContentV71(run)?ALICE_PRIVATE_V71:PRIVATE_REACTIONS[target]||(isExpansionV65(run)?PRIVATE_REACTIONS_V65[target]:null);
   let result=social&&privateReactions?privateReactions[index]:v[reaction];
   if(social&&mode==='flattery')result=target==='wing'?[
    '翅膀聽得很受用，順手請你替大家張羅下一輪。你原本只想捧一句，最後連飯局的小事也接到手上；他覺得自己人就是懂事，你則發現拍完馬屁仍然得親自去拿杯子。',

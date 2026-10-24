@@ -6,13 +6,14 @@ import { isEventDepartureOutcomeV63 } from './event-departure-v63.js';
 import {CAST_IDS_V65,isCastV65} from './cast-v65.js';
 import {isBlockchainOutcomeV65} from './blockchain-v65.js';
 import {isPatronageProgressV69} from './patronage-progress-v69.js';
+import {isCareerContentV71} from './career-content-v71.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
 export const CHARACTER_STATS_VERSION=1;
 export const CHARACTER_IDS=Object.freeze(Object.keys(PERSONAS));
 export const CHARACTER_METRICS=Object.freeze(['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents']);
-const known=(id,run)=>CHARACTER_IDS.includes(id)&&(!CAST_IDS_V65.includes(id)||isCastV65(run));
+const known=(id,run)=>CHARACTER_IDS.includes(id)&&(!CAST_IDS_V65.includes(id)||isCastV65(run))&&(id!=='alice'||isCareerContentV71(run));
 const verbalKinds=new Set(['ignored','relationship','retort','support','personnel','legal']);
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 const choiceDelta=row=>{

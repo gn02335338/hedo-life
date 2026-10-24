@@ -28,6 +28,23 @@ function client(queue, responder, { storageFails = false, savedEntries = [] } = 
 const registered = () => Response.json({ playerId: 'test-player', unlocked: [], totalRuns: 0 });
 const completed = () => Response.json({ playerId: 'test-player', unlocked: ['ragequit-ai'], totalRuns: 1 });
 
+test('card reward claims authenticate and send only the canonical career proof',async()=>{
+ const proof=item(),run={...proof,completed:true,score:999999,tickets:500,stats:{cash:100}};
+ const c=client([],path=>path==='/api/player'?registered():Response.json({ticketsAwarded:4,duplicate:false,state:{tickets:19}}));
+ const result=await c.cloud.claimCards(run);
+ assert.equal(result.ticketsAwarded,4);
+ const request=c.requests.find(row=>row.path==='/api/cards/claim-life');
+ assert.deepEqual(request.body,proof);
+ assert.equal(c.requests[0].path,'/api/player');
+ assert.equal(c.cloud.state.pending,0);
+});
+
+test('unfinished lives cannot claim card tickets or register by attempting a claim',async()=>{
+ const c=client([],()=>{throw new Error('unexpected request');});
+ await assert.rejects(c.cloud.claimCards({...item(),completed:false}),/尚未收尾/);
+ assert.deepEqual(c.requests,[]);
+});
+
 test('a permanently rejected replay does not block later valid queued runs', async () => {
   const first = item(), second = item();
   const c = client([first, second], (path, body) => path === '/api/player' ? registered() : body.runId === first.runId ? Response.json({ error: 'invalid_replay' }, { status: 400 }) : completed());
@@ -316,12 +333,12 @@ test('a sixteen-character verified cache stays intact offline and gains real pro
  assert.equal(reloaded.saved.get('hedo-anonymous-v1'),original.saved.get('hedo-anonymous-v1'));
 });
 
-test('a verified twenty-two-character cache stays historical offline and appends the six zero-value newcomers only when the full authenticated roster arrives',async()=>{
+test('a verified twenty-two-character cache stays historical offline and appends new zero-value characters only when the full authenticated roster arrives',async()=>{
  const legacy=characterRows().slice(0,22).map((row,index)=>({...row,encounters:index+3,affinityGained:index,affinityUpEvents:index?1:0}));
  assert.equal(legacy.length,22,'the cache fixture describes the published v39 roster');
  const original=client([],()=>withCharacters(legacy));await original.cloud.init();
  const serialized=original.saved.get('hedo-character-cache-v1'),oldCache=JSON.parse(serialized),newIds=CHARACTER_IDS.filter(id=>!legacy.some(row=>row.id===id));
- assert.deepEqual(newIds,['zoe','action','hester','simon','james','johnny']);
+ assert.deepEqual(newIds,['zoe','action','hester','simon','james','johnny','alice']);
  const added=newIds.map(id=>({id,...Object.fromEntries(CHARACTER_METRICS.map(metric=>[metric,0]))})),full=[...legacy,...added];let online=false;
  const c=client([],()=>{if(!online)throw new TypeError('offline');return withCharacters(full);},{savedEntries:[...original.saved]});await c.cloud.init();
  assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),legacy);assert.equal(c.saved.get('hedo-character-cache-v1'),serialized);assert.equal(c.cloud.state.charactersVerifiedAt,oldCache.verifiedAt);assert.equal(c.cloud.state.characterTrackingSince,oldCache.trackingSince);

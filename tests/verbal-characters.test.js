@@ -10,8 +10,8 @@ const release=(target,kind='relationship',affinityDelta=-35)=>({
 });
 const life=(history,seed='e30-verbal-counter')=>({seed,history});
 
-test('a spoken outburst can sharply reduce only the selected character affinity without recording a hit',()=>{
- for(const id of CHARACTER_IDS){
+test('a historical spoken outburst can sharply reduce only the selected character affinity without recording a hit',()=>{
+ for(const id of CHARACTER_IDS.filter(id=>id!=='alice')){
   const seed=CAST_IDS_V65.includes(id)?'e39-r65-n-'+'a'.repeat(22):'e30-verbal-counter';
   const run=life([release(id)],seed),rows=deriveCharacterStats(run),selected=rows.find(row=>row.id===id);
   assert.equal(selected.encounters,1);assert.equal(selected.affinityLost,35);assert.equal(selected.affinityDownEvents,1);

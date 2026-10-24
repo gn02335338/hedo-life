@@ -31,7 +31,7 @@ function play(route,{saved=false,actions=route.actions,hashes=false}={}){
 
 test('HTTP rage envelopes accept an optional group target only in e14+ and reject undeclared fields',()=>{
  const proof={runId:randomUUID(),roleId:'system',seed:'e20-group-http',actions:[{type:'rage',phase:'event',eventId:'crisis-boss',target:'erich'}]};
- for(let cohort=14;cohort<=20;cohort++)for(const target of CHARACTER_IDS)assert.deepEqual(validateCompletion({...proof,seed:`e${cohort}-group-http`,actions:[{...proof.actions[0],target}]},{system:{}}).actions[0].target,target);
+ for(let cohort=14;cohort<=20;cohort++)for(const target of CHARACTER_IDS.filter(id=>id!=='alice'))assert.deepEqual(validateCompletion({...proof,seed:`e${cohort}-group-http`,actions:[{...proof.actions[0],target}]},{system:{}}).actions[0].target,target);
  assert.doesNotThrow(()=>validateCompletion({...proof,actions:[{type:'rage',phase:'result',eventId:'paperwork'}]},{system:{}}));
  assert.doesNotThrow(()=>validateCompletion({...proof,seed:'e13-old-http',actions:[{type:'rage'}]},{system:{}}));
  for(const action of [{...proof.actions[0],target:'nobody'},{...proof.actions[0],target:null},{...proof.actions[0],target:1},{...proof.actions[0],target:undefined},{...proof.actions[0],target:['erich']},{...proof.actions[0],extra:true},{...proof.actions[0],phase:'later'}])assert.throws(()=>validateCompletion({...proof,actions:[action]},{system:{}}),error=>error.status===400);

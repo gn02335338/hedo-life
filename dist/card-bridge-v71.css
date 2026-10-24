@@ -1,0 +1,6 @@
+.ending-card-room{display:flex;align-items:center;gap:28px;padding:30px;margin:30px 0;border:1px solid #e4d8ed;border-radius:24px;background:linear-gradient(130deg,#f8f1fc,#fff8ee)}
+.ending-card-room>img{width:150px;aspect-ratio:1;object-fit:contain;flex-shrink:0}
+.ending-card-room h2{font-size:27px;margin:9px 0 12px}.ending-card-room p,.card-invitation p{font-size:13px;line-height:1.9;color:var(--muted)}
+.ending-card-room small{display:block;margin-top:15px;line-height:1.8;color:var(--muted);font-size:11px}.card-room-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}.card-room-actions .primary,.card-room-actions .secondary{min-height:48px;padding:12px 22px;font-size:13px}.card-room-actions button:disabled{opacity:.6;cursor:default}
+.card-invitation{display:flex;gap:15px;padding:18px 20px;margin:20px 0;background:#f4eefb;border:1px solid #dfcfec;border-radius:16px}.card-invitation>span{color:#9261ac;font-size:27px}.card-invitation b{font-size:15px}.card-invitation p{margin:6px 0 10px}.card-invitation a{color:#794593;font-weight:600;font-size:14px}
+@media(max-width:600px){.ending-card-room{align-items:flex-start;padding:24px 20px;gap:14px;flex-direction:column}.ending-card-room>img{width:90px}.ending-card-room h2{font-size:24px}.card-room-actions{flex-direction:column}.card-room-actions a,.card-room-actions button{width:100%;text-align:center}}

@@ -34,7 +34,7 @@ test('r66 keeps the complete inherited profile without accepting malformed or fu
   assert.equal(recruitmentSeedV60('a'.repeat(32),marker==='n'?'normal':marker==='s'?'godson':'goddaughter',66),seed);
   assert.equal(hiddenStoryCountV66(seed),31);
  }
- for(const seed of ['e39-r65-n-'+'a'.repeat(22),'e39-r71-n-'+'a'.repeat(22),'e39-r66-x-'+'a'.repeat(22),'e39-r66-n-'+'a'.repeat(21),'e39-r66-n-'+'a'.repeat(23)])assert.equal(isExpansionV66(seed),false);
+ for(const seed of ['e39-r65-n-'+'a'.repeat(22),'e39-r72-n-'+'a'.repeat(22),'e39-r66-x-'+'a'.repeat(22),'e39-r66-n-'+'a'.repeat(21),'e39-r66-n-'+'a'.repeat(23)])assert.equal(isExpansionV66(seed),false);
  for(const marker of ['n','s','d']){
   const seed=`e39-r67-${marker}-${'a'.repeat(22)}`;
   for(const check of [isRecruitmentV60,isExpansionV65,isExpansionV66,isOfficeTreatsV61,isLifeBalanceV62,isParticipationV63])assert.equal(check(seed),true);

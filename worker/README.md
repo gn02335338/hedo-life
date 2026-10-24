@@ -1205,3 +1205,65 @@ npm run build:check
 
 The migration changes no engine rules, published replay seeds, anonymous token
 format, database schema, achievement IDs, or locked-content presentation.
+
+## Moving Cards anonymous game
+
+`/cards/` is the standalone card collection and turn-based campaign. It reuses
+the existing `hedo-anonymous-v1` identity and `ARCHIVE` / `global-v3`; no new
+binding, service, external API or secret is required. It has no purchases or
+cash redemption. The public catalog and rules live under `dist/cards/`.
+
+| Method | Path | Authenticated input / response |
+| --- | --- | --- |
+| GET | `/api/cards` | Existing bearer; `{state}` containing only this player's projected card state |
+| POST | `/api/cards/action` | `{requestId,revision,action}`; `{duplicate,appliedRevision,state}` |
+| POST | `/api/cards/claim-life` | Exact career proof `{runId,roleId,seed,actions}`; `{ticketsAwarded,duplicate,score,workTurns,state}` |
+
+Card state is stored in lazily created, separate SQLite tables. The Worker
+generates a private 256-bit seed with `crypto.getRandomValues`; clients never
+receive the seed, RNG counter or future draws. Draws and battle effects run on
+the server through the shared pure card rules. Actions accept only intentions:
+draw a single card or ten, change a three-character deck and two equipped cards,
+upgrade/craft, start an unlocked stage, choose a battle move, or abandon a battle.
+Balances, damage, random results and additional action fields are rejected.
+First-clear rewards are part of canonical card state and cannot be farmed by
+repeating a cleared stage. The client catalog is not an authoritative balance.
+
+Every card mutation requires a UUID request ID and exact current revision.
+SQLite transactions serialize concurrent tabs; a different request based on an
+old revision receives 409. The same request ID and content never executes twice,
+including after a Worker restart. An exact retry returns the current authoritative
+state plus its original `appliedRevision`, so it cannot overwrite newer progress.
+Reusing an ID with different content receives 409. Receipts are owner-scoped and
+persist independently of page memory. Failed mutations roll back state and receipt
+together. Existing same-origin checks, no-store headers, streaming JSON limits
+and anonymous request throttling apply. Card endpoints permit 30 requests per
+10 seconds for ordinary battle pacing; the separate career/feedback guard remains
+at its published 10 requests per 10 seconds. A 429 retains all committed progress
+and sends `Retry-After: 10`.
+
+Career rewards are computed from `replayRun` and the current leaderboard score,
+never from client-posted scores, stats or workday cursors. At least three actual,
+distinct completed work scenes are required. An eligible life earns
+`min(12, 1 + floor(score / 1000) + floor(completedWorkTurns / 6))` tickets; lives
+with fewer than three earn zero. Every claimed life, including a zero award, has
+one immutable receipt. Replaying the same completed life cannot issue more
+tickets. A hash-only reservation uniquely binds each player's role and complete
+seed to the original run UUID before asynchronous counter updates. Copying the
+same proof or a same-seed fork under a different UUID receives 409 before adding
+character or achievement counters, including concurrent requests and retries
+after restart. Different new-life seeds remain eligible. An interrupted grant
+retains its reservation so the original UUID can safely retry. Claiming does not
+publish a leaderboard name or reveal a locked ending.
+
+New claims require the exact owner, role, seed hash, ending and full committed
+action hash/count. Existing completed proofs with an exact historical commitment
+can claim without replacing it or increasing archive counters again. Old receipts
+without an action commitment cannot be reconstructed from a matching ending and
+are rejected. The final commitment check, new completion/ending insert, ticket
+grant and claim receipt share one transaction. Raw career seeds, actions and
+transcripts are not retained in the reward receipt. Existing career storage,
+proof queues, character counters and anonymous identity are preserved.
+
+Focused verification uses actual SQLite storage, restart and concurrent-request
+tests: `node --test tests/api-cards.test.mjs tests/cards-*.test.mjs`.

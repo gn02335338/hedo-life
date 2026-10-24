@@ -36,7 +36,7 @@ test('all eight previously authored scenes retain their exact titles, prose, cho
 });
 
 test('a hidden encounter is a rare side scene, absent from the public cast and stats',()=>{
- assert.equal(Object.keys(PERSONAS).length,28);assert.equal(CHARACTER_IDS.length,Object.keys(PERSONAS).length);
+ assert.equal(Object.keys(PERSONAS).length,29);assert.equal(CHARACTER_IDS.length,Object.keys(PERSONAS).length);
  assert.equal(Object.hasOwn(PERSONAS,'hidden-visitor'),false);
  assert.equal(HIDDEN_PERSONAS_V45['hidden-visitor'].name,'魚酥姐');
  assert.equal(HIDDEN_PERSONAS_V45['hidden-visitor'].image,'./assets/hidden-visitor.png');

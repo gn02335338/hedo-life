@@ -13,6 +13,7 @@ import { IslandApplicationStore, validateIslandApplication } from './island-appl
 import { LeaderboardStore, validateLeaderboardFilter, validateLeaderboardNickname } from './leaderboards.js';
 import { deriveLeaderboardScoreV56, leaderboardEligibilityV56, SCORE_VERSION_V56 } from '../dist/leaderboard-score-v56.js';
 import { handleDomainMigration } from './domain-migration.js';
+import { CardGameStore, CardRateGuard, validateCardLifeClaim } from './card-game.js';
 
 const ENDING_IDS = new Set(ENDINGS.map(ending => ending.id));
 
@@ -25,6 +26,7 @@ export class HedoArchive extends DurableObject {
     this.adminPrivate = null;
     this.islandApplications = null;
     this.leaderboards = null;
+    this.cards = null;
     this.sql.exec(`
       CREATE TABLE IF NOT EXISTS players (
         id TEXT PRIMARY KEY,
@@ -86,9 +88,10 @@ export class HedoArchive extends DurableObject {
     };
   }
 
-  async authenticate(request) {
+  async authenticate(request, { cards = false } = {}) {
     const hash = await tokenHash(bearerToken(request));
-    this.rate.check(hash);
+    if (cards) (this.cardRate ||= new CardRateGuard()).check(hash);
+    else this.rate.check(hash);
     const row = this.sql.exec('SELECT id FROM players WHERE token_hash = ?', hash).toArray()[0];
     if (!row) throw new ApiError(401, 'unknown_player', '請先建立匿名收藏。');
     return row.id;
@@ -171,6 +174,59 @@ export class HedoArchive extends DurableObject {
 
   leaderboardStore() {
     return this.leaderboards ||= new LeaderboardStore(this.sql, this.ctx.storage);
+  }
+
+  cardStore() {
+    return this.cards ||= new CardGameStore(this.sql, this.ctx.storage);
+  }
+
+  async claimCardLife(request) {
+    const playerId = await this.authenticate(request, { cards: true });
+    const { runId, roleId, seed, actions } = validateCompletion(validateCardLifeClaim(await readJson(request)), ROLE_MAP);
+    let run;
+    try { run = replayRun(roleId, seed, actions); }
+    catch { throw new ApiError(400, 'invalid_replay', '遊戲操作紀錄無法重播。'); }
+    if (!run?.completed || !ENDING_IDS.has(run.endingId)) throw new ApiError(400, 'incomplete_run', '這一局尚未走到結局。');
+    const eligibility = leaderboardEligibilityV56(run);
+    if (!eligibility.eligible) throw new ApiError(400, 'ineligible_rules', eligibility.reason || '請用新版人生累積抽卡券。');
+    const score = deriveLeaderboardScoreV56(run);
+    const [actionHash, seedHash] = await Promise.all([tokenHash(JSON.stringify(actions)), tokenHash(seed)]);
+    const proof = { runId, roleId, seedHash, actionHash, actionCount: actions.length };
+    const store = this.cardStore();
+    store.assertClaimReceipt(store.claimReceipt(runId), playerId, proof);
+    const assertCommitment = () => {
+      const committed = this.characters.progress(runId);
+      if (!committed || committed.player_id !== playerId || committed.role_id !== roleId || committed.seed_hash !== seedHash
+          || !committed.completed || committed.ending_id !== run.endingId || committed.action_count !== actions.length || committed.action_hash !== actionHash) {
+        throw new ApiError(409, 'card_commitment_conflict', '這局完整操作與原本紀錄不一致，無法兌換抽卡券。');
+      }
+    };
+    const existing = this.sql.exec('SELECT * FROM runs WHERE id=?', runId).toArray()[0];
+    if (existing) {
+      if (existing.player_id !== playerId || existing.role_id !== roleId || existing.ending_id !== run.endingId) throw new ApiError(409, 'run_id_conflict', '這個人生編號已使用，請保留原本的遊戲紀錄。');
+      // Matching endings are insufficient to reconstruct an uncommitted old
+      // branch. Existing exact commitments remain usable without rewriting them.
+      assertCommitment();
+    }
+    await this.characters.assertIdentity(playerId, runId, roleId, seed);
+    if (this.characters.progress(runId)?.completed) assertCommitment();
+    store.reserveLife(playerId, proof);
+    if (!existing) {
+      await this.characters.record(playerId, runId, run);
+      await this.achievements.record(playerId, runId, run);
+    }
+    const now = new Date().toISOString();
+    return json(store.claimLife(playerId, proof, score.total, score.completedTurns, () => {
+      assertCommitment();
+      const committed = this.sql.exec('SELECT * FROM runs WHERE id=?', runId).toArray()[0];
+      if (committed && (committed.player_id !== playerId || committed.role_id !== roleId || committed.ending_id !== run.endingId)) throw new ApiError(409, 'run_id_conflict', '這個人生編號已使用，請保留原本的遊戲紀錄。');
+      if (!committed) {
+        this.sql.exec(`INSERT INTO runs(id,player_id,ending_id,role_id,actual_role_id,rank,salary,turns,game_version,created_at)
+          VALUES(?,?,?,?,?,?,?,?,?,?)`, runId, playerId, run.endingId, run.roleId, run.actualRoleId, run.rank, run.pay, Math.min(run.turn + 1, MAX_TURNS), VERSION, now);
+        this.sql.exec('INSERT OR IGNORE INTO player_endings(player_id,ending_id,first_seen_at) VALUES(?,?,?)', playerId, run.endingId, now);
+        this.observations.record(runId, run, now);
+      }
+    }));
   }
 
   async leaderboardSubmit(request) {
@@ -275,6 +331,17 @@ export class HedoArchive extends DurableObject {
         return await this.adminPrivate.fetch(request);
       }
       if (['POST', 'DELETE', 'PATCH'].includes(request.method)) assertSameOrigin(request);
+      if (path === '/api/cards' || path.startsWith('/api/cards/')) {
+        if (new URL(request.url).search) throw new ApiError(400, 'invalid_card_query', '卡牌端點不接受額外查詢欄位。');
+        if (path === '/api/cards' && request.method === 'GET') return json(this.cardStore().snapshot(await this.authenticate(request, { cards: true })));
+        if (path === '/api/cards/action' && request.method === 'POST') {
+          const playerId = await this.authenticate(request, { cards: true });
+          return json(await this.cardStore().action(playerId, await readJson(request, { maxBytes: 4096 })));
+        }
+        if (path === '/api/cards/claim-life' && request.method === 'POST') return await this.claimCardLife(request);
+        if (['/api/cards', '/api/cards/action', '/api/cards/claim-life'].includes(path)) throw new ApiError(405, 'method_not_allowed', '這個卡牌端點不接受此操作。');
+        throw new ApiError(404, 'not_found', '找不到這個卡牌端點。');
+      }
       if (path.startsWith('/api/island/')) {
         const params = new URL(request.url).searchParams;
         if ([...params.keys()].length) throw new ApiError(400, 'invalid_island_query', '上島端點不接受額外查詢欄位。');

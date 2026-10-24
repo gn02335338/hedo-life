@@ -19,9 +19,13 @@ const proof=(action,seed='e39-patronage-envelope')=>({
 });
 const action=()=>({type:'patronage-reply',version:1,eventId:'some-work-scene',target:'rick'});
 const rejected=body=>assert.throws(()=>validateCompletion(body,ROLE_MAP),error=>error instanceof ApiError&&error.code==='invalid_actions');
+// Legacy version-1 fixtures exercise their original 28-person public roster.
+// Alice's strict r71 evidence and HTTP grammar are covered by the r71 tests.
+const historicalTargets=CHARACTER_IDS.filter(id=>id!=='alice');
 
 test('a patronage reply credits only its selected public character and never records a hit',()=>{
- for(const target of CHARACTER_IDS){
+ assert.equal(historicalTargets.length,28);
+ for(const target of historicalTargets){
   for(const reaction of ['obliged','retort','reported','welcomed']){
    const row=reply(target),seed=CAST_IDS_V65.includes(target)?'e39-r65-n-'+'a'.repeat(22):'e39-patronage-projection',run=life([{...row,patronageOutcome:{...row.patronageOutcome,reaction}}],seed);
    assert.equal(isPatronageOutcomeV43(run,run.history[0]),true,`${target}/${reaction}`);
@@ -79,7 +83,7 @@ test('malformed patronage rows never fall back to trust, verbal, meal or rage pr
 });
 
 test('HTTP accepts exactly the versioned patronage reply action for public targets and supported cohorts',()=>{
- for(let cohort=29;cohort<=39;cohort++)for(const target of CHARACTER_IDS){
+ for(let cohort=29;cohort<=39;cohort++)for(const target of historicalTargets){
   const body=proof({...action(),target},`e${cohort}-supported`),accepted=validateCompletion(body,ROLE_MAP);
   assert.deepEqual(accepted.actions,body.actions);
  }

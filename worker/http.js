@@ -1,3 +1,4 @@
+import {isCareerContentV71} from '../dist/career-content-v71.js';
 import {isExpansionV65} from '../dist/expansion-profile-v65.js';
 import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
 import {isActivityPlayV55,deriveActivityPlayV55} from '../dist/activity-play-v55.js';
@@ -9,6 +10,8 @@ import {isPatronageProgressV69} from '../dist/patronage-progress-v69.js';
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
 const RAGE_TARGET_IDS=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','zoe','action','hester','simon','james','johnny']);
+
+const targetAllowed=(seed,target)=>RAGE_TARGET_IDS.has(target)||(target==='alice'&&isCareerContentV71(seed));
 
 export class ApiError extends Error {
   constructor(status, code, message) {
@@ -169,18 +172,18 @@ export function validateCompletion(body, roleMap) {
       if (/^e(?:29|30|31|32|33|34|35|36|37|38|39)-/.test(body.seed)
           &&Object.keys(action).sort().join(',')==='eventId,target,type,version'&&action.version===(isPatronageProgressV69(body.seed)?2:1)
           &&typeof action.eventId==='string'&&action.eventId.trim().length>0&&action.eventId.length<=100
-          &&RAGE_TARGET_IDS.has(action.target)) continue;
+          &&targetAllowed(body.seed,action.target)) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
     if (action.type === 'verbal') {
-      const keys=Object.keys(action),targetValid=!Object.hasOwn(action,'target')||RAGE_TARGET_IDS.has(action.target);
+      const keys=Object.keys(action),targetValid=!Object.hasOwn(action,'target')||targetAllowed(body.seed,action.target);
       if (/^e(?:30|31|32|33|34|35|36|37|38|39)-/.test(body.seed)&&['event','result'].includes(action.phase)&&typeof action.eventId==='string'&&action.eventId.length>0&&action.eventId.length<=100&&targetValid&&(!Object.hasOwn(action,'version')||action.version===2)&&keys.every(key=>['type','phase','eventId','target',...(action.version===2?['version']:[])].includes(key))) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }
     if (action.type === 'rage') {
       const keys=Object.keys(action);
       if (body.seed.startsWith('e13-') && keys.every(key=>key==='type')) continue;
-      const targetValid=!Object.hasOwn(action,'target') || RAGE_TARGET_IDS.has(action.target);
+      const targetValid=!Object.hasOwn(action,'target') || targetAllowed(body.seed,action.target);
       if (/^e(?:14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39)-/.test(body.seed) && ['event','result'].includes(action.phase) && typeof action.eventId==='string' && action.eventId.length>0 && action.eventId.length<=100 && targetValid && keys.every(key=>['type','phase','eventId','target'].includes(key))) continue;
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
     }

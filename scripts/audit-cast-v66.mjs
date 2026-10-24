@@ -12,8 +12,8 @@ const currentCalendarEligible=event=>{
 export function auditCastV66(){
  const unique=new Map(EVENTS.map(event=>[event.id,event]));
  if(unique.size!==EVENTS.length)throw Error('Duplicate authored event ID');
- const characters=Object.entries(PERSONAS).map(([id,persona])=>{
-  const authored=[...unique.values()].filter(event=>event.speaker===id&&event.choices?.length>=3);
+ const characters=Object.entries(PERSONAS).filter(([id])=>id!=='alice').map(([id,persona])=>{
+  const authored=[...unique.values()].filter(event=>!event.requiresCareerV71&&event.speaker===id&&event.choices?.length>=3);
   const previous=authored.filter(event=>!event.requiresCastV66&&currentCalendarEligible(event)),added=authored.filter(event=>event.requiresCastV66&&currentCalendarEligible(event)),excludedLegacy=authored.filter(event=>!event.requiresCastV66&&!currentCalendarEligible(event)).map(event=>event.id);
   return {id,name:id==='professor'?'林老師':publishedDisplayText(persona.name),before:previous.length,added:added.length,after:previous.length+added.length,beforeIds:previous.map(event=>event.id),addedIds:added.map(event=>event.id),excludedLegacy};
  });

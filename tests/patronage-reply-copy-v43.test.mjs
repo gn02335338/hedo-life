@@ -4,8 +4,10 @@ import {PERSONAS} from '../dist/persona.js';
 import {CAST_IDS_V65} from '../dist/cast-v65.js';
 import {patronageReplyModeV43,patronageReplyLineV43,patronageReplyOutcomesV43} from '../dist/patronage-reply-v43.js';
 const run={stats:{boss:50,mood:50}},work={id:'ordinary-work',kind:'daily'},social={id:'private-conversation',scope:'private'};
-const legacyTargets=Object.keys(PERSONAS).filter(id=>!CAST_IDS_V65.includes(id));
+// This fixture predates both the six r65 guests and the separately gated Alice.
+const legacyTargets=Object.keys(PERSONAS).filter(id=>id!=='alice'&&!CAST_IDS_V65.includes(id));
 test('historical public characters retain distinct appointment lines and four bounded reactions, with authority aimed at the actual person',()=>{
+ assert.equal(legacyTargets.length,22);
  const lines=new Set();
  for(const target of legacyTargets){
   const before=JSON.stringify(run),line=patronageReplyLineV43(run,work,target),outcomes=patronageReplyOutcomesV43(run,work,target);

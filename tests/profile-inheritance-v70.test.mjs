@@ -17,19 +17,20 @@ import {isEnergyRestV53} from '../dist/energy-rest-v53.js';
 import {isEnergySafetyV54} from '../dist/energy-safety-v54.js';
 import {isActivityPlayV55} from '../dist/activity-play-v55.js';
 import {isShareholderV58} from '../dist/shareholders-v58.js';
+import {isKindRecoveryV70} from '../dist/kind-recovery-v70.js';
 import {validateCompletion} from '../worker/http.js';
 
-const gates=[isRecruitmentV60,isExpansionV65,isExpansionV66,isOfficeTreatsV61,isLifeBalanceV62,isParticipationV63,isPatronageBenefitsV67,isPatronageFamiliarityV68,isPatronageProgressV69,isWorkGapV50,isEnergyRestV53,isEnergySafetyV54,isActivityPlayV55,isShareholderV58];
+const gates=[isKindRecoveryV70,isRecruitmentV60,isExpansionV65,isExpansionV66,isOfficeTreatsV61,isLifeBalanceV62,isParticipationV63,isPatronageBenefitsV67,isPatronageFamiliarityV68,isPatronageProgressV69,isWorkGapV50,isEnergyRestV53,isEnergySafetyV54,isActivityPlayV55,isShareholderV58];
 
-test('r70 inherits current cast, work-gap safety, activities, finances and complete family replies',()=>{
- for(const kind of ['normal','godson','goddaughter']){
-  const seed=recruitmentSeedV60('abcd'.repeat(8),kind,70);
+test('r70 and r71 inherit current cast, work-gap safety, activities, finances and complete family replies',()=>{
+ for(const profile of [70,71])for(const kind of ['normal','godson','goddaughter']){
+  const seed=recruitmentSeedV60('abcd'.repeat(8),kind,profile);
   assert.equal(seed.length,32);
   for(const gate of gates){assert.equal(gate(seed),true,gate.name);assert.equal(gate({seed}),true,gate.name);}
  }
- const invalid=['e39-r71-s-'+'a'.repeat(22),'e39-r70-x-'+'a'.repeat(22),'e39-r70-s-'+'a'.repeat(21),'e39-r70-s-'+'a'.repeat(23),'e39-r70-s-'+'A'.repeat(22),'e39-r70-s-'+'a'.repeat(22)+'-extra'];
+ const invalid=['e39-r72-s-'+'a'.repeat(22),'e39-r70-x-'+'a'.repeat(22),'e39-r70-s-'+'a'.repeat(21),'e39-r70-s-'+'a'.repeat(23),'e39-r70-s-'+'A'.repeat(22),'e39-r70-s-'+'a'.repeat(22)+'-extra'];
  for(const seed of invalid)for(const gate of gates)assert.equal(gate(seed),false,gate.name+'/'+seed);
- assert.throws(()=>recruitmentSeedV60('abcd'.repeat(8),'normal',71));
+ assert.throws(()=>recruitmentSeedV60('abcd'.repeat(8),'normal',72));
 });
 
 test('both natural r70 family entries answer a work scene once and submit version 2 proof to the Worker',()=>{

@@ -15,8 +15,8 @@ const expected=['annie_yu','princess','joyce','janet','captain'];
 const profileRun=()=>({seed:'e39-pure-cast-profile',actualRoleId:'sales',rank:1,turn:4,rng:12345,history:[],flags:{},stats:{cash:80,mood:50,energy:70},eventId:'meal-guests-c',mealContext:{origin:'self-care',page:2,guest:null}});
 
 test('the five additive public characters have thirty distinct playable work scenes each and retain occupational buckets',()=>{
- assert.deepEqual(CAST_IDS_V39,expected);assert.equal(Object.keys(PERSONAS).length,28);
- assert.equal(CAST_EVENTS_V39.length,150);assert.equal(EVENTS.filter(event=>!event.requiresCastV65&&!event.requiresCastV66).length,861,'the published pre-v65 deck stays intact');
+ assert.deepEqual(CAST_IDS_V39,expected);assert.equal(Object.keys(PERSONAS).length,29);
+ assert.equal(CAST_EVENTS_V39.length,150);assert.equal(EVENTS.filter(event=>!event.requiresCastV65&&!event.requiresCastV66&&!event.requiresCareerV71).length,861,'the published pre-v65 deck stays intact');
  assert.equal(new Set(CAST_EVENTS_V39.map(event=>event.id)).size,150);
  assert.equal(new Set(CAST_EVENTS_V39.map(event=>event.choices.find(choice=>choice.wild).text)).size,150,'each scene has its own authored absurd response');
  const roleIds=new Set(ROLES.map(role=>role.id));

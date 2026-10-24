@@ -75,7 +75,7 @@ function isDocumentNavigation(request, url) {
   if (request.method !== 'GET' && request.method !== 'HEAD') return false;
   if (request.headers.get('Sec-Fetch-Mode') === 'navigate' || request.headers.get('Sec-Fetch-Dest') === 'document') return true;
   if ((request.headers.get('Accept') || '').toLowerCase().includes('text/html')) return true;
-  return ['/', '/index.html', '/island', '/island/', '/island/index.html', '/arpg', '/arpg/', '/arpg/index.html', '/gta', '/gta/', '/gta/index.html'].includes(url.pathname);
+  return ['/', '/index.html', '/island', '/island/', '/island/index.html', '/arpg', '/arpg/', '/arpg/index.html', '/gta', '/gta/', '/gta/index.html', '/cards', '/cards/', '/cards/index.html'].includes(url.pathname);
 }
 
 function migrationWasVisited(request) {

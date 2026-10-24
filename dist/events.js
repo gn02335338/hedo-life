@@ -1,5 +1,7 @@
 import {CAST_EVENTS_V65} from './events-cast-v65.js';
 import {CAST_EVENTS_V66} from './events-cast-v66.js';
+import {ALICE_EVENTS_V71} from './events-alice-v71.js';
+import {CAREER_EVENTS_V71} from './events-career-v71.js';
 // Satirical adaptation of private recollections. Every Wing line, choice and outcome
 // is original fictional dialogue; sourceIds identify inspiration, never verified accusations.
 import { IMAGE_EVENTS } from './events-images.js';
@@ -1314,3 +1316,5 @@ EVENTS.push(...CAST_EVENTS_V39);
 // Fresh expansion lives own these original colleague scenes.
 EVENTS.push(...CAST_EVENTS_V65);
 EVENTS.push(...CAST_EVENTS_V66);
+EVENTS.push(...ALICE_EVENTS_V71);
+EVENTS.push(...CAREER_EVENTS_V71);

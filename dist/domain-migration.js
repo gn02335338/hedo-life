@@ -8,6 +8,7 @@ export const LOCAL_KEYS = Object.freeze([
   'hedo-sync-queue-v3', 'hedo-achievement-queue-v1',
   'hedo-character-cache-v1', 'hedo-character-public-v1',
   'hedo-island-v1', 'hedo-gta-v1', 'hedo-arpg-v1',
+  'hodo-cards-practice-v1', 'hodo-cards-pending-v1',
 ]);
 export const SESSION_KEYS = Object.freeze(['hedo-feedback-draft-v1']);
 export const SOURCE_STATE_KEY = 'hodo-domain-migration-source-v1';
@@ -112,7 +113,7 @@ export function migrationConflict(source, destination) {
   // Pending-result and advanced-event boundaries can share the same actions.
   // A full run difference therefore requires a choice, even for one run UUID.
   if (first && second && JSON.stringify(first) !== JSON.stringify(second)) return 'run';
-  for (const key of ['hedo-island-v1', 'hedo-gta-v1', 'hedo-arpg-v1']) {
+  for (const key of ['hedo-island-v1', 'hedo-gta-v1', 'hedo-arpg-v1', 'hodo-cards-practice-v1', 'hodo-cards-pending-v1']) {
     if (source.local[key] !== null && destination.local[key] !== null && source.local[key] !== destination.local[key]) return 'sidegame';
   }
   if (SESSION_KEYS.some(key => source.session[key] !== null && destination.session[key] !== null
