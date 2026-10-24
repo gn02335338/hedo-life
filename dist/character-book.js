@@ -20,20 +20,27 @@ const radarPoint = (index, ratio = 1) => {
   const angle = -Math.PI / 2 + index * Math.PI / 3;
   return `${(160 + Math.cos(angle) * 70 * ratio).toFixed(2)},${(130 + Math.sin(angle) * 70 * ratio).toFixed(2)}`;
 };
+function radarRates(row) {
+  if (!row) return null;
+  if (row.encounters === 0) return RADAR_AXES.every(axis => row[axis.key] === 0) ? RADAR_AXES.map(() => 0) : null;
+  return RADAR_AXES.map(axis => row[axis.key] / row.encounters * 100);
+}
 function characterRadarHTML(id, own, total, domains) {
   const name = escapeHTML(displayName(id)), series = [['global', total, '全體累計'], ['personal', own, '你的累計']];
   const values = row => RADAR_AXES.map(axis => row[axis.key]);
   const description = series.map(([, row, label]) => `${label}：${row ? RADAR_AXES.map(axis => `${METRIC_LABELS[axis.key]} ${number(row[axis.key])}`).join('、') : '尚未取得'}`).join('。');
-  const known = series.filter(([, row]) => row);
+  const known = series.filter(([, row]) => radarRates(row));
   const empty = known.length > 0 && known.every(([, row]) => values(row).every(value => value === 0));
+  const samples = series.filter(([, row]) => row && row.encounters > 0 && row.encounters < 10).map(([, row, label]) => `${label} ${number(row.encounters)} 次`);
   return `<div class="character-encounter-totals"><span>完成互動</span><div>你的累計 <b>${number(own?.encounters)}</b><small>次</small></div><div>全體累計 <b>${number(total?.encounters)}</b><small>次</small></div></div>
-    <figure class="character-radar-figure"><div class="character-radar-legend">${[['personal', own, '你的累計'], ['global', total, '全體累計']].map(([key, row, label]) => `<span class="${key}${row ? '' : ' unavailable'}">${label}${row ? '' : '・尚未取得'}</span>`).join('')}</div>
-    <svg class="character-radar" data-radar-character="${id}" viewBox="0 0 320 260" role="img" aria-labelledby="character-radar-title-${id}" aria-describedby="character-radar-desc-${id}"><title id="character-radar-title-${id}">${name}的六項互動比較雷達圖</title><desc id="character-radar-desc-${id}">${description}。每軸依已取得的角色最高累計縮放。</desc>
+    <figure class="character-radar-figure"><p class="character-radar-mode">互動傾向 · 標準化 0–100</p><div class="character-radar-legend">${[['personal', own, '你的累計'], ['global', total, '全體累計']].map(([key, row, label]) => `<span class="${key}${radarRates(row) ? '' : ' unavailable'}">${label}${!row ? '・尚未取得' : !radarRates(row) ? '・無法換算' : ''}</span>`).join('')}</div>
+    <svg class="character-radar" data-radar-character="${id}" data-radar-normalization="per-encounter" viewBox="0 0 320 260" role="img" aria-labelledby="character-radar-title-${id}" aria-describedby="character-radar-desc-${id}"><title id="character-radar-title-${id}">${name}的六項互動傾向標準化雷達圖</title><desc id="character-radar-desc-${id}">${description}。先換算每100次互動，再依各軸最高比率縮放為0到100指數，所有角色與兩種紀錄共用刻度。</desc>
     ${[0.25, 0.5, 0.75, 1].map(ratio => `<polygon class="character-radar-grid" points="${RADAR_AXES.map((_, index) => radarPoint(index, ratio)).join(' ')}"/>`).join('')}
     ${RADAR_AXES.map((axis, index) => `<line class="character-radar-spoke" x1="160" y1="130" x2="${radarPoint(index).split(',')[0]}" y2="${radarPoint(index).split(',')[1]}"/>`).join('')}
-    ${series.filter(([, row]) => row).map(([key, row, label]) => `<polygon class="character-radar-area ${key}" data-radar-series="${key}" data-radar-values="${values(row).join(',')}" points="${RADAR_AXES.map((axis, index) => radarPoint(index, row[axis.key] / domains[axis.key])).join(' ')}"><title>${label}：${RADAR_AXES.map(axis => `${METRIC_LABELS[axis.key]} ${number(row[axis.key])}`).join('、')}</title></polygon>${RADAR_AXES.map((axis, index) => { const [x, y] = radarPoint(index, row[axis.key] / domains[axis.key]).split(','); return `<circle class="character-radar-dot ${key}" cx="${x}" cy="${y}" r="${key === 'personal' ? 2.5 : 3.5}"/>`; }).join('')}`).join('')}
-    ${RADAR_AXES.map(axis => `<text class="character-radar-label" data-radar-axis="${axis.key}" x="${axis.x}" y="${axis.y}" text-anchor="${axis.anchor}" aria-hidden="true">${axis.label}<tspan x="${axis.x}" dy="15">${axis.unit}</tspan></text>`).join('')}
-    </svg>${!known.length ? '<p class="character-radar-empty">尚未取得這位角色的累計。</p>' : empty ? '<p class="character-radar-empty">尚無這類互動，六項累計皆為 0。</p>' : ''}<figcaption>每一軸以目前已取得的角色最高累計為外圈，次數與點數各自縮放。可展開下方查看實際數字。</figcaption></figure>`;
+    ${known.map(([key, row, label]) => { const rates = radarRates(row), scores = rates.map((rate, index) => rate / domains[index]); return `<polygon class="character-radar-area ${key}" data-radar-series="${key}" data-radar-values="${values(row).join(',')}" data-radar-rates="${rates.join(',')}" data-radar-scores="${scores.map(score => score * 100).join(',')}" points="${scores.map((score, index) => radarPoint(index, score)).join(' ')}"><title>${label}（每100次互動）：${RADAR_AXES.map((axis, index) => `${axis.label}${axis.unit === '點數' ? '點數' : '次數'} ${rates[index].toLocaleString('zh-TW', { maximumFractionDigits: 2 })}`).join('、')}</title></polygon>${scores.map((score, index) => { const [x, y] = radarPoint(index, score).split(','); return `<circle class="character-radar-dot ${key}" cx="${x}" cy="${y}" r="${key === 'personal' ? 2.5 : 3.5}"/>`; }).join('')}`; }).join('')}
+    ${RADAR_AXES.map(axis => `<text class="character-radar-label" data-radar-axis="${axis.key}" x="${axis.x}" y="${axis.y}" text-anchor="${axis.anchor}" aria-hidden="true">${axis.label}<tspan x="${axis.x}" dy="15">${axis.unit === '點數' ? '變化強度' : '發生頻率'}</tspan></text>`).join('')}
+    <text class="character-radar-tick" x="166" y="58" aria-hidden="true">100</text>
+    </svg>${!known.length ? '<p class="character-radar-empty">尚無足夠的互動資料可換算。</p>' : empty ? '<p class="character-radar-empty">尚無這類互動，六項累計皆為 0。</p>' : ''}${samples.length ? `<p class="character-radar-sample">樣本較少：${samples.join('、')}，圖形可能隨下次互動明顯改變。</p>` : ''}<figcaption>先換算每 100 次互動，再依各軸最高比率縮放成 0–100 指數。角色、個人與全體共用刻度；100 代表目前該項最高比率。原始數字可展開查看。</figcaption></figure>`;
 }
 const ORIGINAL_CHARACTER_IDS = ['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei'];
 const rowsById = rows => new Map((Array.isArray(rows) ? rows : []).filter(row =>
@@ -65,10 +72,11 @@ export function characterBookHTML({ personal = null, global = null, currentRun =
     return a < b ? 1 : a > b ? -1 : 0;
   });
   const largest = Math.max(1, ...ranking.map(id => Number(metricValue(all.get(id), selectedMetric) ?? 0)));
-  // Shared axes across both verified scopes and every public character. A
-  // filter must not make a character look stronger by changing the scale.
-  const radarRows = [...mine.values(), ...all.values()];
-  const radarDomains = Object.fromEntries(RADAR_AXES.map(({ key }) => [key, Math.max(1, ...radarRows.map(row => row[key]))]));
+  // Normalize by each character's completed encounters before deriving shared
+  // axes. More appearances alone must not make Wing dominate every polygon.
+  // Keep the same ruler across scopes and filters, including rates below 1.
+  const radarRows = [...mine.values(), ...all.values()].map(radarRates).filter(Boolean);
+  const radarDomains = RADAR_AXES.map((_, index) => Math.max(0, ...radarRows.map(row => row[index])) || 1);
   const personalKnown = mine.size > 0, publicKnown = all.size > 0;
   const networkLabel = status === 'online' ? '已驗證雲端紀錄' : personalKnown ? '離線・顯示上次已驗證紀錄' : '尚未取得個人雲端紀錄';
   const empty = publicKnown && [...all.values()].every(row => row.encounters === 0);
