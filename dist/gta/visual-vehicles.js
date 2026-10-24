@@ -27,6 +27,7 @@ export function createVehicleVisualFactory(ctx) {
   const damagedSolid = mat('#ffffff', { vertexColors: true, metalness: .15, roughness: .76 });
   const brokenLamp = mat('#363a38', { roughness: .9 });
   const wheelTint = new THREE.Color();
+  const shapesByPalette = new Map(), wheelsByVariant = new Map();
   const C = { rubber: '#17202a', inset: '#101c28', glass: '#294c61', reflection: '#7896a5', chrome: '#b3c1c5', trim: '#526773', plate: '#e5ebdf', red: '#d44b49', white: '#f1f4e9' };
   const unit = [1, 1, 1];
 
@@ -227,6 +228,7 @@ export function createVehicleVisualFactory(ctx) {
   }
 
   function wheelGeometry(spec, variant) {
+    if (wheelsByVariant.has(variant)) return wheelsByVariant.get(variant);
     const pieces = [], radius = spec.radius;
     const cylinder = (name, r, width, segments) => cache(name, () => new THREE.CylinderGeometry(r, r, width, segments));
     add(pieces, cylinder(`${variant}:tire`, radius, .23, 20), C.rubber, [0, 0, 0], unit, [0, 0, Math.PI / 2]);
@@ -243,7 +245,8 @@ export function createVehicleVisualFactory(ctx) {
       // A single small valve and asymmetric spoke faces make wheel roll visible.
       box(pieces, '#778b91', [side * .15, radius * .59, .02], [.012, .025, .035]);
     }
-    return bake(`${variant}:wheel-assembly`, pieces);
+    const geometry = bake(`${variant}:wheel-assembly`, pieces);
+    wheelsByVariant.set(variant, geometry); return geometry;
   }
 
   // Damage is baked into a separate cached shell. Never recolor the shared
@@ -275,7 +278,9 @@ export function createVehicleVisualFactory(ctx) {
   return function createVehicleVisual(color, kind = null, id = '') {
     const police = kind === 'police', variant = variantFor(String(id), police), spec = VARIANTS[variant];
     const paint = police ? '#172a39' : `#${new THREE.Color(color ?? '#b5c7b8').getHexString()}`;
-    const shapes = details(spec, variant, paint, police);
+    const paletteKey = `${variant}:${police ? 'police' : paint}`;
+    if (!shapesByPalette.has(paletteKey)) shapesByPalette.set(paletteKey, details(spec, variant, paint, police));
+    const shapes = shapesByPalette.get(paletteKey);
     const group = new THREE.Group(); group.name = `vehicle:${id}`;
     const body = part(group, shapes.body, solid, [0, 0, 0], unit);
     const frontLights = part(group, shapes.frontLights, M.lit, [0, 0, 0], unit);
@@ -306,7 +311,7 @@ export function createVehicleVisualFactory(ctx) {
     add(driverPieces, sphereGeometry, '#263840', [-.83, spec.belt + .43, -.045], [.112, .065, .115]);
     part(occupant, bake(`${variant}:${police ? 'police' : 'civilian'}:occupant`, driverPieces), driverMaterial, [0, 0, 0], unit);
     contact(group, 1.17, 2.18);
-    const model = { group, door, passengerDoor, occupant, police, redFlash, blueFlash, damageStage: null,
+    const model = { group, door, passengerDoor, occupant, police, redFlash, blueFlash, paintSource: color, damageStage: null,
       ownedGeometries: new Set(), variant,
       flashOffset: [...String(id)].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 8,
       wheels: { mesh: wheelMesh, radius: spec.radius, x: spec.width - .125, front: spec.wheelFront, rear: spec.wheelRear,

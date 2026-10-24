@@ -1,4 +1,5 @@
 import { BUILDINGS, SPAWN, WORLD_LIMIT } from './world.js';
+import { getPerformanceProfile } from './garage.js';
 
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const finite = (value, fallback) => Number.isFinite(value) ? value : fallback;
@@ -15,7 +16,7 @@ export function createVehicle(overrides = {}) {
     x: clamp(finite(overrides.x, SPAWN.x), -WORLD_LIMIT + CAR_RADIUS, WORLD_LIMIT - CAR_RADIUS),
     z: clamp(finite(overrides.z, SPAWN.z), -WORLD_LIMIT + CAR_RADIUS, WORLD_LIMIT - CAR_RADIUS),
     heading: wrapAngle(finite(overrides.heading, SPAWN.heading)),
-    speed: clamp(finite(overrides.speed, SPAWN.speed), -8, 32),
+    speed: clamp(finite(overrides.speed, SPAWN.speed), -8, 32 * 1.24),
     steerAngle: clamp(finite(overrides.steerAngle, 0), -1, 1),
     yawVelocity: clamp(finite(overrides.yawVelocity, 0), -4, 4),
     impact: false,
@@ -117,32 +118,33 @@ export function stepVehicle(state, input = {}, dt = 0, obstacles = BUILDINGS) {
   const steer = clamp(finite(input.steer, 0), -1, 1);
   const handbrake = input.brake === true;
   const boost = input.boost === true && throttle > 0;
-  const maximum = boost ? 32 : 23;
+  const tuning = getPerformanceProfile(input.tuning);
+  const maximum = boost ? tuning.boostSpeed : tuning.maxSpeed;
   const collisionBlocks = Array.isArray(obstacles) ? obstacles : BUILDINGS;
   const steps = Math.max(1, Math.ceil(elapsed * 120));
   const slice = elapsed / steps;
 
   for (let index = 0; index < steps; index += 1) {
     if (handbrake) {
-      vehicle.speed = approach(vehicle.speed, 0, 40 * slice);
+      vehicle.speed = approach(vehicle.speed, 0, 40 * tuning.brakeMultiplier * slice);
     } else if (throttle * vehicle.speed < -0.01) {
       // S first brakes forward motion; reversing starts only after a stop.
-      vehicle.speed = approach(vehicle.speed, 0, 30 * Math.abs(throttle) * slice);
+      vehicle.speed = approach(vehicle.speed, 0, 30 * tuning.brakeMultiplier * Math.abs(throttle) * slice);
     } else if (throttle !== 0) {
       if (throttle > 0 && vehicle.speed > maximum) {
         vehicle.speed = approach(vehicle.speed, maximum, 18 * slice);
       } else {
-        const acceleration = throttle < 0 ? 12 : boost ? 24 : 17;
+        const acceleration = throttle < 0 ? 12 : boost ? tuning.boostAcceleration : tuning.acceleration;
         vehicle.speed = clamp(vehicle.speed + throttle * acceleration * slice, -8, maximum);
       }
     } else {
       vehicle.speed = approach(vehicle.speed, 0, (2.2 + Math.abs(vehicle.speed) * 0.11) * slice);
     }
     const speed = Math.abs(vehicle.speed);
-    vehicle.steerAngle = damp(vehicle.steerAngle, steer, 16 / (1 + speed / 36), slice);
-    const turnRate = 2.6 * speed / (speed + 3) / (1 + speed / 25);
+    vehicle.steerAngle = damp(vehicle.steerAngle, steer, tuning.steeringResponse / (1 + speed / 36), slice);
+    const turnRate = 2.6 * speed / (speed + 3) / (1 + speed / (25 * tuning.gripMultiplier));
     const desiredYaw = vehicle.steerAngle * Math.sign(vehicle.speed) * turnRate * (handbrake ? 1.25 : 1);
-    vehicle.yawVelocity = speed < 0.06 ? 0 : damp(vehicle.yawVelocity, desiredYaw, 20, slice);
+    vehicle.yawVelocity = speed < 0.06 ? 0 : damp(vehicle.yawVelocity, desiredYaw, tuning.yawResponse, slice);
     vehicle.heading = wrapAngle(vehicle.heading + vehicle.yawVelocity * slice);
     const dx = Math.sin(vehicle.heading) * vehicle.speed * slice;
     const dz = -Math.cos(vehicle.heading) * vehicle.speed * slice;

@@ -233,14 +233,14 @@ test('completion is sequential, idempotent and derives rewards without mutating 
   }
   assert.deepEqual(progress.completed, MISSIONS.map(mission => mission.id));
   assert.equal(progress.money, 500 + MISSIONS.reduce((total, mission) => total + mission.reward, 0));
-  assert.deepEqual(initial, { version: 1, completed: [], money: 500 });
+  assert.deepEqual(initial, { version: 2, completed: [], money: 500, ledger: [], customizations: {} });
 });
 
 test('storage projects known progress, strips ephemeral data and preserves other games', () => {
   const storage = memoryStorage();
   const progress = { version: 1, completed: [MISSIONS[0].id, 'unknown', MISSIONS[0].id], money: 999999,
     activeMission: MISSIONS[1].id, phase: 'dropoff', x: 9, token: 'discard' };
-  const expected = { version: 1, completed: [MISSIONS[0].id], money: 850 };
+  const expected = { version: 2, completed: [MISSIONS[0].id], money: 850, ledger: [], customizations: {} };
   assert.equal(saveProgress(storage, progress), true);
   assert.deepEqual(loadProgress(storage), expected);
   assert.deepEqual(JSON.parse(storage.entries.get(STORAGE_KEY)), expected);
@@ -250,7 +250,7 @@ test('storage projects known progress, strips ephemeral data and preserves other
 });
 
 test('invalid records, unavailable storage and throwing accessors fail safely', () => {
-  for (const value of [null, 1, [], 'progress', {}, { version: 2, completed: [] }, { version: 1, completed: null },
+  for (const value of [null, 1, [], 'progress', {}, { version: 3, completed: [] }, { version: 1, completed: null },
     Object.create({ version: 1, completed: [MISSIONS[0].id] }),
     Object.defineProperty({ version: 1 }, 'completed', { get() { throw new Error('broken accessor'); } })]) {
     assert.deepEqual(sanitizeProgress(value), freshProgress());

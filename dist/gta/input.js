@@ -9,7 +9,7 @@ export function createGameInput({ canvas, joystick, knob, lookPad, pedals, fireB
   const cleanups = [];
   const pedalPointers = new Map();
   const movement = new Set(['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight', 'Space', 'KeyX', 'KeyZ']);
-  const actions = { KeyF: 'vehicle', KeyE: 'interact', KeyR: 'reload', KeyH: 'reset', KeyQ: 'cycleWeapon', Tab: 'weapons', Digit1: 'unarmed', Digit2: 'pistol', Digit3: 'smg', KeyM: 'map', KeyJ: 'jobs', KeyV: 'camera', KeyC: 'camera', Escape: 'pause' };
+  const actions = { KeyF: 'vehicle', KeyE: 'interact', KeyR: 'reload', KeyH: 'reset', KeyQ: 'cycleWeapon', Tab: 'weapons', Digit1: 'unarmed', Digit2: 'pistol', Digit3: 'smg', KeyM: 'map', KeyG: 'garage', KeyJ: 'jobs', KeyV: 'camera', KeyC: 'camera', Escape: 'pause' };
   let joystickPointer = null, touchLookPointer = null, dragPointer = null;
   let joystickCenter = { x: 0, y: 0 }, joystickRadius = 46;
   let analog = { x: 0, y: 0 }, lastLook = { x: 0, y: 0 }, lastDrag = { x: 0, y: 0 };

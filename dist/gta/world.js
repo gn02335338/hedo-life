@@ -11,12 +11,13 @@ export const LOCATIONS = Object.freeze([
   { id: 'court', name: '下班籃球場', x: 90, z: 64, color: 0xe8ac56 },
   { id: 'harbor', name: '敲鐘碼頭', x: 4, z: 116, color: 0x6ccdb3 },
   { id: 'finance', name: '財務收件站', x: 64, z: 86, color: 0xc0a0e6 },
-  { id: 'garage', name: '禾多車庫', x: -116, z: 4, color: 0xd8e6ed },
+  { id: 'garage', name: '禾多修車廠', x: -90, z: 18, color: 0x78b6a0 },
 ].map(Object.freeze));
 
 const blockCenters = [-90, -30, 30, 90];
 const palette = [0x899d8d, 0xb5a898, 0x8eabb1, 0xb2b6a3, 0x9c9fba, 0xc0ab92];
 const landmarks = {
+  '2,0': { kind: 'garage', name: 'HEDO MOTOR WORKS', x: -90, z: 37, w: 36, d: 22, h: 9, color: 0xa6b9b9 },
   '2,2': { kind: 'hq', name: 'HEDO', h: 48, color: 0x9cbaac },
   '0,1': { kind: 'lab', name: 'LAB', h: 27, color: 0x8cabb7 },
   '1,3': { kind: 'meeting', name: 'ROADSHOW', h: 25, color: 0xb9a0ae },

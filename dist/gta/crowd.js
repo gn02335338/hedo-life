@@ -28,6 +28,10 @@ function sidewalkLoop(building) {
     segments.push({ start: length, length: span, x, z, angle, radius }); length += span;
   }
   function side(sign, forward) {
+    if(hz<18){
+      const from=forward?-hz+radius:hz-radius,to=forward?hz-radius:-hz+radius;
+      line(sign*hx,from,sign*hx,to);return;
+    }
     const points = [[sign * hx, -hz + radius], [sign * hx, -17.5], [sign * (hx + 1.2), -16],
       [sign * (hx + 1.2), -12], [sign * hx, -10.5], [sign * hx, 10.5],
       [sign * (hx + 1.2), 12], [sign * (hx + 1.2), 16], [sign * hx, 17.5], [sign * hx, hz - radius]];

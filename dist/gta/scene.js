@@ -4,6 +4,7 @@ import { createCityVisualKit } from './visual-city.js';
 import { createPersonVisualFactory, animatePersonVisual } from './visual-people.js';
 import { createVehicleVisualFactory, animateVehicleVisual } from './visual-vehicles.js';
 import { createVehicleDamageVisuals } from './visual-damage.js';
+import { addGarageVisuals } from './visual-garage.js';
 import { createCrowd } from './crowd.js';
 
 // The city and all of its textures are drawn locally. No remote model or image is used.
@@ -136,6 +137,7 @@ export async function createCityScene({ container, onReady } = {}) {
   // Repeating street rhythm: marked lanes, zebra crossings, signal poles and corners.
   const centers = [-90, -30, 30, 90];
   for (const x of centers) for (const z of centers) {
+    if (x === -90 && z === 30) continue; // Garage forecourt is flush with the road.
     box(M.sidewalk, x, 0.17, z, 42, 0.34, 42);
     box(M.curb, x, 0.25, z, 42.3, 0.16, 42.3);
   }
@@ -150,7 +152,7 @@ export async function createCityScene({ container, onReady } = {}) {
     for (let p = -130; p < 131; p += 5) {
       if (ROAD_LINES.some(r => Math.abs(r - p) < 11)) continue;
       box(M.yellow, lane - 8.4, 0.025, p, 0.15, 0.02, 3.2, 0, false);
-      box(M.yellow, p, 0.025, lane + 8.4, 3.2, 0.02, 0.15, 0, false);
+      if (!(lane === 0 && Math.abs(p + 90) < 4)) box(M.yellow, p, 0.025, lane + 8.4, 3.2, 0.02, 0.15, 0, false);
     }
   }
   for (const x of ROAD_LINES) for (const z of ROAD_LINES) {
@@ -191,6 +193,10 @@ export async function createCityScene({ container, onReady } = {}) {
   }
 
   BUILDINGS.forEach((b, index) => {
+    if (b.kind === 'garage') {
+      addGarageVisuals({ building: b, location: LOCATIONS.find(loc => loc.id === 'garage'), box, cylinder, M, wall: cityVisuals.wall(index), sign });
+      return; // No ordinary podium, facade props or trees across the driveway.
+    }
     const h = Math.max(8, b.h || 20);
     const body = cityVisuals.wall(index);
     const isHQ = b.kind === 'hq';
@@ -649,7 +655,9 @@ export async function createCityScene({ container, onReady } = {}) {
     for (const [id, model] of fleetModels) if (!visibleFleetIds.has(id)) releaseCar(id, model);
     for (const state of fleet) {
       let model = fleetModels.get(state.id);
-      if (model && model.police !== (state.kind === 'police')) { releaseCar(state.id, model); model = null; }
+      if (model && (model.police !== (state.kind === 'police') || !model.police && model.paintSource !== state.color)) {
+        releaseCar(state.id, model); model = null;
+      }
       if (!model) { model = car(state.color, state.kind, state.id); fleetModels.set(state.id, model); }
       model.group.position.set(state.x, 0.04, state.z); model.group.rotation.y = -state.heading;
       animateVehicleVisual(model, state, dt);

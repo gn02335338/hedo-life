@@ -1,32 +1,15 @@
 import { MISSIONS } from './world.js';
+import { createGarageProgress, replayGarageProgress } from './garage.js';
 
 export const STORAGE_KEY = 'hedo-gta-v1';
-const STARTING_MONEY = 500;
-
 export function freshProgress() {
-  return { version: 1, completed: [], money: STARTING_MONEY };
+  return createGarageProgress();
 }
 
-// Local progress is only a small list of finished errands. Position, active
-// deliveries, text and money supplied by a stored record are never trusted.
+// Purchases and mission completions are replayed into a projection. Position,
+// active deliveries and cached money/customizations supplied by storage are not trusted.
 export function sanitizeProgress(raw) {
-  try {
-    if (!raw || typeof raw !== 'object' || Array.isArray(raw)
-      || ![Object.prototype, null].includes(Object.getPrototypeOf(raw))
-      || !Object.hasOwn(raw, 'version') || raw.version !== 1
-      || !Object.hasOwn(raw, 'completed') || !Array.isArray(raw.completed)) return freshProgress();
-    const savedIds = new Set(raw.completed.filter(id => typeof id === 'string'));
-    const progress = freshProgress();
-    // Missions unlock sequentially; a forged later ID cannot skip an earlier job.
-    for (const mission of MISSIONS) {
-      if (!savedIds.has(mission.id)) break;
-      progress.completed.push(mission.id);
-      progress.money += mission.reward;
-    }
-    return progress;
-  } catch {
-    return freshProgress();
-  }
+  return replayGarageProgress(raw);
 }
 
 export function loadProgress(storage) {
@@ -41,8 +24,9 @@ export function loadProgress(storage) {
 export function saveProgress(storage, progress) {
   try {
     if (typeof storage?.setItem !== 'function') return false;
-    storage.setItem(STORAGE_KEY, JSON.stringify(sanitizeProgress(progress)));
-    return true;
+    const serialized = JSON.stringify(sanitizeProgress(progress));
+    storage.setItem(STORAGE_KEY, serialized);
+    return typeof storage.getItem !== 'function' || storage.getItem(STORAGE_KEY) === serialized;
   } catch {
     return false;
   }
