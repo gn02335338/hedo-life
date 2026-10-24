@@ -6,8 +6,9 @@ export function freshProgress() {
   return createGarageProgress();
 }
 
-// Purchases and mission completions are replayed into a projection. Position,
-// active deliveries and cached money/customizations supplied by storage are not trusted.
+// Purchases and mission completions are replayed into a projection. Owned-car
+// health is a bounded snapshot; selection is only a preference, never a spawn.
+// Position, active deliveries and cached money/customizations are not trusted.
 export function sanitizeProgress(raw) {
   return replayGarageProgress(raw);
 }

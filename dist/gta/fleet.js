@@ -66,7 +66,7 @@ export function findNearbyCar(cars, person, { maxDistance = 4.8, maxSpeed = 4.5,
 }
 
 export function takeCar(cars, id) {
-  return cars.map(car => car.id === id && !['burning', 'wreck'].includes(car.damageStage) ? { ...car, occupied: false, stolen: true, speed: 0 } : car);
+  return cars.map(car => car.id === id && !['burning', 'wreck'].includes(car.damageStage) ? { ...car, occupied: false, stolen: car.owned ? false : true, speed: 0 } : car);
 }
 
 export function parkCar(cars, id, state) {

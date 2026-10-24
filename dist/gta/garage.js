@@ -1,5 +1,6 @@
 import { LOCATIONS, MISSIONS } from './world.js';
 import { createFleet } from './fleet.js';
+import { OWNED_CAR_CATALOG, PRIVATE_GARAGE_RULES } from './ownership-catalog.js';
 
 export const GARAGE_PALETTE = Object.freeze([
   { id: 'pearl', name: '珍珠白', color: 0xe8e9e3 },
@@ -19,7 +20,8 @@ export const GARAGE_CATALOG = Object.freeze({
   }),
 });
 export const GARAGE_RULES = Object.freeze({ radius: 6, maxSpeed: 1, maxLedger: 128, startingMoney: 500 });
-const originalCars = new Map(createFleet().map(car => [car.id, { color: car.color }]));
+const originalCars = new Map([...createFleet(), ...OWNED_CAR_CATALOG].map(car => [car.id, { color: car.color }]));
+const ownedCars = new Map(OWNED_CAR_CATALOG.map(car => [car.id, car]));
 const colors = new Map(GARAGE_PALETTE.map(color => [color.id, color]));
 const tuningKeys = Object.keys(GARAGE_CATALOG.upgrades);
 const isRecord = value => value && typeof value === 'object' && !Array.isArray(value)
@@ -38,6 +40,7 @@ const messageByReason = Object.freeze({
   'max-level': '這項性能已升到最高等級。', 'invalid-action': '這項改裝無法使用。',
   'insufficient-funds': '跑腿基金不足，先完成委託再回來。', 'ledger-full': '本機交易紀錄已滿，這次沒有扣款。',
   duplicate: '這筆交易已完成，不會重複扣款。',
+  'not-owned': '請先在私人車庫購買這輛車。',
 });
 const reject = (reason, extra = {}) => ({ ok: false, reason, message: messageByReason[reason], ...extra });
 
@@ -50,7 +53,8 @@ export function getPerformanceProfile(tuning = {}) {
 }
 
 export function createGarageProgress() {
-  return { version: 2, completed: [], money: GARAGE_RULES.startingMoney, ledger: [], customizations: {} };
+  return { version: 3, completed: [], money: GARAGE_RULES.startingMoney, ledger: [], customizations: {},
+    ownedVehicleIds: [], selectedOwnedId: null, ownedVehicleHealth: {} };
 }
 
 function actionDetails(customization, vehicleId, action) {
@@ -76,7 +80,7 @@ function actionDetails(customization, vehicleId, action) {
 export function replayGarageProgress(raw) {
   const progress = createGarageProgress();
   try {
-    if (!isRecord(raw) || !Object.hasOwn(raw, 'version') || ![1, 2].includes(raw.version)
+    if (!isRecord(raw) || !Object.hasOwn(raw, 'version') || ![1, 2, 3].includes(raw.version)
       || !Object.hasOwn(raw, 'completed') || !Array.isArray(raw.completed)) return progress;
     const completed = new Set(raw.completed.slice(0, 64).filter(id => typeof id === 'string'));
     for (const mission of MISSIONS) {
@@ -95,19 +99,44 @@ export function replayGarageProgress(raw) {
       if (!isRecord(entry) || !isId(entry.id) || transactionIds.has(entry.id) || !originalCars.has(entry.vehicleId)
         || !Number.isInteger(entry.missionCount) || entry.missionCount < lastMissionCount || entry.missionCount > progress.completed.length) break;
       const customization = progress.customizations[entry.vehicleId] || defaultCustomization();
-      const action = actionDetails(customization, entry.vehicleId, entry);
+      const owned = progress.ownedVehicleIds.includes(entry.vehicleId), catalog = ownedCars.get(entry.vehicleId);
+      let action;
+      if (entry.kind === 'purchase') {
+        if (raw.version !== 3 || !catalog || owned || progress.ownedVehicleIds.length >= PRIVATE_GARAGE_RULES.capacity) break;
+        action = { ok: true, kind: 'purchase', cost: catalog.price };
+      } else if (entry.kind === 'recover') {
+        if (raw.version !== 3 || !catalog || !owned) break;
+        action = { ok: true, kind: 'recover', cost: PRIVATE_GARAGE_RULES.recoverPrice };
+      } else {
+        if (catalog && !owned) break;
+        action = actionDetails(customization, entry.vehicleId, entry);
+      }
       const available = GARAGE_RULES.startingMoney + MISSIONS.slice(0, entry.missionCount).reduce((sum, mission) => sum + mission.reward, 0) - spent;
       if (!action.ok || available < action.cost) break;
       const record = { id: entry.id, vehicleId: entry.vehicleId, kind: action.kind,
         ...(action.value ? { value: action.value } : {}), missionCount: entry.missionCount };
       progress.ledger.push(record); transactionIds.add(record.id);
       lastMissionCount = record.missionCount; spent += action.cost;
+      if (action.kind === 'purchase') progress.ownedVehicleIds.push(record.vehicleId);
+      if (action.kind === 'purchase' || action.kind === 'recover' || catalog && action.kind === 'repair') progress.ownedVehicleHealth[record.vehicleId] = 100;
       if (action.kind === 'paint') customization.colorId = action.value;
       if (action.kind === 'upgrade') customization.upgrades[action.value] = action.level;
-      if (action.kind !== 'repair') progress.customizations[record.vehicleId] = customization;
+      if (action.kind === 'paint' || action.kind === 'upgrade') progress.customizations[record.vehicleId] = customization;
     } catch { break; }
   }
   progress.money -= spent;
+  // Ownership and purchase costs are ledger-derived. The small health snapshot
+  // is deliberately separate: storing or switching a car must retain damage.
+  for (const id of progress.ownedVehicleIds) {
+    try {
+      if (isRecord(raw.ownedVehicleHealth) && Object.hasOwn(raw.ownedVehicleHealth, id)) {
+        const health = raw.ownedVehicleHealth[id];
+        progress.ownedVehicleHealth[id] = Number.isFinite(health) ? Math.max(0, Math.min(100, Math.floor(health))) : 0;
+      }
+    } catch { progress.ownedVehicleHealth[id] = 0; }
+  }
+  try { if (progress.ownedVehicleIds.includes(raw.selectedOwnedId)) progress.selectedOwnedId = raw.selectedOwnedId; }
+  catch { /* A malformed preference does not invalidate purchases. */ }
   return progress;
 }
 
@@ -131,6 +160,8 @@ export function garageEligibility(context = {}) {
 export function quoteGarageAction(progress, vehicle, action) {
   const current = replayGarageProgress(progress);
   if (!isCivilian(vehicle)) return reject('vehicle');
+  if (ownedCars.has(vehicle.id) && !current.ownedVehicleIds.includes(vehicle.id)) return reject('not-owned');
+  if (ownedCars.has(vehicle.id) && current.ownedVehicleHealth[vehicle.id] <= 0) return reject('destroyed');
   if (vehicle.damageStage === 'burning' || vehicle.damageStage === 'wreck' || vehicle.vehicleHealth <= 0) return reject('destroyed');
   if (current.ledger.length >= GARAGE_RULES.maxLedger) return reject('ledger-full');
   const customization = current.customizations[vehicle.id] || defaultCustomization();
@@ -146,6 +177,7 @@ export function applyGarageCustomizations(fleet, progress) {
   const current = replayGarageProgress(progress);
   return fleet.map(vehicle => {
     if (!isCivilian(vehicle)) return vehicle;
+    if (ownedCars.has(vehicle.id) && !current.ownedVehicleIds.includes(vehicle.id)) return vehicle;
     const customization = current.customizations[vehicle.id] || defaultCustomization();
     return { ...vehicle, color: colors.get(customization.colorId)?.color ?? originalCars.get(vehicle.id).color,
       upgrades: { ...customization.upgrades } };
@@ -163,7 +195,14 @@ export function applyGarageAction(progress, vehicle, action, context = {}) {
   if (!quote.ok) return fail(quote);
   const record = { id: action.id, vehicleId: vehicle.id, kind: quote.kind,
     ...(quote.value ? { value: quote.value } : {}), missionCount: current.completed.length };
-  const next = replayGarageProgress({ ...current, ledger: [...current.ledger, record] });
+  const health = { ...current.ownedVehicleHealth };
+  if (current.ownedVehicleIds.includes(vehicle.id)) {
+    // A paint or tuning receipt may be saved before the periodic damage
+    // snapshot. Carry this shell's current health without healing it on reload.
+    health[vehicle.id] = quote.kind === 'repair' ? 100 : Number.isFinite(vehicle.vehicleHealth)
+      ? Math.max(0, Math.min(100, Math.floor(vehicle.vehicleHealth))) : health[vehicle.id];
+  }
+  const next = replayGarageProgress({ ...current, ledger: [...current.ledger, record], ownedVehicleHealth: health });
   let updated = applyGarageCustomizations([vehicle], next)[0];
   if (quote.kind === 'repair') updated = { ...updated, vehicleHealth: 100, damageStage: 'intact',
     burnRemaining: 0, wreckAge: 0, burnSource: null, impact: false, impactSpeed: 0, impactVehicleId: null };

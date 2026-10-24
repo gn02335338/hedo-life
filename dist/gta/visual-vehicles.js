@@ -16,6 +16,14 @@ function variantFor(id, police) {
   return ['sedan', 'hatch', 'suv'][hash % 3];
 }
 
+// Catalog cars carry an explicit body shape; ordinary traffic keeps its stable
+// ID-derived appearance. Only these three shapes can enter the geometry cache.
+export function resolveVehicleVariant(id, kind, requestedVariant) {
+  if (kind === 'police') return 'sedan';
+  if (requestedVariant === 'hatch' || requestedVariant === 'sedan' || requestedVariant === 'suv') return requestedVariant;
+  return variantFor(String(id ?? ''), false);
+}
+
 export function createVehicleVisualFactory(ctx) {
   const { THREE, scene, mat, M, geo, part, contact, boxGeometry, planeGeometry, sphereGeometry,
     policeDecal, policeRedOff, policeBlueOff } = ctx;
@@ -275,8 +283,8 @@ export function createVehicleVisualFactory(ctx) {
     });
   }
 
-  return function createVehicleVisual(color, kind = null, id = '') {
-    const police = kind === 'police', variant = variantFor(String(id), police), spec = VARIANTS[variant];
+  return function createVehicleVisual(color, kind = null, id = '', options = {}) {
+    const police = kind === 'police', variant = resolveVehicleVariant(id, kind, options?.variant), spec = VARIANTS[variant];
     const paint = police ? '#172a39' : `#${new THREE.Color(color ?? '#b5c7b8').getHexString()}`;
     const paletteKey = `${variant}:${police ? 'police' : paint}`;
     if (!shapesByPalette.has(paletteKey)) shapesByPalette.set(paletteKey, details(spec, variant, paint, police));
@@ -312,7 +320,7 @@ export function createVehicleVisualFactory(ctx) {
     part(occupant, bake(`${variant}:${police ? 'police' : 'civilian'}:occupant`, driverPieces), driverMaterial, [0, 0, 0], unit);
     contact(group, 1.17, 2.18);
     const model = { group, door, passengerDoor, occupant, police, redFlash, blueFlash, paintSource: color, damageStage: null,
-      ownedGeometries: new Set(), variant,
+      ownedGeometries: new Set(), variant, variantSource: options?.variant,
       flashOffset: [...String(id)].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 8,
       wheels: { mesh: wheelMesh, radius: spec.radius, x: spec.width - .125, front: spec.wheelFront, rear: spec.wheelRear,
         roll: 0, steer: 0, previousHeading: null, transform: new THREE.Object3D() },

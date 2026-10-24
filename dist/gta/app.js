@@ -9,6 +9,9 @@ import { createPoliceState, reportCrime, stepPolice } from './police.js';
 import { createCombatState, selectWeapon, startReload, stepCombat, applyDamage, getPoliceCombatants } from './combat.js';
 import { freshProgress, loadProgress, saveProgress, completeMission } from './progress.js';
 import { GARAGE_PALETTE, GARAGE_CATALOG, GARAGE_RULES, garageEligibility, quoteGarageAction, applyGarageAction, applyGarageCustomizations, getPerformanceProfile } from './garage.js';
+import { PRIVATE_GARAGE_RULES, applyOwnershipAction } from './ownership.js';
+import { isOwnedVehicle, ownedHealth, snapshotOwnedVehicles, retrieveOwnedVehicle, storeOwnedVehicle } from './ownership-session.js';
+import { createCollectionPanel } from './collection-ui.js';
 
 const $ = id => document.getElementById(id);
 const panel = $('panel');
@@ -41,6 +44,7 @@ let lastFrame = 0, raf = 0, lastHud = 0, toastTimer;
 let audio, tone, volume, sirenTone, sirenVolume, soundEnabled = false;
 let restoreFocus = null;
 let lastGaragePurchase = -Infinity;
+let lastCollectionAction = -Infinity, ownedSaveTimer = null, ownedHealthDirty = false, collectionTab = progress.ownedVehicleIds.length ? 'owned' : 'shop';
 
 function notify(message) {
   $('toast').textContent = message;
@@ -59,7 +63,7 @@ function openPanel(title, eyebrow, content) {
   $('panel-body').replaceChildren();
   const heading = document.createElement('h2'); heading.id = 'panel-title'; heading.textContent = title;
   $('panel-body').append(heading, content);
-  panel.dataset.kind = content.id === 'garage-panel' ? 'garage' : '';
+  panel.dataset.kind = content.id === 'garage-panel' ? 'garage' : content.id === 'collection-panel' ? 'collection' : '';
   if (!panel.open) panel.showModal();
   document.body.classList.add('paused');
   $('close-panel').focus();
@@ -75,7 +79,12 @@ function button(label, className, action) {
   const node = el('button', className, label); node.type = 'button'; node.addEventListener('click', action); return node;
 }
 function targetPlace() {
+  if (waypoint === 'collection') return locationById('collection');
+  if (waypoint === 'owned-car') return fleet.find(isOwnedVehicle) || locationById('collection');
   if (!hasDriven) {
+    const owned = fleet.find(isOwnedVehicle);
+    if (owned) return owned;
+    if (progress.ownedVehicleIds.length) return locationById('collection');
     const available = fleet.filter(car => !['burning', 'wreck'].includes(car.damageStage));
     const car = available.find(car => car.id === 'starter-sedan') || available.reduce((near, car) => !near || Math.hypot(car.x-actor.x,car.z-actor.z)<Math.hypot(near.x-actor.x,near.z-actor.z) ? car : near, null);
     return car ? { ...car, id:'first-car', name:car.name } : null;
@@ -94,6 +103,77 @@ function garageDistance() {
 function garageContext() {
   return { vehicle:currentCar(), player:actor, walking, controlledId, wantedLevel:police.level, transition, dead:combat.dead||pendingDeath||pendingArrest };
 }
+function collectionContext() {
+  return { ...garageContext(), location:locationById('collection'), policeUnits:police.units, pedestrians:crowd };
+}
+function collectionDistance() {
+  const place=locationById('collection');return Math.hypot(actor.x-place.x,actor.z-place.z);
+}
+function flushOwnedHealth(persist=false) {
+  clearTimeout(ownedSaveTimer);ownedSaveTimer=null;
+  const next=snapshotOwnedVehicles(progress,fleet);ownedHealthDirty ||= next!==progress;progress=next;
+  if(persist&&ownedHealthDirty){const saved=saveProgress(storage,progress);if(saved)ownedHealthDirty=false;return saved;}
+  return true;
+}
+function scheduleOwnedHealthSave() {
+  if(ownedSaveTimer!==null)return;
+  if(fleet.some(car=>isOwnedVehicle(car)&&progress.ownedVehicleHealth[car.id]!==ownedHealth(car))) {
+    ownedSaveTimer=setTimeout(()=>flushOwnedHealth(true),1000);
+  }
+}
+function navigateCollection() {
+  waypoint='collection';panel.close();updateHud();
+  notify(active?'已標記私人車庫，手上的委託仍保留。':'已標記私人車庫。可以步行前往，進入紫色服務區後辦理。');
+}
+function locateOwnedCar() {
+  if(!fleet.some(isOwnedVehicle)){navigateCollection();return;}
+  waypoint='owned-car';panel.close();updateHud();notify('已標記街上的愛車。走近車門即可上車。');
+}
+function handleCollectionAction(action) {
+  if(performance.now()-lastCollectionAction<350)return;
+  flushOwnedHealth();
+  let result;
+  const oldOwnedIds=fleet.filter(isOwnedVehicle).map(car=>car.id);
+  if(action.kind==='retrieve')result=retrieveOwnedVehicle(progress,fleet,action.vehicleId,collectionContext());
+  else if(action.kind==='store')result=storeOwnedVehicle(progress,fleet,collectionContext());
+  else {
+    if(action.kind==='recover'&&fleet.some(car=>car.id===action.vehicleId&&car.damageStage==='burning')){
+      showCollection('先回到街頭，等火勢熄滅後再安排救援。');return;
+    }
+    result=applyOwnershipAction(progress,action,collectionContext());
+  }
+  if(!result.ok){showCollection(result.message,`${action.kind}:${action.vehicleId||''}`);return;}
+  lastCollectionAction=performance.now();progress=result.progress;
+  if(result.fleet){
+    fleet=result.fleet;walking=result.walking;controlledId=result.controlledId;
+    actor=walking?createPedestrian(result.player):actor;
+    cameraYaw=actor.heading;cameraPitch=.34;clearInput();
+    const cooldowns={...vehicleDamage.collisionCooldowns};for(const id of oldOwnedIds)delete cooldowns[id];
+    vehicleDamage={...vehicleDamage,collisionCooldowns:cooldowns};
+    if(waypoint==='owned-car')waypoint=null;
+  }else if(action.kind==='recover'){
+    fleet=fleet.filter(car=>car.id!==action.vehicleId);
+    if(waypoint==='owned-car')waypoint=null;
+    const cooldowns={...vehicleDamage.collisionCooldowns};delete cooldowns[action.vehicleId];vehicleDamage={...vehicleDamage,collisionCooldowns:cooldowns};
+  }
+  if(action.kind==='purchase')collectionTab='owned';
+  const saved=saveProgress(storage,progress);needsRender=true;updateHud();
+  showCollection(result.message+(saved?' 已保存在這台裝置。':' 瀏覽器無法儲存，這次變更僅保留至本次遊玩結束。'),`${action.kind}:${action.vehicleId||''}`);
+}
+function showCollection(message='',focusAction=null) {
+  if(!started||pendingDeath||pendingArrest||transition)return;
+  flushOwnedHealth(true);
+  const scroll=panel.open&&panel.dataset.kind==='collection'?panel.scrollTop:0;
+  const wrap=createCollectionPanel({progress,fleet,context:collectionContext(),tab:collectionTab,message,
+    onAction:handleCollectionAction,onTab:tab=>{collectionTab=tab;showCollection('',`tab:${tab}`);},
+    onNavigate:navigateCollection,onLocate:locateOwnedCar,onRepair:()=>showGarage(),onClose:()=>panel.close()});
+  openPanel('私人車庫','BUY / COLLECT / DRIVE',wrap);panel.scrollTop=scroll;
+  if(focusAction){
+    const [kind,id]=focusAction.split(':');
+    const target=kind==='tab'?wrap.querySelector(`[data-collection-tab="${id}"]`):wrap.querySelector(`[data-collection-action="${kind}"][data-vehicle-id="${id}"]`);
+    if(target&&!target.disabled)target.focus({preventScroll:true});else if(message)$('collection-message').focus({preventScroll:true});
+  }
+}
 function navigateGarage() {
   if(!hasDriven){panel.close();notify(controlHint('先走近車輛按 F，上車後再設定修車廠路標。','先走近車輛上車，再設定修車廠路標。'));return;}
   waypoint='garage';panel.close();updateHud();
@@ -101,6 +181,7 @@ function navigateGarage() {
 }
 function showGarage(message='',paintId=null,focusService=null) {
   if(!started||pendingDeath||pendingArrest||transition)return;
+  flushOwnedHealth(true);
   const car=currentCar(),eligible=garageEligibility(garageContext());
   const previousScroll=panel.open&&panel.dataset.kind==='garage'?panel.scrollTop:0;
   const wrap=el('div','garage-panel');wrap.id='garage-panel';
@@ -192,8 +273,9 @@ function showGarage(message='',paintId=null,focusService=null) {
 function showJobs() {
   const wrap = el('div');
   if (!hasDriven) {
-    wrap.append(el('p', 'lede', controlHint('今天的委託散在整座城。先走到路邊的車旁，按 F 搶車，找到代步工具後再接同事來電。', '今天的委託散在整座城。用左下搖桿走到路邊車旁，點「搶車」，找到代步工具後再接同事來電。')));
-    wrap.append(button('先去找車 ↗', 'primary', () => panel.close()));
+    wrap.append(el('p', 'lede', controlHint('今天的委託散在整座城。可以到私人車庫買車，或走到路邊按 F 接手車輛，找到代步工具後再接同事來電。', '今天的委託散在整座城。可以到私人車庫買車，或走到路邊車旁點「搶車」，找到代步工具後再接同事來電。')));
+    wrap.append(button('查看私人車庫／買車', 'primary', () => showCollection()));
+    wrap.append(button('先去找車 ↗', 'secondary', () => panel.close()));
     openPanel('先搞定交通工具。', 'STREET START / 行人開局', wrap); return;
   }
   wrap.append(el('p', 'lede', controlHint('同事口中的「順便」，就是你的城市冒險。沒有倒數計時，停好車再按 E 交接。', '同事口中的「順便」，就是你的城市冒險。沒有倒數計時，停好車再點畫面中的取件／交付按鈕。')));
@@ -268,7 +350,7 @@ function showHelp() {
   const wrap = el('div');
   wrap.append(el('p', 'lede', controlHint('你從行人開始。先靠近路邊或停等中的車，按 F 接手車輛；之後可以換車、下車探索，或按 J 接委託。', '你從行人開始。用左下搖桿靠近路邊或停等中的車，點「搶車」接手車輛；之後可以換車、下車探索，或點左上「委託」接任務。')));
   const grid = el('div', 'help-grid');
-  for (const [label, key] of [['步行／駕駛', 'WASD / 方向鍵'], ['奔跑／加速', 'Shift'], ['跳躍／手煞車', 'Space'], ['搶車／上下車', 'F'], ['任務交接', 'E'], ['轉動視角', '滑鼠 / 右鍵拖曳'], ['武器選單／快速切換', 'Tab / Q'], ['徒手／手槍／衝鋒槍', '1 / 2 / 3'], ['射擊／瞄準', '滑鼠左鍵 / 右鍵'], ['鍵盤射擊／瞄準', 'X / Z'], ['換彈', 'R'], ['城市地圖', 'M'], ['同事委託', 'J'], ['切換視角', 'V / C'], ['回到路邊', 'H'], ['暫停／釋放滑鼠', 'Esc']]) {
+  for (const [label, key] of [['步行／駕駛', 'WASD / 方向鍵'], ['奔跑／加速', 'Shift'], ['跳躍／手煞車', 'Space'], ['搶車／上下車', 'F'], ['任務交接', 'E'], ['轉動視角', '滑鼠 / 右鍵拖曳'], ['武器選單／快速切換', 'Tab / Q'], ['徒手／手槍／衝鋒槍', '1 / 2 / 3'], ['射擊／瞄準', '滑鼠左鍵 / 右鍵'], ['鍵盤射擊／瞄準', 'X / Z'], ['換彈', 'R'], ['城市地圖', 'M'], ['同事委託', 'J'], ['私人車庫／買車', 'B'], ['修車廠／改裝', 'G'], ['切換視角', 'V / C'], ['回到路邊', 'H'], ['暫停／釋放滑鼠', 'Esc']]) {
     const row = el('div', '', label); row.append(el('kbd', '', key)); grid.append(row);
   }
   wrap.append(grid, el('p', 'help-note', '步行方向跟隨鏡頭，左右鍵直接橫移。點擊街景可鎖定滑鼠轉視角，也可按住右鍵拖曳。開車時 W 油門、S 煞車後倒車、A/D 轉向、Space 手煞車；放開方向鍵會自動回正。'));
@@ -283,6 +365,8 @@ function showHelp() {
   wrap.append(el('p', 'help-note', '搶車或高速碰撞會增加通緝星數，撞上警車會引來更多警力。警車會沿街道追捕；紅藍標記是警車，搜索時的橘色圓圈是你最後被目擊的位置。繞過街角、利用建物遮住視線，持續避開警方搜索，星數才會逐顆下降。被看見或再次犯案會中斷倒數。'));
   wrap.append(el('p', 'help-note', '警車靠近時若停住，逮捕進度會上升；持續移動、拉開距離可中斷逮捕。被捕後車輛會被扣留，以行人返回總部，委託、完成紀錄與跑腿基金保留。通緝期間不能使用「回到路邊」或交接委託。'));
   wrap.append(el('p', 'help-note', '存檔保留已完成委託、跑腿基金的消費，以及每輛車的車色與升級。重新整理或回到路邊會以行人出發；重新找到那輛車，即可繼續使用改裝。車況與位置只屬於本次漫遊；原本的職涯存檔完全獨立。畫面卡頓時可按右上角 ◈ 切換省電畫質。'));
+  wrap.append(el('h3','','留一個車位，給自己的下班路。'));
+  wrap.append(el('p','help-note','B 或「車庫」開啟選購與收藏。可以步行到私人車庫，解除通緝後買車、取車或切換愛車。每款限一輛，共三個車位；開自己的車不會觸發失竊通緝。G 修車廠可為愛車改色與升級，每輛車各自保留。收存不會修復車況，報廢愛車可付 $120 救援；重開遊戲時所有愛車都在庫內保管。'));
   wrap.append(button('知道了，出發 ↗', 'primary', () => panel.close()));
   openPanel('你的城市操作手冊', 'HOW TO PLAY', wrap);
 }
@@ -294,6 +378,7 @@ function showPause() {
   wrap.append(button('同事委託', 'secondary', showJobs));
   wrap.append(button('城市地圖', 'secondary', showMap));
   wrap.append(button('武器與補給', 'secondary', showWeapons));
+  wrap.append(button('私人車庫與買車', 'secondary', () => showCollection()));
   wrap.append(button('修車廠與改裝', 'secondary', () => showGarage()));
   wrap.append(button('操作說明', 'secondary', showHelp));
   wrap.append(button('結束本次漫遊，回到開場', 'secondary', () => {
@@ -331,8 +416,8 @@ function drawMap(canvas, full = false) {
   for (const place of LOCATIONS) {
     const [x, y] = point(place.x, place.z);
     context.fillStyle = target?.id === place.id ? '#e5f45b' : '#9eaaa1';
-    if(place.id==='garage'){
-      const width=full?10:6;context.fillStyle=target?.id===place.id?'#e5f45b':'#8fd5be';context.fillRect(x-width/2,y-width/2,width,width);
+    if(place.id==='garage'||place.id==='collection'){
+      const width=full?10:6;context.fillStyle=target?.id===place.id?'#e5f45b':place.id==='collection'?'#c2acef':'#8fd5be';context.fillRect(x-width/2,y-width/2,width,width);
     }else{context.beginPath(); context.arc(x, y, full ? 5 : 3.2, 0, Math.PI * 2); context.fill();}
     if (full) {
       context.font = '15px system-ui'; context.textAlign = 'center';
@@ -347,7 +432,7 @@ function drawMap(canvas, full = false) {
   for (const car of fleet) {
     if (car.id === controlledId) continue;
     const [cx, cy] = point(car.x, car.z);
-    context.fillStyle = car.damageStage==='wreck'?'#797883':car.damageStage==='burning'?'#ff8d74':car.stolen?'#f5ba51':'#90b8c0';
+    context.fillStyle = car.damageStage==='wreck'?'#797883':car.damageStage==='burning'?'#ff8d74':car.owned?'#c2acef':car.stolen?'#f5ba51':'#90b8c0';
     context.fillRect(cx - 2, cy - 3, 4, 6);
   }
   if (police.phase === 'search' && police.lastKnown) {
@@ -375,18 +460,20 @@ function showMap() {
   wrap.append(el('p', 'lede', !hasDriven ? '黃色圓圈是路邊的轎車，白色箭頭是你的位置。先找到代步工具，再設定探索路標。' : active ? '黃色圓圈是目前導航地點。需要修車時可選修車廠，委託會保留。' : '選一個地點設定路標；沿著街道自由探索。白色箭頭是你的位置。'));
   const canvas = el('canvas', 'map-large'); canvas.width = 640; canvas.height = 640; canvas.setAttribute('aria-label', '禾多市完整地圖');
   wrap.append(canvas);
-  wrap.append(el('p', 'map-legend', '△ 你的位置　 ■ 薄荷綠：修車廠　 ● 黃色：委託／路標　 ◆ 紅藍：警車　 ◌ 橘色：最後目擊位置'));
+  wrap.append(el('p', 'map-legend', '△ 你的位置　 ■ 紫色：私人車庫／愛車　 ■ 薄荷綠：修車廠　 ● 黃色：委託／路標　 ◆ 紅藍：警車　 ◌ 橘色：最後目擊位置'));
   const list = el('div', 'map-locations');
   LOCATIONS.forEach(place => list.append(button(place.name, targetPlace()?.id === place.id ? 'selected' : '', () => {
     if(place.id==='garage'){showGarage();return;}
+    if(place.id==='collection'){showCollection();return;}
     if (!hasDriven) { notify('先走向黃色圓圈，接手路邊的轎車。'); panel.close(); return; }
     if (active) { notify('目前正在委託中，請先前往黃色交接點。'); panel.close(); return; }
     waypoint = place.id; panel.close(); updateHud(); notify(`路標已設為「${place.name}」。`);
   })));
-  wrap.append(list); openPanel('禾多市漫遊圖', 'CITY MAP / 八個地點', wrap); drawMap(canvas, true);
+  wrap.append(list); openPanel('禾多市漫遊圖', 'CITY MAP / 九個地點', wrap); drawMap(canvas, true);
 }
 function interact() {
   if (!started || panel.open || transition) return;
+  if(collectionDistance()<=8){showCollection();return;}
   if(garageDistance()<=8){showGarage();return;}
   if(!active)return;
   const destination=locationById(active.mission[active.stage==='pickup'?'pickup':'dropoff']);
@@ -486,15 +573,17 @@ function finishTransition() {
   } else {
     fleet=takeCar(fleet,car.id);controlledId=car.id;walking=false;
     actor=createVehicle({...car,speed:0}); cameraPitch=.28;
-    if (!action.wasStolen) {
+    if (!car.owned && !action.wasStolen) {
       police=reportCrime(police,{type:'theft',position:{x:actor.x,z:actor.z}});
       notify(action.wasOccupied?'車主報警了！已接手 '+car.name+'，警車正在趕來。':'車輛失竊警報！已接手 '+car.name+'，警車正在趕來。');
-    } else notify('再次上車：'+car.name+'。');
+    } else notify(car.owned?'開上自己的 '+car.name+'。一路順風。':'再次上車：'+car.name+'。');
+    if(car.owned&&waypoint==='owned-car')waypoint=null;
     hasDriven=true;
   }
   clearInput();updateHud();
 }
 function resetSession() {
+  flushOwnedHealth(true);
   actor=createPedestrian(FOOT_SPAWN);fleet=applyGarageCustomizations(createFleet(),progress);controlledId=null;transition=null;
   crowd=createCrowd();awareness=createAwareness();
   vehicleDamage=createVehicleDamageState();
@@ -523,7 +612,9 @@ function handleArrest() {
   updateHud();
 }
 function recoverFromArrest() {
+  flushOwnedHealth(true);
   if (controlledId) fleet=fleet.filter(car=>car.id!==controlledId);
+  if(waypoint==='owned-car'&&!fleet.some(isOwnedVehicle))waypoint='collection';
   controlledId=null;transition=null;pendingArrest=false;police=createPoliceState();
   actor=createPedestrian(FOOT_SPAWN);walking=true;cameraYaw=0;cameraPitch=.34;lastImpact=-10;
   combat=createCombatState();combatants=[];
@@ -543,6 +634,7 @@ function handleDeath() {
   openPanel('這座城市，還有明天。','WASTED / 生命歸零',wrap);updateHud();
 }
 function recoverFromDeath() {
+  flushOwnedHealth(true);
   if(controlledId)fleet=parkCar(fleet,controlledId,actor);
   controlledId=null;transition=null;pendingDeath=false;pendingArrest=false;
   actor=createPedestrian(FOOT_SPAWN);walking=true;police=createPoliceState();
@@ -609,6 +701,8 @@ function updateWantedHud() {
 function updateHud() {
   const target=targetPlace(),distance=targetDistance(),car=currentCar(),near=nearbyCar();
   const garageRoute=hasDriven&&waypoint==='garage',nearGarage=garageDistance()<=8&&!transition;
+  const streetOwned=fleet.find(isOwnedVehicle),collectionRoute=waypoint==='collection'||(!hasDriven&&progress.ownedVehicleIds.length&&!streetOwned);
+  const ownedRoute=waypoint==='owned-car'||(!hasDriven&&streetOwned&&!collectionRoute),nearCollection=collectionDistance()<=8&&!transition;
   const unavailable=!near?nearbyUnavailableCar():null;
   document.body.classList.toggle('on-foot',walking);
   setText('money','$ '+progress.money.toLocaleString('en-US'));
@@ -626,19 +720,22 @@ function updateHud() {
   updateVehicleHud(car,near||unavailable);
   const closest=LOCATIONS.reduce((best,place)=>Math.hypot(actor.x-place.x,actor.z-place.z)<Math.hypot(actor.x-best.x,actor.z-best.z)?place:best,LOCATIONS[0]);
   setText('district',closest.name);
-  setText('mission-kicker',!hasDriven?'STREET START':garageRoute?'HEDO CUSTOMS':active?active.mission.person+' 的委託':'OFF THE CLOCK');
-  setText('mission-title',!hasDriven?'先找一輛代步工具。':garageRoute?'前往禾多修車廠':active?active.mission.title:target?'前往'+target.name:progress.completed.length===MISSIONS.length?'今天，真的下班了。':'你的車，你的下班路。');
-  setText('mission-detail',!hasDriven?controlHint('WASD 走向前方的轎車，靠近車門按 F 搶車。','左下搖桿移動，靠近轎車後點「搶車」。右側滑動轉視角。'):garageRoute?controlHint('開進綠色服務格，停穩後按 E 進廠。','開進綠色服務格，停穩後點「進廠改裝」。'):active?(active.stage==='pickup'?'先到':'送往')+target.name+controlHint('，停穩後按 E 交接。','，停穩後點取件／交付。'):target?'跟著小地圖的黃色圓圈，沿街道抵達。':controlHint('按 J 接委託；G 查看修車廠，F 下車。','點「委託」接任務，或到「修車廠」整備車輛。'));
-  setText('mission-step',!hasDriven?'01 步行 → 02 搶車':garageRoute?(active?'委託保留 · 修車繞道':'REPAIR / PAINT / TUNE'):active?(active.stage==='pickup'?'01 / 02 取件':'02 / 02 交付'):'自由漫遊');
+  setText('mission-kicker',collectionRoute||ownedRoute?'MOTOR CLUB':!hasDriven?'STREET START':garageRoute?'HEDO CUSTOMS':active?active.mission.person+' 的委託':'OFF THE CLOCK');
+  setText('mission-title',collectionRoute?'前往私人車庫':ownedRoute?'愛車正在等你。':!hasDriven?'先找一輛代步工具。':garageRoute?'前往禾多修車廠':active?active.mission.title:target?'前往'+target.name:progress.completed.length===MISSIONS.length?'今天，真的下班了。':'你的車，你的下班路。');
+  setText('mission-detail',collectionRoute?controlHint('步行或開車到紫色服務區，按 E 買車或取出愛車。','走到紫色服務區，點「私人車庫」買車或取出愛車。'):ownedRoute?controlHint('沿路標走近愛車，按 F 上車，不會觸發失竊通緝。','沿路標走近愛車，點「上車」，不會觸發失竊通緝。'):!hasDriven?controlHint('B 查看私人車庫買車；也可走近街上的車，按 F 接手。','點「車庫」選購愛車；也可走近街上的車，點「搶車」。'):garageRoute?controlHint('開進綠色服務格，停穩後按 E 進廠。','開進綠色服務格，停穩後點「進廠改裝」。'):active?(active.stage==='pickup'?'先到':'送往')+target.name+controlHint('，停穩後按 E 交接。','，停穩後點取件／交付。'):target?'跟著小地圖的黃色圓圈，沿街道抵達。':controlHint('J 接委託 · B 私人車庫 · G 修車廠','點「委託」接任務，或到車庫收藏愛車。'));
+  setText('mission-step',collectionRoute?(active?'委託保留 · 車庫繞道':`我的收藏 ${progress.ownedVehicleIds.length} / 3`):ownedRoute?'你的車，你的下班路。':!hasDriven?'步行 → 買車或接手街頭車輛':garageRoute?(active?'委託保留 · 修車繞道':'REPAIR / PAINT / TUNE'):active?(active.stage==='pickup'?'01 / 02 取件':'02 / 02 交付'):'自由漫遊');
   setText('mission-distance',target?Math.round(distance)+' m':closest.name);
   const missionPlace=active?locationById(active.mission[active.stage==='pickup'?'pickup':'dropoff']):null;
   const ready=missionPlace&&Math.hypot(actor.x-missionPlace.x,actor.z-missionPlace.z)<=11&&!transition;
   $('interact').hidden=!ready;
   if(ready)$('interact').querySelector('span').textContent=police.level?'先解除通緝':Math.abs(actor.speed)>=4?'請先煞停':active.stage==='pickup'?'到點取件':'完成交付';
   $('garage-entry').hidden=!nearGarage;
+  $('collection-entry').hidden=!nearCollection;
+  if(nearCollection)$('collection-entry').querySelector('span').textContent=police.level?'先解除通緝':!walking&&Math.abs(actor.speed)>PRIVATE_GARAGE_RULES.maxSpeed?'停穩後進車庫':'私人車庫';
   if(nearGarage)$('garage-entry').querySelector('span').textContent=walking?'開車進廠':police.level?'先解除通緝':garageDistance()>GARAGE_RULES.radius?'開進服務格':Math.abs(actor.speed)>GARAGE_RULES.maxSpeed?'停穩後進廠':'進廠改裝';
   if(garageRoute&&garageDistance()<=GARAGE_RULES.radius){notify(controlHint('抵達修車廠。停穩後按 E 進廠。','抵達修車廠。停穩後點「進廠改裝」。'));waypoint=null;}
-  else if(!active&&waypoint&&!garageRoute&&distance<10){notify('抵達'+target.name+'。');waypoint=null;}
+  else if(waypoint==='collection'&&collectionDistance()<=PRIVATE_GARAGE_RULES.radius){notify(controlHint('抵達私人車庫。按 E 辦理買車、取車或收車。','抵達私人車庫。點「私人車庫」辦理服務。'));waypoint=null;}
+  else if(!active&&waypoint&&!garageRoute&&!collectionRoute&&distance<5){notify('抵達'+target.name+'。');waypoint=null;}
   setText('drive-hint',walking?(combat.weaponId==='unarmed'?'WASD 移動 · Shift 奔跑 · F 搶車 · Tab 武器':'左鍵／X 射擊 · 右鍵／Z 瞄準 · R 換彈 · Q 換武器'):'W 油門 · S 煞車／倒車 · A/D 轉向 · Space 手煞車 · F 下車');
   const brake=document.querySelector('[data-control="brake"]'),boost=document.querySelector('[data-control="boost"]');
   const brakeLabel=walking?'跳躍':'手煞車',boostLabel=walking?'奔跑 ↗':'加速 ↗';
@@ -705,6 +802,7 @@ function updateVehicleDamage(dt,hits,collisions) {
   const result=stepVehicleDamage(vehicleDamage,{vehicles:[...fleet,...police.units],hits,collisions,player:actor,controlledId,obstacles:BUILDINGS},dt);
   vehicleDamage=result.state;
   fleet=result.vehicles.filter(car=>car.kind!=='police');
+  scheduleOwnedHealthSave();
   police={...police,units:result.vehicles.filter(car=>car.kind==='police').map(unit=>unit.damageStage==='wreck'&&!unit.disabled
     ? {...unit,disabled:true,disabledAt:police.time,siren:false,speed:0,route:[]} : unit)};
   if(result.playerDamage>0)combat=applyDamage(combat,result.playerDamage);
@@ -823,7 +921,7 @@ $('start').addEventListener('click',()=>{
   if(!scene)return;
   started=true;clearInput();$('welcome').hidden=true;$('hud').hidden=false;
   document.body.classList.add('playing','on-foot');updateHud();focusGame();
-  notify(controlHint('行人開局。WASD 移動，F 搶車；Tab 選武器，右鍵瞄準、左鍵射擊。', '左下搖桿移動，右側滑動轉視角。點「武器」選裝備，靠近車門可搶車。'));
+  notify(controlHint('行人開局。WASD 移動，B 私人車庫買車／取車，F 上下車；Tab 選武器。', '左下搖桿移動，右側滑動轉視角。點「車庫」買車／取車，靠近車門可上車。'));
 });
 $('close-panel').addEventListener('click',()=>panel.close());
 panel.addEventListener('close',()=>{
@@ -836,6 +934,7 @@ panel.addEventListener('click',event=>{if(event.target===panel){const box=panel.
 $('help').addEventListener('click',showHelp);$('welcome-help').addEventListener('click',showHelp);
 $('jobs').addEventListener('click',showJobs);$('open-map').addEventListener('click',showMap);
 $('garage-action').addEventListener('click',()=>showGarage());$('garage-entry').addEventListener('click',()=>showGarage());
+$('collection-action').addEventListener('click',()=>showCollection());$('collection-entry').addEventListener('click',()=>showCollection());
 $('pause').addEventListener('click',showPause);$('interact').addEventListener('click',interact);
 $('enter-exit').addEventListener('click',switchVehicle);$('vehicle-action').addEventListener('click',switchVehicle);$('reset').addEventListener('click',reset);
 $('weapon-switch').addEventListener('click',showWeapons);
@@ -850,15 +949,16 @@ $('quality').addEventListener('click',()=>{
   notify('畫質：'+labels[quality]);focusGame();
 });
 for(const id of ['enter-exit','vehicle-action','reset','camera','sound'])$(id).addEventListener('click',focusGame);
-document.addEventListener('visibilitychange',()=>{clearInput();accumulator=0;if(document.hidden&&started&&!panel.open)showPause();});
+document.addEventListener('visibilitychange',()=>{flushOwnedHealth(true);clearInput();accumulator=0;if(document.hidden&&started&&!panel.open)showPause();});
 window.addEventListener('resize',()=>{scene?.resize();needsRender=true;});
 window.addEventListener('pagehide',event=>{
+  flushOwnedHealth(true);
   clearInput();input?.unlock();cancelAnimationFrame(raf);if(audio)audio.suspend().catch(()=>{});
   if(!event.persisted){scene?.dispose();input?.dispose();}
 });
 window.addEventListener('pageshow',event=>{if(event.persisted){lastFrame=0;accumulator=0;needsRender=true;raf=requestAnimationFrame(tick);if(soundEnabled&&audio)audio.resume().catch(()=>{});}});
 
-if (progress.completed.length) $('welcome-save').textContent = `已完成 ${progress.completed.length} / ${MISSIONS.length} 個委託 · 本機進度`;
+if (progress.completed.length||progress.ownedVehicleIds.length) $('welcome-save').textContent = `已完成 ${progress.completed.length} / ${MISSIONS.length} 個委託 · ${progress.ownedVehicleIds.length} 輛愛車 · 本機進度`;
 try {
   const { createCityScene } = await import('./scene.js');
   scene = await createCityScene({ container: $('city'), onReady: () => {} });
@@ -867,7 +967,7 @@ try {
     canvas.tabIndex = 0;
     input=createGameInput({canvas,joystick:$('move-stick'),knob:$('stick-knob'),lookPad:$('look-pad'),pedals:document.querySelectorAll('.pedals button'),fireButton:$('fire'),
       isActive:()=>started&&!panel.open&&!transition&&!document.hidden&&!combat.dead,isWalking:()=>walking,isArmed:()=>combat.weaponId!=='unarmed',
-      onAction:action=>{const actions={vehicle:switchVehicle,interact,reset,reload:reloadWeapon,cycleWeapon,weapons:showWeapons,garage:()=>showGarage(),unarmed:()=>equipWeapon('unarmed'),pistol:()=>equipWeapon('pistol'),smg:()=>equipWeapon('smg'),map:showMap,jobs:showJobs,camera:()=>$('camera').click(),pause:showPause};actions[action]?.();},
+      onAction:action=>{const actions={vehicle:switchVehicle,interact,reset,reload:reloadWeapon,cycleWeapon,weapons:showWeapons,garage:()=>showGarage(),collection:()=>showCollection(),unarmed:()=>equipWeapon('unarmed'),pistol:()=>equipWeapon('pistol'),smg:()=>equipWeapon('smg'),map:showMap,jobs:showJobs,camera:()=>$('camera').click(),pause:showPause};actions[action]?.();},
       onLook:(dx,dy)=>{cameraYaw+=dx*.003*(aiming ? .65 : 1);cameraPitch=clamp(cameraPitch+dy*.0022,.10,1.05);lookUntil=time+1.4;needsRender=true;},
       onUnlock:()=>{if(started&&!panel.open)showPause();}
     });

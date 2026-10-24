@@ -134,7 +134,7 @@ test('fixed vehicle IDs retain paid paint and performance while damage and motio
 test('legacy progress upgrades without losing mission rewards and ignores forged money or customizations', () => {
   const legacy = { version: 1, completed: [MISSIONS[0].id], money: 999999, ledger: [{ id: 'fake' }], customizations: { 'starter-sedan': { colorId: 'coral', upgrades: { engine: 2 } } } };
   const current = sanitizeProgress(legacy);
-  assert.equal(current.version, 2);
+  assert.equal(current.version, 3);
   assert.equal(current.money, 850);
   assert.deepEqual(current.ledger, []);
   assert.deepEqual(current.customizations, {});
@@ -185,7 +185,7 @@ test('purchase history remains bounded and cached customization cannot grant fre
   assert.deepEqual(sanitizeProgress(result), result);
 });
 
-test('storage failure leaves session purchases usable and the unchanged migration key carries v2 verbatim', () => {
+test('storage failure leaves session purchases usable and the unchanged migration key carries current progress verbatim', () => {
   const purchased = purchase(freshProgress(), vehicle(), action('paid', 'paint', 'mint'));
   const fail = { setItem() { throw new Error('quota exceeded'); }, getItem() { return null; } };
   assert.equal(saveProgress(fail, purchased.progress), false);

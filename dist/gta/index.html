@@ -37,12 +37,12 @@
         <p class="save-note" id="welcome-save">免登入 · 進度只儲存在這台裝置</p>
       </div>
       <div class="city-caption"><span class="coordinates">25° 02′ N &nbsp; 121° 33′ E <i>FICTIONAL CITY</i></span><div><span class="live-dot"></span> 傍晚 17:42 <b>禾多總部周邊</b></div><p>今天不趕 KPI，先趕下一個路口。</p></div>
-      <div class="welcome-footer"><span>08 — 西側改裝間</span><p>街頭追逐 <i>·</i> 修復車身 <i>·</i> 性能改裝</p><span>WASD 移動 / F 搶車 / Tab 武器</span></div>
+      <div class="welcome-footer"><span>09 — 我的私人車庫</span><p>選購新車 <i>·</i> 收藏愛車 <i>·</i> 性能改裝</p><span>WASD 移動 / F 搶車 / Tab 武器</span></div>
     </section>
 
     <section id="hud" class="hud" hidden aria-label="遊戲資訊">
       <div class="mission-panel">
-        <div class="mission-kicker"><span id="mission-kicker">OFF THE CLOCK</span><div class="mission-tools"><button id="garage-action" title="修車廠 · G">修車廠 <kbd>G</kbd></button><button id="jobs" title="委託清單 · J">委託 <kbd>J</kbd></button></div></div>
+        <div class="mission-kicker"><span id="mission-kicker">OFF THE CLOCK</span><div class="mission-tools"><button id="collection-action" title="私人車庫 · B">車庫 <kbd>B</kbd></button><button id="garage-action" title="修車廠 · G">修車廠 <kbd>G</kbd></button><button id="jobs" title="委託清單 · J">委託 <kbd>J</kbd></button></div></div>
         <h2 id="mission-title">先找一輛代步工具。</h2>
         <p id="mission-detail">走向路邊的車，靠近後按 F 搶車。</p>
         <div class="mission-bottom"><span id="mission-step">自由漫遊</span><span id="mission-distance">禾多總部周邊</span></div>
@@ -54,7 +54,7 @@
       <div class="weapon-panel" aria-label="武器與彈藥"><div class="weapon-heading"><span id="weapon-icon" aria-hidden="true">◇</span><strong id="weapon-name">徒手</strong><span class="weapon-shortcut" aria-hidden="true">1 / 2 / 3</span></div><div class="ammo-line" aria-label="彈匣與備彈"><strong id="ammo-mag">—</strong><span class="ammo-divider" aria-hidden="true">/</span><span id="ammo-reserve">—</span><small>AMMO</small></div><small id="ammo-hint">選擇武器，準備上街。</small><div id="reload-progress" class="reload-progress" role="progressbar" aria-label="換彈進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><i id="reload-bar"></i></div></div>
       <div id="combat-actions" class="combat-actions" role="group" aria-label="武器操作"><button id="weapon-switch" aria-label="開啟武器選單" title="武器選單 · Tab"><span>武器</span><kbd>Tab</kbd></button><button id="reload" aria-label="重新裝填" title="換彈 · R" disabled><span>換彈</span><kbd>R</kbd></button><button id="aim-toggle" aria-label="切換瞄準" aria-pressed="false" title="瞄準 · 滑鼠右鍵" disabled><span>瞄準</span><span class="control-icon" aria-hidden="true">⌖</span></button><button id="fire" data-control="fire" aria-label="按住射擊" title="射擊 · 滑鼠左鍵 / X" disabled><span class="fire-icon" aria-hidden="true">＋</span><span>射擊</span></button></div>
       <div id="crosshair" class="crosshair" aria-hidden="true" hidden><i></i><i></i><i></i><i></i><b></b></div><div id="hit-marker" class="hit-marker" aria-hidden="true"></div>
-      <div class="interaction"><div class="context-actions"><button id="vehicle-action" hidden><kbd>F</kbd><span>搶車</span></button><button id="garage-entry" hidden><kbd>E</kbd><span>進廠改裝</span></button><button id="interact" hidden><kbd>E</kbd><span>接取物品</span></button></div><span id="drive-hint">WASD 移動 · Shift 奔跑 · Space 跳躍 · 滑鼠轉視角</span></div>
+      <div class="interaction"><div class="context-actions"><button id="vehicle-action" hidden><kbd>F</kbd><span>搶車</span></button><button id="collection-entry" hidden><kbd>E</kbd><span>私人車庫</span></button><button id="garage-entry" hidden><kbd>E</kbd><span>進廠改裝</span></button><button id="interact" hidden><kbd>E</kbd><span>接取物品</span></button></div><span id="drive-hint">WASD 移動 · Shift 奔跑 · Space 跳躍 · 滑鼠轉視角</span></div>
       <div id="takeover-progress" class="takeover-progress" hidden role="status"><span id="takeover-label">正在接手車輛</span><div><i id="takeover-bar"></i></div></div>
       <div class="touch-controls" aria-label="觸控移動控制"><div id="move-stick" class="move-stick" role="group" aria-label="移動搖桿，向上前進，左右移動或轉向"><span class="stick-arrows" aria-hidden="true">＋</span><span id="stick-knob"></span><small>移動</small></div><div class="pedals"><button data-control="brake" aria-label="跳躍">跳躍</button><button data-control="boost" aria-label="奔跑">奔跑 ↗</button></div></div>
     </section>
