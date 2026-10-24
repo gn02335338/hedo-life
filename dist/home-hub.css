@@ -1,0 +1,34 @@
+/* Other games belong in the home lobby, outside the career navigation. */
+.home{overflow-x:clip}
+.home-hub{margin:64px 0}
+.home-hub-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:26px}
+.home-hub-heading .eyebrow{color:var(--pink)}
+.home-hub h2{font-size:30px;margin-top:10px}
+.home-hub-heading>p{max-width:330px;font-size:13px;line-height:1.9;color:var(--muted)}
+.home-game-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.home-game-card{--game-ink:#287d71;--game-tint:#eef8f4;display:flex;flex-direction:column;min-width:0;padding:26px;border:1px solid #e3ece7;border-radius:22px;background:var(--game-tint);transition:transform .18s,border-color .18s,box-shadow .18s}
+.home-game-card:hover{transform:translateY(-4px);border-color:var(--game-ink);box-shadow:0 10px 26px #171c3109}
+.home-game-card.gta{--game-ink:#6453a2;--game-tint:#f3f0fa;border-color:#e7e1f0}
+.home-game-card.arpg{--game-ink:#9c5b35;--game-tint:#fcf3e9;border-color:#eee2d5}
+.home-game-top{display:flex;justify-content:space-between;align-items:center;gap:15px;color:var(--game-ink);margin-bottom:28px}
+.home-game-icon{display:grid;place-items:center;width:62px;height:62px;background:#ffffffb3;border:1px solid #ffffff;border-radius:18px}
+.home-game-icon svg{width:40px;height:40px}
+.home-game-top>span:last-child{font-size:9px;letter-spacing:.12em;font-weight:700}
+.home-game-card h3{font-size:25px;letter-spacing:-.025em}
+.home-game-card p{font-size:13px;line-height:1.95;color:#626777;margin:10px 0 25px;flex:1}
+.home-game-cta{display:flex;justify-content:space-between;align-items:center;color:var(--game-ink);font-size:13px;font-weight:700;padding-top:17px;border-top:1px solid #171c3112}
+.home-game-cta>span{font-size:22px;font-weight:400;line-height:1}
+.home-network{display:flex;justify-content:space-between;align-items:center;gap:26px;margin-top:22px;padding:26px 30px;border:1px solid var(--line);border-radius:20px;background:#fff}
+.home-network-heading .eyebrow{color:var(--muted);font-size:9px}
+.home-network-heading h3{font-size:18px;margin-top:5px}
+.home-network-links{display:flex;gap:14px;flex-wrap:wrap}
+.home-network-link{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--line);border-radius:13px;min-height:66px}
+.home-network-link:hover{border-color:#e5b7cc;background:#fff8fb}
+.home-network-link>svg{height:25px;width:25px;color:var(--pink-dark);flex-shrink:0}
+.home-network-link b{display:block;font-size:13px;font-weight:600}
+.home-network-link small{display:block;font-size:10px;color:var(--muted);line-height:1.7}
+.home-network-link>span:last-child{margin-left:12px;color:var(--pink-dark);font-size:18px}
+@media(min-width:801px) and (max-width:1200px){.site-header{gap:22px}.site-header nav{gap:16px;flex-wrap:wrap;justify-content:flex-end}.site-header .nav-link{font-size:11px}}
+@media(max-width:800px){.home-hub{margin:45px 0}.home-hub-heading{display:block}.home-hub-heading>p{margin-top:12px;max-width:none}.home-game-grid{gap:12px}.home-game-card{padding:20px}.home-game-top{margin-bottom:20px;align-items:flex-start;flex-direction:column;gap:12px}.home-game-card h3{font-size:22px}.home-game-card p{font-size:12px}.home-network{align-items:flex-start;flex-direction:column;padding:24px;gap:20px}.home-network-links{width:100%}.home-network-link{flex:1}}
+@media(max-width:560px){.home-hub h2{font-size:27px}.home-hub-heading{margin-bottom:22px}.home-hub-heading>p{font-size:12px}.home-game-grid{grid-template-columns:1fr;gap:14px}.home-game-card{position:relative;padding:22px 22px 20px 102px;border-radius:18px;min-height:190px}.home-game-top{margin:0 0 8px}.home-game-icon{position:absolute;left:20px;top:22px;width:60px;height:60px}.home-game-card h3{font-size:23px}.home-game-card p{margin:8px 0 16px}.home-game-cta{font-size:12px;padding-top:13px}.home-network{padding:22px;gap:18px}.home-network-links{flex-direction:column;gap:10px}.home-network-link{padding:13px 15px}.home-network-link>span:last-child{margin-left:auto}.home-network-heading h3{font-size:18px}}
+@media(prefers-reduced-motion:reduce){.home-game-card{transition:none}.home-game-card:hover{transform:none}}
