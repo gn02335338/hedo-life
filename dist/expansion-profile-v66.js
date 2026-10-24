@@ -1,2 +1,2 @@
 // Fresh cast stories never enter a published cohort's deterministic deck.
-export const isExpansionV66=value=>/^e39-r6[6789]-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
+export const isExpansionV66=value=>/^e39-r(?:6[6789]|70)-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');

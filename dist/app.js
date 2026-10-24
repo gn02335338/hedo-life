@@ -2,6 +2,7 @@ import { ROLES, ROLE_MAP } from './roles.js';
 import {isPatronageBenefitsV67} from './patronage-benefits-v67.js';
 import {patronageLegacyNoticeV68} from './patronage-notice-v68.js';
 import {isPatronageProgressV69} from './patronage-progress-v69.js';
+import {displayJanetSceneV70} from './janet-scene-copy-v70.js';
 import { SOURCES } from './public-sources.js';
 import { ENDINGS, FAMILIES } from './endings.js';
 import { LEGACY_ENDINGS } from './legacy.js';
@@ -60,12 +61,14 @@ const endingArtHTML=(ending,options)=>typeof renderEndingIllustration==='functio
 const playerTitle=(title,state=run)=>typeof displayPlayerTitleV42==='function'?displayPlayerTitleV42(title,state?.actualRoleId):title;
 const shownJobTitle=state=>playerTitle(jobTitle(state),state);
 const shownEvent=event=>{
- const contextual=typeof displayArmSceneEventV51==='function'?displayArmSceneEventV51(event):event;
+ const named=typeof displayJanetSceneV70==='function'?displayJanetSceneV70(event):event;
+ const contextual=typeof displayArmSceneEventV51==='function'?displayArmSceneEventV51(named):named;
  const shown=typeof displayPlayerEventV42==='function'?displayPlayerEventV42(displayChronicleEvent(contextual),run):displayChronicleEvent(contextual);
  return typeof displayPrincessEventV47==='function'?displayPrincessEventV47(shown,run):shown;
 };
 const shownHistory=row=>{
- const occasion=typeof displayArmSceneHistoryV51==='function'?displayArmSceneHistoryV51(row):row;
+ const named=typeof displayJanetSceneV70==='function'?displayJanetSceneV70(row):row;
+ const occasion=typeof displayArmSceneHistoryV51==='function'?displayArmSceneHistoryV51(named):named;
  const shown=typeof polishVerbalHistoryV41==='function'?polishVerbalHistoryV41(displayChronicleHistory(occasion)):displayChronicleHistory(occasion);
  const contextual=typeof displayArmVerbalHistoryV51==='function'?displayArmVerbalHistoryV51(shown):shown;
  const current=typeof displayContextVerbalHistoryV52==='function'?displayContextVerbalHistoryV52(contextual,{run,rawRow:row}):contextual;
@@ -99,7 +102,7 @@ const leaderboardUI=typeof createLeaderboardUIV56==='function'?createLeaderboard
 const pad=n=>String(n).padStart(2,'0');
 function randomSeed(kind='normal'){
  const entropy=typeof crypto.getRandomValues==='function'?Array.from(crypto.getRandomValues(new Uint8Array(11)),byte=>byte.toString(16).padStart(2,'0')).join(''):crypto.randomUUID().replaceAll('-','').slice(0,22);
- return typeof recruitmentSeedV60==='function'?recruitmentSeedV60(entropy,kind,69):`e39-r69-${({normal:'n',executive:'n',godson:'s',goddaughter:'d'})[kind]}-${entropy}`;
+ return typeof recruitmentSeedV60==='function'?recruitmentSeedV60(entropy,kind,70):`e39-r70-${({normal:'n',executive:'n',godson:'s',goddaughter:'d'})[kind]}-${entropy}`;
 }
 const randomRecruiter=typeof createRandomRecruiterV60==='function'?createRandomRecruiterV60():null;
 const applicationTitle=state=>typeof entryLabelV60==='function'?entryLabelV60(state):ROLE_MAP[state.roleId].name;
@@ -452,7 +455,7 @@ function resourceWarningHTML(){
  return `<section class="resource-warning ${critical?'critical':'caution'}" data-resource-warning role="alert" aria-atomic="true"><span class="resource-warning-icon" aria-hidden="true">!</span><div class="resource-warning-content"><b class="resource-warning-title">${critical?'快撐不住了，先顧自己。':'電量偏低，別只顧著上班。'}</b><ul>${risks.map(key=>`<li data-warning-stat="${key}"><b>${STAT_LABELS[key]}剩 ${run.stats[key]} / 100</b><span>${key==='energy'?'體力耗盡可能讓這段人生直接結束。':modern?'心情歸零會真正失控，記得留時間照顧自己。':'心情再降下去，會遇到情緒危機。'}</span></li>`).join('')}</ul><p>${advice}</p>${canRest?'<button type="button" class="resource-rest-button" data-action="break">查看休息安排 <span aria-hidden="true">↗</span></button>':''}</div></section>`;
 }
 function usesEnergySafety(state=run){return typeof isEnergySafetyV54==='function'?isEnergySafetyV54(state):/^e39-cal46-kin49-g-e-s-/.test(state?.seed||'');}
-function usesLifeBalance(state=run){return typeof isLifeBalanceV62==='function'?isLifeBalanceV62(state):/^e39-r6[2356789]-[nsd]-[0-9a-f]{22}$/.test(state?.seed||'');}
+function usesLifeBalance(state=run){return typeof isLifeBalanceV62==='function'?isLifeBalanceV62(state):/^e39-r(?:6[2356789]|70)-[nsd]-[0-9a-f]{22}$/.test(state?.seed||'');}
 function usesEnergyRest(state=run){return typeof isEnergyRestV53==='function'?isEnergyRestV53(state):/^e39-cal46-kin49-g-e-/.test(state?.seed||'');}
 function usesWorkGap(state=run){return typeof isWorkGapV50==='function'?isWorkGapV50(state):/^e39-cal46-kin49-g-/.test(state?.seed||'');}
 function workGapIsOpen(state=run){return typeof isWorkGapOpenV50==='function'&&isWorkGapOpenV50(state);}

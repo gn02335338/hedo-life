@@ -12,8 +12,8 @@ import {isPatronageBenefitsV67} from '../dist/patronage-benefits-v67.js';
 import {patronageLegacyNoticeV68} from '../dist/patronage-notice-v68.js';
 import {isPatronageFamiliarityV68} from '../dist/patronage-familiarity-v68.js';
 
-test('r68 and r69 ordinary and family seeds inherit current work, rest, participation, benefits and familiarity profiles',()=>{
- for(const profile of [68,69])for(const kind of ['normal','godson','goddaughter']){
+test('r68 through r70 ordinary and family seeds inherit current work, rest, participation, benefits and familiarity profiles',()=>{
+ for(const profile of [68,69,70])for(const kind of ['normal','godson','goddaughter']){
   const seed=recruitmentSeedV60('ab'.repeat(16),kind,profile);
   assert.match(seed,new RegExp(`^e39-r${profile}-[nsd]-[0-9a-f]{22}$`));
   for(const gate of [isRecruitmentV60,isExpansionV65,isExpansionV66,isOfficeTreatsV61,isLifeBalanceV62,isParticipationV63,isPatronageBenefitsV67,isPatronageFamiliarityV68])assert.equal(gate(seed),true);
@@ -21,7 +21,7 @@ test('r68 and r69 ordinary and family seeds inherit current work, rest, particip
 });
 
 test('both fresh special entries really appoint at the improved salary and replay with a single cash subsidy',()=>{
- for(const profile of [68,69])for(const kind of ['godson','goddaughter']){
+ for(const profile of [68,69,70])for(const kind of ['godson','goddaughter']){
   const seed=recruitmentSeedV60('abcd'.repeat(8),kind,profile),entry=directEntryV60(seed);
   const start=E.enableActivitySchedule(E.createRun(entry.roleId,seed)),copy=structuredClone(start);
   const pending=E.applyChoice(start,0),run=E.advance(pending);
@@ -29,7 +29,7 @@ test('both fresh special entries really appoint at the improved salary and repla
   assert.equal(pending.history[0].breakdown.filter(part=>part.source==='patronage-appointment').length,1);
   assert.equal(run.stats.cash,Math.min(100,start.stats.cash+24));
   assert.deepEqual(E.replayRun(run.roleId,seed,run.actions),run);assert.equal(E.validRun(run),true);
-  assert.equal(patronageLegacyNoticeV68(run)==='',profile===69);
+  assert.equal(patronageLegacyNoticeV68(run)==='',profile>=69);
  }
 });
 
