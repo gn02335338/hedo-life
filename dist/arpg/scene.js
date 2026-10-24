@@ -1,6 +1,14 @@
 import * as THREE from '../island/vendor/three.module.js';
 import { WORLD, BOSS_PROFILES } from './content.js';
 import { createArtLayer } from './art-layer.js';
+import { createCombatVisuals } from './combat-visuals.js';
+
+// The ground projection of the real camera basis. A screen-up joystick must
+// travel vertically on screen rather than drifting with an assumed 45° view.
+export function movementToWorld(x, z) {
+  const scale = Math.hypot(17, 22);
+  return { x: (x * 22 + z * 17) / scale, z: (z * 22 - x * 17) / scale };
+}
 
 // Original textured 3D architecture with directional pre-rendered character art.
 // The renderer only reads simulation snapshots.
@@ -29,6 +37,7 @@ export function createScene({ container } = {}) {
   scene.fog = new THREE.Fog('#171614', 28, 84);
   const camera = new THREE.OrthographicCamera(-20, 20, 20, -20, 0.1, 180);
   const cameraTarget = new THREE.Vector3(0, 0, -12);
+  const lookTarget = new THREE.Vector3();
   const cameraOffset = new THREE.Vector3(17, 25, 22);
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2();
@@ -122,6 +131,7 @@ export function createScene({ container } = {}) {
   const rim = new THREE.DirectionalLight('#dba275', 0.75);
   rim.position.set(7, 10, -40); scene.add(rim);
   const artLayer = createArtLayer({ scene, camera, renderer, materials: M });
+  const combatVisuals = createCombatVisuals({ scene, camera });
 
   // A single shared, locally drawn stone map adds surface detail without assets
   // or another material/draw call for each tile.
@@ -645,9 +655,11 @@ export function createScene({ container } = {}) {
     const root = group(scene);
     const ring = plate(root, mat, 0, 0.13, 0, 1, true);
     const slash = part(root, G.torus, mat, 0, 0.8, -0.5, 0.8, 0.8, 0.8, Math.PI / 2.3, 0, 0.5);
+    const trail = part(root, G.plane, mat, 0, 0.04, -0.5, 0.2, 1, 1, -Math.PI / 2);
+    trail.visible = false;
     const sparks = [];
     for (let i = 0; i < 4; i++) sparks.push(part(root, G.box, mat, 0, 0.5, 0, 0.035, 0.22, 0.035));
-    return { root, ring, slash, sparks, material: mat, type: String(effect.type) };
+    return { root, ring, slash, trail, sparks, material: mat, type: String(effect.type) };
   }
   const projectileMats = { player: basic('#99ded2'), enemy: basic('#ff7952') };
 
@@ -675,6 +687,7 @@ export function createScene({ container } = {}) {
     if (destroyed || contextLost || !state?.player) return;
     const elapsed = Math.max(0, Math.min(0.1, Number(dt) || 0));
     time += elapsed;
+    combatVisuals.update(state, elapsed);
     const ready = state.status === 'ready';
     if (lastStatus === null) cameraTarget.set(ready ? 0 : state.player.x, 0, ready ? -12 : state.player.z - 1.5);
     lastStatus = state.status;
@@ -684,10 +697,12 @@ export function createScene({ container } = {}) {
     const desiredView = ready ? Math.max(43, 37 / (width / height)) : width < 700 ? 17 : 19;
     const nextView = viewSize + (desiredView - viewSize) * (1 - Math.exp(-elapsed * 3));
     if (Math.abs(nextView - viewSize) > 0.001) { viewSize = nextView; updateProjection(); }
-    camera.position.copy(cameraTarget).add(cameraOffset); camera.lookAt(cameraTarget); camera.updateMatrixWorld();
+    const kick = combatVisuals.cameraKick();
+    camera.position.copy(cameraTarget).add(cameraOffset).add(kick);
+    camera.lookAt(lookTarget.copy(cameraTarget).add(kick)); camera.updateMatrixWorld();
 
     if (!playerModel) playerModel = artLayer.attach(engineer(), 'jack');
-    const p = state.player, pAngle = Number(p.angle) || 0;
+    const p = state.player, pAngle = Number(p.action?.angle ?? p.angle) || 0;
     const carryingMug = state.equipped?.weapon?.baseId === 'mug';
     playerModel.weapons.keyboard.visible = !carryingMug;
     playerModel.weapons.mug.visible = carryingMug;
@@ -705,7 +720,7 @@ export function createScene({ container } = {}) {
     playerModel.root.visible = state.status !== 'dead' || Math.sin(time * 4) > -0.4;
     if (p.invulnerable > 0 && state.status === 'playing') playerModel.body.visible = Math.sin(time * 44) > -0.6;
     else playerModel.body.visible = true;
-    artLayer.updateActor(playerModel, { angle: pAngle, moved: playerMoved, attack, hp: p.hp, dt: elapsed, weapon: carryingMug ? 'mug' : 'keyboard', invulnerable: p.invulnerable > 0 && state.status === 'playing' });
+    artLayer.updateActor(playerModel, { angle: pAngle, moved: playerMoved, attack, hp: p.hp, dt: elapsed, weapon: carryingMug ? 'mug' : 'keyboard', invulnerable: p.invulnerable > 0 && state.status === 'playing', action: p.action, held: combatVisuals.held('player'), hitTimer: p.hitTimer, hitAngle: p.hitAngle });
     updateHealth(playerModel, p.hp, p.maxHp || p.hp, !ready && Number(p.hp) < Number(p.maxHp));
 
     const liveEnemies = new Set(), liveWarnings = new Set();
@@ -730,7 +745,7 @@ export function createScene({ container } = {}) {
       model.wings.forEach((wing, i) => { wing.rotation.z = Math.sin(time * 1.4) * 0.04 * (i ? 1 : -1); });
       if (model.magic) model.magic.rotation.y = time * 0.6;
       model.lastX = enemy.x; model.lastZ = enemy.z;
-      artLayer.updateActor(model, { angle: Number(enemy.angle) || 0, moved, hp: enemy.hp, dt: elapsed, phase: enemy.phase, enraged: enemy.enraged });
+      artLayer.updateActor(model, { angle: Number(enemy.angle) || 0, moved, hp: enemy.hp, dt: elapsed, phase: enemy.phase, enraged: enemy.enraged, held: combatVisuals.held(enemy.id), hitTimer: enemy.hitTimer, hitAngle: enemy.hitAngle, windup: enemy.telegraph?.progress || 0 });
       // The persistent boss HUD owns its name/health; duplicate labels would
       // cover the portrait art, especially on a short phone viewport.
       updateHealth(model, enemy.hp, enemy.maxHp, !ready && model.kind !== 'boss' && (enemy.hp < enemy.maxHp || enemy.phase === 'windup'));
@@ -798,12 +813,21 @@ export function createScene({ container } = {}) {
       model.root.position.set(effect.x, 0, effect.z); model.root.rotation.y = -(Number(effect.angle) || 0);
       model.material.opacity = (1 - age) * 0.85;
       const slash = /attack|melee|slash|cleave/.test(model.type);
-      model.slash.visible = slash; model.ring.visible = !slash;
+      // The new impact renderer owns precisely timed melee arcs and contact
+      // sparks. Preserve area telegraphs/effects without drawing two hit rings.
+      const contact = model.type === 'hit' || slash;
+      const trail = model.type === 'charge' || model.type === 'dash';
+      model.root.visible = !contact;
+      model.slash.visible = slash; model.ring.visible = !slash && !trail;
+      model.trail.visible = trail;
+      model.trail.scale.set(0.24 * (1 - age * 0.6), radius, 1);
+      model.trail.position.z = -radius / 2;
       model.ring.scale.setScalar(radius * (0.3 + age * 0.85));
       model.slash.scale.setScalar(radius * (0.6 + age * 0.5)); model.slash.rotation.z = 0.5 + age * 1.6;
       model.sparks.forEach((spark, i) => {
         const a = i * Math.PI / 2 + 0.4;
-        spark.position.set(Math.sin(a) * radius * age, 0.2 + Math.sin(age * Math.PI) * (0.7 + i * 0.1), Math.cos(a) * radius * age);
+        if (trail) spark.position.set(Math.sin(a) * 0.18, 0.12 + Math.sin(age * Math.PI) * 0.2, -radius * (i + age) / 4);
+        else spark.position.set(Math.sin(a) * radius * age, 0.2 + Math.sin(age * Math.PI) * (0.7 + i * 0.1), Math.cos(a) * radius * age);
         spark.rotation.z = a + age * 3;
       });
     }
@@ -855,13 +879,14 @@ export function createScene({ container } = {}) {
   resize(); camera.position.copy(cameraTarget).add(cameraOffset); camera.lookAt(cameraTarget); camera.updateMatrixWorld();
   renderer.render(scene, camera);
   return {
-    canvas, update, screenToWorld, resize,
+    canvas, update, screenToWorld, movementToWorld, resize,
     destroy() {
       if (destroyed) return;
       destroyed = true; observer.disconnect();
       canvas.removeEventListener('webglcontextlost', onContextLost);
       canvas.removeEventListener('webglcontextrestored', onContextRestored);
       artLayer.destroy();
+      combatVisuals.destroy();
       geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose());
       actors.clear(); loot.clear(); warnings.clear(); missiles.clear(); particles.clear(); gates.clear(); bossLabels.clear(); scene.clear();
       renderer.dispose(); canvas.remove();

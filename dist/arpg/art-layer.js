@@ -6,6 +6,11 @@ const ROOT = new URL('./assets/', import.meta.url);
 export function directionFrame(heading, cameraBearing, count = 8) {
   return ((Math.round((cameraBearing - heading) / (Math.PI * 2) * count) % count) + count) % count;
 }
+export function attackPhase(action, age = action?.elapsed || 0) {
+  if (action?.kind !== 'attack') return 'idle';
+  if (!action.resolved && age + 1e-9 < action.hitAt) return 'windup';
+  return age < action.hitAt + 0.15 ? 'strike' : 'recovery';
+}
 const ACTORS = {
   jack: { file: 'jack-8dir.webp', columns: 4, rows: 2, height: 2.75, baseline: 490 / 512 },
   jackMug: { file: 'jack-mug-8dir.webp', columns: 4, rows: 2, height: 2.75, baseline: 490 / 512 },
@@ -44,6 +49,19 @@ export function createArtLayer({ scene, camera, renderer, materials: targets }) 
       sheet.ready = true;
       sheet.aspect = texture.image.width / spec.columns / (texture.image.height / spec.rows);
     });
+  }
+  const poses = new Map();
+  for (const weapon of ['keyboard', 'mug']) {
+    for (const pose of ['walk-left', 'walk-right', 'attack-windup', 'attack-strike']) {
+      const sheet = { ...ACTORS.jack, ready: false };
+      const key = `${weapon}:${pose}`;
+      poses.set(key, sheet);
+      const file = `jack-${weapon === 'mug' ? 'mug-' : ''}${pose}.webp`;
+      sheet.texture = load(`actors-v4/${file}`, texture => {
+        sheet.ready = true;
+        sheet.aspect = texture.image.width / sheet.columns / (texture.image.height / sheet.rows);
+      });
+    }
   }
   load('world-v3/dungeon-floor.webp', texture => {
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
@@ -162,16 +180,36 @@ export function createArtLayer({ scene, camera, renderer, materials: targets }) 
     shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.028;
     shadow.scale.set(id === 'wing' ? 3.5 : id === 'sonny' ? 2.6 : id === 'jack' ? 1.65 : 1.9, 1.5, 1);
     model.root.add(shadow);
-    model.art = { id, sheet, visual, mesh, outline, geometry, material, shadow, frame: -1, hit: 0, hp: null, phase: 0 };
+    model.art = { id, sheet, visual, mesh, outline, geometry, material, shadow, frame: -1, hit: 0, hp: null, phase: 0, actionSerial: null, actionElapsed: 0, lastPhase: null, recovery: 0 };
     return model;
   }
-  function updateActor(model, { angle = 0, moved = 0, attack = 0, hp, invulnerable = false, phase, enraged = false, weapon, dt = 0 }) {
+  function updateActor(model, { angle = 0, moved = 0, attack = 0, hp, invulnerable = false, phase, enraged = false, weapon, dt = 0, action = null, hitTimer = 0, hitAngle = angle, held = false, windup = 0 }) {
     const art = model.art;
+    if (!art) return;
+    const frameTime = Math.max(0, Math.min(0.1, dt));
+    art.phase += moved;
+    let actionAge = action?.elapsed || 0;
+    if (action && art.actionSerial === action.serial && held && attackPhase(action) === 'strike') actionAge = Math.max(action.hitAt + 0.001, Math.min(art.actionElapsed, action.hitAt + 0.1));
+    else { art.actionSerial = action?.serial ?? null; art.actionElapsed = actionAge; }
     if (art?.id === 'jack') {
-      const desired = sheets.get(weapon === 'mug' ? 'jackMug' : 'jack');
+      let desired = sheets.get(weapon === 'mug' ? 'jackMug' : 'jack');
+      let pose = null;
+      if (action?.kind === 'attack') {
+        const phase = attackPhase(action, actionAge);
+        if (phase === 'windup') pose = 'attack-windup';
+        else if (phase === 'strike') pose = 'attack-strike';
+      } else if (moved > 0.001) {
+        const step = Math.floor(art.phase / 0.55) % 4;
+        pose = step === 0 ? 'walk-left' : step === 2 ? 'walk-right' : null;
+      }
+      const animated = poses.get(`${weapon || 'keyboard'}:${pose}`);
+      if (animated?.ready) desired = animated;
       if (desired.ready && art.sheet !== desired) {
         art.sheet = desired; art.material.map = desired.texture; art.material.needsUpdate = true; art.frame = -1;
-        if (art.outline) art.outline.material.uniforms.atlas.value = desired.texture;
+        if (art.outline) {
+          art.outline.material.uniforms.atlas.value = desired.texture;
+          art.outline.material.uniforms.texel.value.set(1 / 2048, 1 / 1024);
+        }
       }
     }
     if (!art?.sheet.ready) return;
@@ -180,10 +218,11 @@ export function createArtLayer({ scene, camera, renderer, materials: targets }) 
     model.legs.forEach(leg => { leg.visible = false; });
     if (model.offhand) model.offhand.visible = false;
     model.root.children.forEach(child => { if (child.material === targets.shadow) child.visible = false; });
-    art.phase += moved * (art.id === 'bug' ? 5 : 3.8);
     if (art.hp !== null && hp < art.hp) art.hit = 0.13;
-    art.hp = hp; art.hit = Math.max(0, art.hit - Math.max(0, Math.min(0.1, dt)));
-    visual.visible = !invulnerable || Math.sin(elapsed * 44) > -0.6;
+    art.hp = hp; art.hit = Math.max(0, art.hit - frameTime);
+    // Keep the hero readable through invulnerability; tint and recoil carry the
+    // hit instead of repeatedly making the complete character disappear.
+    visual.visible = true;
     inverse.copy(model.root.quaternion).invert();
     visual.quaternion.copy(camera.quaternion).premultiply(inverse);
     const cameraBearing = Math.atan2(camera.position.x - model.root.position.x, -(camera.position.z - model.root.position.z));
@@ -198,17 +237,34 @@ export function createArtLayer({ scene, camera, renderer, materials: targets }) 
       uv.setXY(0, left, top); uv.setXY(1, right, top); uv.setXY(2, left, bottom); uv.setXY(3, right, bottom); uv.needsUpdate = true;
       art.frame = frame;
     }
-    const swing = attack > 0 ? Math.sin(Math.min(1, attack / 0.2) * Math.PI) : phase === 'windup' ? Math.sin(elapsed * 7) * 0.2 : 0;
-    const bob = moved > 0.001 && !reducedMotion ? Math.abs(Math.sin(art.phase * 2)) * 0.025 : 0;
+    if (art.lastPhase === 'windup' && phase === 'recovery') art.recovery = 0.24;
+    art.lastPhase = phase; art.recovery = Math.max(0, art.recovery - frameTime);
+    let lean = 0, lunge = 0;
+    if (action?.kind === 'attack') {
+      const before = attackPhase(action, actionAge) === 'windup';
+      const ratio = before ? actionAge / Math.max(0.01, action.hitAt) : Math.max(0, 1 - (actionAge - action.hitAt) / 0.2);
+      lean = before ? -ratio * 0.055 : ratio * 0.08;
+      lunge = before ? -ratio * 0.06 : Math.sin(ratio * Math.PI / 2) * (action.heavy ? 0.23 : 0.16);
+    } else if (action?.kind === 'dash') {
+      lean = 0.12; lunge = 0.12;
+    } else if (phase === 'windup') {
+      lean = -0.04 - windup * 0.035; lunge = -windup * 0.12;
+    } else if (art.recovery > 0) {
+      lean = art.recovery / 0.24 * 0.1; lunge = art.recovery / 0.24 * 0.2;
+    }
+    const cadence = art.phase / 2.2 * Math.PI * 2;
+    const bob = moved > 0.001 && !reducedMotion ? Math.abs(Math.sin(cadence)) * 0.018 : 0;
     const hover = art.id === 'paper' && !reducedMotion ? Math.sin(elapsed * 2.5 + art.phase) * 0.07 : 0;
-    const stretch = 1 + swing * 0.035;
-    mesh.scale.set(sheet.height * sheet.aspect * (1 - swing * 0.025), sheet.height * stretch, 1);
-    mesh.position.y = sheet.height * stretch * (sheet.baseline - 0.5) + bob + hover;
-    mesh.rotation.z = reducedMotion ? 0 : swing * -0.07 + (moved > 0.001 ? Math.sin(art.phase) * 0.018 : 0);
+    mesh.scale.set(sheet.height * sheet.aspect, sheet.height, 1);
+    const screenHeading = angle - cameraBearing;
+    const recoil = Math.min(1, (hitTimer || art.hit) / 0.13) * (art.id === 'jack' ? 0.1 : art.id === 'wing' ? 0.06 : 0.16);
+    mesh.position.x = reducedMotion ? 0 : -Math.sin(screenHeading) * lunge + Math.sin(cameraBearing - hitAngle) * recoil;
+    mesh.position.y = sheet.height * (sheet.baseline - 0.5) + bob + hover + (reducedMotion ? 0 : -Math.cos(screenHeading) * lunge * 0.35 - recoil * 0.15);
+    mesh.rotation.z = reducedMotion ? 0 : Math.sin(screenHeading) * lean + (moved > 0.001 ? Math.sin(cadence) * 0.012 : 0);
     if (art.outline) {
       art.outline.position.copy(mesh.position); art.outline.scale.copy(mesh.scale); art.outline.rotation.copy(mesh.rotation);
     }
-    art.material.color.set(art.hit > 0 ? '#ffffff' : enraged ? '#e4ae91' : '#f0e5d1');
+    art.material.color.set(art.hit > 0 ? art.id === 'jack' ? '#ffb8a3' : '#ffffff' : enraged ? '#e4ae91' : invulnerable ? '#e8e9d5' : '#f0e5d1');
     if (model.hp) {
       healthOffset.set(0, sheet.height * 0.91, 0).applyQuaternion(camera.quaternion).applyQuaternion(inverse);
       model.hp.group.position.copy(healthOffset);

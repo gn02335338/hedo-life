@@ -82,7 +82,9 @@ test('melee and burst cannot damage an enemy through an office cabinet', () => {
   const state = arena('slime'), enemy = state.enemies[0];
   state.player.x = -5.5;
   Object.assign(enemy, { x: -8.6, z: 0, hp: 100, maxHp: 100, timer: 10 });
-  stepGame(state, { attack: true, burst: true, aim: { x: -9, z: 0 } }, FIXED_STEP);
+  stepGame(state, { attack: true, aim: { x: -9, z: 0 } }, FIXED_STEP);
+  advance(state, {}, 0.15);
+  stepGame(state, { burst: true, aim: { x: -9, z: 0 } }, FIXED_STEP);
   assert.equal(enemy.hp, 100);
 });
 
@@ -92,11 +94,13 @@ test('a short attack tap at 120 Hz survives release before the next tick and hel
   stepGame(tapped, { attack: true }, 1 / 120);
   assert.equal(tapped.stats.damageDealt, 0);
   stepGame(tapped, { attack: false }, 1 / 120);
-  assert.equal(tapped.stats.damageDealt, tapped.player.attack);
+  assert.equal(tapped.stats.damageDealt, 0, 'the retained tap begins a real windup');
+  advance(tapped, {}, 0.15);
+  assert.equal(tapped.stats.damageDealt, Math.round(tapped.player.attack * 0.8));
   assert.equal(tapped.pendingInput.attack, false);
   const held = arena('slime');
   Object.assign(held.enemies[0], { x: 0, z: -2, hp: 1000, maxHp: 1000, timer: 10 });
-  advance(held, { attack: true }, 1);
+  advance(held, { attack: true }, 1.2);
   assert.equal(held.stats.damageDealt, held.player.attack * 3);
 });
 
@@ -215,6 +219,7 @@ test('an enemy dies once, drops once, and nearby pickup settles rewards once', (
   const state = arena('slime');
   Object.assign(state.enemies[0], { x: 0, z: -2, hp: 1, active: false, timer: 10 });
   stepGame(state, { attack: true }, FIXED_STEP);
+  advance(state, {}, 0.15);
   assert.equal(state.stats.kills, 1);
   assert.equal(state.enemies.length, 0);
   assert.equal(state.drops.length, 3, 'first enemy guarantees a piece of equipment');
@@ -251,7 +256,8 @@ test('equipping affects damage and defense without healing exploits; equipped it
   Object.assign(enemy, { x: 0, z: -2, hp: 100, maxHp: 100, timer: 10 });
   state.enemies = [enemy];
   stepGame(state, { attack: true }, FIXED_STEP);
-  assert.equal(enemy.hp, 100 - state.player.attack);
+  advance(state, {}, 0.15);
+  assert.equal(enemy.hp, 100 - Math.round(state.player.attack * 0.8));
 });
 
 test('slime charge, golem slam, and wraith bolt have distinct dodgeable warnings', () => {
@@ -330,6 +336,7 @@ test('each room needs its boss and its mobs; a boss awards equipment and coffee 
   const mob = { ...createGame().enemies[0], id: 'room-one-last-mob', x: 9, z: 0, hp: 1, timer: 10 };
   state.enemies.push(mob);
   stepGame(state, { attack: true }, FIXED_STEP);
+  advance(state, {}, 0.15);
   assert.equal(state.defeatedBosses.sonny, true);
   assert.equal(state.roomCleared[1], false);
   assert.equal(state.gates[0].locked, true);
@@ -343,8 +350,10 @@ test('each room needs its boss and its mobs; a boss awards equipment and coffee 
   assert.equal(state.player.potions, 2);
   stepGame(state, {}, FIXED_STEP);
   assert.equal(state.player.potions, 2);
+  advance(state, {}, SKILLS.attack.cooldown);
   Object.assign(state.player, { x: 8, z: 0 }); state.cooldowns.attack = 0;
   stepGame(state, { attack: true }, FIXED_STEP);
+  advance(state, {}, 0.15);
   assert.equal(state.roomCleared[1], true);
   assert.equal(state.unlockedRoom, 2);
   assert.equal(state.gates[0].locked, false);
@@ -386,6 +395,7 @@ test('final boss alternates bombardment and slam, enrages once, and awards victo
   boss.hp = 1;
   state.player.z = -32;
   stepGame(state, { attack: true }, FIXED_STEP);
+  advance(state, {}, 0.15);
   assert.equal(state.status, 'won');
   assert.equal(state.wins, 1);
   assert.equal(state.stats.bossKills, 1);
@@ -434,12 +444,15 @@ test('defeating the boss while other enemies live cannot finish or award a clear
   Object.assign(other, { x: 10, z: 0, hp: 1, timer: 10 });
   state.enemies.push(other);
   stepGame(state, { attack: true }, FIXED_STEP);
+  advance(state, {}, 0.15);
   assert.equal(state.stats.bossKills, 1);
   assert.equal(state.wins, 0);
   assert.equal(state.status, 'playing');
+  advance(state, {}, SKILLS.attack.cooldown);
   state.player.x = 9; state.player.z = 0;
   state.cooldowns.attack = 0;
   stepGame(state, { attack: true }, FIXED_STEP);
+  advance(state, {}, 0.15);
   assert.equal(state.status, 'won');
   assert.equal(state.wins, 1);
 });
@@ -449,6 +462,8 @@ test('identical seeds and kills produce identical loot and loaded gear never reu
   for (const state of [a, b]) {
     Object.assign(state.enemies[0], { x: 0, z: -1, hp: 1, timer: 10 });
     stepGame(state, { attack: true }, FIXED_STEP);
+    advance(state, {}, 0.15);
+    assert.equal(state.stats.kills, 1);
   }
   assert.deepEqual(a.inventory, b.inventory);
   const c = createGame({ seed: 73, progress: getProgress(a) });
@@ -456,6 +471,8 @@ test('identical seeds and kills produce identical loot and loaded gear never reu
   c.enemies = [c.enemies[0]];
   Object.assign(c.enemies[0], { x: 0, z: -1, hp: 1, timer: 10 });
   stepGame(c, { attack: true }, FIXED_STEP);
+  advance(c, {}, 0.15);
+  assert.equal(c.stats.kills, 1);
   assert.equal(new Set(c.inventory.map((item) => item.id)).size, c.inventory.length);
 });
 

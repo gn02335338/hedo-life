@@ -3,6 +3,7 @@ import { WORLD, SKILLS, RARITIES, BOSS_PROFILES } from './content.js';
 import { createScene } from './scene.js';
 import { createInput } from './input.js';
 import { readProgress, writeProgress } from './progress.js';
+import { createFeedback } from './feedback.js';
 
 const $ = id => document.getElementById(id);
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -14,6 +15,7 @@ const itemArt = value => {
 const bossOrder = ['sonny', 'meimei', 'wing'];
 let selectedItemId = null, bossStepsSignature = '';
 const dialogs = [...document.querySelectorAll('dialog')];
+const feedback = createFeedback();
 let state, scene, input, previousTime = 0, uiTime = 0, saveSignature = '', resultShown = false, destroyed = false;
 let lastHp = 0, lastKills = 0, lastItems = 0, lastLevel = 1, lastRoom = 0, lastMessage = '';
 let toastTimeout;
@@ -22,7 +24,10 @@ try { storage = window.localStorage; } catch { /* A private or restricted browse
 document.body.classList.add('is-ready');
 
 function active() { return state?.status === 'playing' && !document.hidden && !dialogs.some(dialog => dialog.open); }
-function clearControls() { input?.clear(); if (state) clearPendingInput(state); }
+function clearControls({ keepFeedback = false } = {}) {
+  input?.clear(); if (state) clearPendingInput(state);
+  if (!keepFeedback) feedback.suspend();
+}
 function toast(message) {
   $('toast').textContent = message;
   $('toast').classList.add('visible');
@@ -43,8 +48,8 @@ function closeDialog(dialog) {
   if ((state?.status === 'won' || state?.status === 'dead') && dialog !== $('result-dialog')) showResult();
   else if (active()) scene.canvas?.focus({ preventScroll: true });
 }
-function openDialog(dialog) {
-  clearControls();
+function openDialog(dialog, { keepFeedback = false } = {}) {
+  clearControls({ keepFeedback });
   for (const other of dialogs) if (other.open && other !== dialog) other.close();
   if (!dialog.open) dialog.showModal();
   persist();
@@ -62,9 +67,17 @@ $('pause-help').addEventListener('click', () => openDialog($('help-dialog')));
 $('pause-button').addEventListener('click', () => { if (state?.status === 'playing') openDialog($('pause-dialog')); });
 $('resume-button').addEventListener('click', () => closeDialog($('pause-dialog')));
 $('result-bag').addEventListener('click', showBag);
+$('sound-button').addEventListener('click', () => {
+  feedback.unlock();
+  const enabled = feedback.toggle();
+  $('sound-button').setAttribute('aria-pressed', String(enabled));
+  $('sound-button').setAttribute('aria-label', enabled ? '音效開啟' : '音效關閉');
+  $('sound-button').textContent = enabled ? '音效 開' : '音效 關';
+});
 
 function begin() {
   if (!scene || !state) return;
+  feedback.unlock();
   startGame(state); clearControls();
   $('intro').hidden = true;
   document.body.classList.remove('is-ready');
@@ -147,7 +160,9 @@ function showResult() {
   $('result-stats').innerHTML = [[state.stats.kills, '擊敗怪物'], [state.stats.itemsFound, '取得裝備'], [`${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`, '本輪時間']]
     .map(([value, label]) => `<div><strong>${escape(value)}</strong><span>${label}</span></div>`).join('');
   persist(true);
-  openDialog($('result-dialog'));
+  // The final playing tick already consumed its events. Let those short tails
+  // finish once; explicit pause/bag/blur/visibility/leave still stop them.
+  openDialog($('result-dialog'), { keepFeedback: true });
   // A held attack key must not activate retry as soon as the fight ends.
   $('result-title').focus({ preventScroll: true });
 }
@@ -191,7 +206,9 @@ function updateHud() {
       return `<div class="boss-step ${state.room === room ? 'current' : ''} ${done ? 'cleared' : ''}"><img src="${escape(boss.portrait)}" alt=""><span><small>${room === 3 ? '最終魔王' : `第 ${room} 關`}</small>${escape(boss.displayName)}</span><b>${done ? '已擊敗' : state.room === room ? '挑戰中' : '未抵達'}</b></div>`;
     }).join('');
   }
-  const boss = state.enemies.find(enemy => enemy.type === 'boss' && enemy.hp > 0 && enemy.room === state.room);
+  const availableBosses = state.enemies.filter(enemy => enemy.type === 'boss' && enemy.hp > 0 && enemy.room <= state.unlockedRoom);
+  const boss = availableBosses.find(enemy => enemy.room === state.room)
+    || availableBosses.find(enemy => enemy.active && Math.hypot(enemy.x - p.x, enemy.z - p.z) < 14);
   const showBoss = Boolean(boss && state.status === 'playing');
   $('boss-hud').hidden = !showBoss;
   document.body.classList.toggle('has-boss', showBoss);
@@ -207,11 +224,18 @@ function updateHud() {
   }
   document.querySelectorAll('[data-skill]').forEach(button => {
     const skill = button.dataset.skill, cooldown = state.cooldowns[skill] || 0;
+    const noEnergy = p.energy < (SKILLS[skill].energy || 0);
+    const noCharge = skill === 'potion' && p.potions <= 0;
+    const queued = Boolean(state.skillBuffer?.[skill]);
     button.querySelector('.skill-cooldown').style.clipPath = `inset(0 0 ${100 - Math.min(1, cooldown / SKILLS[skill].cooldown) * 100}% 0)`;
     const label = button.querySelector('.cooldown-label');
-    if (label) label.textContent = cooldown > 0 ? cooldown.toFixed(1) : '';
-    button.classList.toggle('no-energy', p.energy < (SKILLS[skill].energy || 0));
-    button.setAttribute('aria-label', `${SKILLS[skill].name}${cooldown > 0 ? `，冷卻 ${cooldown.toFixed(1)} 秒` : ''}${skill === 'potion' ? `，剩 ${p.potions} 杯` : ''}`);
+    if (label) label.textContent = cooldown > 0 ? cooldown.toFixed(1) : noEnergy ? '精神不足' : noCharge ? '已用完' : '';
+    button.classList.toggle('no-energy', noEnergy);
+    button.classList.toggle('no-charge', noCharge);
+    button.classList.toggle('cooling', cooldown > 0);
+    button.classList.toggle('queued', queued);
+    button.classList.toggle('resource-label', cooldown <= 0 && (noEnergy || noCharge));
+    button.setAttribute('aria-label', `${SKILLS[skill].name}${cooldown > 0 ? `，冷卻 ${cooldown.toFixed(1)} 秒` : ''}${queued ? '，已預備' : ''}${noEnergy ? '，精神不足' : ''}${skill === 'potion' ? `，剩 ${p.potions} 杯` : ''}`);
   });
   if (state.status === 'playing') {
     if (p.hp < lastHp) { $('damage-flash').style.opacity = '.23'; setTimeout(() => { $('damage-flash').style.opacity = '0'; }, 110); }
@@ -232,15 +256,14 @@ function frame(time) {
   previousTime = time;
   if (active()) {
     const controls = input.read();
-    // The camera looks diagonally down -x/-z: map screen axes into the world.
-    const x = (controls.x + controls.z) * Math.SQRT1_2;
-    const z = (controls.z - controls.x) * Math.SQRT1_2;
+    const { x, z } = scene.movementToWorld(controls.x, controls.z);
     stepGame(state, { ...controls, x, z }, dt);
-  }
-  scene.update(state, dt);
+    feedback.consume(state);
+  } else if (document.hidden || !['dead', 'won'].includes(state.status)) feedback.suspend();
+  scene.update(state, active() || state.status === 'ready' ? dt : 0);
   uiTime += dt;
   if (uiTime > .09) { updateHud(); uiTime = 0; }
-  if (['dead', 'won'].includes(state.status) && !resultShown) { clearControls(); showResult(); }
+  if (['dead', 'won'].includes(state.status) && !resultShown) { clearControls({ keepFeedback: true }); showResult(); }
   requestAnimationFrame(frame);
 }
 function interrupt() {
@@ -249,8 +272,9 @@ function interrupt() {
 }
 window.addEventListener('blur', interrupt);
 document.addEventListener('visibilitychange', () => { if (document.hidden) interrupt(); previousTime = performance.now(); });
-window.addEventListener('pagehide', () => { clearControls(); persist(true); });
-window.addEventListener('resize', () => scene?.resize());
+window.addEventListener('pagehide', event => { clearControls(); persist(true); if (!event.persisted) feedback.destroy(); });
+window.addEventListener('resize', () => { clearControls(); previousTime = performance.now(); scene?.resize(); });
+window.addEventListener('orientationchange', interrupt);
 
 async function initialize() {
   const progress = readProgress(storage);
@@ -259,7 +283,8 @@ async function initialize() {
   try {
     scene = await createScene({ container: $('scene') });
     input = createInput({
-      canvas: scene.canvas, joystick: $('joystick'), knob: $('stick-knob'), buttons: $('skills'), isActive: active,
+      canvas: scene.canvas, joystick: $('joystick'), joystickZone: $('joystick-zone'), knob: $('stick-knob'), buttons: $('skills'), isActive: active,
+      onActionGesture: () => feedback.unlock(),
       onAim: (x, y) => scene.screenToWorld(x, y),
       onAction: action => { if (action === 'inventory') showBag(); if (action === 'pause') openDialog($('pause-dialog')); },
     });
@@ -270,7 +295,7 @@ async function initialize() {
     console.error('ARPG initialization failed:', error);
     $('fatal').hidden = false;
     $('fatal-copy').textContent = '此裝置目前無法啟用地城的 3D 圖形。請確認瀏覽器支援 WebGL，或改用其他瀏覽器再試。';
-    scene?.destroy(); destroyed = true;
+    scene?.destroy(); feedback.destroy(); destroyed = true;
   }
 }
 initialize();

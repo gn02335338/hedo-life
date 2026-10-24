@@ -26,3 +26,85 @@ dialog{color:var(--ink)}dialog::backdrop{background:#030303c4;backdrop-filter:bl
 @media(max-width:700px){body.has-boss .location{display:none}.boss-hud{top:76px;width:calc(100vw - 160px);max-width:240px;display:block}.boss-hud>img{display:none}.boss-information>span{font-size:8px}.boss-information>strong{font-size:18px;margin:1px 0 5px}.boss-track{height:7px;padding:1px}.boss-status{font-size:8px;margin-top:6px;gap:4px}.boss-status small{font-size:8px}}
 @media(max-width:350px){.boss-hud{width:calc(100vw - 135px)}.boss-information>strong{font-size:17px}}
 @media(max-width:700px) and (max-height:650px){body.has-boss .toast{display:none}}
+
+/* The floating stick owns only the lower-left zone; its origin never jumps to
+   the centre of a fixed ring. The right-hand controls remain a separate area. */
+.joystick-zone{display:none;position:absolute;left:env(safe-area-inset-left,0px);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(44vw,190px);height:min(34dvh,240px);min-height:154px;z-index:5;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.joystick-zone .joystick{display:block;left:12px;bottom:12px;top:auto;width:112px;height:112px;pointer-events:none;opacity:.7}
+.joystick-zone .joystick.pressed{opacity:1}
+.joystick.pressed .joystick-label{opacity:0}
+.skill{min-width:56px;min-height:56px;-webkit-touch-callout:none}
+.skill.pressed{border-color:#fff0bd;box-shadow:0 0 0 2px #e3bd79,0 0 17px #d5b87766}
+.skill.pressed .skill-art{transform:scale(.94);filter:brightness(1.25)}
+.skill.cooling{border-color:#8b7959}
+.skill.queued{outline:2px solid #9ac8bc;outline-offset:-3px}
+.skill.no-charge .skill-art{filter:saturate(.15) brightness(.5)}
+.skill.no-charge{border-color:#6f5143}
+.skill.resource-label .cooldown-label{font:11px/1.5 var(--serif);color:#f1c7ab;background:#140e0c55}
+.sound-toggle{display:block;width:100%;min-height:56px;margin-top:12px;border:1px solid #8e774d;background:#1d1c17;font:13px var(--serif);letter-spacing:.12em;color:#e1cfaa}
+.sound-toggle[aria-pressed=false]{color:#a69d8a;border-color:#5c5443}
+.hud-center,.xp-row{pointer-events:none}
+.skills,.skill{pointer-events:auto}
+
+@media(pointer:coarse){
+  body:not(.is-ready) .joystick-zone{display:block}
+  .skill strong{pointer-events:none}
+  .primary-button,.close-button,.item-actions button,.text-button{min-height:56px}
+  .close-button,.text-button,.icon-button{min-width:56px}
+  .brand{min-height:56px;display:flex;align-items:center}
+}
+
+@media(max-width:700px){
+  .topbar{padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top,0px));padding-left:calc(12px + env(safe-area-inset-left,0px));padding-right:calc(12px + env(safe-area-inset-right,0px));gap:8px}
+  .brand{font-size:17px;letter-spacing:.13em}
+  .utility{gap:4px}
+  .icon-button{height:56px;min-width:56px;padding:7px 6px;font-size:10px}
+  .location{top:calc(84px + env(safe-area-inset-top,0px))}
+  .orb-wrap{top:calc(84px + env(safe-area-inset-top,0px))}
+  .boss-hud{top:calc(84px + env(safe-area-inset-top,0px))}
+  .hud{right:calc(12px + env(safe-area-inset-right,0px));bottom:calc(30px + env(safe-area-inset-bottom,0px));width:148px;height:178px}
+  .hud-center{inset:0;top:0;bottom:auto;left:0;width:100%;transform:none}
+  .skills{grid-template-columns:repeat(2,68px);gap:22px 12px}
+  .skill{width:68px;height:68px}
+  .skill strong{top:calc(100% + 4px);font-size:10px;line-height:12px}
+  .xp-row{top:-22px}
+  .joystick-zone .joystick{width:112px;height:112px}
+  .joystick-zone .stick-knob{width:40px;height:40px}
+}
+
+@media(max-width:350px){
+  .hud{width:140px;height:170px}
+  .skills{grid-template-columns:repeat(2,64px);gap:22px 12px}
+  .skill{width:64px;height:64px}
+  .skill strong{font-size:9px}
+  .brand{font-size:16px}
+}
+
+/* Compact landscape uses the same two-thumb layout as portrait. In particular,
+   it never shrinks combat targets to the old 44px desktop HUD. */
+@media(max-height:560px) and (min-width:701px){
+  .topbar{padding:8px calc(14px + env(safe-area-inset-right,0px)) 8px calc(14px + env(safe-area-inset-left,0px));gap:8px}
+  .icon-button{height:56px;min-width:56px;padding:7px 10px}
+  .run-meta{display:none}
+  .hud{right:calc(16px + env(safe-area-inset-right,0px));left:auto;bottom:calc(24px + env(safe-area-inset-bottom,0px));width:132px;height:156px;aspect-ratio:auto;transform:none}
+  .hud-skin{display:none}
+  .hud-center{inset:0;top:0;bottom:auto;left:0;width:100%;transform:none}
+  .skills{display:grid;grid-template-columns:repeat(2,60px);gap:20px 12px}
+  .skill{width:60px;height:60px}
+  .skill strong{top:calc(100% + 4px);font-size:9px;line-height:12px}
+  .skill small,.skill kbd,.hud-caption{display:none}
+  .xp-row{top:-22px;font-size:8px;gap:5px}
+  .orb-wrap{position:fixed;top:80px;left:calc(20px + env(safe-area-inset-left,0px));width:42px;height:42px;transform:none}
+  .energy-wrap{left:calc(85px + env(safe-area-inset-left,0px));right:auto}
+  .orb-wrap:before{content:"";position:absolute;inset:-24%;background:url('./assets/orb-frame-health.webp') center/100% 100% no-repeat;pointer-events:none;z-index:2}
+  .energy-wrap:before{background-image:url('./assets/orb-frame-energy.webp')}
+  .orb strong{font-size:16px}
+  .orb-wrap>span{top:calc(100% + 12px);font-size:8px}
+  .orb-wrap small{display:none}
+  .boss-hud{top:76px;width:300px}
+  .quest{top:110px}
+  .joystick-zone{height:154px}
+  .joystick-zone .joystick{width:104px;height:104px}
+  .joystick-zone .stick-knob{width:38px;height:38px}
+  .potion-skill small{display:block;top:3px;left:auto;right:3px;width:auto;padding:2px 4px;background:#090909dc;font-size:8px;z-index:3}
+}

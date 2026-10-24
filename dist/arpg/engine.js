@@ -1,6 +1,13 @@
 import { WORLD, SPAWN, SKILLS, ENEMY_TYPES, ENCOUNTERS, ITEM_BASES, RARITIES, BOSS_PROFILES } from './content.js';
 
 export const FIXED_STEP = 1 / 60;
+const COMBAT_EVENT_LIMIT = 96;
+const INPUT_BUFFER_SECONDS = 0.15;
+const COMBO = [
+  { damage: 0.8, hitAt: 0.09 },
+  { damage: 1, hitAt: 0.1 },
+  { damage: 1.2, hitAt: 0.12 },
+];
 const MAX_ITEMS = 60;
 const SLOTS = ['weapon', 'armor', 'charm'];
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
@@ -67,6 +74,12 @@ function say(state, text) {
   state.messages.push({ id: ++state.messageId, text });
   state.messages = state.messages.slice(-10);
 }
+function combatEvent(state, type, details = {}) {
+  const event = { ...details, serial: ++state.combatSerial, time: state.time, type };
+  state.combatEvents.push(event);
+  if (state.combatEvents.length > COMBAT_EVENT_LIMIT) state.combatEvents.splice(0, state.combatEvents.length - COMBAT_EVENT_LIMIT);
+  return event;
+}
 function effect(state, type, x, z, radius = 1, life = 0.35, color = '#eacb7c', angle = 0) {
   state.effects.push({ id: nextId(state, 'fx'), type, x, z, radius, angle, life, maxLife: life, color });
 }
@@ -100,7 +113,7 @@ function buildEnemies(state) {
       angle: 0, phase: 'idle', attackKind: null, attackLabel: '', telegraph: null, telegraphs: [],
       title: profile?.title || base.name, taunt: profile?.phaseTaunts.normal || '',
       timer: 0.35 + index * 0.08, turn: 0, elite: spawn.type === 'boss', enraged: false,
-      settled: false, active: false,
+      settled: false, active: false, hitTimer: 0, hitAngle: 0,
     };
   });
 }
@@ -113,7 +126,9 @@ export function createGame({ seed = 1, progress = null } = {}) {
       const serial = Number(item.id.split('-').at(-1));
       return Number.isSafeInteger(serial) && serial >= 0 && serial < 1e9 ? serial : 0;
     })),
-    accumulator: 0, pendingInput: { attack: false, burst: false, dash: false, potion: false }, difficulty: saved.wins + 1, wins: saved.wins,
+    accumulator: 0, pendingInput: { attack: false, burst: false, dash: false, potion: false },
+    skillBuffer: { attack: null, burst: null, dash: null, potion: null }, combatSerial: 0, combatEvents: [],
+    difficulty: saved.wins + 1, wins: saved.wins,
     room: 0, time: 0, message: '', messages: [], messageId: 0,
     roomCleared: { 1: false, 2: false, 3: false }, unlockedRoom: 1,
     defeatedBosses: { sonny: false, meimei: false, wing: false },
@@ -123,7 +138,8 @@ export function createGame({ seed = 1, progress = null } = {}) {
     ],
     player: { ...SPAWN, angle: 0, radius: 0.44, level: saved.level, xp: saved.xp, gold: saved.gold,
       hp: 100, maxHp: 100, energy: 100, maxEnergy: 100, attack: 14, armor: 0,
-      potions: SKILLS.potion.charges, invulnerable: 0, attackTimer: 0, dashTimer: 0, dashX: 0, dashZ: -1 },
+      potions: SKILLS.potion.charges, invulnerable: 0, attackTimer: 0, dashTimer: 0, dashX: 0, dashZ: -1,
+      action: null, combo: 0, comboExpiresAt: 0, assistTargetId: null, hitTimer: 0, hitAngle: 0 },
     inventory: saved.inventory, equipped: Object.fromEntries(SLOTS.map((slot) => [slot, saved.inventory.find((item) => item.id === saved.equipped[slot]) || null])),
     enemies: [], drops: [], projectiles: [], effects: [],
     cooldowns: { attack: 0, burst: 0, dash: 0, potion: 0 },
@@ -150,6 +166,7 @@ export function startGame(state) {
 
 export function clearPendingInput(state) {
   state.pendingInput = { attack: false, burst: false, dash: false, potion: false };
+  state.skillBuffer = { attack: null, burst: null, dash: null, potion: null };
   state.accumulator = 0;
 }
 
@@ -217,7 +234,12 @@ function move(body, dx, dz, state = null) {
   }
 }
 
-function clearLine(a, b) {
+function clearLine(a, b, state = null) {
+  if (state) for (const gate of state.gates) {
+    if (!gate.locked || (a.z - gate.z) * (b.z - gate.z) >= 0) continue;
+    const t = (gate.z - a.z) / (b.z - a.z);
+    if (Math.abs(a.x + (b.x - a.x) * t - gate.x) <= gate.width / 2 + 0.05) return false;
+  }
   const count = Math.max(1, Math.ceil(distance(a, b) / 0.25));
   for (let i = 1; i <= count; i++) {
     const k = i / count;
@@ -265,6 +287,7 @@ function rollItem(state, boss) {
 function killEnemy(state, enemy) {
   if (enemy.settled) return;
   enemy.settled = true; enemy.hp = 0; enemy.phase = 'dead'; enemy.telegraph = null; enemy.telegraphs = [];
+  combatEvent(state, 'death', { targetId: enemy.id, bossId: enemy.bossId || null, enemyType: enemy.type, x: enemy.x, z: enemy.z, angle: enemy.hitAngle || 0 });
   state.stats.kills++;
   effect(state, 'death', enemy.x, enemy.z, enemy.radius * 1.8, 0.45, enemy.color);
   const gold = Math.round(enemy.gold * (1 + (state.difficulty - 1) * 0.15));
@@ -283,23 +306,36 @@ function killEnemy(state, enemy) {
   }
 }
 
-function hurtEnemy(state, enemy, amount) {
+function hurtEnemy(state, enemy, amount, impact) {
   if (enemy.hp <= 0 || enemy.settled) return;
   const damage = Math.min(enemy.hp, Math.max(0, amount));
+  if (damage <= 0) return;
   enemy.hp -= damage; state.stats.damageDealt += damage;
+  // Hit reactions are visual. They never reset a boss's attack or recovery timer.
+  enemy.hitTimer = enemy.type === 'boss' ? 0.07 : 0.13;
+  enemy.hitAngle = impact.angle;
+  combatEvent(state, 'hit', { targetId: enemy.id, x: enemy.x, z: enemy.z, damage,
+    angle: impact.angle, combo: impact.combo, heavy: impact.heavy, source: impact.source, actionSerial: impact.actionSerial,
+    weapon: impact.weapon || null, bossId: enemy.bossId || null, enemyType: enemy.type });
   effect(state, 'hit', enemy.x, enemy.z, enemy.radius, 0.18, '#f1d89a');
   if (enemy.hp <= 0) killEnemy(state, enemy);
 }
 
-function hurtPlayer(state, amount) {
+function hurtPlayer(state, amount, source = null) {
   const p = state.player;
   if (state.status !== 'playing' || p.hp <= 0 || p.invulnerable > 0) return;
   const damage = Math.min(p.hp, Math.max(1, Math.round(amount * 100 / (100 + p.armor * 5))));
   p.hp = Math.max(0, p.hp - damage); p.invulnerable = 0.2;
   state.stats.damageTaken += damage;
+  const angle = source && finite(source.x) && finite(source.z) ? Math.atan2(p.x - source.x, -(p.z - source.z)) : 0;
+  p.hitTimer = 0.13; p.hitAngle = angle;
+  combatEvent(state, 'player-hit', { targetId: 'player', actorId: source?.owner || source?.id || null,
+    x: p.x, z: p.z, damage, angle, source: source?.attackKind || source?.kind || 'enemy' });
   effect(state, 'hit', p.x, p.z, 0.8, 0.2, '#f19b85');
   if (p.hp <= 0) {
-    state.status = 'dead'; p.dashTimer = 0; state.accumulator = 0;
+    state.status = 'dead'; p.dashTimer = 0; p.attackTimer = 0; p.action = null; p.combo = 0;
+    clearPendingInput(state);
+    combatEvent(state, 'death', { targetId: 'player', bossId: null, enemyType: 'player', x: p.x, z: p.z, angle });
     say(state, '今天先到這裡。已撿到的裝備與經驗會保留。');
   }
 }
@@ -308,40 +344,103 @@ function chooseAim(state, input, moving) {
   const p = state.player;
   if (record(input.aim) && finite(input.aim.x) && finite(input.aim.z) && distance(p, input.aim) > 0.05) return direction(input.aim.x - p.x, input.aim.z - p.z);
   if (input.attack || input.burst) {
-    const target = state.enemies.filter((e) => e.hp > 0 && e.room <= state.unlockedRoom && distance(p, e) < 8 && clearLine(p, e)).sort((a, b) => distance(p, a) - distance(p, b))[0];
+    const candidates = state.enemies.filter((e) => e.hp > 0 && !e.settled && e.room <= state.unlockedRoom && distance(p, e) < 8 && clearLine(p, e, state))
+      .sort((a, b) => distance(p, a) - distance(p, b) || a.id.localeCompare(b.id));
+    const current = candidates.find((enemy) => enemy.id === p.assistTargetId);
+    const nearest = candidates[0];
+    // Keep a valid nearby target through small distance changes, but do not stay
+    // attached to a distant foe when a substantially nearer one reaches us.
+    const target = current && (!nearest || distance(p, current) <= distance(p, nearest) * 1.3 + 0.35) ? current : nearest;
+    p.assistTargetId = target?.id || null;
     if (target) return direction(target.x - p.x, target.z - p.z);
   }
   return moving || facing(p.angle);
 }
 
+function actionRequest(state, input, skill, wait) {
+  const buffered = state.skillBuffer[skill];
+  if (buffered && buffered.expiresAt + 1e-9 < state.time) state.skillBuffer[skill] = null;
+  if (input[skill] && wait > 1e-9 && wait <= INPUT_BUFFER_SECONDS + 1e-9 && !state.skillBuffer[skill]) {
+    state.skillBuffer[skill] = { expiresAt: state.time + INPUT_BUFFER_SECONDS };
+  }
+  if ((input[skill] || state.skillBuffer[skill]) && wait <= 1e-9) {
+    state.skillBuffer[skill] = null;
+    return true;
+  }
+  return false;
+}
+
+function beginMelee(state, aim) {
+  const p = state.player;
+  p.combo = state.time <= p.comboExpiresAt + 1e-9 ? p.combo % 3 + 1 : 1;
+  p.comboExpiresAt = state.time + SKILLS.attack.cooldown + 0.45;
+  const spec = COMBO[p.combo - 1];
+  const angle = Math.atan2(aim.x, -aim.z), weapon = state.equipped.weapon?.baseId || 'keyboard';
+  const event = combatEvent(state, 'swing', { x: p.x, z: p.z, angle, weapon, combo: p.combo,
+    heavy: p.combo === 3, duration: SKILLS.attack.cooldown, hitAt: spec.hitAt });
+  p.action = { kind: 'attack', elapsed: 0, duration: SKILLS.attack.cooldown, hitAt: spec.hitAt,
+    serial: event.serial, combo: p.combo, angle, heavy: p.combo === 3, weapon,
+    damage: Math.round(p.attack * spec.damage), resolved: false };
+  p.angle = angle;
+  p.attackTimer = p.action.duration;
+  state.cooldowns.attack = SKILLS.attack.cooldown;
+}
+
+function resolveMelee(state) {
+  const p = state.player, action = p.action;
+  if (action?.kind !== 'attack' || action.resolved || action.elapsed + 1e-9 < action.hitAt) return;
+  action.resolved = true;
+  const aim = facing(action.angle);
+  combatEvent(state, 'strike', { x: p.x, z: p.z, angle: action.angle, weapon: action.weapon,
+    combo: action.combo, heavy: action.heavy, actionSerial: action.serial, source: 'melee', range: SKILLS.attack.range });
+  effect(state, 'melee', p.x, p.z, SKILLS.attack.range, 0.18, action.heavy ? '#f7b96a' : '#f2d58c', action.angle);
+  for (const enemy of state.enemies) {
+    if (enemy.room > state.unlockedRoom) continue;
+    const dist = distance(p, enemy), dir = direction(enemy.x - p.x, enemy.z - p.z);
+    if (dist <= SKILLS.attack.range + enemy.radius && (dist < 1.1 || dir.x * aim.x + dir.z * aim.z >= 0.35) && clearLine(p, enemy, state)) {
+      hurtEnemy(state, enemy, action.damage, { angle: action.angle, combo: action.combo,
+        heavy: action.heavy, source: 'melee', actionSerial: action.serial, weapon: action.weapon });
+    }
+  }
+}
+
 function castSkills(state, input, aim, moving) {
   const p = state.player;
   const cd = state.cooldowns;
-  if (input.potion && cd.potion <= 0 && p.potions > 0 && p.hp < p.maxHp) {
+  if (actionRequest(state, input, 'potion', cd.potion) && p.potions > 0 && p.hp < p.maxHp) {
+    const previousHp = p.hp;
     p.potions--; p.hp = Math.min(p.maxHp, p.hp + p.maxHp * SKILLS.potion.heal);
     cd.potion = SKILLS.potion.cooldown;
+    combatEvent(state, 'cast', { skill: 'potion', x: p.x, z: p.z, angle: p.angle, heal: p.hp - previousHp });
     effect(state, 'heal', p.x, p.z, 1.3, 0.5, '#93d5ab');
   }
-  if (input.dash && cd.dash <= 0 && p.energy >= SKILLS.dash.energy) {
+  let dashed = false;
+  if (actionRequest(state, input, 'dash', cd.dash) && p.energy >= SKILLS.dash.energy) {
     const dir = moving || aim;
     p.energy -= SKILLS.dash.energy; cd.dash = SKILLS.dash.cooldown;
     p.dashTimer = SKILLS.dash.duration; p.dashX = dir.x; p.dashZ = dir.z;
     p.invulnerable = Math.max(p.invulnerable, SKILLS.dash.duration + 0.1);
-    effect(state, 'dash', p.x, p.z, 1.1, 0.3, '#97d8ce', Math.atan2(dir.x, -dir.z));
+    p.angle = Math.atan2(dir.x, -dir.z);
+    const event = combatEvent(state, 'dash', { x: p.x, z: p.z, angle: p.angle, duration: SKILLS.dash.duration });
+    p.action = { kind: 'dash', elapsed: 0, duration: SKILLS.dash.duration, hitAt: 0, serial: event.serial, combo: 0, angle: p.angle, heavy: false };
+    p.attackTimer = 0; p.combo = 0; p.comboExpiresAt = 0; state.skillBuffer.attack = null;
+    dashed = true;
+    effect(state, 'dash', p.x, p.z, 1.1, 0.3, '#97d8ce', p.angle);
   }
-  if (input.attack && cd.attack <= 0) {
-    cd.attack = SKILLS.attack.cooldown; p.attackTimer = 0.18;
-    effect(state, 'melee', p.x, p.z, SKILLS.attack.range, 0.18, '#f2d58c', p.angle);
-    for (const e of state.enemies) {
-      if (e.room > state.unlockedRoom) continue;
-      const dist = distance(p, e), dir = direction(e.x - p.x, e.z - p.z);
-      if (dist <= SKILLS.attack.range + e.radius && (dist < 1.1 || dir.x * aim.x + dir.z * aim.z >= 0.35) && clearLine(p, e)) hurtEnemy(state, e, p.attack);
+  if (actionRequest(state, input, 'burst', cd.burst) && p.energy >= SKILLS.burst.energy) {
+    cd.burst = SKILLS.burst.cooldown; p.energy -= SKILLS.burst.energy;
+    const angle = Math.atan2(aim.x, -aim.z);
+    const event = combatEvent(state, 'cast', { skill: 'burst', x: p.x, z: p.z, angle });
+    if (!p.action) p.action = { kind: 'burst', elapsed: 0, duration: 0.28, hitAt: 0, serial: event.serial, combo: 0, angle, heavy: true };
+    effect(state, 'burst', p.x, p.z, SKILLS.burst.radius, 0.55, '#a2d5e5');
+    for (const enemy of state.enemies) if (enemy.room <= state.unlockedRoom && distance(p, enemy) <= SKILLS.burst.radius + enemy.radius && clearLine(p, enemy, state)) {
+      hurtEnemy(state, enemy, Math.round(p.attack * SKILLS.burst.damage), { angle: Math.atan2(enemy.x - p.x, -(enemy.z - p.z)),
+        combo: 1, heavy: true, source: 'burst', actionSerial: event.serial });
     }
   }
-  if (input.burst && cd.burst <= 0 && p.energy >= SKILLS.burst.energy) {
-    cd.burst = SKILLS.burst.cooldown; p.energy -= SKILLS.burst.energy;
-    effect(state, 'burst', p.x, p.z, SKILLS.burst.radius, 0.55, '#a2d5e5');
-    for (const enemy of state.enemies) if (enemy.room <= state.unlockedRoom && distance(p, enemy) <= SKILLS.burst.radius + enemy.radius && clearLine(p, enemy)) hurtEnemy(state, enemy, Math.round(p.attack * SKILLS.burst.damage));
+  const wait = Math.max(cd.attack, p.dashTimer, p.action ? p.action.duration - p.action.elapsed : 0);
+  if (!dashed && actionRequest(state, input, 'attack', wait)) {
+    beginMelee(state, aim);
   }
 }
 
@@ -389,6 +488,8 @@ function executeAttack(state, e) {
   const p = state.player, t = e.telegraph;
   if (!t) return;
   const dir = facing(t.angle);
+  combatEvent(state, 'enemy-attack', { actorId: e.id, targetId: 'player', bossId: e.bossId || null,
+    x: e.x, z: e.z, angle: t.angle, source: e.attackKind, skill: e.attackLabel || e.attackKind });
   if (e.attackKind === 'bolt' || e.attackKind === 'volley') {
     const count = e.attackKind === 'volley' ? 5 : 1;
     for (let i = 0; i < count; i++) {
@@ -405,15 +506,15 @@ function executeAttack(state, e) {
     const before = { x: e.x, z: e.z };
     move(e, dir.x * t.length, dir.z * t.length, state);
     const traveled = distance(before, e);
-    if (forward >= -p.radius && forward <= traveled + e.radius + p.radius && side <= t.width / 2 + p.radius && clearLine(t, p)) hurtPlayer(state, e.attack);
+    if (forward >= -p.radius && forward <= traveled + e.radius + p.radius && side <= t.width / 2 + p.radius && clearLine(t, p, state)) hurtPlayer(state, e.attack, e);
     effect(state, 'charge', t.x, t.z, traveled, 0.3, e.color, t.angle);
   } else if (e.attackKind === 'bombard') {
     for (const area of e.telegraphs) {
-      if (distance(p, area) <= area.radius + p.radius && clearLine(area, p)) hurtPlayer(state, e.attack);
+      if (distance(p, area) <= area.radius + p.radius && clearLine(area, p, state)) hurtPlayer(state, e.attack, e);
       effect(state, 'bombard', area.x, area.z, area.radius, 0.6, '#e6b565');
     }
   } else {
-    if (distance(p, t) <= t.radius + p.radius && clearLine(t, p)) hurtPlayer(state, e.attack * (e.enraged ? 1.15 : 1));
+    if (distance(p, t) <= t.radius + p.radius && clearLine(t, p, state)) hurtPlayer(state, e.attack * (e.enraged ? 1.15 : 1), e);
     effect(state, e.attackKind === 'promise' ? 'promise' : 'slam', t.x, t.z, t.radius, 0.4, e.color);
   }
   e.telegraph = null; e.telegraphs = []; e.phase = 'recovery';
@@ -425,7 +526,7 @@ function enemyTick(state, e, dt) {
   if (e.hp <= 0 || e.settled || e.room > state.unlockedRoom) return;
   const p = state.player;
   const dist = distance(p, e);
-  if (!e.active && state.room >= e.room && dist < (e.type === 'boss' ? 12 : 9) && clearLine(e, p)) {
+  if (!e.active && state.room >= e.room && dist < (e.type === 'boss' ? 12 : 9) && clearLine(e, p, state)) {
     e.active = true;
     if (e.bossId) say(state, `${e.name}・${e.title}：${BOSS_PROFILES[e.bossId].intro}`);
   }
@@ -451,7 +552,7 @@ function enemyTick(state, e, dt) {
   const dir = direction(p.x - e.x, p.z - e.z);
   e.angle = Math.atan2(dir.x, -dir.z);
   const range = e.bossId === 'meimei' ? 10 : e.bossId === 'wing' ? 8 : e.type === 'wraith' ? 10 : e.type === 'slime' ? 4.8 : e.type === 'boss' ? 5 : 2.8;
-  if (dist <= range && e.timer <= 0 && clearLine(e, p)) { beginAttack(state, e); return; }
+  if (dist <= range && e.timer <= 0 && clearLine(e, p, state)) { beginAttack(state, e); return; }
   const ranged = e.type === 'wraith' || e.bossId === 'meimei';
   const retreat = ranged && dist < 3.5;
   if (dist > (ranged ? 6 : 1.7) || retreat) move(e, dir.x * e.speed * dt * (retreat ? -1 : 1), dir.z * e.speed * dt * (retreat ? -1 : 1), state);
@@ -503,22 +604,33 @@ function tick(state, input, dt) {
   for (const key of Object.keys(state.cooldowns)) state.cooldowns[key] = Math.max(0, state.cooldowns[key] - dt);
   p.energy = Math.min(p.maxEnergy, p.energy + p.energyRegen * dt);
   p.invulnerable = Math.max(0, p.invulnerable - dt);
-  p.attackTimer = Math.max(0, p.attackTimer - dt);
+  p.hitTimer = Math.max(0, p.hitTimer - dt);
+  if (p.action) {
+    p.action.elapsed = Math.min(p.action.duration, p.action.elapsed + dt);
+    if (p.action.elapsed + 1e-9 >= p.action.duration) p.action = null;
+  }
+  p.attackTimer = p.action?.kind === 'attack' ? p.action.duration - p.action.elapsed : 0;
   const ix = finite(input.x) ? clamp(input.x, -1, 1) : 0;
   const iz = finite(input.z) ? clamp(input.z, -1, 1) : 0;
   const magnitude = Math.hypot(ix, iz);
   const moving = magnitude > 0.01 ? direction(ix, iz) : null;
-  const aim = chooseAim(state, input, moving);
-  p.angle = Math.atan2(aim.x, -aim.z);
+  const aim = chooseAim(state, { ...input, attack: input.attack || state.skillBuffer.attack,
+    burst: input.burst || state.skillBuffer.burst }, moving);
+  p.angle = p.action?.kind === 'attack' || p.action?.kind === 'dash' ? p.action.angle : Math.atan2(aim.x, -aim.z);
   castSkills(state, input, aim, moving);
   if (p.dashTimer > 0) {
     const duration = Math.min(dt, p.dashTimer);
     move(p, p.dashX * SKILLS.dash.distance / SKILLS.dash.duration * duration, p.dashZ * SKILLS.dash.distance / SKILLS.dash.duration * duration, state);
     p.dashTimer = Math.max(0, p.dashTimer - dt);
-  } else if (moving) move(p, moving.x * 5 * dt * Math.min(magnitude, 1), moving.z * 5 * dt * Math.min(magnitude, 1), state);
+  } else if (moving) {
+    const attackWeight = p.action?.kind === 'attack' && p.action.elapsed < p.action.hitAt + 0.06 ? 0.78 : 1;
+    move(p, moving.x * 5 * dt * Math.min(magnitude, 1) * attackWeight, moving.z * 5 * dt * Math.min(magnitude, 1) * attackWeight, state);
+  }
+  resolveMelee(state);
   state.room = p.z > 4 ? 0 : p.z > -10 ? 1 : p.z > -23 ? 2 : 3;
   for (const enemy of state.enemies) {
     if (state.status !== 'playing') break;
+    enemy.hitTimer = Math.max(0, (enemy.hitTimer || 0) - dt);
     enemyTick(state, enemy, dt);
   }
   state.projectiles = state.projectiles.filter((projectile) => {
@@ -527,7 +639,7 @@ function tick(state, input, dt) {
     for (let i = 0; i < steps; i++) {
       projectile.x += projectile.vx * dt / steps; projectile.z += projectile.vz * dt / steps;
       if (!isWalkable(projectile.x, projectile.z, projectile.radius)) return false;
-      if (distance(projectile, p) <= projectile.radius + p.radius) { hurtPlayer(state, projectile.damage); return false; }
+      if (distance(projectile, p) <= projectile.radius + p.radius) { hurtPlayer(state, projectile.damage, projectile); return false; }
     }
     return projectile.life > 0;
   });
@@ -536,6 +648,7 @@ function tick(state, input, dt) {
   if (state.status === 'playing' && state.defeatedBosses.wing && state.roomCleared[1] && state.roomCleared[2] && state.roomCleared[3] && !state.enemies.some((enemy) => enemy.hp > 0)) {
     pickupDrops(state, true);
     state.status = 'won'; state.wins = Math.min(99, state.wins + 1);
+    p.action = null; p.attackTimer = 0; p.dashTimer = 0; clearPendingInput(state);
     say(state, '翅膀倒下了，三區全清。今天，準時下班！');
     state.projectiles = [];
   }

@@ -1,0 +1,2157 @@
+{
+  "schemaVersion": 1,
+  "actor": "jack",
+  "style": "45 degree elevated hand-painted original dark fantasy ARPG",
+  "directions": [
+    "south",
+    "southeast",
+    "east",
+    "northeast",
+    "north",
+    "northwest",
+    "west",
+    "southwest"
+  ],
+  "layout": {
+    "columns": 4,
+    "rows": 2,
+    "runtimeWidth": 1024,
+    "runtimeHeight": 512,
+    "cellWidth": 256,
+    "cellHeight": 256,
+    "cellAspect": 1,
+    "footBaseline": 245,
+    "footBaselineNormalized": 0.95703125,
+    "masterWidth": 2048,
+    "masterHeight": 1024,
+    "masterCellSize": 512,
+    "masterFootBaseline": 490
+  },
+  "normalization": {
+    "method": "one uniform scale for all figures across eight atlases; one horizontal anchor per direction shared by poses; complete component extraction, fixed foot translation",
+    "sourceToMasterScale": 1.0123456790123457,
+    "sourcePixelsPerMasterPixel": 0.9878048780487805,
+    "masterToRuntimeScale": 0.5,
+    "sourceUnionBoundsByDirection": [
+      {
+        "direction": "south",
+        "minX": 32,
+        "maxX": 380
+      },
+      {
+        "direction": "southeast",
+        "minX": 469,
+        "maxX": 845
+      },
+      {
+        "direction": "east",
+        "minX": 870,
+        "maxX": 1355
+      },
+      {
+        "direction": "northeast",
+        "minX": 1381,
+        "maxX": 1763
+      },
+      {
+        "direction": "north",
+        "minX": 42,
+        "maxX": 440
+      },
+      {
+        "direction": "northwest",
+        "minX": 443,
+        "maxX": 876
+      },
+      {
+        "direction": "west",
+        "minX": 847,
+        "maxX": 1299
+      },
+      {
+        "direction": "southwest",
+        "minX": 1342,
+        "maxX": 1737
+      }
+    ],
+    "alphaCutoff": 16,
+    "webpQuality": 90,
+    "alphaQuality": 100,
+    "reference": "actors-v3/jack-8dir.webp",
+    "note": "Projected head/body scale is close to v3 but group is slightly reduced to fit the full extended east/west sword strike. No per-pose or per-cell height fit."
+  },
+  "assets": [
+    {
+      "id": "jack-walk-left",
+      "url": "/arpg/assets/actors-v4/jack-walk-left.webp",
+      "file": "dist/arpg/assets/actors-v4/jack-walk-left.webp",
+      "bytes": 88116,
+      "sha256": "ec9c6804172f5c1652b2524d5666a361da9db3ca9861514d4954ea821f72c00b",
+      "width": 1024,
+      "height": 512,
+      "columns": 4,
+      "rows": 2,
+      "cellWidth": 256,
+      "cellHeight": 256,
+      "cellAspect": 1,
+      "footBaseline": 245,
+      "footBaselineNormalized": 0.95703125,
+      "master": "artifacts/actors-v4/jack-walk-left-master.png",
+      "source": "artifacts/actors-v4/jack-walk-left-source.png",
+      "figures": [
+        {
+          "direction": "south",
+          "sourceBbox": [
+            32,
+            48,
+            338,
+            439
+          ],
+          "sourceAnchorX": 206,
+          "masterPosition": [
+            80,
+            94
+          ],
+          "masterSize": [
+            311,
+            397
+          ]
+        },
+        {
+          "direction": "southeast",
+          "sourceBbox": [
+            491,
+            48,
+            803,
+            441
+          ],
+          "sourceAnchorX": 657,
+          "masterPosition": [
+            88,
+            92
+          ],
+          "masterSize": [
+            317,
+            399
+          ]
+        },
+        {
+          "direction": "east",
+          "sourceBbox": [
+            996,
+            44,
+            1316,
+            425
+          ],
+          "sourceAnchorX": 1112.5,
+          "masterPosition": [
+            138,
+            104
+          ],
+          "masterSize": [
+            325,
+            387
+          ]
+        },
+        {
+          "direction": "northeast",
+          "sourceBbox": [
+            1421,
+            48,
+            1743,
+            447
+          ],
+          "sourceAnchorX": 1572,
+          "masterPosition": [
+            103,
+            86
+          ],
+          "masterSize": [
+            327,
+            405
+          ]
+        },
+        {
+          "direction": "north",
+          "sourceBbox": [
+            98,
+            469,
+            425,
+            858
+          ],
+          "sourceAnchorX": 241,
+          "masterPosition": [
+            111,
+            96
+          ],
+          "masterSize": [
+            332,
+            395
+          ]
+        },
+        {
+          "direction": "northwest",
+          "sourceBbox": [
+            592,
+            470,
+            874,
+            859
+          ],
+          "sourceAnchorX": 659.5,
+          "masterPosition": [
+            188,
+            96
+          ],
+          "masterSize": [
+            286,
+            395
+          ]
+        },
+        {
+          "direction": "west",
+          "sourceBbox": [
+            939,
+            474,
+            1239,
+            852
+          ],
+          "sourceAnchorX": 1073,
+          "masterPosition": [
+            120,
+            107
+          ],
+          "masterSize": [
+            305,
+            384
+          ]
+        },
+        {
+          "direction": "southwest",
+          "sourceBbox": [
+            1376,
+            479,
+            1711,
+            861
+          ],
+          "sourceAnchorX": 1539.5,
+          "masterPosition": [
+            90,
+            103
+          ],
+          "masterSize": [
+            340,
+            388
+          ]
+        }
+      ],
+      "runtimeCells": [
+        {
+          "direction": "south",
+          "bbox": [
+            40,
+            47,
+            195,
+            245
+          ],
+          "foregroundPixels": 13214,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southeast",
+          "bbox": [
+            44,
+            46,
+            202,
+            245
+          ],
+          "foregroundPixels": 13745,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "east",
+          "bbox": [
+            69,
+            52,
+            231,
+            245
+          ],
+          "foregroundPixels": 13327,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northeast",
+          "bbox": [
+            51,
+            43,
+            214,
+            245
+          ],
+          "foregroundPixels": 14411,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "north",
+          "bbox": [
+            56,
+            48,
+            221,
+            245
+          ],
+          "foregroundPixels": 13437,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northwest",
+          "bbox": [
+            94,
+            48,
+            236,
+            245
+          ],
+          "foregroundPixels": 13863,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "west",
+          "bbox": [
+            60,
+            54,
+            212,
+            245
+          ],
+          "foregroundPixels": 13039,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southwest",
+          "bbox": [
+            45,
+            52,
+            214,
+            245
+          ],
+          "foregroundPixels": 13765,
+          "maxAlpha": 255
+        }
+      ],
+      "alphaCount": {
+        "transparent": 415487,
+        "partial": 106514,
+        "opaque": 2287
+      }
+    },
+    {
+      "id": "jack-walk-right",
+      "url": "/arpg/assets/actors-v4/jack-walk-right.webp",
+      "file": "dist/arpg/assets/actors-v4/jack-walk-right.webp",
+      "bytes": 91638,
+      "sha256": "742df59fc9882dd593747b13cdff0019a544337ab88ce8e3945d59e8368a2b91",
+      "width": 1024,
+      "height": 512,
+      "columns": 4,
+      "rows": 2,
+      "cellWidth": 256,
+      "cellHeight": 256,
+      "cellAspect": 1,
+      "footBaseline": 245,
+      "footBaselineNormalized": 0.95703125,
+      "master": "artifacts/actors-v4/jack-walk-right-master.png",
+      "source": "artifacts/actors-v4/jack-walk-right-source.png",
+      "figures": [
+        {
+          "direction": "south",
+          "sourceBbox": [
+            50,
+            49,
+            336,
+            445
+          ],
+          "sourceAnchorX": 206,
+          "masterPosition": [
+            98,
+            89
+          ],
+          "masterSize": [
+            291,
+            402
+          ]
+        },
+        {
+          "direction": "southeast",
+          "sourceBbox": [
+            479,
+            49,
+            824,
+            447
+          ],
+          "sourceAnchorX": 657,
+          "masterPosition": [
+            76,
+            87
+          ],
+          "masterSize": [
+            350,
+            404
+          ]
+        },
+        {
+          "direction": "east",
+          "sourceBbox": [
+            966,
+            45,
+            1281,
+            445
+          ],
+          "sourceAnchorX": 1112.5,
+          "masterPosition": [
+            108,
+            85
+          ],
+          "masterSize": [
+            320,
+            406
+          ]
+        },
+        {
+          "direction": "northeast",
+          "sourceBbox": [
+            1403,
+            48,
+            1709,
+            451
+          ],
+          "sourceAnchorX": 1572,
+          "masterPosition": [
+            85,
+            82
+          ],
+          "masterSize": [
+            311,
+            409
+          ]
+        },
+        {
+          "direction": "north",
+          "sourceBbox": [
+            105,
+            473,
+            414,
+            854
+          ],
+          "sourceAnchorX": 241,
+          "masterPosition": [
+            118,
+            104
+          ],
+          "masterSize": [
+            314,
+            387
+          ]
+        },
+        {
+          "direction": "northwest",
+          "sourceBbox": [
+            548,
+            474,
+            876,
+            856
+          ],
+          "sourceAnchorX": 659.5,
+          "masterPosition": [
+            143,
+            103
+          ],
+          "masterSize": [
+            333,
+            388
+          ]
+        },
+        {
+          "direction": "west",
+          "sourceBbox": [
+            978,
+            477,
+            1295,
+            854
+          ],
+          "sourceAnchorX": 1073,
+          "masterPosition": [
+            160,
+            108
+          ],
+          "masterSize": [
+            322,
+            383
+          ]
+        },
+        {
+          "direction": "southwest",
+          "sourceBbox": [
+            1411,
+            477,
+            1698,
+            855
+          ],
+          "sourceAnchorX": 1539.5,
+          "masterPosition": [
+            126,
+            107
+          ],
+          "masterSize": [
+            292,
+            384
+          ]
+        }
+      ],
+      "runtimeCells": [
+        {
+          "direction": "south",
+          "bbox": [
+            49,
+            44,
+            194,
+            245
+          ],
+          "foregroundPixels": 13401,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southeast",
+          "bbox": [
+            38,
+            44,
+            212,
+            245
+          ],
+          "foregroundPixels": 15178,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "east",
+          "bbox": [
+            54,
+            43,
+            213,
+            245
+          ],
+          "foregroundPixels": 14365,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northeast",
+          "bbox": [
+            42,
+            41,
+            197,
+            245
+          ],
+          "foregroundPixels": 14256,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "north",
+          "bbox": [
+            59,
+            52,
+            215,
+            245
+          ],
+          "foregroundPixels": 12773,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northwest",
+          "bbox": [
+            72,
+            52,
+            237,
+            245
+          ],
+          "foregroundPixels": 13755,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "west",
+          "bbox": [
+            80,
+            54,
+            240,
+            245
+          ],
+          "foregroundPixels": 13511,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southwest",
+          "bbox": [
+            63,
+            54,
+            208,
+            245
+          ],
+          "foregroundPixels": 13365,
+          "maxAlpha": 255
+        }
+      ],
+      "alphaCount": {
+        "transparent": 413684,
+        "partial": 107949,
+        "opaque": 2655
+      }
+    },
+    {
+      "id": "jack-attack-windup",
+      "url": "/arpg/assets/actors-v4/jack-attack-windup.webp",
+      "file": "dist/arpg/assets/actors-v4/jack-attack-windup.webp",
+      "bytes": 102200,
+      "sha256": "ff5a016cab96197c8a1968772a0765d14e1b93e14b4d498a754456ff70f6c348",
+      "width": 1024,
+      "height": 512,
+      "columns": 4,
+      "rows": 2,
+      "cellWidth": 256,
+      "cellHeight": 256,
+      "cellAspect": 1,
+      "footBaseline": 245,
+      "footBaselineNormalized": 0.95703125,
+      "master": "artifacts/actors-v4/jack-attack-windup-master.png",
+      "source": "artifacts/actors-v4/jack-attack-windup-source.png",
+      "figures": [
+        {
+          "direction": "south",
+          "sourceBbox": [
+            65,
+            16,
+            378,
+            438
+          ],
+          "sourceAnchorX": 206,
+          "masterPosition": [
+            113,
+            63
+          ],
+          "masterSize": [
+            318,
+            428
+          ]
+        },
+        {
+          "direction": "southeast",
+          "sourceBbox": [
+            500,
+            16,
+            822,
+            438
+          ],
+          "sourceAnchorX": 657,
+          "masterPosition": [
+            97,
+            63
+          ],
+          "masterSize": [
+            327,
+            428
+          ]
+        },
+        {
+          "direction": "east",
+          "sourceBbox": [
+            970,
+            16,
+            1241,
+            437
+          ],
+          "sourceAnchorX": 1112.5,
+          "masterPosition": [
+            112,
+            64
+          ],
+          "masterSize": [
+            275,
+            427
+          ]
+        },
+        {
+          "direction": "northeast",
+          "sourceBbox": [
+            1433,
+            21,
+            1738,
+            436
+          ],
+          "sourceAnchorX": 1572,
+          "masterPosition": [
+            115,
+            70
+          ],
+          "masterSize": [
+            310,
+            421
+          ]
+        },
+        {
+          "direction": "north",
+          "sourceBbox": [
+            55,
+            455,
+            378,
+            864
+          ],
+          "sourceAnchorX": 241,
+          "masterPosition": [
+            68,
+            76
+          ],
+          "masterSize": [
+            328,
+            415
+          ]
+        },
+        {
+          "direction": "northwest",
+          "sourceBbox": [
+            513,
+            463,
+            814,
+            860
+          ],
+          "sourceAnchorX": 659.5,
+          "masterPosition": [
+            108,
+            88
+          ],
+          "masterSize": [
+            306,
+            403
+          ]
+        },
+        {
+          "direction": "west",
+          "sourceBbox": [
+            980,
+            456,
+            1241,
+            861
+          ],
+          "sourceAnchorX": 1073,
+          "masterPosition": [
+            162,
+            80
+          ],
+          "masterSize": [
+            265,
+            411
+          ]
+        },
+        {
+          "direction": "southwest",
+          "sourceBbox": [
+            1419,
+            469,
+            1737,
+            864
+          ],
+          "sourceAnchorX": 1539.5,
+          "masterPosition": [
+            134,
+            90
+          ],
+          "masterSize": [
+            323,
+            401
+          ]
+        }
+      ],
+      "runtimeCells": [
+        {
+          "direction": "south",
+          "bbox": [
+            56,
+            31,
+            215,
+            245
+          ],
+          "foregroundPixels": 14517,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southeast",
+          "bbox": [
+            48,
+            31,
+            211,
+            245
+          ],
+          "foregroundPixels": 14772,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "east",
+          "bbox": [
+            56,
+            32,
+            193,
+            245
+          ],
+          "foregroundPixels": 13396,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northeast",
+          "bbox": [
+            58,
+            35,
+            212,
+            245
+          ],
+          "foregroundPixels": 14082,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "north",
+          "bbox": [
+            34,
+            38,
+            197,
+            245
+          ],
+          "foregroundPixels": 15525,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northwest",
+          "bbox": [
+            54,
+            44,
+            206,
+            245
+          ],
+          "foregroundPixels": 14485,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "west",
+          "bbox": [
+            81,
+            40,
+            213,
+            245
+          ],
+          "foregroundPixels": 13098,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southwest",
+          "bbox": [
+            67,
+            45,
+            228,
+            245
+          ],
+          "foregroundPixels": 14435,
+          "maxAlpha": 255
+        }
+      ],
+      "alphaCount": {
+        "transparent": 409978,
+        "partial": 111403,
+        "opaque": 2907
+      }
+    },
+    {
+      "id": "jack-attack-strike",
+      "url": "/arpg/assets/actors-v4/jack-attack-strike.webp",
+      "file": "dist/arpg/assets/actors-v4/jack-attack-strike.webp",
+      "bytes": 96624,
+      "sha256": "02b7d0e749af092ab3a87504acdb2725b2b31ead9973b72177c4a19c3b695548",
+      "width": 1024,
+      "height": 512,
+      "columns": 4,
+      "rows": 2,
+      "cellWidth": 256,
+      "cellHeight": 256,
+      "cellAspect": 1,
+      "footBaseline": 245,
+      "footBaselineNormalized": 0.95703125,
+      "master": "artifacts/actors-v4/jack-attack-strike-master.png",
+      "source": "artifacts/actors-v4/jack-attack-strike-source.png",
+      "figures": [
+        {
+          "direction": "south",
+          "sourceBbox": [
+            35,
+            80,
+            378,
+            424
+          ],
+          "sourceAnchorX": 206,
+          "masterPosition": [
+            83,
+            142
+          ],
+          "masterSize": [
+            348,
+            349
+          ]
+        },
+        {
+          "direction": "southeast",
+          "sourceBbox": [
+            470,
+            82,
+            845,
+            393
+          ],
+          "sourceAnchorX": 657,
+          "masterPosition": [
+            67,
+            175
+          ],
+          "masterSize": [
+            381,
+            316
+          ]
+        },
+        {
+          "direction": "east",
+          "sourceBbox": [
+            870,
+            79,
+            1355,
+            420
+          ],
+          "sourceAnchorX": 1112.5,
+          "masterPosition": [
+            11,
+            145
+          ],
+          "masterSize": [
+            492,
+            346
+          ]
+        },
+        {
+          "direction": "northeast",
+          "sourceBbox": [
+            1383,
+            81,
+            1763,
+            435
+          ],
+          "sourceAnchorX": 1572,
+          "masterPosition": [
+            65,
+            132
+          ],
+          "masterSize": [
+            386,
+            359
+          ]
+        },
+        {
+          "direction": "north",
+          "sourceBbox": [
+            43,
+            492,
+            440,
+            851
+          ],
+          "sourceAnchorX": 241,
+          "masterPosition": [
+            56,
+            127
+          ],
+          "masterSize": [
+            403,
+            364
+          ]
+        },
+        {
+          "direction": "northwest",
+          "sourceBbox": [
+            443,
+            499,
+            845,
+            842
+          ],
+          "sourceAnchorX": 659.5,
+          "masterPosition": [
+            37,
+            143
+          ],
+          "masterSize": [
+            408,
+            348
+          ]
+        },
+        {
+          "direction": "west",
+          "sourceBbox": [
+            847,
+            503,
+            1297,
+            834
+          ],
+          "sourceAnchorX": 1073,
+          "masterPosition": [
+            27,
+            155
+          ],
+          "masterSize": [
+            457,
+            336
+          ]
+        },
+        {
+          "direction": "southwest",
+          "sourceBbox": [
+            1342,
+            510,
+            1703,
+            849
+          ],
+          "sourceAnchorX": 1539.5,
+          "masterPosition": [
+            56,
+            147
+          ],
+          "masterSize": [
+            366,
+            344
+          ]
+        }
+      ],
+      "runtimeCells": [
+        {
+          "direction": "south",
+          "bbox": [
+            41,
+            71,
+            215,
+            245
+          ],
+          "foregroundPixels": 11715,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southeast",
+          "bbox": [
+            34,
+            87,
+            223,
+            245
+          ],
+          "foregroundPixels": 11652,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "east",
+          "bbox": [
+            5,
+            73,
+            251,
+            245
+          ],
+          "foregroundPixels": 15028,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northeast",
+          "bbox": [
+            33,
+            66,
+            225,
+            245
+          ],
+          "foregroundPixels": 14030,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "north",
+          "bbox": [
+            28,
+            64,
+            229,
+            245
+          ],
+          "foregroundPixels": 13461,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northwest",
+          "bbox": [
+            18,
+            71,
+            222,
+            245
+          ],
+          "foregroundPixels": 13973,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "west",
+          "bbox": [
+            14,
+            77,
+            241,
+            245
+          ],
+          "foregroundPixels": 14428,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southwest",
+          "bbox": [
+            28,
+            74,
+            210,
+            245
+          ],
+          "foregroundPixels": 12683,
+          "maxAlpha": 255
+        }
+      ],
+      "alphaCount": {
+        "transparent": 417318,
+        "partial": 104426,
+        "opaque": 2544
+      }
+    },
+    {
+      "id": "jack-mug-walk-left",
+      "url": "/arpg/assets/actors-v4/jack-mug-walk-left.webp",
+      "file": "dist/arpg/assets/actors-v4/jack-mug-walk-left.webp",
+      "bytes": 82414,
+      "sha256": "ea26807e0ab6856e5f5fb3336618fb12e327872417991219fdb75f165ed2ddb0",
+      "width": 1024,
+      "height": 512,
+      "columns": 4,
+      "rows": 2,
+      "cellWidth": 256,
+      "cellHeight": 256,
+      "cellAspect": 1,
+      "footBaseline": 245,
+      "footBaselineNormalized": 0.95703125,
+      "master": "artifacts/actors-v4/jack-mug-walk-left-master.png",
+      "source": "artifacts/actors-v4/jack-mug-walk-left-source.png",
+      "figures": [
+        {
+          "direction": "south",
+          "sourceBbox": [
+            58,
+            47,
+            341,
+            441
+          ],
+          "sourceAnchorX": 206,
+          "masterPosition": [
+            106,
+            91
+          ],
+          "masterSize": [
+            288,
+            400
+          ]
+        },
+        {
+          "direction": "southeast",
+          "sourceBbox": [
+            523,
+            47,
+            807,
+            442
+          ],
+          "sourceAnchorX": 657,
+          "masterPosition": [
+            120,
+            90
+          ],
+          "masterSize": [
+            289,
+            401
+          ]
+        },
+        {
+          "direction": "east",
+          "sourceBbox": [
+            995,
+            44,
+            1268,
+            427
+          ],
+          "sourceAnchorX": 1112.5,
+          "masterPosition": [
+            137,
+            102
+          ],
+          "masterSize": [
+            277,
+            389
+          ]
+        },
+        {
+          "direction": "northeast",
+          "sourceBbox": [
+            1420,
+            47,
+            1730,
+            448
+          ],
+          "sourceAnchorX": 1572,
+          "masterPosition": [
+            102,
+            84
+          ],
+          "masterSize": [
+            315,
+            407
+          ]
+        },
+        {
+          "direction": "north",
+          "sourceBbox": [
+            97,
+            467,
+            398,
+            859
+          ],
+          "sourceAnchorX": 241,
+          "masterPosition": [
+            110,
+            93
+          ],
+          "masterSize": [
+            306,
+            398
+          ]
+        },
+        {
+          "direction": "northwest",
+          "sourceBbox": [
+            588,
+            468,
+            865,
+            861
+          ],
+          "sourceAnchorX": 659.5,
+          "masterPosition": [
+            184,
+            92
+          ],
+          "masterSize": [
+            281,
+            399
+          ]
+        },
+        {
+          "direction": "west",
+          "sourceBbox": [
+            975,
+            470,
+            1241,
+            854
+          ],
+          "sourceAnchorX": 1073,
+          "masterPosition": [
+            157,
+            101
+          ],
+          "masterSize": [
+            270,
+            390
+          ]
+        },
+        {
+          "direction": "southwest",
+          "sourceBbox": [
+            1409,
+            476,
+            1712,
+            863
+          ],
+          "sourceAnchorX": 1539.5,
+          "masterPosition": [
+            124,
+            98
+          ],
+          "masterSize": [
+            308,
+            393
+          ]
+        }
+      ],
+      "runtimeCells": [
+        {
+          "direction": "south",
+          "bbox": [
+            53,
+            45,
+            196,
+            245
+          ],
+          "foregroundPixels": 13448,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southeast",
+          "bbox": [
+            60,
+            45,
+            204,
+            245
+          ],
+          "foregroundPixels": 13980,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "east",
+          "bbox": [
+            68,
+            51,
+            206,
+            245
+          ],
+          "foregroundPixels": 13558,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northeast",
+          "bbox": [
+            51,
+            42,
+            208,
+            245
+          ],
+          "foregroundPixels": 14774,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "north",
+          "bbox": [
+            55,
+            47,
+            207,
+            245
+          ],
+          "foregroundPixels": 13824,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northwest",
+          "bbox": [
+            92,
+            46,
+            232,
+            245
+          ],
+          "foregroundPixels": 14431,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "west",
+          "bbox": [
+            78,
+            50,
+            213,
+            245
+          ],
+          "foregroundPixels": 13414,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southwest",
+          "bbox": [
+            62,
+            50,
+            215,
+            245
+          ],
+          "foregroundPixels": 13959,
+          "maxAlpha": 255
+        }
+      ],
+      "alphaCount": {
+        "transparent": 412900,
+        "partial": 109095,
+        "opaque": 2293
+      }
+    },
+    {
+      "id": "jack-mug-walk-right",
+      "url": "/arpg/assets/actors-v4/jack-mug-walk-right.webp",
+      "file": "dist/arpg/assets/actors-v4/jack-mug-walk-right.webp",
+      "bytes": 82606,
+      "sha256": "a1e96812283457659be35fa5c67fd562363c298786acee910eae588ab52a4b25",
+      "width": 1024,
+      "height": 512,
+      "columns": 4,
+      "rows": 2,
+      "cellWidth": 256,
+      "cellHeight": 256,
+      "cellAspect": 1,
+      "footBaseline": 245,
+      "footBaselineNormalized": 0.95703125,
+      "master": "artifacts/actors-v4/jack-mug-walk-right-master.png",
+      "source": "artifacts/actors-v4/jack-mug-walk-right-source.png",
+      "figures": [
+        {
+          "direction": "south",
+          "sourceBbox": [
+            54,
+            47,
+            338,
+            446
+          ],
+          "sourceAnchorX": 206,
+          "masterPosition": [
+            102,
+            86
+          ],
+          "masterSize": [
+            289,
+            405
+          ]
+        },
+        {
+          "direction": "southeast",
+          "sourceBbox": [
+            503,
+            48,
+            826,
+            449
+          ],
+          "sourceAnchorX": 657,
+          "masterPosition": [
+            100,
+            84
+          ],
+          "masterSize": [
+            328,
+            407
+          ]
+        },
+        {
+          "direction": "east",
+          "sourceBbox": [
+            979,
+            45,
+            1284,
+            447
+          ],
+          "sourceAnchorX": 1112.5,
+          "masterPosition": [
+            121,
+            83
+          ],
+          "masterSize": [
+            310,
+            408
+          ]
+        },
+        {
+          "direction": "northeast",
+          "sourceBbox": [
+            1419,
+            47,
+            1710,
+            453
+          ],
+          "sourceAnchorX": 1572,
+          "masterPosition": [
+            101,
+            79
+          ],
+          "masterSize": [
+            296,
+            412
+          ]
+        },
+        {
+          "direction": "north",
+          "sourceBbox": [
+            103,
+            473,
+            404,
+            855
+          ],
+          "sourceAnchorX": 241,
+          "masterPosition": [
+            116,
+            103
+          ],
+          "masterSize": [
+            306,
+            388
+          ]
+        },
+        {
+          "direction": "northwest",
+          "sourceBbox": [
+            547,
+            473,
+            863,
+            858
+          ],
+          "sourceAnchorX": 659.5,
+          "masterPosition": [
+            142,
+            100
+          ],
+          "masterSize": [
+            321,
+            391
+          ]
+        },
+        {
+          "direction": "west",
+          "sourceBbox": [
+            978,
+            476,
+            1279,
+            856
+          ],
+          "sourceAnchorX": 1073,
+          "masterPosition": [
+            160,
+            105
+          ],
+          "masterSize": [
+            306,
+            386
+          ]
+        },
+        {
+          "direction": "southwest",
+          "sourceBbox": [
+            1435,
+            477,
+            1701,
+            857
+          ],
+          "sourceAnchorX": 1539.5,
+          "masterPosition": [
+            150,
+            105
+          ],
+          "masterSize": [
+            270,
+            386
+          ]
+        }
+      ],
+      "runtimeCells": [
+        {
+          "direction": "south",
+          "bbox": [
+            51,
+            43,
+            195,
+            245
+          ],
+          "foregroundPixels": 13639,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southeast",
+          "bbox": [
+            50,
+            42,
+            213,
+            245
+          ],
+          "foregroundPixels": 15427,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "east",
+          "bbox": [
+            61,
+            42,
+            215,
+            245
+          ],
+          "foregroundPixels": 14058,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northeast",
+          "bbox": [
+            51,
+            39,
+            198,
+            245
+          ],
+          "foregroundPixels": 14444,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "north",
+          "bbox": [
+            58,
+            52,
+            210,
+            245
+          ],
+          "foregroundPixels": 12884,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northwest",
+          "bbox": [
+            71,
+            50,
+            231,
+            245
+          ],
+          "foregroundPixels": 14122,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "west",
+          "bbox": [
+            80,
+            53,
+            232,
+            245
+          ],
+          "foregroundPixels": 13790,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southwest",
+          "bbox": [
+            75,
+            52,
+            209,
+            245
+          ],
+          "foregroundPixels": 13413,
+          "maxAlpha": 255
+        }
+      ],
+      "alphaCount": {
+        "transparent": 412511,
+        "partial": 109128,
+        "opaque": 2649
+      }
+    },
+    {
+      "id": "jack-mug-attack-windup",
+      "url": "/arpg/assets/actors-v4/jack-mug-attack-windup.webp",
+      "file": "dist/arpg/assets/actors-v4/jack-mug-attack-windup.webp",
+      "bytes": 91614,
+      "sha256": "c93d4255cca7bf8811e06d6c9510a16e7ed3d819caf430f4bb89fbe46575721e",
+      "width": 1024,
+      "height": 512,
+      "columns": 4,
+      "rows": 2,
+      "cellWidth": 256,
+      "cellHeight": 256,
+      "cellAspect": 1,
+      "footBaseline": 245,
+      "footBaselineNormalized": 0.95703125,
+      "master": "artifacts/actors-v4/jack-mug-attack-windup-master.png",
+      "source": "artifacts/actors-v4/jack-mug-attack-windup-source.png",
+      "figures": [
+        {
+          "direction": "south",
+          "sourceBbox": [
+            80,
+            19,
+            380,
+            439
+          ],
+          "sourceAnchorX": 206,
+          "masterPosition": [
+            128,
+            65
+          ],
+          "masterSize": [
+            305,
+            426
+          ]
+        },
+        {
+          "direction": "southeast",
+          "sourceBbox": [
+            519,
+            18,
+            823,
+            439
+          ],
+          "sourceAnchorX": 657,
+          "masterPosition": [
+            116,
+            64
+          ],
+          "masterSize": [
+            309,
+            427
+          ]
+        },
+        {
+          "direction": "east",
+          "sourceBbox": [
+            970,
+            15,
+            1244,
+            439
+          ],
+          "sourceAnchorX": 1112.5,
+          "masterPosition": [
+            112,
+            61
+          ],
+          "masterSize": [
+            278,
+            430
+          ]
+        },
+        {
+          "direction": "northeast",
+          "sourceBbox": [
+            1455,
+            23,
+            1742,
+            437
+          ],
+          "sourceAnchorX": 1572,
+          "masterPosition": [
+            138,
+            71
+          ],
+          "masterSize": [
+            292,
+            420
+          ]
+        },
+        {
+          "direction": "north",
+          "sourceBbox": [
+            51,
+            467,
+            384,
+            866
+          ],
+          "sourceAnchorX": 241,
+          "masterPosition": [
+            64,
+            86
+          ],
+          "masterSize": [
+            338,
+            405
+          ]
+        },
+        {
+          "direction": "northwest",
+          "sourceBbox": [
+            513,
+            468,
+            815,
+            861
+          ],
+          "sourceAnchorX": 659.5,
+          "masterPosition": [
+            108,
+            92
+          ],
+          "masterSize": [
+            307,
+            399
+          ]
+        },
+        {
+          "direction": "west",
+          "sourceBbox": [
+            978,
+            462,
+            1244,
+            862
+          ],
+          "sourceAnchorX": 1073,
+          "masterPosition": [
+            160,
+            85
+          ],
+          "masterSize": [
+            270,
+            406
+          ]
+        },
+        {
+          "direction": "southwest",
+          "sourceBbox": [
+            1418,
+            468,
+            1730,
+            866
+          ],
+          "sourceAnchorX": 1539.5,
+          "masterPosition": [
+            133,
+            87
+          ],
+          "masterSize": [
+            317,
+            404
+          ]
+        }
+      ],
+      "runtimeCells": [
+        {
+          "direction": "south",
+          "bbox": [
+            64,
+            32,
+            216,
+            245
+          ],
+          "foregroundPixels": 14588,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southeast",
+          "bbox": [
+            58,
+            32,
+            212,
+            245
+          ],
+          "foregroundPixels": 14781,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "east",
+          "bbox": [
+            56,
+            30,
+            194,
+            245
+          ],
+          "foregroundPixels": 13832,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northeast",
+          "bbox": [
+            69,
+            35,
+            214,
+            245
+          ],
+          "foregroundPixels": 14559,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "north",
+          "bbox": [
+            32,
+            43,
+            200,
+            245
+          ],
+          "foregroundPixels": 15293,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northwest",
+          "bbox": [
+            54,
+            46,
+            207,
+            245
+          ],
+          "foregroundPixels": 14649,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "west",
+          "bbox": [
+            80,
+            43,
+            214,
+            245
+          ],
+          "foregroundPixels": 13695,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southwest",
+          "bbox": [
+            66,
+            43,
+            224,
+            245
+          ],
+          "foregroundPixels": 14666,
+          "maxAlpha": 255
+        }
+      ],
+      "alphaCount": {
+        "transparent": 408225,
+        "partial": 112969,
+        "opaque": 3094
+      }
+    },
+    {
+      "id": "jack-mug-attack-strike",
+      "url": "/arpg/assets/actors-v4/jack-mug-attack-strike.webp",
+      "file": "dist/arpg/assets/actors-v4/jack-mug-attack-strike.webp",
+      "bytes": 89466,
+      "sha256": "8fcc2a287a74f67bbad4b8767d0240b57b5ba580e3a846ee6b0760fd4a380da9",
+      "width": 1024,
+      "height": 512,
+      "columns": 4,
+      "rows": 2,
+      "cellWidth": 256,
+      "cellHeight": 256,
+      "cellAspect": 1,
+      "footBaseline": 245,
+      "footBaselineNormalized": 0.95703125,
+      "master": "artifacts/actors-v4/jack-mug-attack-strike-master.png",
+      "source": "artifacts/actors-v4/jack-mug-attack-strike-source.png",
+      "figures": [
+        {
+          "direction": "south",
+          "sourceBbox": [
+            62,
+            80,
+            380,
+            426
+          ],
+          "sourceAnchorX": 206,
+          "masterPosition": [
+            110,
+            140
+          ],
+          "masterSize": [
+            323,
+            351
+          ]
+        },
+        {
+          "direction": "southeast",
+          "sourceBbox": [
+            469,
+            81,
+            804,
+            387
+          ],
+          "sourceAnchorX": 657,
+          "masterPosition": [
+            66,
+            180
+          ],
+          "masterSize": [
+            340,
+            311
+          ]
+        },
+        {
+          "direction": "east",
+          "sourceBbox": [
+            870,
+            78,
+            1305,
+            421
+          ],
+          "sourceAnchorX": 1112.5,
+          "masterPosition": [
+            11,
+            143
+          ],
+          "masterSize": [
+            441,
+            348
+          ]
+        },
+        {
+          "direction": "northeast",
+          "sourceBbox": [
+            1381,
+            80,
+            1748,
+            436
+          ],
+          "sourceAnchorX": 1572,
+          "masterPosition": [
+            63,
+            130
+          ],
+          "masterSize": [
+            373,
+            361
+          ]
+        },
+        {
+          "direction": "north",
+          "sourceBbox": [
+            42,
+            491,
+            396,
+            854
+          ],
+          "sourceAnchorX": 241,
+          "masterPosition": [
+            55,
+            123
+          ],
+          "masterSize": [
+            359,
+            368
+          ]
+        },
+        {
+          "direction": "northwest",
+          "sourceBbox": [
+            473,
+            496,
+            847,
+            844
+          ],
+          "sourceAnchorX": 659.5,
+          "masterPosition": [
+            67,
+            138
+          ],
+          "masterSize": [
+            380,
+            353
+          ]
+        },
+        {
+          "direction": "west",
+          "sourceBbox": [
+            894,
+            500,
+            1299,
+            836
+          ],
+          "sourceAnchorX": 1073,
+          "masterPosition": [
+            75,
+            150
+          ],
+          "masterSize": [
+            411,
+            341
+          ]
+        },
+        {
+          "direction": "southwest",
+          "sourceBbox": [
+            1381,
+            508,
+            1707,
+            851
+          ],
+          "sourceAnchorX": 1539.5,
+          "masterPosition": [
+            96,
+            143
+          ],
+          "masterSize": [
+            331,
+            348
+          ]
+        }
+      ],
+      "runtimeCells": [
+        {
+          "direction": "south",
+          "bbox": [
+            55,
+            70,
+            216,
+            245
+          ],
+          "foregroundPixels": 12254,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southeast",
+          "bbox": [
+            33,
+            90,
+            202,
+            245
+          ],
+          "foregroundPixels": 11669,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "east",
+          "bbox": [
+            5,
+            71,
+            225,
+            245
+          ],
+          "foregroundPixels": 15729,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northeast",
+          "bbox": [
+            32,
+            65,
+            217,
+            245
+          ],
+          "foregroundPixels": 14906,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "north",
+          "bbox": [
+            27,
+            61,
+            206,
+            245
+          ],
+          "foregroundPixels": 14253,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "northwest",
+          "bbox": [
+            34,
+            69,
+            223,
+            245
+          ],
+          "foregroundPixels": 14558,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "west",
+          "bbox": [
+            37,
+            75,
+            242,
+            245
+          ],
+          "foregroundPixels": 15264,
+          "maxAlpha": 255
+        },
+        {
+          "direction": "southwest",
+          "bbox": [
+            48,
+            71,
+            213,
+            245
+          ],
+          "foregroundPixels": 13131,
+          "maxAlpha": 255
+        }
+      ],
+      "alphaCount": {
+        "transparent": 412524,
+        "partial": 109565,
+        "opaque": 2199
+      }
+    }
+  ]
+}

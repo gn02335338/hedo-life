@@ -175,19 +175,25 @@ function dispatch(target, type, properties = {}) {
   return event;
 }
 
-function inputs(t) {
+function inputs(t, { floatingZone = false } = {}) {
   const doc = new EventTarget(), win = new EventTarget();
+  win.screen = { orientation: new EventTarget() };
   const canvas = new FakeElement('canvas'), joystick = new FakeElement(), knob = new FakeElement();
+  const zone = floatingZone ? new FakeElement() : null;
+  if (zone) {
+    zone.getBoundingClientRect = () => ({ left: 0, top: 360, width: 140, height: 180 });
+    joystick.getBoundingClientRect = () => ({ left: 12, top: 410, width: 112, height: 112 });
+  }
   const skills = Object.fromEntries(['attack', 'burst', 'dash', 'potion'].map(skill => [skill, new FakeElement('button', skill)]));
-  const state = { active: true, actions: [] };
-  const input = createInput({ canvas, joystick, knob, buttons: { querySelectorAll: () => Object.values(skills) }, doc, win,
-    isActive: () => state.active, onAction: action => state.actions.push(action), onAim: (x, y) => ({ x: x / 10, z: y / 10 }) });
+  const state = { active: true, actions: [], gestures: [] };
+  const input = createInput({ canvas, joystick, joystickZone: zone, knob, buttons: { querySelectorAll: () => Object.values(skills) }, doc, win,
+    isActive: () => state.active, onAction: action => state.actions.push(action), onActionGesture: event => state.gestures.push(event.type), onAim: (x, y) => ({ x: x / 10, z: y / 10 }) });
   const key = (type, code, extra = {}) => dispatch(doc, type, { code, target: canvas, repeat: false, ...extra });
   const pointer = (target, type, id, extra = {}) => dispatch(target, type, {
     pointerId: id, pointerType: 'touch', button: 0, clientX: 50, clientY: 50, ...extra,
   });
   t.after(() => input.destroy());
-  return { doc, win, canvas, joystick, knob, skills, state, input, key, pointer };
+  return { doc, win, canvas, joystick, zone, knob, skills, state, input, key, pointer };
 }
 
 const idleInput = { x: 0, z: 0, attack: false, burst: false, dash: false, potion: false };
@@ -210,6 +216,8 @@ test('ARPG input normalizes diagonal movement, holds attacks and consumes skills
 test('ARPG touch joystick and multiple skill pointers remain independent', t => {
   const h = inputs(t);
   h.pointer(h.joystick, 'pointerdown', 1, { clientX: 90 });
+  assert.deepEqual(h.input.read(), idleInput, 'pressing away from the old fixed centre does not move');
+  h.pointer(h.win, 'pointermove', 1, { clientX: 130 });
   h.pointer(h.skills.attack, 'pointerdown', 2);
   h.pointer(h.skills.burst, 'pointerdown', 3);
   assert.deepEqual(h.input.read(), { ...idleInput, x: 1, attack: true, burst: true });
@@ -224,20 +232,30 @@ test('ARPG touch joystick and multiple skill pointers remain independent', t => 
   assert.equal(h.skills.attack.classes.has('pressed'), false);
 });
 
-test('ARPG mouse clicks retain one attack and touch canvas only updates aim', t => {
+test('ARPG mouse clicks retain one attack while touch clears mouse aim for automatic targeting', t => {
   const h = inputs(t);
   h.pointer(h.canvas, 'pointerdown', 1, { pointerType: 'mouse', clientX: 90, clientY: 20 });
   h.pointer(h.win, 'pointerup', 1);
   assert.deepEqual(h.input.read(), { ...idleInput, attack: true, aim: { x: 9, z: 2 } });
   assert.deepEqual(h.input.read(), { ...idleInput, aim: { x: 9, z: 2 } });
   h.pointer(h.canvas, 'pointerdown', 2, { clientX: 30, clientY: 70 });
+  assert.deepEqual(h.input.read(), idleInput);
+  h.pointer(h.canvas, 'pointermove', 2, { clientX: 35, clientY: 75 });
+  assert.deepEqual(h.input.read(), idleInput);
+  h.pointer(h.canvas, 'pointermove', 4, { pointerType: 'mouse', clientX: 30, clientY: 70 });
   assert.deepEqual(h.input.read(), { ...idleInput, aim: { x: 3, z: 7 } });
+  h.pointer(h.skills.burst, 'pointerdown', 3);
+  assert.deepEqual(h.input.read(), { ...idleInput, burst: true });
+  h.pointer(h.canvas, 'pointermove', 5, { pointerType: 'mouse', sourceCapabilities: { firesTouchEvents: true } });
+  assert.equal(h.input.read().aim, undefined);
 });
 
 test('ARPG interruptions release every source and discard unconsumed actions', t => {
   const h = inputs(t);
   const interruptions = [
     () => dispatch(h.win, 'blur'), () => dispatch(h.win, 'pagehide'),
+    () => dispatch(h.win, 'resize'), () => dispatch(h.win, 'orientationchange'),
+    () => dispatch(h.win.screen.orientation, 'change'),
     () => { h.doc.hidden = true; dispatch(h.doc, 'visibilitychange'); h.doc.hidden = false; },
     () => h.pointer(h.win, 'pointercancel', 1),
     () => { h.state.active = false; h.input.read(); h.state.active = true; },
@@ -254,6 +272,85 @@ test('ARPG interruptions release every source and discard unconsumed actions', t
     assert.equal(h.skills.attack.classes.has('pressed'), false);
     assert.equal(h.joystick.captures.size, 0);
   }
+});
+
+test('ARPG floating stick starts at the exact press and only accepts its lower-left surface', t => {
+  const h = inputs(t, { floatingZone: true });
+  h.pointer(h.zone, 'pointerdown', 1, { clientX: 180, clientY: 400 });
+  assert.equal(h.zone.captures.size, 0);
+  h.pointer(h.zone, 'pointerdown', 2, { clientX: 16, clientY: 380 });
+  assert.deepEqual(h.input.read(), idleInput);
+  assert.equal(h.joystick.style.left, '0px');
+  assert.equal(h.joystick.style.top, '0px');
+  h.pointer(h.win, 'pointermove', 2, { clientX: 36, clientY: 380 });
+  assert.ok(h.input.read().x > 0);
+  h.pointer(h.win, 'pointerup', 2);
+  assert.deepEqual(h.input.read(), idleInput);
+  assert.equal(h.joystick.style.left, '');
+  assert.equal(h.zone.captures.size, 0);
+});
+
+test('ARPG stick deadzone is continuous and long drags keep a bounded stable direction', t => {
+  const h = inputs(t);
+  h.pointer(h.joystick, 'pointerdown', 1, { clientX: 30, clientY: 60 });
+  h.pointer(h.win, 'pointermove', 1, { clientX: 32.9, clientY: 60 });
+  assert.deepEqual(h.input.read(), idleInput);
+  h.pointer(h.win, 'pointermove', 1, { clientX: 33.2, clientY: 60 });
+  const edge = h.input.read();
+  assert.ok(edge.x > 0 && edge.x < .02, 'crossing the deadzone never jumps to minimum running speed');
+  h.pointer(h.win, 'pointermove', 1, { clientX: 39, clientY: 62 });
+  const small = h.input.read();
+  assert.ok(small.x > edge.x && small.x < .3 && small.z > 0);
+  h.pointer(h.win, 'pointermove', 1, { clientX: 1030, clientY: -940 });
+  const far = h.input.read();
+  assert.ok(Math.abs(Math.hypot(far.x, far.z) - 1) < 1e-12);
+  assert.ok(Math.abs(far.x + far.z) < 1e-12);
+  h.pointer(h.win, 'pointermove', 2, { clientX: -999, clientY: 999 });
+  assert.deepEqual(h.input.read(), far, 'a second finger cannot steal the stick');
+});
+
+test('ARPG five fingers can steer, hold melee, and tap all three skills together', t => {
+  const h = inputs(t);
+  h.pointer(h.joystick, 'pointerdown', 1);
+  h.pointer(h.win, 'pointermove', 1, { clientX: 90 });
+  for (const [index, skill] of ['attack', 'burst', 'dash', 'potion'].entries()) h.pointer(h.skills[skill], 'pointerdown', index + 2);
+  assert.deepEqual(h.input.read(), { ...idleInput, x: 1, attack: true, burst: true, dash: true, potion: true });
+  assert.deepEqual(h.input.read(), { ...idleInput, x: 1, attack: true });
+  h.pointer(h.win, 'pointerup', 3);
+  assert.deepEqual(h.input.read(), { ...idleInput, x: 1, attack: true });
+  assert.equal(h.skills.dash.classes.has('pressed'), true);
+  assert.equal(h.skills.potion.classes.has('pressed'), true);
+  h.pointer(h.win, 'pointerup', 2);
+  assert.deepEqual(h.input.read(), { ...idleInput, x: 1 });
+});
+
+test('ARPG lost pointer capture cancels only that unconsumed skill without leaving a delayed action', t => {
+  const h = inputs(t);
+  h.pointer(h.skills.burst, 'pointerdown', 2);
+  h.pointer(h.skills.attack, 'pointerdown', 3);
+  h.pointer(h.skills.burst, 'lostpointercapture', 2);
+  assert.deepEqual(h.input.read(), { ...idleInput, attack: true });
+  h.pointer(h.skills.attack, 'lostpointercapture', 3);
+  assert.deepEqual(h.input.read(), idleInput);
+  assert.equal(h.skills.attack.classes.has('pressed'), false);
+});
+
+test('ARPG action gesture hook runs synchronously on fresh actions, not hover or stale input', t => {
+  const h = inputs(t);
+  h.pointer(h.canvas, 'pointermove', 1, { pointerType: 'mouse' });
+  assert.deepEqual(h.state.gestures, []);
+  h.key('keydown', 'KeyW');
+  assert.deepEqual(h.state.gestures, ['keydown']);
+  h.key('keydown', 'KeyW', { repeat: true }); h.key('keyup', 'KeyW');
+  assert.deepEqual(h.state.gestures, ['keydown']);
+  h.pointer(h.skills.attack, 'pointerdown', 2);
+  assert.deepEqual(h.state.gestures, ['keydown', 'pointerdown']);
+  dispatch(h.win, 'resize');
+  assert.deepEqual(h.input.read(), idleInput);
+  assert.equal(h.state.gestures.length, 2);
+  h.state.active = false;
+  h.pointer(h.skills.burst, 'pointerdown', 3);
+  assert.equal(h.state.gestures.length, 2);
 });
 
 test('ARPG controls preserve native dialog/button keys and modified browser shortcuts', t => {
