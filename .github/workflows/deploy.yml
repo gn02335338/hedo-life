@@ -13,7 +13,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true'
     environment:
       name: production
-      url: https://hedo-life.bvstudio.workers.dev
+      url: https://hodo.bvivify.com
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -28,6 +28,9 @@ jobs:
       - name: Run tests before deployment
         run: npm test
         timeout-minutes: 25
+      - name: Check production build
+        run: npm run build:check
+        timeout-minutes: 5
       - name: Deploy with the locked Wrangler CLI
         run: npm run deploy
         timeout-minutes: 10
@@ -37,7 +40,7 @@ jobs:
       - name: Summarize successful deployment
         if: success()
         env:
-          GAME_URL: https://hedo-life.bvstudio.workers.dev
+          GAME_URL: https://hodo.bvivify.com
           COMMIT_SHA: ${{ github.sha }}
           COMMIT_URL: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

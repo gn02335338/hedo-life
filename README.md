@@ -2,7 +2,16 @@
 
 一款繁體中文職場黑色幽默遊戲。多種職缺、雙心情、隨機人設、升遷與離場，收集 883 種職業結局與 1,000 枚圖文成就。
 
-**[開始遊戲／史冊補完計畫](https://hedo-life.bvstudio.workers.dev)** · **[禾多暗黑](https://hedo-life.bvstudio.workers.dev/arpg/)** · **[探索禾多島](https://hedo-life.bvstudio.workers.dev/island/)** · **[GitHub Issues](https://github.com/gn02335338/hedo-life/issues)**
+**[開始遊戲／史冊補完計畫](https://hodo.bvivify.com)** · **[禾多暗黑](https://hodo.bvivify.com/arpg/)** · **[探索禾多島](https://hodo.bvivify.com/island/)** · **[GitHub Issues](https://github.com/gn02335338/hedo-life/issues)**
+
+
+## 正式網域與舊玩家搬遷
+
+正式入口是 **https://hodo.bvivify.com**，涵蓋人生、禾多島（`/island/`）、禾多暗黑（`/arpg/`）及禾多 GTA（`/gta/`）。原本的 `https://hedo-life.bvstudio.workers.dev` 保留為舊玩家搬遷入口：使用原瀏覽器開啟舊連結，網頁會自動帶走本機存檔、收藏、成就、匿名憑證與待同步紀錄，確認新站寫入成功後前往對應的新網址。舊站資料不會被刪除；已搬過的舊資料不會覆蓋新站後來的進度。
+
+兩個網域沿用同一個 Worker 與匿名史冊，既有玩家 ID、已驗證成就、角色累計及排行榜管理權保持不變。頁尾「搬遷紀錄」可查看／恢復這個瀏覽器保留的搬遷備份。若新舊網址已存在不同進度，搬遷頁會保留兩份並讓玩家選擇，不會混用不同匿名身分的待同步紀錄。瀏覽器禁止儲存或空間不足時，會停留在搬遷頁供重試，原存檔仍留在舊網址。
+
+只有原本保存進度的瀏覽器能搬走其本機資料；已清除的瀏覽器資料或其他裝置不會因此找回。管理員的私人登入 Cookie 不跨網域搬移，需在新網址重新登入。
 
 ## 這次的人生
 

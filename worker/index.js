@@ -11,6 +11,7 @@ import { ObservationStore } from './observations.js';
 import { AdminPrivateStore } from './admin-private.js';
 import { LeaderboardStore, validateLeaderboardFilter, validateLeaderboardNickname } from './leaderboards.js';
 import { deriveLeaderboardScoreV56, leaderboardEligibilityV56, SCORE_VERSION_V56 } from '../dist/leaderboard-score-v56.js';
+import { handleDomainMigration } from './domain-migration.js';
 
 const ENDING_IDS = new Set(ENDINGS.map(ending => ending.id));
 
@@ -325,6 +326,8 @@ export class HedoArchive extends DurableObject {
 
 export default {
   async fetch(request, env) {
+    const migration = await handleDomainMigration(request);
+    if (migration) return migration;
     const path = new URL(request.url).pathname;
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(request);
     if (path === '/api/health' && request.method === 'GET') return json({ ok: true, version: 3 });

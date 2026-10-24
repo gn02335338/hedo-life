@@ -1,6 +1,6 @@
 # Anonymous archive API
 
-Cloudflare Workers serves `dist/` as Static Assets and routes `/api/*` to the Worker first. One `HedoArchive` Durable Object (`global-v3`) owns the SQLite archive. The public game does not require D1, KV, external databases, or API secrets. The optional private administrator archive below requires its own Worker secret.
+Cloudflare Workers serves `dist/` as Static Assets and runs the Worker before assets so that navigation can pass through the domain-migration gate; `/api/*` still uses the existing API dispatch. One `HedoArchive` Durable Object (`global-v3`) owns the SQLite archive. The public game does not require D1, KV, external databases, or API secrets. The optional private administrator archive below requires its own Worker secret.
 
 ## Endpoints
 
@@ -1068,3 +1068,63 @@ fallback retains the list, stories and passport.
 After `npm start`, open `http://127.0.0.1:4173/island/`. Run the island checks with
 `node --test tests/island-*.test.mjs`, and
 the repository checks with `npm test` and `npm run build:check`.
+
+
+## Hodo domain migration
+
+The canonical public origin is `https://hodo.bvivify.com`. Its Custom Domain is
+attached to the existing `hedo-life` Worker through Cloudflare's dashboard.
+Domain bindings are dashboard-managed: `wrangler.jsonc` deliberately omits
+`routes` so the deployment token needs no broader zone access. `workers_dev:
+true` keeps `https://hedo-life.bvstudio.workers.dev` available as the source of
+browser-local migration and as the existing feedback-publisher API origin.
+Do not rename the Worker, replace `ARCHIVE`, change the `HedoArchive` namespace,
+or change `idFromName('global-v3')` while migrating domains.
+
+`assets.run_worker_first: true` is required. HTML navigations on the old origin
+receive a small, private migration document before any game code loads. It
+reads only the explicit public-game localStorage allowlist and the session-only
+feedback draft, then submits one bounded native multipart form to the new
+origin's `POST /_hodo/import`. Only this dedicated route accepts an exact old
+`Origin`; normal API same-origin checks stay unchanged. Source and target APIs
+and assets remain usable, including by already-open old tabs and the existing
+OIDC feedback publisher. Keep `FEEDBACK_AUDIENCE`, publisher base URL and the
+publisher's pinned audience consistent; no publisher change is needed here.
+
+The import response safely embeds the validated payload in inert JSON, with
+no-store, no-referrer and frame-denying CSP. The Worker does not store migration
+payloads, tokens, raw saves or draft text in the archive, or log them. Credentials
+never appear in query strings or fragments. The client writes and reads back
+all active keys before acknowledging the source with a per-tab random nonce.
+A destination receipt prevents interrupted acknowledgements and later visits
+from replacing newer progress with the same old snapshot. Local-only digests
+separately prevent a changed session draft from replaying old game state.
+The source snapshot is never deleted. A pristine destination does not duplicate
+the whole source as a backup, preserving localStorage capacity; its original
+remains at the old origin. Existing destination copies are backed up before
+changes, and differing identities, active saves, sidegames, drafts or divergent
+proof queues require the player to choose a copy. Queues belonging to different
+anonymous tokens are never combined. Storage/readback/receipt failures stop the
+flow without acknowledging success; rollback is attempted and source data stays
+available. The committed revision refreshes other open new-origin game tabs
+before they can continue from an earlier in-memory identity/save.
+
+New-origin first visits also pass through the old origin, before `cloud.js` can
+create an anonymous credential. A successful cookie marker skips this round trip
+on future visits. An explicit `/_hodo/export` check can reissue a cleared marker
+without resetting already-migrated local progress. Private administrator
+HttpOnly cookies are host-only and are not transferred; sign in again on the new
+origin. The new-origin `/_hodo/recover` page, linked from the game's footer,
+allows selecting a retained browser-local backup and first preserves the current
+copy. Clearing browser data also clears these browser-local backups.
+
+Verification:
+
+```sh
+node --test tests/domain-migration-client.test.mjs tests/domain-migration-server.test.mjs tests/domain-session-guard.test.mjs
+npm test
+npm run build:check
+```
+
+The migration changes no engine rules, published replay seeds, anonymous token
+format, database schema, achievement IDs, or locked-content presentation.
