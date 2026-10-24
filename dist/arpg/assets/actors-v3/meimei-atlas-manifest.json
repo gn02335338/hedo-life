@@ -1,0 +1,224 @@
+{
+  "id": "meimei",
+  "file": "meimei-atlas.webp",
+  "width": 2048,
+  "height": 1024,
+  "columns": 4,
+  "rows": 2,
+  "cellWidth": 512,
+  "cellHeight": 512,
+  "cellAspect": 1,
+  "footBaseline": 0.95703125,
+  "footBaselinePixels": 490,
+  "uniformScale": 1.059090909090909,
+  "hasAlpha": true,
+  "alphaMin": 0,
+  "alphaMax": 255,
+  "alphaSanitation": {
+    "threshold": 16,
+    "clearedPixels": 80792,
+    "description": "Cleared negligible-alpha background RGB matte remnants before resampling; preserved character pixels above alpha 16."
+  },
+  "frames": [
+    {
+      "index": 0,
+      "direction": "south",
+      "sourceCell": {
+        "left": 0,
+        "top": 0,
+        "width": 444,
+        "height": 444
+      },
+      "sourceBBox": {
+        "left": 83,
+        "top": 4,
+        "width": 284,
+        "height": 440
+      },
+      "sourceFootX": 243,
+      "runtimeBBox": {
+        "left": 87,
+        "top": 24,
+        "width": 301,
+        "height": 466
+      },
+      "runtimeFootX": 256,
+      "runtimeFootBaseline": 490
+    },
+    {
+      "index": 1,
+      "direction": "southeast",
+      "sourceCell": {
+        "left": 444,
+        "top": 0,
+        "width": 443,
+        "height": 444
+      },
+      "sourceBBox": {
+        "left": 550,
+        "top": 5,
+        "width": 297,
+        "height": 436
+      },
+      "sourceFootX": 652,
+      "runtimeBBox": {
+        "left": 148,
+        "top": 28,
+        "width": 315,
+        "height": 462
+      },
+      "runtimeFootX": 256,
+      "runtimeFootBaseline": 490
+    },
+    {
+      "index": 2,
+      "direction": "east",
+      "sourceCell": {
+        "left": 887,
+        "top": 0,
+        "width": 444,
+        "height": 444
+      },
+      "sourceBBox": {
+        "left": 1001,
+        "top": 2,
+        "width": 274,
+        "height": 436
+      },
+      "sourceFootX": 1169,
+      "runtimeBBox": {
+        "left": 78,
+        "top": 28,
+        "width": 290,
+        "height": 462
+      },
+      "runtimeFootX": 256,
+      "runtimeFootBaseline": 490
+    },
+    {
+      "index": 3,
+      "direction": "northeast",
+      "sourceCell": {
+        "left": 1331,
+        "top": 0,
+        "width": 443,
+        "height": 444
+      },
+      "sourceBBox": {
+        "left": 1468,
+        "top": 3,
+        "width": 305,
+        "height": 440
+      },
+      "sourceFootX": 1666,
+      "runtimeBBox": {
+        "left": 46,
+        "top": 24,
+        "width": 323,
+        "height": 466
+      },
+      "runtimeFootX": 256,
+      "runtimeFootBaseline": 490
+    },
+    {
+      "index": 4,
+      "direction": "north",
+      "sourceCell": {
+        "left": 0,
+        "top": 444,
+        "width": 444,
+        "height": 443
+      },
+      "sourceBBox": {
+        "left": 100,
+        "top": 444,
+        "width": 287,
+        "height": 434
+      },
+      "sourceFootX": 240,
+      "runtimeBBox": {
+        "left": 108,
+        "top": 30,
+        "width": 304,
+        "height": 460
+      },
+      "runtimeFootX": 256,
+      "runtimeFootBaseline": 490
+    },
+    {
+      "index": 5,
+      "direction": "northwest",
+      "sourceCell": {
+        "left": 444,
+        "top": 444,
+        "width": 443,
+        "height": 443
+      },
+      "sourceBBox": {
+        "left": 568,
+        "top": 446,
+        "width": 275,
+        "height": 426
+      },
+      "sourceFootX": 663,
+      "runtimeBBox": {
+        "left": 155,
+        "top": 39,
+        "width": 291,
+        "height": 451
+      },
+      "runtimeFootX": 256,
+      "runtimeFootBaseline": 490
+    },
+    {
+      "index": 6,
+      "direction": "west",
+      "sourceCell": {
+        "left": 887,
+        "top": 444,
+        "width": 444,
+        "height": 443
+      },
+      "sourceBBox": {
+        "left": 1030,
+        "top": 444,
+        "width": 236,
+        "height": 430
+      },
+      "sourceFootX": 1104,
+      "runtimeBBox": {
+        "left": 178,
+        "top": 35,
+        "width": 250,
+        "height": 455
+      },
+      "runtimeFootX": 256,
+      "runtimeFootBaseline": 490
+    },
+    {
+      "index": 7,
+      "direction": "southwest",
+      "sourceCell": {
+        "left": 1331,
+        "top": 444,
+        "width": 443,
+        "height": 443
+      },
+      "sourceBBox": {
+        "left": 1507,
+        "top": 449,
+        "width": 267,
+        "height": 430
+      },
+      "sourceFootX": 1592,
+      "runtimeBBox": {
+        "left": 166,
+        "top": 35,
+        "width": 283,
+        "height": 455
+      },
+      "runtimeFootX": 256,
+      "runtimeFootBaseline": 490
+    }
+  ]
+}

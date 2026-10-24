@@ -1,0 +1,159 @@
+{
+  "version": 3,
+  "file": "gothic-props.webp",
+  "width": 2048,
+  "height": 512,
+  "columns": 4,
+  "rows": 1,
+  "cellWidth": 512,
+  "cellHeight": 512,
+  "cellAspect": 1,
+  "footBaseline": 490,
+  "anchor": {
+    "x": 0.5,
+    "y": 0.95703125
+  },
+  "order": [
+    "archive",
+    "altar",
+    "throne",
+    "shrine"
+  ],
+  "camera": {
+    "projection": "orthographic",
+    "elevationDegrees": "45–50",
+    "light": "warm top-front-left / cool shadows"
+  },
+  "source": {
+    "file": "artifacts/arpg-world-v3/gothic-props-generated.png",
+    "width": 2172,
+    "height": 724
+  },
+  "uniformScale": 0.6134094151212554,
+  "encoding": {
+    "quality": 90,
+    "alphaQuality": 100
+  },
+  "alpha": {
+    "hasAlpha": true,
+    "range": [
+      0,
+      255
+    ]
+  },
+  "normalization": {
+    "method": "Isolate four generated props at verified transparent gaps; one shared uniform scale; align full prop baseline; preserve relative object sizes.",
+    "removedMattePixels": 0,
+    "trimmedFaintPixels": 57920
+  },
+  "frames": [
+    {
+      "index": 0,
+      "id": "archive",
+      "sourceBounds": {
+        "left": 14,
+        "top": 64,
+        "width": 516,
+        "height": 632
+      },
+      "solidBottom": 692,
+      "outputBounds": {
+        "left": 98,
+        "top": 104,
+        "width": 317,
+        "height": 388
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 100,
+          "top": 106,
+          "width": 313,
+          "height": 384
+        },
+        "footBaseline": 490,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 1,
+      "id": "altar",
+      "sourceBounds": {
+        "left": 538,
+        "top": 254,
+        "width": 677,
+        "height": 445
+      },
+      "solidBottom": 695,
+      "outputBounds": {
+        "left": 49,
+        "top": 219,
+        "width": 415,
+        "height": 273
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 51,
+          "top": 221,
+          "width": 412,
+          "height": 269
+        },
+        "footBaseline": 490,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 2,
+      "id": "throne",
+      "sourceBounds": {
+        "left": 1215,
+        "top": 5,
+        "width": 450,
+        "height": 701
+      },
+      "solidBottom": 702,
+      "outputBounds": {
+        "left": 118,
+        "top": 62,
+        "width": 276,
+        "height": 430
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 119,
+          "top": 64,
+          "width": 273,
+          "height": 426
+        },
+        "footBaseline": 490,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 3,
+      "id": "shrine",
+      "sourceBounds": {
+        "left": 1767,
+        "top": 3,
+        "width": 380,
+        "height": 700
+      },
+      "solidBottom": 699,
+      "outputBounds": {
+        "left": 140,
+        "top": 62,
+        "width": 233,
+        "height": 429
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 142,
+          "top": 64,
+          "width": 229,
+          "height": 425
+        },
+        "footBaseline": 489,
+        "borderAlpha": 0
+      }
+    }
+  ]
+}

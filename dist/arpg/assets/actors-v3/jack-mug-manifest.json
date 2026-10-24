@@ -1,0 +1,265 @@
+{
+  "version": 3,
+  "file": "jack-mug-8dir.webp",
+  "actor": "jack",
+  "weapon": "mug",
+  "columns": 4,
+  "rows": 2,
+  "width": 2048,
+  "height": 1024,
+  "cellWidth": 512,
+  "cellHeight": 512,
+  "cellAspect": 1,
+  "footBaseline": 490,
+  "anchor": {
+    "x": 0.5,
+    "y": 0.95703125
+  },
+  "directions": [
+    "south",
+    "southeast",
+    "east",
+    "northeast",
+    "north",
+    "northwest",
+    "west",
+    "southwest"
+  ],
+  "source": {
+    "file": "artifacts/arpg-actors-v3/jack-mug-generated.png",
+    "width": 1774,
+    "height": 887
+  },
+  "uniformScale": 1.1466666666666667,
+  "alpha": {
+    "hasAlpha": true,
+    "range": [
+      0,
+      255
+    ],
+    "lowAlphaRemoved": 56021,
+    "edgeMatteRemoved": 11157
+  },
+  "encoding": {
+    "quality": 90,
+    "alphaQuality": 100
+  },
+  "frames": [
+    {
+      "index": 0,
+      "row": 0,
+      "col": 0,
+      "left": 55,
+      "top": 64,
+      "width": 303,
+      "height": 365,
+      "strongBottom": 425,
+      "footCenter": 223,
+      "outputBounds": {
+        "left": 63,
+        "top": 75,
+        "width": 347,
+        "height": 419
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 67,
+          "top": 79,
+          "width": 340,
+          "height": 412
+        },
+        "footBaseline": 491,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 1,
+      "row": 0,
+      "col": 1,
+      "left": 501,
+      "top": 64,
+      "width": 294,
+      "height": 365,
+      "strongBottom": 425,
+      "footCenter": 666,
+      "outputBounds": {
+        "left": 67,
+        "top": 75,
+        "width": 337,
+        "height": 419
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 71,
+          "top": 79,
+          "width": 329,
+          "height": 412
+        },
+        "footBaseline": 491,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 2,
+      "row": 0,
+      "col": 2,
+      "left": 1002,
+      "top": 54,
+      "width": 154,
+      "height": 375,
+      "strongBottom": 425,
+      "footCenter": 1085,
+      "outputBounds": {
+        "left": 161,
+        "top": 63,
+        "width": 177,
+        "height": 430
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 165,
+          "top": 67,
+          "width": 170,
+          "height": 423
+        },
+        "footBaseline": 490,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 3,
+      "row": 0,
+      "col": 3,
+      "left": 1435,
+      "top": 54,
+      "width": 273,
+      "height": 375,
+      "strongBottom": 425,
+      "footCenter": 1553.5,
+      "outputBounds": {
+        "left": 120,
+        "top": 63,
+        "width": 313,
+        "height": 430
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 124,
+          "top": 68,
+          "width": 306,
+          "height": 422
+        },
+        "footBaseline": 490,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 4,
+      "row": 1,
+      "col": 0,
+      "left": 68,
+      "top": 512,
+      "width": 295,
+      "height": 360,
+      "strongBottom": 868,
+      "footCenter": 190.5,
+      "outputBounds": {
+        "left": 116,
+        "top": 81,
+        "width": 338,
+        "height": 413
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 120,
+          "top": 85,
+          "width": 331,
+          "height": 406
+        },
+        "footBaseline": 491,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 5,
+      "row": 1,
+      "col": 1,
+      "left": 554,
+      "top": 506,
+      "width": 281,
+      "height": 365,
+      "strongBottom": 867,
+      "footCenter": 666,
+      "outputBounds": {
+        "left": 128,
+        "top": 75,
+        "width": 322,
+        "height": 419
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 132,
+          "top": 79,
+          "width": 315,
+          "height": 412
+        },
+        "footBaseline": 491,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 6,
+      "row": 1,
+      "col": 2,
+      "left": 999,
+      "top": 503,
+      "width": 201,
+      "height": 369,
+      "strongBottom": 868,
+      "footCenter": 1110,
+      "outputBounds": {
+        "left": 129,
+        "top": 70,
+        "width": 230,
+        "height": 423
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 133,
+          "top": 75,
+          "width": 223,
+          "height": 415
+        },
+        "footBaseline": 490,
+        "borderAlpha": 0
+      }
+    },
+    {
+      "index": 7,
+      "row": 1,
+      "col": 3,
+      "left": 1398,
+      "top": 513,
+      "width": 291,
+      "height": 359,
+      "strongBottom": 868,
+      "footCenter": 1552.5,
+      "outputBounds": {
+        "left": 79,
+        "top": 82,
+        "width": 334,
+        "height": 412
+      },
+      "validation": {
+        "alphaBounds": {
+          "left": 83,
+          "top": 86,
+          "width": 327,
+          "height": 405
+        },
+        "footBaseline": 491,
+        "borderAlpha": 0
+      }
+    }
+  ]
+}

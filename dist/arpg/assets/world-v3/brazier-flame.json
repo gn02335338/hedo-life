@@ -1,0 +1,135 @@
+{
+  "width": 2048,
+  "height": 1024,
+  "columns": 4,
+  "rows": 2,
+  "frameCount": 8,
+  "cellWidth": 512,
+  "cellHeight": 512,
+  "frameOrder": "left-to-right, top row then bottom row",
+  "baseX": 256,
+  "baseY": 490,
+  "alpha": true,
+  "frames": [
+    {
+      "frame": 0,
+      "baseX": 256,
+      "baseY": 490,
+      "sourceCrop": {
+        "column": 0,
+        "row": 0
+      },
+      "alignment": {
+        "x": 34,
+        "y": 76,
+        "opacityThreshold": 20
+      },
+      "uniformScale": 0.859375
+    },
+    {
+      "frame": 1,
+      "baseX": 256,
+      "baseY": 490,
+      "sourceCrop": {
+        "column": 1,
+        "row": 0
+      },
+      "alignment": {
+        "x": 35,
+        "y": 76,
+        "opacityThreshold": 20
+      },
+      "uniformScale": 0.859375
+    },
+    {
+      "frame": 2,
+      "baseX": 256,
+      "baseY": 490,
+      "sourceCrop": {
+        "column": 2,
+        "row": 0
+      },
+      "alignment": {
+        "x": 36,
+        "y": 76,
+        "opacityThreshold": 20
+      },
+      "uniformScale": 0.859375
+    },
+    {
+      "frame": 3,
+      "baseX": 256,
+      "baseY": 490,
+      "sourceCrop": {
+        "column": 3,
+        "row": 0
+      },
+      "alignment": {
+        "x": 35,
+        "y": 76,
+        "opacityThreshold": 20
+      },
+      "uniformScale": 0.859375
+    },
+    {
+      "frame": 4,
+      "baseX": 256,
+      "baseY": 490,
+      "sourceCrop": {
+        "column": 0,
+        "row": 1
+      },
+      "alignment": {
+        "x": 35,
+        "y": 72,
+        "opacityThreshold": 20
+      },
+      "uniformScale": 0.859375
+    },
+    {
+      "frame": 5,
+      "baseX": 256,
+      "baseY": 490,
+      "sourceCrop": {
+        "column": 1,
+        "row": 1
+      },
+      "alignment": {
+        "x": 34,
+        "y": 72,
+        "opacityThreshold": 20
+      },
+      "uniformScale": 0.859375
+    },
+    {
+      "frame": 6,
+      "baseX": 256,
+      "baseY": 490,
+      "sourceCrop": {
+        "column": 2,
+        "row": 1
+      },
+      "alignment": {
+        "x": 36,
+        "y": 72,
+        "opacityThreshold": 20
+      },
+      "uniformScale": 0.859375
+    },
+    {
+      "frame": 7,
+      "baseX": 256,
+      "baseY": 490,
+      "sourceCrop": {
+        "column": 3,
+        "row": 1
+      },
+      "alignment": {
+        "x": 35,
+        "y": 73,
+        "opacityThreshold": 20
+      },
+      "uniformScale": 0.859375
+    }
+  ]
+}

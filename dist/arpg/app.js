@@ -148,6 +148,8 @@ function showResult() {
     .map(([value, label]) => `<div><strong>${escape(value)}</strong><span>${label}</span></div>`).join('');
   persist(true);
   openDialog($('result-dialog'));
+  // A held attack key must not activate retry as soon as the fight ends.
+  $('result-title').focus({ preventScroll: true });
 }
 
 function updateHud() {

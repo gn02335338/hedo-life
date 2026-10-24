@@ -1,7 +1,9 @@
 import * as THREE from '../island/vendor/three.module.js';
 import { WORLD, BOSS_PROFILES } from './content.js';
+import { createArtLayer } from './art-layer.js';
 
-// Original procedural art. The renderer only reads simulation snapshots.
+// Original textured 3D architecture with directional pre-rendered character art.
+// The renderer only reads simulation snapshots.
 export function createScene({ container } = {}) {
   if (!container) throw new Error('找不到地城畫面。');
   let renderer;
@@ -13,7 +15,7 @@ export function createScene({ container } = {}) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.25;
+  renderer.toneMappingExposure = 1.14;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const canvas = renderer.domElement;
@@ -23,8 +25,8 @@ export function createScene({ container } = {}) {
   container.appendChild(canvas);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#080b10');
-  scene.fog = new THREE.FogExp2('#080b10', 0.012);
+  scene.background = new THREE.Color('#0c0d0e');
+  scene.fog = new THREE.Fog('#171614', 28, 84);
   const camera = new THREE.OrthographicCamera(-20, 20, 20, -20, 0.1, 180);
   const cameraTarget = new THREE.Vector3(0, 0, -12);
   const cameraOffset = new THREE.Vector3(17, 25, 22);
@@ -72,7 +74,7 @@ export function createScene({ container } = {}) {
     ball: geo(new THREE.SphereGeometry(1, 10, 6)),
     cylinder: geo(new THREE.CylinderGeometry(1, 1, 1, 10)),
     cone: geo(new THREE.ConeGeometry(1, 1, 7)),
-    ring: geo(new THREE.RingGeometry(0.83, 1, 48)),
+    ring: geo(new THREE.RingGeometry(0.965, 1, 72)),
     disc: geo(new THREE.CircleGeometry(1, 40)),
     plane: geo(new THREE.PlaneGeometry(1, 1)),
     torus: geo(new THREE.TorusGeometry(1, 0.055, 5, 36)),
@@ -106,9 +108,9 @@ export function createScene({ container } = {}) {
     halo: basic('#bd8b34', { transparent: true, opacity: 0.13, side: THREE.DoubleSide, depthWrite: false }),
   };
 
-  const ambient = new THREE.HemisphereLight('#a9c2cf', '#17121b', 1.55);
+  const ambient = new THREE.HemisphereLight('#b6bfc4', '#242017', 0.9);
   scene.add(ambient);
-  const key = new THREE.DirectionalLight('#b3cad0', 2.7);
+  const key = new THREE.DirectionalLight('#b0bcc4', 2.05);
   key.position.set(-12, 27, 10); key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
   key.shadow.camera.left = -28; key.shadow.camera.right = 28;
@@ -117,12 +119,9 @@ export function createScene({ container } = {}) {
   key.shadow.normalBias = 0.055;
   key.shadow.bias = -0.0004;
   scene.add(key, key.target);
-  const rim = new THREE.DirectionalLight('#db8052', 1.1);
+  const rim = new THREE.DirectionalLight('#dba275', 0.75);
   rim.position.set(7, 10, -40); scene.add(rim);
-  const fireLight = new THREE.PointLight('#f18543', 30, 26, 2);
-  fireLight.position.set(-7, 3.5, -15); scene.add(fireLight);
-  const bossLight = new THREE.PointLight('#de7142', 36, 25, 2);
-  bossLight.position.set(0, 5, -35); scene.add(bossLight);
+  const artLayer = createArtLayer({ scene, camera, renderer, materials: M });
 
   // A single shared, locally drawn stone map adds surface detail without assets
   // or another material/draw call for each tile.
@@ -195,40 +194,58 @@ export function createScene({ container } = {}) {
       floorCells.push({ x: x + 0.5, z: z + 0.5 });
       for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
         if (inside(x + 0.5 + dx, z + 0.5 + dz)) continue;
-        const wallHeight = dz === 1 ? 0.6 : dx === 1 ? 1.0 : 1.5;
+        const wallHeight = dz === -1 || dx === -1 ? 3.8 : 0.85;
         batch(G.box, M.stone, x + 0.5 + dx / 2, wallHeight / 2 - 0.1, z + 0.5 + dz / 2, dx ? 0.28 : 1.02, wallHeight, dz ? 0.28 : 1.02);
         batch(G.box, M.iron, x + 0.5 + dx / 2, wallHeight - 0.08, z + 0.5 + dz / 2, dx ? 0.32 : 1.02, 0.09, dz ? 0.32 : 1.02);
         batch(G.box, M.black, x + 0.5 + dx / 2, -0.7, z + 0.5 + dz / 2, dx ? 0.42 : 1.02, 1.2, dz ? 0.42 : 1.02);
       }
     }
   }
-  const floor = new THREE.InstancedMesh(G.box, M.floor, floorCells.length);
-  floorCells.forEach(({ x, z }, i) => {
-    dummy.position.set(x, -0.1, z); dummy.rotation.set(0, 0, 0); dummy.scale.set(0.972, 0.18, 0.972); dummy.updateMatrix();
-    floor.setMatrixAt(i, dummy.matrix);
-    color.setRGB(0.63 + hash(i * 3) * 0.27, 0.67 + hash(i * 3) * 0.23, 0.7 + hash(i * 3) * 0.23); floor.setColorAt(i, color);
-  });
-  floor.receiveShadow = true; floor.instanceMatrix.needsUpdate = true; scene.add(floor);
+  // World-aligned UVs keep large stone slabs continuous across room/corridor
+  // boundaries, instead of stamping a complete texture into every small tile.
+  const floorPositions = [], floorNormals = [], floorUVs = [];
+  for (const { x, z } of floorCells) {
+    for (const [dx, dz] of [[-.5,-.5],[-.5,.5],[.5,-.5],[.5,-.5],[-.5,.5],[.5,.5]]) {
+      floorPositions.push(x + dx, 0, z + dz); floorNormals.push(0, 1, 0);
+      floorUVs.push((x + dx) / 5.5, (z + dz) / 5.5);
+    }
+  }
+  const floorGeometry = geo(new THREE.BufferGeometry());
+  floorGeometry.setAttribute('position', new THREE.Float32BufferAttribute(floorPositions, 3));
+  floorGeometry.setAttribute('normal', new THREE.Float32BufferAttribute(floorNormals, 3));
+  floorGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(floorUVs, 2));
+  const floor = new THREE.Mesh(floorGeometry, M.floor); floor.receiveShadow = true; scene.add(floor);
   for (const r of rectangles) batch(G.box, M.black, r.x, -0.45, r.z, r.width, 0.65, r.depth);
 
-  function pillar(x, z, tall = 2.8) {
-    batch(G.box, M.black, x, 0.11, z, 1.02, 0.22, 1.02);
-    batch(G.box, M.stone2, x, tall / 2, z, 0.66, tall, 0.66);
-    batch(G.box, M.iron, x, tall - 0.18, z, 0.86, 0.24, 0.86);
-    batch(G.box, M.bronze, x, tall * 0.55, z, 0.69, 0.1, 0.69);
+  function pillar(x, z, tall = 3.8) {
+    batch(G.box, M.stone, x, 0.18, z, 1.08, 0.36, 1.08);
+    batch(G.cylinder, M.stone2, x, tall / 2, z, 0.36, tall, 0.36);
+    batch(G.cylinder, M.bronze, x, 0.48, z, 0.42, 0.13, 0.42);
+    batch(G.cylinder, M.bronze, x, tall - 0.38, z, 0.43, 0.12, 0.43);
+    batch(G.box, M.stone2, x, tall - 0.18, z, 0.88, 0.3, 0.88);
+    batch(G.cone, M.stone, x, tall + 0.34, z, 0.41, 0.72, 0.41);
   }
-  for (const z of [-5.3, 5.3, -21.3, -10.7, -40, -24]) {
-    const spread = 12.3;
-    pillar(-spread, z, z < -23 ? 3.6 : 2.8); pillar(spread, z, z < -23 ? 3.6 : 2.8);
+  for (const z of [4.5, -1.5, -5.3, -11.5, -16, -21.3, -27.5, -33, -39.4]) {
+    pillar(-12.1, z, z < -23 ? 4.6 : 3.8);
+    // The camera-facing parapet stays low enough to preserve combat visibility.
+    pillar(12.1, z, 1.3);
   }
+  const archShape = new THREE.Shape();
+  archShape.moveTo(-3.65, 0); archShape.lineTo(-3.65, 3.2);
+  archShape.quadraticCurveTo(-3.5, 4.4, 0, 5.7);
+  archShape.quadraticCurveTo(3.5, 4.4, 3.65, 3.2); archShape.lineTo(3.65, 0);
+  archShape.lineTo(3.02, 0); archShape.lineTo(3.02, 3.02);
+  archShape.quadraticCurveTo(2.85, 3.85, 0, 4.95);
+  archShape.quadraticCurveTo(-2.85, 3.85, -3.02, 3.02); archShape.lineTo(-3.02, 0);
+  const archGeometry = geo(new THREE.ExtrudeGeometry(archShape, { depth: 0.6, bevelEnabled: true, bevelThickness: 0.07, bevelSize: 0.07, bevelSegments: 2, steps: 1, curveSegments: 10 }));
   function arch(z, tint = M.bronze) {
-    for (const x of [-3.25, 3.25]) {
-      batch(G.box, M.stone2, x, 1.9, z, 0.55, 3.8, 0.65);
-      batch(G.box, tint, x, 2.8, z, 0.63, 0.12, 0.72);
+    part(scene, archGeometry, M.stone2, 0, 0, z - 0.3);
+    for (const x of [-3.4, 3.4]) {
+      batch(G.box, M.stone, x, 0.24, z, 0.95, 0.48, 1.05);
+      batch(G.box, tint, x, 2.85, z, 0.7, 0.12, 0.82);
+      batch(G.cone, M.stone2, x, 4.48, z, 0.3, 0.95, 0.3);
     }
-    batch(G.box, M.stone, 0, 3.75, z, 7.2, 0.45, 0.75);
-    batch(G.box, tint, 0, 3.95, z, 7.6, 0.12, 0.84);
-    batch(G.box, M.iron, 0, 3.47, z, 0.8, 0.35, 0.22);
+    part(scene, G.box, tint, 0, 5.25, z + 0.37, 0.38, 0.62, 0.13, 0, 0, Math.PI / 4);
   }
   arch(-8); arch(-23, M.gold);
   sign('阿福・腕力試煉', 'THE UNDEFEATED ARM', -5.3, 2.5, -5.4, 4.2);
@@ -290,30 +307,11 @@ export function createScene({ container } = {}) {
     return g;
   }
   for (const obstacle of WORLD.obstacles || []) {
-    const { x, z, width: w, depth: d } = obstacle;
-    if (z > -8) {
-      batch(G.box, M.iron, x, 1.15, z, w, 2.3, d);
-      for (let row = 0; row < 4; row++) {
-        batch(G.box, M.stone2, x, 0.37 + row * 0.52, z + d / 2 + 0.02, w - 0.15, 0.44, 0.08);
-        batch(G.box, M.bronze, x, 0.4 + row * 0.52, z + d / 2 + 0.09, 0.48, 0.055, 0.07);
-      }
-      paperStack(x, 2.33, z, 5);
-    } else if (z > -25) {
-      batch(G.box, M.wood, x, 1.13, z, w, 0.25, d);
-      for (const dx of [-w * 0.35, w * 0.35]) batch(G.box, M.iron, x + dx, 0.5, z, 0.16, 1, d * 0.7);
-      paperStack(x - 0.6, 1.3, z, 5); paperStack(x + 0.6, 1.3, z + 0.3, 3);
-      batch(G.box, M.black, x + 0.2, 1.36, z - 0.35, 0.6, 0.07, 0.4);
-      batch(G.box, M.iron, x + 0.2, 1.65, z - 0.5, 0.65, 0.48, 0.08);
-    } else {
-      batch(G.box, M.stone, x, 0.5, z, w, 1, d);
-      batch(G.box, M.iron, x, 1.75, z - d * 0.3, w * 0.75, 3.5, 0.7);
-      batch(G.box, M.bronze, x, 3.35, z, w * 0.9, 0.45, d * 0.8);
-      batch(G.cylinder, M.gold, x, 2.45, z + 0.65, 0.55, 1.5, 0.55);
-      batch(G.cylinder, M.red, x, 1.6, z + 0.65, 0.83, 0.22, 0.83);
-      const cog = gear(scene, x, 2.25, z + d / 2 + 0.1, 0.7);
-      rotating.push({ object: cog, speed: x < 0 ? 0.1 : -0.12 });
-    }
+    const { x, z, width, depth } = obstacle;
+    const kind = z > -8 ? 0 : z > -25 ? 1 : 2;
+    artLayer.addScenery({ kind, x, z, width, depth, height: kind === 2 ? 5.4 : kind === 1 ? 4.5 : 3.8 });
   }
+  for (const z of [-3.8, -17.5, -36.2]) artLayer.addScenery({ kind: 3, x: -11.7, z, width: 1.4, depth: 1.2, height: 5.8 });
   // The safe return circle and the executive's gold pie share a visual language.
   plate(scene, M.rune, 0, 0.015, 11, 2.2, true);
   const returnRing = plate(scene, M.playerRing, 0, 0.018, 11, 1.6, true);
@@ -656,6 +654,7 @@ export function createScene({ container } = {}) {
   function prune(map, live, disposeMaterial = false) {
     for (const [id, model] of map) {
       if (live.has(id)) continue;
+      if (model.art) artLayer.release(model);
       scene.remove(model.root);
       if (disposeMaterial && model.material) { model.material.dispose(); materials.delete(model.material); }
       if (model.extraMaterials) for (const mat of model.extraMaterials) { mat.dispose(); materials.delete(mat); }
@@ -687,7 +686,7 @@ export function createScene({ container } = {}) {
     if (Math.abs(nextView - viewSize) > 0.001) { viewSize = nextView; updateProjection(); }
     camera.position.copy(cameraTarget).add(cameraOffset); camera.lookAt(cameraTarget); camera.updateMatrixWorld();
 
-    if (!playerModel) playerModel = engineer();
+    if (!playerModel) playerModel = artLayer.attach(engineer(), 'jack');
     const p = state.player, pAngle = Number(p.angle) || 0;
     const carryingMug = state.equipped?.weapon?.baseId === 'mug';
     playerModel.weapons.keyboard.visible = !carryingMug;
@@ -706,6 +705,7 @@ export function createScene({ container } = {}) {
     playerModel.root.visible = state.status !== 'dead' || Math.sin(time * 4) > -0.4;
     if (p.invulnerable > 0 && state.status === 'playing') playerModel.body.visible = Math.sin(time * 44) > -0.6;
     else playerModel.body.visible = true;
+    artLayer.updateActor(playerModel, { angle: pAngle, moved: playerMoved, attack, hp: p.hp, dt: elapsed, weapon: carryingMug ? 'mug' : 'keyboard', invulnerable: p.invulnerable > 0 && state.status === 'playing' });
     updateHealth(playerModel, p.hp, p.maxHp || p.hp, !ready && Number(p.hp) < Number(p.maxHp));
 
     const liveEnemies = new Set(), liveWarnings = new Set();
@@ -713,7 +713,7 @@ export function createScene({ container } = {}) {
       if (!(enemy.hp > 0)) continue;
       liveEnemies.add(enemy.id);
       let model = actors.get(enemy.id);
-      if (!model) { model = makeEnemy(enemy); actors.set(enemy.id, model); }
+      if (!model) { model = makeEnemy(enemy); artLayer.attach(model, model.kind === 'boss' ? enemy.bossId || 'wing' : model.kind); actors.set(enemy.id, model); }
       const moved = Math.hypot(enemy.x - model.lastX, enemy.z - model.lastZ);
       model.phase += moved * (model.kind === 'bug' ? 7 : 4);
       model.root.position.set(enemy.x, 0, enemy.z); model.root.rotation.y = -(Number(enemy.angle) || 0);
@@ -730,7 +730,10 @@ export function createScene({ container } = {}) {
       model.wings.forEach((wing, i) => { wing.rotation.z = Math.sin(time * 1.4) * 0.04 * (i ? 1 : -1); });
       if (model.magic) model.magic.rotation.y = time * 0.6;
       model.lastX = enemy.x; model.lastZ = enemy.z;
-      updateHealth(model, enemy.hp, enemy.maxHp, !ready && (enemy.hp < enemy.maxHp || enemy.phase === 'windup' || model.kind === 'boss'));
+      artLayer.updateActor(model, { angle: Number(enemy.angle) || 0, moved, hp: enemy.hp, dt: elapsed, phase: enemy.phase, enraged: enemy.enraged });
+      // The persistent boss HUD owns its name/health; duplicate labels would
+      // cover the portrait art, especially on a short phone viewport.
+      updateHealth(model, enemy.hp, enemy.maxHp, !ready && model.kind !== 'boss' && (enemy.hp < enemy.maxHp || enemy.phase === 'windup'));
       const telegraphs = enemy.telegraphs?.length ? enemy.telegraphs : enemy.telegraph ? [enemy.telegraph] : [];
       for (let warningIndex = 0; warningIndex < telegraphs.length; warningIndex++) {
         const tel = telegraphs[warningIndex], warningId = `${enemy.id}:${warningIndex}`;
@@ -806,6 +809,8 @@ export function createScene({ container } = {}) {
     }
     prune(particles, liveEffects, true);
     flames.forEach(flame => {
+      flame.object.visible = !artLayer.hasFlames();
+      flame.glow.visible = !artLayer.hasFlames();
       const flicker = 0.92 + Math.sin(time * 7 + flame.offset) * 0.09 + Math.sin(time * 13 + flame.offset) * 0.045;
       flame.object.scale.set(1 + Math.sin(time * 5 + flame.offset) * 0.08, flicker, 1);
     });
@@ -819,6 +824,7 @@ export function createScene({ container } = {}) {
       gate.opened.visible = !spec.locked;
     }
     returnRing.rotation.z = time * 0.2;
+    artLayer.update(state, elapsed);
     renderer.render(scene, camera);
   }
   function updateProjection() {
@@ -855,6 +861,7 @@ export function createScene({ container } = {}) {
       destroyed = true; observer.disconnect();
       canvas.removeEventListener('webglcontextlost', onContextLost);
       canvas.removeEventListener('webglcontextrestored', onContextRestored);
+      artLayer.destroy();
       geometries.forEach(g => g.dispose()); materials.forEach(m => m.dispose()); textures.forEach(t => t.dispose());
       actors.clear(); loot.clear(); warnings.clear(); missiles.clear(); particles.clear(); gates.clear(); bossLabels.clear(); scene.clear();
       renderer.dispose(); canvas.remove();
