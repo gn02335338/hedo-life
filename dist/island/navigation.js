@@ -1,3 +1,5 @@
+import { ISLAND_CAST } from './cast.js';
+
 // Shared world-space layout and deterministic, renderer-independent walking rules.
 export const LAYOUT = [
   { id: 'lobby', x: 0, z: 0, color: '#df7756', label: [0, 1.7, 3.45] },
@@ -29,6 +31,26 @@ export const NPC_POSITIONS = Object.fromEntries(Object.entries({
   hr: [1.55, 1.65], finance: [1.25, 2.45], cafe: [2.65, 1.45],
   plaza: [2.4, 1.6], court: [2.3, 2.55], harbor: [1.35, 2.35],
 }).map(([id, [x, z]]) => [id, world(id, x, z)]));
+
+// Authored standing places for the complete public cast. Existing guides retain
+// their positions; new colleagues use courtyards and back paths, leaving all
+// approved resident slots and bridge approaches free.
+const castLocalPositions = {
+  wing:[2.6,1.9], spencer:[-1.25,-2.75], rick:[.5,-2.65],
+  jack:[2.3,2.7], sam:[-1.25,-2.85], professor:[.05,-3.15], princess:[1.7,1.15],
+  meimei:[2,2.6], helen:[-.85,1.95], joyce:[.9,1.9], hester:[-.8,-3.15],
+  hope:[1.55,1.65], jenjen:[-1.3,-2.85], zoe:[.7,-2.65],
+  janet:[1.25,2.45], sophie:[-1.25,-2.65], erich:[.1,-3.2],
+  jonathan:[2.65,1.45], annie_yu:[-1.2,-2.7], alice:[.1,-3.15],
+  captain:[2.4,1.6], simon:[-.9,-3.35], action:[-.5,1.8],
+  owen:[2.3,2.55], sonny:[-1.25,-.8,1.23], kind:[1.1,.4,1.23],
+  cindy:[1.35,2.35], james:[-.8,-2.6], johnny:[.4,-2.15],
+};
+export const CAST_POSITIONS = Object.freeze(Object.fromEntries(ISLAND_CAST.map(({id,districtId})=>{
+  const [x,z,y=WALK_HEIGHT]=castLocalPositions[id];
+  return [id,Object.freeze({...world(districtId,x,z),y})];
+})));
+export const CAST_RADIUS = .21;
 
 function rectangle(x, z, width, depth, rotation = 0) {
   const cos = Math.cos(rotation), sin = Math.sin(rotation);
@@ -112,7 +134,7 @@ const obstacles = [
   { id: 'harbor', x: 1.65, z: .05, width: 1.45, depth: 1.35, rotation: -.15 },
   ...[-2.15, 2.15].map(x => ({ id: 'court', x: x * Math.cos(-.06), z: -.3 - x * Math.sin(-.06), radius: .055 })),
 ].map(obstacle => ({ ...obstacle, ...world(obstacle.id, obstacle.x, obstacle.z) }));
-for (const position of Object.values(NPC_POSITIONS)) obstacles.push({ ...position, radius: .21 });
+for (const position of Object.values(CAST_POSITIONS)) obstacles.push({ ...position, radius: CAST_RADIUS });
 
 function segmentDistanceSquared(point, a, b) {
   const dx = b.x - a.x, dz = b.z - a.z;
@@ -162,8 +184,9 @@ export function movePlayer(position, input, dt, speed = 4.5, extraObstacles = []
 }
 
 /** Targets: { key, position:{x,z}, radius?, exitRadius?, ...metadata }.
- * Keep the current key until its exit radius is exceeded; otherwise choose the
- * nearest target within its enter radius. Defaults are 1.5 / 1.9 world units.
+ * Keep the current key through small distance changes. A visitor deliberately
+ * approaching a much closer target can switch before leaving the old radius,
+ * which keeps conversations reachable in a busy courtyard. Defaults: 1.5 / 1.9.
  */
 export function nearestInteraction(position, targets, currentId = null) {
   if (!finitePoint(position) || !Array.isArray(targets)) return null;
@@ -172,15 +195,17 @@ export function nearestInteraction(position, targets, currentId = null) {
   const distanceTo = target => { const point = target.position || target; return Math.hypot(point.x - position.x, point.z - position.z); };
   const enterRadius = target => Number.isFinite(target.radius) && target.radius >= 0 ? target.radius : 1.5;
   const current = currentId == null ? null : valid.find(target => keyOf(target) === currentId);
-  if (current) {
-    const enter = enterRadius(current);
-    const exit = Number.isFinite(current.exitRadius) ? Math.max(enter, current.exitRadius) : enter + .4;
-    if (distanceTo(current) <= exit) return current;
-  }
   let nearest = null, nearestDistance = Infinity;
   for (const target of valid) {
     const distance = distanceTo(target);
     if (distance <= enterRadius(target) && distance < nearestDistance) { nearest = target; nearestDistance = distance; }
+  }
+  if (current) {
+    const enter = enterRadius(current);
+    const exit = Number.isFinite(current.exitRadius) ? Math.max(enter, current.exitRadius) : enter + .4;
+    const currentDistance = distanceTo(current);
+    const clearlyCloser = nearest && nearestDistance <= .85 && currentDistance - nearestDistance >= .3;
+    if (currentDistance <= exit && !clearlyCloser) return current;
   }
   return nearest;
 }

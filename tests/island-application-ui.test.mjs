@@ -34,7 +34,7 @@ class Element extends Surface {
   scrollIntoView() {}
 }
 
-function fixture(t, fetcher) {
+function fixture(t, fetcher, { onChange = () => {} } = {}) {
   const document = new Surface(), window = new Surface(), allNodes = [], ids = new Map(), calls = [], rosterUpdates = [];
   document.visibilityState = 'visible';
   document.createElement = tag => { const node = new Element(tag, document); allNodes.push(node); return node; };
@@ -64,7 +64,7 @@ function fixture(t, fetcher) {
     for (const [key, descriptor] of prior) { if (descriptor) Object.defineProperty(globalThis, key, descriptor); else delete globalThis[key]; }
   });
   const storage = { getItem: key => key === 'hedo-anonymous-v1' ? owner : null, setItem() {} };
-  const ui = bindApplications({ storage, openDialog: dialog => { dialog.open = true; }, closeDialog: dialog => { dialog.open = false; }, onResidents: residents => rosterUpdates.push(residents), onMeet() {}, stopTour() {} });
+  const ui = bindApplications({ storage, openDialog: dialog => { dialog.open = true; }, closeDialog: dialog => { dialog.open = false; }, onResidents: residents => rosterUpdates.push(residents), onMeet() {}, stopTour() {}, onChange });
   const fill = () => { for (const [key, value] of Object.entries(fields)) if (key !== 'outfit') controls.get(key).value = value; controls.get('consent').checked = true; };
   const clickHistory = text => {
     const button = ids.get('application-history').querySelectorAll('button').find(node => node.textContent.includes(text));
@@ -137,4 +137,49 @@ test('a failed credential read cannot overwrite an existing anonymous career ide
   assert.equal(stored, owner);
   assert.equal(writes, 0);
   assert.equal(requests, 0);
+});
+
+test('summary refresh runs only after confirmed submission and withdrawal, not owner reads or failed receipts', async t => {
+  let changes = 0, postAttempts = 0, deleteAttempts = 0, saved = null;
+  const f = fixture(t, async (path, options) => {
+    if (path.endsWith('/residents')) return Response.json({ version: 1, residents: [] });
+    if (path.endsWith('/config')) return Response.json({ enabled: true });
+    if (path.endsWith('/mine')) return Response.json({ applications: saved ? [saved] : [] });
+    if (path === '/api/player') return Response.json({});
+    if (path === '/api/island/applications') {
+      postAttempts++;
+      if (postAttempts === 1) return Response.json({ message: '暫時無法確認' }, { status: 503 });
+      const body = JSON.parse(options.body);
+      saved = application({ ...body, id: body.submissionId, status: 'pending', reviewedAt: null });
+      return Response.json({ application: saved });
+    }
+    if (options.method === 'DELETE') {
+      deleteAttempts++;
+      if (deleteAttempts === 1) return Response.json({ application: saved });
+      saved = { ...saved, status: 'withdrawn' };
+      return Response.json({ application: saved });
+    }
+    throw new Error(`unexpected route ${path}`);
+  }, { onChange: () => { changes++; } });
+  await f.open(); assert.equal(changes, 0);
+  f.fill(); await f.form.dispatch('submit'); assert.equal(changes, 0, 'an uncertain submission receipt must not claim a change');
+  await f.form.dispatch('submit'); assert.equal(changes, 1); assert.match(f.ids.get('application-message').textContent, /申請已送達/);
+  await f.ids.get('application-refresh').dispatch('click'); await tick(); assert.equal(changes, 1, 'reading existing owner history is not a mutation');
+  await f.clickHistory('撤回這份申請'); await f.clickHistory('確認撤回'); assert.equal(changes, 1, 'a non-withdrawn receipt must not trigger success');
+  await f.clickHistory('確認撤回'); assert.equal(changes, 2); assert.match(f.ids.get('application-message').textContent, /已撤回/);
+});
+
+test('confirmed withdrawal arriving after page teardown does not refresh the summary or repopulate private content', async t => {
+  let changes = 0; const pending = deferred();
+  const f = fixture(t, async (path, options) => {
+    if (path.endsWith('/residents')) return Response.json({ version: 1, residents: [] });
+    if (path.endsWith('/config')) return Response.json({ enabled: true });
+    if (path.endsWith('/mine')) return Response.json({ applications: [application()] });
+    if (options.method === 'DELETE') return pending.promise;
+    throw new Error(`unexpected route ${path}`);
+  }, { onChange: () => { changes++; } });
+  await f.open(); await f.clickHistory('撤回申請並下島');
+  const withdrawal = f.clickHistory('確認撤回'); await f.window.dispatch('pagehide');
+  pending.resolve(Response.json({ application: application({ status: 'withdrawn' }) })); await withdrawal;
+  assert.equal(changes, 0); assert.equal(f.ids.get('application-history').textContent, ''); assert.equal(f.ids.get('application-message').textContent, '');
 });

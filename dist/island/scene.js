@@ -8,11 +8,11 @@ import { OrbitControls } from './vendor/OrbitControls.js';
 import { mergeGeometries } from './vendor/BufferGeometryUtils.js';
 
 import { displayPersona } from '../persona.js';
-import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, NPC_POSITIONS, PLAYER_RADIUS, isWalkable, movePlayer, nearestInteraction } from './navigation.js';
+import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, CAST_POSITIONS, PLAYER_RADIUS, isWalkable, movePlayer, nearestInteraction } from './navigation.js';
 
 import { OUTFITS, RESIDENT_POSITIONS, normalizeResidents, residentObstacles } from './residents.js';
 
-const COLLEAGUES = Object.freeze({ lobby:'wing', lab:'jack', meeting:'meimei', hr:'hope', finance:'janet', cafe:'jonathan', plaza:'captain', court:'owen', harbor:'cindy' });
+import { ISLAND_CAST } from './cast.js';
 
 export async function createIslandScene({ container, districts = [], onSelect = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {} }) {
   if (!container) throw new Error('Missing island container');
@@ -571,7 +571,9 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     const treePositions = config.id === 'court' ? [[-2.9,-2.1],[2.8,-2.2],[3.25,.6]] : [[-2.9,-1.55],[2.65,-2],[-2.9,.1],[1.0,-3.1],[3.0,.85]];
     for (let i = 0; i < treePositions.length; i++) {
       const [x,z] = treePositions[i];
-      tree(tile, x + (random()-.5)*.24, z, .65 + random()*.38, i % 3 === 0 ? 'pine' : 'round');
+      const tx=x+(random()-.5)*.24;
+      if(Object.values(CAST_POSITIONS).some(point=>Math.hypot(point.x-config.x-tx,point.z-config.z-z)<.9))continue;
+      tree(tile, tx, z, .65 + random()*.38, i % 3 === 0 ? 'pine' : 'round');
     }
     shrub(tile, -2.65, 2.45, .37); shrub(tile, 2.8, 2.3, .32);
     flowers(tile, -1.7, 3.1, index % 2 ? palette.gold : palette.pink);
@@ -655,11 +657,15 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       ball(arm, skin, 0, -.21, 0, .052);
       arms.push(arm);
     }
-    if(options.accessory === 'bag') box(body,palette.wood,.25,.28,0,.17,.22,.08);
-    if(options.accessory === 'coffee') { cylinder(body,palette.cream,.22,.39,.12,.055,.15,8); cylinder(body,palette.woodDark,.22,.47,.12,.046,.012,8); }
-    if(options.accessory === 'clipboard') box(body,palette.cream,.22,.4,.06,.16,.24,.035,-.2);
-    if(options.accessory === 'glasses') { box(body,palette.navy,0,.79,.15,.25,.065,.025); box(body,palette.gold,0,.8,.17,.027,.025,.02); }
-    if(options.accessory === 'cap') { cylinder(body,palette.white,0,.9,0,.16,.12,10); box(body,palette.white,0,.86,.14,.24,.025,.16); }
+    const accessories=options.accessories||[options.accessory];
+    if(options.hairStyle==='long')ball(body,mat(options.hair||'#5c4337'),0,.69,-.09,.15,1,1.3,.65);
+    if(accessories.includes('bag')) box(body,palette.wood,.25,.28,0,.17,.22,.08);
+    if(accessories.includes('coffee')) { cylinder(body,palette.cream,.22,.39,.12,.055,.15,8); cylinder(body,palette.woodDark,.22,.47,.12,.046,.012,8); }
+    if(accessories.includes('clipboard')) box(body,palette.cream,.22,.4,.06,.16,.24,.035,-.2);
+    if(accessories.includes('glasses')) { box(body,palette.navy,0,.79,.15,.25,.065,.025); box(body,palette.gold,0,.8,.17,.027,.025,.02); }
+    if(accessories.includes('cap')) { cylinder(body,palette.white,0,.9,0,.16,.12,10); box(body,palette.white,0,.86,.14,.24,.025,.16); }
+    if(accessories.includes('gamepad')){box(body,palette.navy,0,.43,.22,.31,.13,.08);ball(body,palette.brick,.09,.46,.27,.025);box(body,palette.cream,-.08,.46,.27,.07,.025,.02);}
+    if(accessories.includes('ribbon')){ball(body,palette.pink,.13,.86,.05,.065,1,.5,.6);ball(body,palette.pink,.21,.86,.05,.065,1,.5,.6);}
     if(options.player) {
       // A bright hiking jacket, brimmed hat and red pack identify the visitor.
       cylinder(body,palette.cream,0,.94,-.005,.16,.14,10);
@@ -672,32 +678,48 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     if(!options.player) people.push(person);
     return person;
   }
-  const colleagueLooks = [
-    {shirt:palette.navy,accessory:'bag',hair:'#4a4540'},
-    {shirt:palette.teal,accessory:'glasses',hair:'#3d4142'},
-    {shirt:palette.brick,accessory:'clipboard',hair:'#574032'},
-    {shirt:palette.lilac,accessory:'clipboard',hair:'#5d4337'},
-    {shirt:palette.blue,accessory:'bag',hair:'#6c5142'},
-    {shirt:palette.white,accessory:'coffee',hair:'#3d4142'},
-    {shirt:palette.pink,accessory:'cap',hair:'#624438'},
-    {shirt:palette.navy,accessory:'glasses',hair:'#3d4142'},
-    {shirt:palette.gold,accessory:'clipboard',hair:'#73503f'},
-  ];
-  LAYOUT.forEach((config,index) => {
-    const id = COLLEAGUES[config.id];
-    const person = makePerson(index,config,colleagueLooks[index]);
-    person.id=id; person.fixed=true; person.home=NPC_POSITIONS[config.id];
+  const colleagueLooks = {
+    wing:{shirt:palette.navy,accessory:'bag',hair:'#4a4540'},
+    spencer:{shirt:palette.charcoal,accessory:'glasses',hair:'#b7b0a3'},
+    rick:{shirt:palette.red,accessory:'cap',hair:'#4c403b'},
+    jack:{shirt:palette.teal,accessory:'glasses',hair:'#3d4142'},
+    sam:{shirt:palette.blue,accessory:'bag',hair:'#3c4746'},
+    professor:{shirt:palette.cream,accessories:['clipboard','glasses'],hair:'#c1b6a0'},
+    princess:{shirt:palette.lilac,accessories:['coffee','ribbon'],hair:'#6d4838',hairStyle:'long'},
+    meimei:{shirt:palette.brick,accessory:'clipboard',hair:'#574032'},
+    helen:{shirt:palette.lilac,accessory:'glasses',hair:'#49382f',hairStyle:'long'},
+    joyce:{shirt:palette.gold,accessory:'glasses',hair:'#483a32'},
+    hester:{shirt:palette.brick,accessory:'bag',hair:'#543c32',hairStyle:'long'},
+    hope:{shirt:palette.lilac,accessory:'clipboard',hair:'#5d4337'},
+    jenjen:{shirt:palette.lilac,accessory:'bag',hair:'#79543e',hairStyle:'long'},
+    zoe:{shirt:palette.teal,accessories:['clipboard','cap'],hair:'#59473b'},
+    janet:{shirt:palette.blue,accessory:'bag',hair:'#6c5142'},
+    sophie:{shirt:palette.brick,accessory:'clipboard',hair:'#704736',hairStyle:'long'},
+    erich:{shirt:palette.navy,accessories:['clipboard','glasses'],hair:'#9e9b91'},
+    jonathan:{shirt:palette.white,accessory:'coffee',hair:'#3d4142'},
+    annie_yu:{shirt:palette.pink,accessory:'bag',hair:'#493c34',hairStyle:'long'},
+    alice:{shirt:palette.pink,accessory:'gamepad',hair:'#463b37',hairStyle:'long'},
+    captain:{shirt:palette.pink,accessory:'cap',hair:'#624438'},
+    simon:{shirt:palette.cream,accessories:['cap','clipboard'],hair:'#815a42'},
+    action:{shirt:palette.navy,accessory:'bag',hair:'#aaa495'},
+    owen:{shirt:palette.navy,accessory:'glasses',hair:'#3d4142'},
+    sonny:{shirt:palette.teal,accessory:'coffee',hair:'#3b4242'},
+    kind:{shirt:palette.brick,accessory:'coffee',hair:'#784b39'},
+    cindy:{shirt:palette.gold,accessory:'clipboard',hair:'#73503f'},
+    james:{shirt:palette.blue,accessory:'coffee',hair:'#74604e'},
+    johnny:{shirt:palette.gold,accessory:'bag',hair:'#424243'},
+  };
+  for(const config of LAYOUT)interactionTargets.push({kind:'building',id:config.id,districtId:config.id,key:`building:${config.id}`,position:DISTRICT_ENTRANCES[config.id],radius:1.25});
+  ISLAND_CAST.forEach(({id,districtId},index) => {
+    const config=LAYOUT.find(district=>district.id===districtId);
+    const person = makePerson(index,config,colleagueLooks[id]);
+    person.id=id;person.fixed=true;person.home=CAST_POSITIONS[id];
     person.object.scale.setScalar(1.18);
-    person.object.position.set(person.home.x,WALK_HEIGHT,person.home.z);
+    person.object.position.set(person.home.x,person.home.y,person.home.z);
     person.object.rotation.y=-.25;
     const label=document.createElement('div');label.className='map-npc-label';label.textContent=displayPersona(id).name;label.setAttribute('aria-hidden','true');label.style.pointerEvents='none';label.style.display='none';overlay.append(label);
-    person.label=label;
-    colleagues.push(person);
-    interactionTargets.push({kind:'building',id:config.id,districtId:config.id,key:`building:${config.id}`,position:DISTRICT_ENTRANCES[config.id],radius:1.25});
-    interactionTargets.push({kind:'person',id,districtId:config.id,key:`person:${id}`,position:person.home,radius:1.4});
-    // The guide is stationary and approachable; a second tiny passer-by keeps
-    // each district lively without moving its interaction target.
-    makePerson(index+11,config,{shirt:from([palette.white,palette.teal,palette.brick,palette.lilac])});
+    person.label=label;colleagues.push(person);
+    interactionTargets.push({kind:'person',id,districtId,key:`person:${id}`,position:person.home,radius:1.4});
   });
   const player=makePerson(100,LAYOUT[0],{player:true,shirt:palette.gold,skin:'#e9b48c',hair:'#5c4337'});
   player.object.scale.setScalar(1.42);
@@ -950,16 +972,26 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       }
     }
   }
-  function positionOverlay(element,position,visible=true,avoidPlayer=false) {
+  function positionOverlay(element,position,visible=true,avoidPlayer=false,placements=null) {
     const projected=position.clone().project(camera);
     visible=visible&&projected.z>-1&&projected.z<1&&projected.x>-1.1&&projected.x<1.1&&projected.y>-1.1&&projected.y<1.1;
     element.style.display=visible?'':'none';
     if(visible){
-      const x=(projected.x*.5+.5)*width;let y=(-projected.y*.5+.5)*height;
+      let x=(projected.x*.5+.5)*width,y=(-projected.y*.5+.5)*height;
       if(avoidPlayer){
         const playerLabel=new THREE.Vector3(playerPosition.x,WALK_HEIGHT+1.85,playerPosition.z).project(camera);
         const px=(playerLabel.x*.5+.5)*width,py=(-playerLabel.y*.5+.5)*height;
         if(Math.abs(x-px)<Math.min(110,element.textContent.length*5+30)&&Math.abs(y-py)<30)y=py-36;
+      }
+      if(placements){
+        const halfWidth=(element.offsetWidth||element.textContent.length*12+20)/2;
+        x=THREE.MathUtils.clamp(x,halfWidth+8,Math.max(halfWidth+8,width-halfWidth-8));
+        const offset=[0,-28,28,-56,56,-84,84].find(offset=>{
+          const top=y+offset-13,bottom=y+offset+13;
+          return top>4&&bottom<height-4&&!placements.some(rect=>x+halfWidth+3>rect.left&&x-halfWidth-3<rect.right&&bottom>rect.top&&top<rect.bottom);
+        });
+        if(offset===undefined){element.style.display='none';return;}
+        y+=offset;placements.push({left:x-halfWidth,right:x+halfWidth,top:y-13,bottom:y+13});
       }
       element.style.transform=`translate(${x}px, ${y}px) translate(-50%, -50%)`;
     }
@@ -1024,8 +1056,13 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       if(visible)item.element.style.transform=`translate(${(v.x*.5+.5)*width}px, ${(-v.y*.5+.5)*height}px) translate(-50%, -50%)`;
     }
     if(roaming){
-      positionOverlay(playerMarker,new THREE.Vector3(playerPosition.x,WALK_HEIGHT+1.85,playerPosition.z));
-      for(const colleague of people)if(colleague.label&&colleague.object.visible)positionOverlay(colleague.label,new THREE.Vector3(colleague.home.x,WALK_HEIGHT+1.52,colleague.home.z),Math.hypot(colleague.home.x-playerPosition.x,colleague.home.z-playerPosition.z)<3.8,true);
+      const markerPosition=new THREE.Vector3(playerPosition.x,WALK_HEIGHT+1.85,playerPosition.z);
+      positionOverlay(playerMarker,markerPosition);
+      const marker=markerPosition.clone().project(camera),markerX=(marker.x*.5+.5)*width,markerY=(-marker.y*.5+.5)*height;
+      const placements=[{left:markerX-18,right:markerX+18,top:markerY-18,bottom:markerY+18}];
+      const distanceToPlayer=person=>Math.hypot(person.home.x-playerPosition.x,person.home.z-playerPosition.z);
+      const namedPeople=people.filter(person=>person.label&&person.object.visible).sort((a,b)=>distanceToPlayer(a)-distanceToPlayer(b));
+      for(const colleague of namedPeople)positionOverlay(colleague.label,new THREE.Vector3(colleague.home.x,(colleague.home.y??WALK_HEIGHT)+1.52,colleague.home.z),distanceToPlayer(colleague)<3.8,true,placements);
     }
     renderer.render(scene,camera);
     renderedOnce=true;needsRender=false;

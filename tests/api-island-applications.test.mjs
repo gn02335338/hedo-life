@@ -56,6 +56,33 @@ const submit = (h, player, body = payload(), extra = {}) => h.call('/api/island/
 const review = (h, auth, id, decision = 'approve', note = '') => h.call(`/api/admin/island-applications/${id}/review`, { method: 'POST', ...auth, body: { decision, note } });
 const noStore = r => { assert.match(r.headers.get('Cache-Control'), /private.*no-store/); assert.equal(r.headers.get('Access-Control-Allow-Origin'), null); };
 
+test('public application summary counts only pending requests through every transition without exposing records', async t => {
+  const h = harness(t), endpoint = '/api/island/application-summary';
+  const count = async expected => {
+    const r = await h.call(endpoint, { origin: false }); assert.equal(r.status, 200); noStore(r);
+    assert.equal(r.headers.get('Cross-Origin-Resource-Policy'), 'same-origin');
+    assert.deepEqual(await r.json(), { pending: expected }, 'the complete public response is one scalar count');
+  };
+  await count(0);
+  const people = [];
+  for (let i = 0; i < 4; i++) {
+    const player = await h.player(), body = payload({ nickname: `測試島民${i}` });
+    assert.equal((await submit(h, player, body)).status, 202); people.push({ player, body }); await count(i + 1);
+  }
+  const auth = await h.login();
+  assert.equal((await review(h, auth, people[0].body.submissionId, 'approve', '審核測試備註')).status, 200); await count(3);
+  assert.equal((await review(h, auth, people[1].body.submissionId, 'reject', '不公開的測試備註')).status, 200); await count(2);
+  assert.equal((await h.call(`/api/island/applications/${people[2].body.submissionId}`, { method: 'DELETE', token: people[2].player.token })).status, 200); await count(1);
+  assert.equal((await review(h, auth, people[0].body.submissionId, 'revoke', '撤銷已批准的測試申請')).status, 200); await count(1);
+  h.reopen(); await count(1);
+  assert.equal((await h.call(`/api/island/applications/${people[3].body.submissionId}`, { method: 'DELETE', token: people[3].player.token })).status, 200); await count(0);
+  for (const options of [{ origin: 'https://foreign.example' }, { site: 'cross-site' }]) {
+    const r = await h.call(endpoint, options); assert.equal(r.status, 403); noStore(r); assert.doesNotMatch(await r.text(), /測試島民|測試備註|申請理由/);
+  }
+  assert.equal((await h.call(endpoint + '?status=approved')).status, 400);
+  assert.equal((await h.call(endpoint, { method: 'POST', body: {} })).status, 405);
+});
+
 test('application validation normalizes plain text and rejects unsafe, contact, extra and oversized fields', () => {
   const result = validateIslandApplication(payload({ nickname: '  ＡＢ禾  ' })); assert.equal(result.nickname, 'AB禾');
   for (const changes of [{ nickname: '禾' }, { nickname: '禾'.repeat(17) }, { greeting: 'x'.repeat(81) }, { introduction: '短' }, { reason: 'x'.repeat(501) }, { consent: false }, { consent: 'true' }, { version: 2 }, { submissionId: 'fake' }, { districtId: 'secret' }, { outfit: 'custom' }, { private: 'extra' }]) assert.throws(() => validateIslandApplication(payload(changes)), { status: 400 });

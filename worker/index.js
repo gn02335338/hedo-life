@@ -346,6 +346,10 @@ export class HedoArchive extends DurableObject {
         const params = new URL(request.url).searchParams;
         if ([...params.keys()].length) throw new ApiError(400, 'invalid_island_query', '上島端點不接受額外查詢欄位。');
         if (path === '/api/island/config' && request.method === 'GET') return json(this.islandStore().config());
+        if (path === '/api/island/application-summary' && request.method === 'GET') {
+          assertSameOrigin(request);
+          return json(this.islandStore().publicSummary(), 200, { 'Cross-Origin-Resource-Policy': 'same-origin' });
+        }
         if (path === '/api/island/residents' && request.method === 'GET') return json(this.islandStore().residents());
         if (path === '/api/island/applications' && request.method === 'POST') {
           const playerId = await this.authenticate(request), payload = validateIslandApplication(await readJson(request, { maxBytes: 8192 }));
@@ -355,7 +359,7 @@ export class HedoArchive extends DurableObject {
         if (/^\/api\/island\/applications\/[^/]+$/.test(path) && path !== '/api/island/applications/mine' && request.method === 'DELETE') {
           return json(this.islandStore().withdraw(await this.authenticate(request), path.slice('/api/island/applications/'.length)));
         }
-        if (['/api/island/config', '/api/island/residents', '/api/island/applications', '/api/island/applications/mine'].includes(path)
+        if (['/api/island/config', '/api/island/application-summary', '/api/island/residents', '/api/island/applications', '/api/island/applications/mine'].includes(path)
           || /^\/api\/island\/applications\/[^/]+$/.test(path)) throw new ApiError(405, 'method_not_allowed', '這個端點不接受此操作。');
         throw new ApiError(404, 'not_found', '找不到這個上島端點。');
       }

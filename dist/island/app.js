@@ -4,9 +4,12 @@ import { displayPersona } from '../persona.js';
 import { ENCOUNTERS } from './encounters.js';
 import { bindWalkControls } from './walk-controls.js';
 import { bindApplications, residentAvatar } from './applications.js';
+import { ISLAND_CAST } from './cast.js';
+import { createIslandAdminSummary } from './admin-summary.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
+const castByDistrict = new Map(DISTRICTS.map(d => [d.id, ISLAND_CAST.filter(person => person.districtId === d.id)]));
 const mobile = matchMedia('(max-width: 780px)');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let storage;
@@ -64,6 +67,7 @@ function syncProgress() {
   $('#progress-label').textContent = `${count} / 9`;
   $('#mobile-progress').textContent = `${count} / 9 已踏訪`;
   $('#progress-bar').style.width = `${count / 9 * 100}%`;
+  $('#encounter-count').textContent = `本次散步 · ${encounterChoices.size} / ${ENCOUNTERS.length} 段偶遇`;
   document.querySelectorAll('.map-label').forEach(node => {
     node.classList.toggle('is-visited', progress.visited.includes(node.dataset.district));
     node.setAttribute('aria-pressed', String(node.dataset.district === activeId));
@@ -99,8 +103,8 @@ function renderList() {
   list.replaceChildren();
   const matches = DISTRICTS.filter(d => {
     if (filter === 'visited' && !progress.visited.includes(d.id)) return false;
-    const text = [d.name, d.summary, ...d.tags, ...d.people.map(id => {
-      const p = displayPersona(id); return `${p.name} ${p.title}`;
+    const text = [d.name, d.summary, ...d.tags, ...castByDistrict.get(d.id).map(({ id }) => {
+      const p = displayPersona(id); return `${id} ${p.name} ${p.title}`;
     })].join(' ').toLocaleLowerCase();
     return !query || text.includes(query);
   });
@@ -110,7 +114,7 @@ function renderList() {
     card.dataset.districtLink = d.id;
     card.setAttribute('aria-label', `${d.number} ${d.name}${visited ? '，已踏訪' : ''}`);
     const info = element('span', 'district-info');
-    info.append(element('span', 'district-name', d.name), element('span', 'district-meta', `${d.tags[0]} · ${displayPersona(d.people[0]).name}`));
+    info.append(element('span', 'district-name', d.name), element('span', 'district-meta', `${d.tags[0]} · ${castByDistrict.get(d.id).length} 位同事`));
     card.append(element('span', 'district-number', d.number), districtIcon(d), info, element('span', 'district-arrow', visited ? '✓' : '↗'));
     list.append(card);
   }
@@ -206,7 +210,7 @@ function renderEncounter(target) {
       const option = button('', '', () => {
         if (isPerson) encounterChoices.set(target.id, index);
         else { progress.choices[district.id] = index; save(); }
-        $('#encounter-count').textContent = `本次散步 · ${encounterChoices.size} / 9 段偶遇`;
+        syncProgress();
         renderEncounter(target);
         $('#encounter-response').focus({ preventScroll: true });
         $('#encounter-response').scrollIntoView({ block: 'nearest' });
@@ -241,6 +245,36 @@ function meetResident(resident) {
   if (!residentById.has(resident.id)) return;
   renderEncounter({ kind: 'resident', id: resident.id, districtId: resident.districtId, key: `resident:${resident.id}` });
   openDialog($('#encounter-dialog'));
+}
+function meetColleague(id) {
+  const person = encounterById.get(id);
+  if (!person) return;
+  stopTour();
+  renderEncounter({ kind: 'person', id, districtId: person.districtId, key: `person:${id}` });
+  openDialog($('#encounter-dialog'));
+}
+function renderCastDirectory() {
+  const query = $('#cast-search').value.trim().toLocaleLowerCase();
+  const matches = ISLAND_CAST.filter(({ id, districtId }) => {
+    const p = displayPersona(id);
+    return [id, p.name, p.title, byId.get(districtId).name].join(' ').toLocaleLowerCase().includes(query);
+  });
+  $('#cast-results').textContent = query ? `找到 ${matches.length} 位同事` : `${ISLAND_CAST.length} 位同事，分散在九個地點。`;
+  $('#cast-empty').hidden = matches.length !== 0;
+  const list = $('#cast-list'); list.replaceChildren();
+  for (const { id, districtId } of matches) {
+    const p = displayPersona(id), district = byId.get(districtId);
+    const card = element('article', 'cast-card'); card.dataset.characterId = id;
+    const portrait = element('img'); portrait.src = `/assets/${id}.png`; portrait.alt = ''; portrait.loading = 'lazy';
+    const copy = element('div', 'cast-copy');
+    copy.append(element('h3', '', p.name), element('p', '', p.title), element('span', 'cast-place', `${district.number} · ${district.name}`));
+    const actions = element('div', 'cast-actions');
+    const talk = button('', '聊聊 →', () => { closeDialog($('#cast-dialog')); meetColleague(id); });
+    talk.setAttribute('aria-label', `和${p.name}聊聊`);
+    const locate = button('', '看看位置', () => { closeDialog($('#cast-dialog')); selectDistrict(districtId); });
+    locate.setAttribute('aria-label', `看看${p.name}在${district.name}的位置`);
+    actions.append(talk, locate); card.append(portrait, copy, actions); list.append(card);
+  }
 }
 function updateResidents(residents) {
   residentById = new Map(residents.map(row => [row.id, row]));
@@ -284,9 +318,10 @@ function renderDetail(d) {
   const tags = element('div', 'detail-tags'); d.tags.forEach(t => tags.append(element('span', '', t)));
   hero.append(element('span', 'eyebrow', `${d.number} / ${d.kicker}`), title, tags);
   const people = element('div', 'people-list');
-  for (const id of d.people) {
+  for (const { id } of castByDistrict.get(d.id)) {
     const persona = displayPersona(id);
-    const chip = element('span', 'person-chip'); chip.title = persona.title;
+    const chip = button('person-chip', '', () => meetColleague(id)); chip.title = persona.title;
+    chip.setAttribute('aria-label', `和${persona.name}聊聊`);
     const portrait = element('img'); portrait.src = `/assets/${id}.png`; portrait.alt = ''; portrait.loading = 'lazy';
     chip.append(portrait, element('span', '', persona.name)); people.append(chip);
   }
@@ -397,6 +432,9 @@ walkControls = bindWalkControls({ pad: $('#walk-pad'), canMove: canWalk, onMove:
 $('#roam-toggle').addEventListener('click', () => setRoaming(!roaming));
 $('#interact-button').addEventListener('click', interactNearby);
 $('#encounter-leave').addEventListener('click', () => closeDialog($('#encounter-dialog')));
+$('#cast-open').addEventListener('click', () => { stopTour(); renderCastDirectory(); openDialog($('#cast-dialog')); });
+$('#cast-search').addEventListener('input', renderCastDirectory);
+$('#cast-total').textContent = String(ISLAND_CAST.length);
 
 $('#search').addEventListener('input', renderList);
 for (const name of ['all', 'visited']) $('#filter-' + name).addEventListener('click', () => {
@@ -458,7 +496,8 @@ window.addEventListener('pagehide', () => { walkControls.destroy(); scene?.destr
 // A bfcache restoration needs a fresh renderer after pagehide teardown.
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 
-const applications = bindApplications({ storage, openDialog, closeDialog, onResidents: updateResidents, onMeet: meetResident, stopTour });
+const adminSummary = createIslandAdminSummary({ badge: $('#island-admin-pending') });
+const applications = bindApplications({ storage, openDialog, closeDialog, onResidents: updateResidents, onMeet: meetResident, stopTour, onChange: () => { void adminSummary.refresh(); } });
 renderList(); syncProgress(); updatePause(); setSidebar(!mobile.matches);
 // Test storage availability without touching the career game's keys.
 save();

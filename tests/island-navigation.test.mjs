@@ -127,3 +127,14 @@ test('interaction uses nearest target, stable unique keys and separate entry/exi
   assert.equal(nearestInteraction({ x: 1.66, z: 0 }, [npc], npc.key), null);
   assert.equal(nearestInteraction({ x: 0, z: 0 }, [null, {}, { position: { x: NaN, z: 0 } }]), null);
 });
+
+test('deliberately approaching a closer conversation releases a nearby building prompt without flicker',()=>{
+  const building={key:'building:meeting',position:{x:0,z:0},radius:1.25};
+  const resident={key:'resident:visitor',position:{x:.39,z:0},radius:1.15};
+  assert.equal(nearestInteraction({x:1.1,z:0},[building,resident],building.key),resident,'a person beside an entrance remains selectable');
+  const first={key:'person:first',position:{x:0,z:0},radius:1.4};
+  const second={key:'person:second',position:{x:1.5,z:0},radius:1.4};
+  assert.equal(nearestInteraction({x:.8,z:0},[first,second],first.key),first,'small distance changes retain the current conversation');
+  assert.equal(nearestInteraction({x:1,z:0},[first,second],first.key),second,'walking closer changes the conversation');
+  assert.equal(nearestInteraction({x:.8,z:0},[first,second],second.key),second,'crossing back slightly does not flicker');
+});

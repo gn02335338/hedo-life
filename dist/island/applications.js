@@ -20,7 +20,7 @@ function profile(row, introduction = true) {
   if (introduction) copy.append(node('p', 'resident-introduction', row.introduction || '你的故事，會在對方選擇認識你之後出現。'));
   card.append(residentAvatar(row.outfit), copy); return card;
 }
-export function bindApplications({ storage, openDialog, closeDialog, onResidents, onMeet, stopTour }) {
+export function bindApplications({ storage, openDialog, closeDialog, onResidents, onMeet, stopTour, onChange = () => {} }) {
   const client = createApplicationClient({ storage });
   const dialog = $('#application-dialog'), form = $('#application-form'), fields = $('#application-fields');
   const submit = $('#application-submit'), refresh = $('#application-refresh'), message = $('#application-message'), submitMessage = $('#application-submit-message');
@@ -81,6 +81,7 @@ export function bindApplications({ storage, openDialog, closeDialog, onResidents
       if (disposed) return;
       if (result.application?.id !== row.id || result.application?.status !== 'withdrawn') throw new Error('尚未確認撤回，請重新查詢狀態。');
       applications = applications.map(item => item.id === row.id ? result.application : item); showHistory();
+      onChange();
       setMessage(message, '已撤回申請；公開角色已移除。'); message.focus({ preventScroll: true }); void loadResidents({ invalidate: true });
     } catch (error) { if (!disposed) setMessage(message, `${error.message} 請重新查詢，確認最新狀態。`, true); }
     finally { busy = false; if (!disposed) lock(); }
@@ -105,6 +106,7 @@ export function bindApplications({ storage, openDialog, closeDialog, onResidents
       if (disposed) return;
       applications = [result.application, ...applications.filter(item => item.id !== result.application.id)];
       showHistory(); form.reset(); updatePreview();
+      onChange();
       setMessage(message, result.application.status === 'pending' ? '申請已送達！接下來等待島務管理者審核。' : '已確認這份申請的最新狀態。'); setMessage(submitMessage, '');
       message.focus({ preventScroll: true }); message.scrollIntoView({ block: 'nearest' });
     } catch (error) {

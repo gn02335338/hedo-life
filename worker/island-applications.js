@@ -80,6 +80,10 @@ export class IslandApplicationStore {
     `);
   }
   config() { this.cleanup(); return { enabled: configured(this.env), limits: { ...ISLAND_LIMITS } }; }
+  publicSummary() {
+    // A scalar aggregate only: never select application records for this public route.
+    return { pending: this.sql.exec("SELECT COUNT(*) AS pending FROM island_applications WHERE status = 'pending'").one().pending };
+  }
   cleanup(now = this.now()) {
     const cutoff = new Date(now - ISLAND_LIMITS.retentionDays * DAY).toISOString(), day = new Date(now - 2 * DAY).toISOString().slice(0, 10);
     this.sql.exec("DELETE FROM island_applications WHERE status IN ('rejected','withdrawn') AND terminal_at <= ?", cutoff);

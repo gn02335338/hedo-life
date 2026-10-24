@@ -18,3 +18,31 @@
   .header-actions .apply-header,.admin-header,.header-actions .plain-button{min-height:44px}
   .header-actions .plain-button{min-width:40px}
 }
+
+.admin-pending{display:inline-flex;align-items:center;justify-content:center;min-width:21px;height:21px;padding:0 5px;border-radius:11px;background:#e5e9d9;color:#5d7051;font:600 11px/1 ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.admin-pending[data-pending=true]{background:#af4f2e;color:#fff9ec}
+.admin-pending[data-state=unknown],.admin-pending[data-state=loading]{background:#ebeade;color:#7b8778}
+.cast-open{display:flex;align-items:center;gap:8px;width:100%;margin:13px 0 0;padding:12px 13px;border:1px solid #c9d4bb;border-radius:6px;background:#edf0e1;font-size:12px;font-weight:600;text-align:left}
+.cast-open>span:first-child{background:#d8e1ca;border-radius:11px;padding:2px 7px;font:10px ui-monospace,monospace}
+.cast-open>span:last-child{margin-left:auto}
+.cast-dialog{width:min(720px,calc(100% - 28px))}
+.cast-search-label{display:block;font-size:11px;margin:20px 0 7px}
+#cast-search{width:100%;font:inherit;font-size:14px;padding:12px;border:1px solid #c8d2bb;border-radius:6px;background:#fffdf6;color:var(--ink)}
+.cast-dialog .cast-results{font-size:11px;margin:12px 0}
+.cast-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cast-card{display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;padding:15px;border:1px solid #d5dccb;border-radius:8px;background:#f3f3e8}
+.cast-card>img{width:48px;height:58px;border-radius:10px;object-fit:cover;object-position:top;background:#dce5d2}
+.cast-copy h3{font-size:15px;margin:0 0 5px}
+.cast-card .cast-copy p{font-size:11px;line-height:1.6;margin:0 0 6px;color:#64745c;overflow-wrap:anywhere}
+.cast-place{font-size:10px;color:#6f805f}
+.cast-actions{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid #dce1d0;padding-top:8px}
+.cast-actions button{padding:8px 3px;font-size:12px;font-weight:600;background:transparent}
+.cast-actions button:first-child{color:#875131}.cast-actions button:last-child{font-size:11px;color:#627451;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:900px){.admin-header .admin-arrow{display:none}}
+@media(max-width:520px){
+  .admin-header{gap:5px;padding:9px 8px}
+  .admin-pending{font-size:10px;min-width:26px;padding:0 4px}
+  .cast-list{grid-template-columns:minmax(0,1fr)}
+  #cast-search{font-size:16px}
+  .cast-actions button{min-height:44px}
+}

@@ -1043,7 +1043,11 @@ credential, personal-data field or database migration.
 `/island/` is served from `dist/island/` through the existing static asset binding.
 It is a standalone original 3D miniature with nine districts, 27 district dialogue
 choices and a six-stop day tour. Walking mode adds a controllable visitor,
-connected bridges and nine public colleagues with 27 separate encounter choices.
+connected bridges and all 29 current public colleagues with 87 separate encounter choices.
+The roster matches `PERSONAS`, includes Alice, and places each colleague at one
+reachable location. The searchable character directory and district character
+buttons also support conversations without WebGL. Hidden anonymous character-book
+cards are not revealed by the island roster.
 Keyboard and touch controls release movement when interrupted; conversations and
 the open district list stop walking. Public resident profiles are loaded from the
 approved-only island API described below. Career saved games, collections and
@@ -1089,6 +1093,7 @@ to check the result.
 | Method | Path | Access / behavior |
 | --- | --- | --- |
 | GET | `/api/island/config` | Public enabled flag and field/capacity limits; no verifier data |
+| GET | `/api/island/application-summary` | Public `{pending:number}` only; exact pending count, no applicant fields |
 | GET | `/api/island/residents` | Approved-only `{version:1,residents}` |
 | POST | `/api/island/applications` | Existing anonymous bearer; validated version-1 application; returns 202 `{application}` |
 | GET | `/api/island/applications/mine` | Existing bearer; only that owner's receipts |
@@ -1126,18 +1131,23 @@ Approval creates a separate random public resident UUID. The public projection
 contains only that UUID, nickname, districtId, outfit, greeting, introduction and
 slot (0–2). Application IDs, owner identity, private reasons and review notes
 never appear in public responses. All island API responses use no-store; admin
-responses retain the existing private headers. Withdrawal/revocation removes the
+responses retain the existing private headers. The homepage summary reads only
+the aggregate number of pending applications without credentials or storage. It
+refreshes every 60 seconds while visible, on returning to the page, and after a
+local submission or withdrawal. Zero remains a valid count; failures show an
+unknown state instead of a stale or false zero. Summary requests reject foreign
+origins and extra query parameters. Withdrawal/revocation removes the
 row from the public projection immediately; already-open pages refresh on return
 to the tab or via the roster refresh control. The owner's withdrawal also
 invalidates in-flight roster reads before refreshing the local scene.
 
 The renderer accepts at most 27 fully validated records, uses predetermined safe
 positions, and reuses a bounded set of models. Resident collisions and targets
-are separate from the original nine colleagues. Removing a resident clears its
+are separate from the 29 official colleagues. Removing a resident clears its
 interaction and obstacle; loading around a player relocates them to a walkable
 spot if needed. Conversations reveal the introduction only after a choice, and
-resident choices stay in their own in-memory map. The ordinary nine-encounter
-counter and existing island passport schema remain unchanged. The accessible
+resident choices stay in their own in-memory map. The official-encounter counter follows the current roster size; its choices stay
+in page memory and the existing island passport schema remains unchanged. The accessible
 resident directory and application flow work when WebGL is unavailable.
 
 Tests include actual SQLite routing for owner isolation, idempotency, quotas,
