@@ -1273,6 +1273,57 @@ exercise isolated real SQLite Durable Objects and synthetic driving proofs;
 they must not seed the production rankings. Production smoke runs use actual
 browser gameplay and withdraw only their own test rankings afterward.
 
+## GTA daily calendar and weekly rankings (v12)
+
+The existing GTA leaderboard POST also records a weekly best for new evidence.
+The week starts Monday 00:00 in Taiwan (UTC+8). The shared
+`dist/gta/racing-calendar.js` defines date, week and seven rotating daily targets.
+`GET /api/gta/calendar` is public and returns `{version:1,serverNow,dayId,weekId,
+previousWeekId,dayStartsAt,dayEndsAt,weekStartsAt,weekEndsAt,dailyChallenge}`;
+timestamps are epoch milliseconds. A calendar read never creates an identity.
+
+Public leaderboard GET, authenticated `/mine` GET and authenticated leaderboard
+DELETE accept `scope=weekly&weekId=YYYY-MM-DD`. The date must be a Monday and
+must identify the server's current or previous week; omitting `weekId` selects
+the current week. These responses add `scope:'weekly',weekId`. Default all-time
+requests retain the v11 contract. A scope-specific withdrawal changes only that
+board, leaving the other boards and local progress intact.
+
+POST input remains `{runId,proof}`. In addition to the v11 receipt, it returns
+`weekly:{weekId,improved,entry}` for eligible evidence or `weekly:null` for legacy
+or expired evidence. The weekly entry describes the submitted receipt, even
+when a faster weekly best is retained. A slower new run may improve the weekly
+board while leaving the all-time best unchanged. Both updates, the immutable
+receipt and the weekly evidence marker commit in the same SQLite transaction.
+
+Two additive tables, `gta_race_week_entries` and `gta_race_week_bests`, retain
+evidence-week bindings and per-player/course/week bests. The first server receipt
+time determines the week; there is no claim that the server observes the wall
+clock time when an offline race was driven. Retrying the same run or submitting
+identical evidence with a new UUID cannot move that evidence into another week.
+Pre-v12 receipts are not backfilled into weekly rankings. A withdrawn eligible
+receipt may be explicitly republished in its original current/previous week;
+older evidence remains available only to the all-time logic. Random driver codes,
+public projection, top-twenty limit and competition ranks remain unchanged.
+Raw trajectories are still discarded; no new binding, secret, anonymous identity
+or career replay rule is introduced.
+
+Daily money remains local game progress. v6 receipts bind a valid finish to its
+matching start/end day; a separate fixed-rule reward can be claimed once per
+date. Earlier saves never gain invented dates. The browser synchronizes the
+calendar when opening the race centre and explicitly shows an offline/device
+clock fallback; it does not present local daily funds as server-verified prizes.
+All-time, current and previous-week client caches are separate, and mutations
+invalidate all cached periods for the course. Nothing polls the network in the
+driving loop. No new localStorage key is needed, so existing domain migration
+continues preserving the same progress and pending-publication keys.
+
+Validation includes `tests/gta-daily*.test.mjs`,
+`tests/gta-weekly-client.test.mjs` and `tests/api-gta-weekly.test.mjs`, alongside
+the v11 tests. Calendar boundary tests use controlled clocks only in isolated
+models/SQLite tests. Production smoke tests use real browser play and withdraw
+their own published results from both current-week and all-time boards.
+
 ## Moving Cards anonymous game
 
 `/cards/` is the standalone card collection and turn-based campaign. It reuses

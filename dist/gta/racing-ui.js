@@ -1,4 +1,5 @@
 import { createRaceCentreTabs, createRaceRecordsPanel, createRaceAchievementsPanel } from './racing-records-ui.js';
+import { createDailyChallengePanel } from './daily-ui.js';
 
 const el = (tag, className, text) => {
   const node = document.createElement(tag); node.className = className || '';
@@ -32,7 +33,7 @@ function routeArt(route = []) {
   return svg;
 }
 export function createRacingPanel({entries,race,car,money,message,onStart,onNavigate,onCollection,onGarage,onRetire,onResume,
-  tab='races',records,raceId,board,onTab,onSelectRace,onScope,onChallenge,onRefresh,onPublish,onRetry,onWithdraw,onClaim}) {
+  tab='races',records,raceId,board,daily,onTab,onSelectRace,onScope,onPeriod,onChallenge,onRefresh,onPublish,onRetry,onWithdraw,onClaim}) {
   const wrap=el('div','race-panel');wrap.id='race-panel';
   const hero=el('div','race-hero');
   const identity=el('div');identity.append(el('span','garage-eyebrow','HEDO AFTERHOURS / STREET SERIES'),el('h3','', '改裝的下一步，是上場。'),el('p','',car?.owned?car.name+' · 引擎 '+(car.upgrades?.engine||0)+'/2 · 煞車 '+(car.upgrades?.brakes||0)+'/2 · 操控 '+(car.upgrades?.handling||0)+'/2':'開自己的愛車到發車區。原廠車也能參加。'));
@@ -45,7 +46,8 @@ export function createRacingPanel({entries,race,car,money,message,onStart,onNavi
   }
   if(records&&onTab) {
     wrap.append(createRaceCentreTabs(tab,onTab));
-    if(tab==='records') { wrap.append(createRaceRecordsPanel({records,raceId,board,onSelectRace,onScope,onChallenge,onRefresh,onPublish,onRetry,onWithdraw}));return wrap; }
+    if(tab==='daily'&&daily) { wrap.append(createDailyChallengePanel({...daily,entry:entries.find(item=>item.id===daily.daily.definition.raceId),routeArt,onStart,onNavigate}));return wrap; }
+    if(tab==='records') { wrap.append(createRaceRecordsPanel({records,raceId,board,onSelectRace,onScope,onPeriod,onChallenge,onRefresh,onPublish,onRetry,onWithdraw}));return wrap; }
     if(tab==='achievements') { wrap.append(createRaceAchievementsPanel({records,onClaim}));return wrap; }
   }
   wrap.append(el('p','race-instructions','免報名費。停穩、車頭朝東，倒數後依序通過發光檢查點。已有最佳紀錄時，沿途顯示分段差距。Shift 加速、S 煞車；碰撞仍可能引來警察。'));

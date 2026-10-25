@@ -134,7 +134,7 @@ test('fixed vehicle IDs retain paid paint and performance while damage and motio
 test('legacy progress upgrades without losing mission rewards and ignores forged money or customizations', () => {
   const legacy = { version: 1, completed: [MISSIONS[0].id], money: 999999, ledger: [{ id: 'fake' }], customizations: { 'starter-sedan': { colorId: 'coral', upgrades: { engine: 2 } } } };
   const current = sanitizeProgress(legacy);
-  assert.equal(current.version, 5);
+  assert.equal(current.version, 6);
   assert.equal(current.money, 850);
   assert.deepEqual(current.ledger, []);
   assert.deepEqual(current.customizations, {});

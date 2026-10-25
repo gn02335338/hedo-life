@@ -12,8 +12,8 @@ export const recordDelta = ms => ms === 0 ? '與最佳相同' : (ms < 0 ? '快 '
 
 export function createRaceCentreTabs(tab, onTab) {
   const nav = el('nav', 'race-centre-tabs'); nav.setAttribute('aria-label', '賽事中心');
-  for (const [id, label] of [['races', '01 · 賽事'], ['records', '02 · 排行榜'], ['achievements', '03 · 成就']]) {
-    const button = action(label, '', () => onTab(id)); button.dataset.raceTab = id; button.setAttribute('aria-pressed', String(tab === id)); nav.append(button);
+  for (const [id, label] of [['daily', '01 · 每日'], ['races', '02 · 賽事'], ['records', '03 · 排行榜'], ['achievements', '04 · 成就']]) {
+    const button = action(label, '', () => onTab(id)); button.id='race-centre-tab-'+id;button.dataset.raceTab = id; button.setAttribute('aria-pressed', String(tab === id)); nav.append(button);
   }
   return nav;
 }
@@ -30,12 +30,12 @@ function pendingCard(board, callbacks) {
   }
   return wrap;
 }
-export function createRaceRecordsPanel({ records, raceId, board, onSelectRace, onScope, onChallenge, onRefresh, onPublish, onRetry, onWithdraw }) {
+export function createRaceRecordsPanel({ records, raceId, board, onSelectRace, onScope, onPeriod, onChallenge, onRefresh, onPublish, onRetry, onWithdraw }) {
   const wrap = el('section', 'race-records'); wrap.id = 'race-records';
   const controls = el('div', 'race-record-controls');
   const scope = el('div', 'race-record-scope'); scope.setAttribute('aria-label', '排行榜範圍');
   for (const [id, label] of [['personal', '個人最佳'], ['global', '全站排行']]) {
-    const button = action(label, '', () => onScope(id)); button.dataset.rankingScope = id; button.setAttribute('aria-pressed', String(board.scope === id)); scope.append(button);
+    const button = action(label, '', () => onScope(id)); button.id='race-ranking-scope-'+id;button.dataset.rankingScope = id; button.setAttribute('aria-pressed', String(board.scope === id)); scope.append(button);
   }
   const label = el('label', 'race-select-label', '比較賽道'); const select = el('select'); select.id = 'race-record-course';
   for (const race of RACE_CATALOG) { const option = el('option', '', race.name); option.value = race.id; select.append(option); } select.value = raceId;
@@ -55,6 +55,11 @@ export function createRaceRecordsPanel({ records, raceId, board, onSelectRace, o
     } else wrap.append(empty('還沒有完賽紀錄', '完成賽事後會記下時間、名次與當時改裝。下次出發時，沿途比較與最佳紀錄的差距。'));
     wrap.append(el('p', 'garage-footnote', '個人最佳包含有效完賽；即使名次未達賽事獎金條件，仍會留下紀錄。取消或未完成不計。'));
   } else {
+    const periods = el('nav', 'race-period-tabs'); periods.setAttribute('aria-label', '排行榜期間');
+    for (const [id,label] of [['weekly','本週'],['previous','上週'],['alltime','歷來']]) {
+      const button = action(label,'',()=>onPeriod(id)); button.id='race-ranking-period-'+id;button.dataset.rankingPeriod=id;button.setAttribute('aria-pressed',String(board.period===id));periods.append(button);
+    }
+    wrap.append(periods,el('p','race-period-caption',board.periodLabel));
     const heading = el('div', 'race-section-heading'); const title = el('div'); title.append(el('span', 'garage-eyebrow', 'STREET RECORDS / 改裝不限'), el('h3', '', definition.name));
     const refresh = action(board.status === 'loading' ? '讀取中…' : '更新榜單', 'secondary', onRefresh); refresh.id = 'race-ranking-refresh'; refresh.disabled = board.status === 'loading' || board.busy; heading.append(title, refresh); wrap.append(heading);
     if (board.error) { const error = el('p', 'race-board-error', board.error + (board.data ? ' 以下保留上次讀取的榜單。' : '')); error.setAttribute('role', 'status'); wrap.append(error); }
@@ -67,9 +72,9 @@ export function createRaceRecordsPanel({ records, raceId, board, onSelectRace, o
     if (board.data) wrap.append(el('p', 'garage-footnote', board.data.totalDrivers + ' 位匿名車手 · 顯示前 20 名 · 同毫秒並列 · 每人每賽道保留最快一筆'));
     const mine = board.mine?.entries.find(entry => entry.raceId === raceId);
     if (board.mineError) wrap.append(el('p', 'race-board-error', board.mineError));
-    if (mine) { const card = el('div', 'race-mine-row'); card.append(el('div', '', '我的上榜最佳 · 第 ' + mine.position + ' 名 · ' + recordTime(mine.elapsedMs))); const remove = action('撤下我的這條賽道紀錄', 'text-btn', () => onWithdraw(raceId)); remove.id = 'race-ranking-withdraw'; remove.disabled = board.busy; card.append(remove); wrap.append(card); }
+    if (mine) { const card = el('div', 'race-mine-row'); card.append(el('div', '', '我的上榜最佳 · 第 ' + mine.position + ' 名 · ' + recordTime(mine.elapsedMs))); const remove = action('撤下我的'+(board.period==='alltime'?'歷來':'這週')+'賽道紀錄', 'text-btn', () => onWithdraw(raceId)); remove.id = 'race-ranking-withdraw'; remove.disabled = board.busy; card.append(remove); wrap.append(card); }
     if (board.candidate) {
-      const share = el('div', 'race-share-card'); share.append(el('span', 'garage-eyebrow', 'YOUR RUN / 由你決定是否上榜'), el('h3', '', '本次完賽 ' + recordTime(board.candidate.elapsedMs)), el('p', '', '上榜會公開匿名車手代號、車型與時間，可隨時撤下。個人紀錄與獎金不受是否上榜影響。'));
+      const share = el('div', 'race-share-card'); share.append(el('span', 'garage-eyebrow', 'YOUR RUN / 由你決定是否上榜'), el('h3', '', '本次完賽 ' + recordTime(board.candidate.elapsedMs)), el('p', '', '上榜會公開匿名車手代號、車型與時間，並同時計入歷來榜及首次上榜週次。重試不改週次；兩種榜單可分別撤下。個人紀錄與獎金不受影響。'));
       const publish = action(board.busy ? '正在確認…' : '公開這次成績 ↗', 'primary', () => onPublish(raceId)); publish.id = 'race-ranking-publish'; publish.disabled = board.busy || Boolean(board.pending && board.pending.runId !== board.candidate.runId); share.append(publish); wrap.append(share);
     } else wrap.append(el('p', 'garage-footnote', '只有新版完整記錄行駛路線的完賽可上傳。既有成績保留為個人最佳，跑完下一場即可公開。'));
   }

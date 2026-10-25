@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#171528">
-  <meta name="description" content="禾多 GTA：買車改裝、挑戰街頭競速與個人最佳，登上匿名排行榜、解鎖成就獎金。從街上的行人開始，選你的下班路線。">
+  <meta name="description" content="禾多 GTA：每天挑戰不同競速目標，賺取每日獎金、刷新最佳紀錄，登上每週街頭排行榜。從行人開始，買車改裝，選你的下班路線。">
   <link rel="canonical" href="https://hodo.bvivify.com/gta/">
   <title>禾多 GTA｜下班之前，城市是你的。</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23e5f45b'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-size='40' font-weight='900' fill='%23121e27'%3E禾%3C/text%3E%3C/svg%3E">
@@ -37,7 +37,7 @@
         <p class="save-note" id="welcome-save">免登入 · 進度只儲存在這台裝置</p>
       </div>
       <div class="city-caption"><span class="coordinates">25° 02′ N &nbsp; 121° 33′ E <i>FICTIONAL CITY</i></span><div><span class="live-dot"></span> 傍晚 17:42 <b>禾多總部周邊</b></div><p>今天不趕 KPI，先趕下一個路口。</p></div>
-      <div class="welcome-footer"><span>11 — 留下你的紀錄</span><p>挑戰最佳 <i>·</i> 匿名上榜 <i>·</i> 解鎖成就</p><span>WASD 移動 / T 賽事 / F 上車</span></div>
+      <div class="welcome-footer"><span>12 — 每天，再快一點</span><p>每日挑戰 <i>·</i> 每週爭先 <i>·</i> 領取獎勵</p><span>WASD 移動 / T 賽事 / F 上車</span></div>
     </section>
 
     <section id="hud" class="hud" hidden aria-label="遊戲資訊">
@@ -46,6 +46,7 @@
         <h2 id="mission-title">先找一輛代步工具。</h2>
         <p id="mission-detail">走向路邊的車，靠近後按 F 搶車。</p>
         <p id="race-live-delta" class="race-live-delta" hidden></p>
+        <p id="race-live-daily" class="race-live-daily" hidden></p>
         <div class="mission-bottom"><span id="mission-step">自由漫遊</span><span id="mission-distance">禾多總部周邊</span></div>
       </div>
       <div class="wallet"><small>城市基金</small><strong id="money">$ 500</strong><span id="heat" aria-label="通緝 0 星">☆☆☆☆☆</span><small id="heat-status" aria-live="polite"></small><div id="wanted-meter" class="wanted-meter" role="progressbar" aria-label="解除通緝進度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden><i id="wanted-bar"></i></div><small id="wanted-hint"></small></div>

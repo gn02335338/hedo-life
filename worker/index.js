@@ -341,21 +341,25 @@ export class HedoArchive extends DurableObject {
         const url = new URL(request.url);
         if (path === '/api/gta/leaderboard' && request.method === 'GET') {
           this.rate.check(`gta-board:${request.headers.get('CF-Connecting-IP') || 'unknown'}`);
-          return json(this.gtaRacingStore().public(validateGtaRaceFilter(url)));
+          return json(this.gtaRacingStore().public(validateGtaRaceFilter(url, { now: this.gtaRacingStore().now() })));
         }
         if (path === '/api/gta/leaderboard' && request.method === 'DELETE') {
           const playerId = await this.authenticate(request);
-          return json(this.gtaRacingStore().remove(playerId, validateGtaRaceFilter(url)));
+          return json(this.gtaRacingStore().remove(playerId, validateGtaRaceFilter(url, { now: this.gtaRacingStore().now() })));
+        }
+        if (path === '/api/gta/leaderboard/mine' && request.method === 'GET') {
+          return json(this.gtaRacingStore().mine(await this.authenticate(request), validateGtaRaceFilter(url, { mine: true, now: this.gtaRacingStore().now() })));
         }
         if (url.search) throw new ApiError(400, 'invalid_gta_query', '這個競速端點不接受額外查詢欄位。');
+        if (path === '/api/gta/calendar' && request.method === 'GET') {
+          this.rate.check(`gta-calendar:${request.headers.get('CF-Connecting-IP') || 'unknown'}`);
+          return json(this.gtaRacingStore().calendar());
+        }
         if (path === '/api/gta/leaderboard' && request.method === 'POST') {
           const playerId = await this.authenticate(request);
           return json(await this.gtaRacingStore().submit(playerId, await readJson(request, { maxBytes: RACE_PROOF_LIMITS.maxBytes })));
         }
-        if (path === '/api/gta/leaderboard/mine' && request.method === 'GET') {
-          return json(this.gtaRacingStore().mine(await this.authenticate(request)));
-        }
-        if (['/api/gta/leaderboard', '/api/gta/leaderboard/mine'].includes(path)) throw new ApiError(405, 'method_not_allowed', '這個競速端點不接受此操作。');
+        if (['/api/gta/leaderboard', '/api/gta/leaderboard/mine', '/api/gta/calendar'].includes(path)) throw new ApiError(405, 'method_not_allowed', '這個競速端點不接受此操作。');
         throw new ApiError(404, 'not_found', '找不到這個競速端點。');
       }
       if (path === '/api/cards' || path.startsWith('/api/cards/')) {

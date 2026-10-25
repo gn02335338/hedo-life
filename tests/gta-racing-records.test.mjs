@@ -131,7 +131,7 @@ test('v1-v4 migration never backdates achievement money and rejects newer receip
   const ledger = [buy, receipt('first', 'first-sprint', 8000)], award = claim('claim', 'first-finish', 'first');
   for (const version of [1, 2, 3, 4]) {
     const old = sanitizeProgress({ version, completed: [], ledger: [...ledger, award], money: 99999 });
-    assert.equal(old.version, 5);
+    assert.equal(old.version, 6);
     assert.equal(old.money, version < 3 ? 500 : version === 3 ? 250 : 390);
     assert.equal(old.ledger.length, version < 3 ? 0 : version === 3 ? 1 : 2);
   }

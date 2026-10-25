@@ -1,5 +1,6 @@
 import { RACE_CATALOG } from './racing-catalog.js';
 import { OWNED_CAR_CATALOG } from './ownership-catalog.js';
+import { racingCalendar, dailyChallenge, validWeekId } from './racing-calendar.js';
 
 export const RANKING_PENDING_KEY = 'hedo-gta-ranking-pending-v1';
 const IDENTITY_KEY = 'hedo-anonymous-v1', TOKEN = /^[a-f0-9]{64}$/;
@@ -8,6 +9,13 @@ const races = new Map(RACE_CATALOG.map(race => [race.id, race]));
 const cars = new Set(OWNED_CAR_CATALOG.map(car => car.id));
 const bytes = value => new TextEncoder().encode(JSON.stringify(value)).byteLength;
 const copy = value => JSON.parse(JSON.stringify(value));
+function periodFilter({ scope = 'alltime', weekId } = {}) {
+  if (scope === 'alltime' && weekId === undefined) return { key: '', query: '' };
+  if (scope !== 'weekly' || !validWeekId(weekId)) throw new Error('請選擇有效的每週賽季。');
+  return { key: '|weekly|' + weekId, query: 'scope=weekly&weekId=' + encodeURIComponent(weekId), scope, weekId };
+}
+const validPeriod = (data, filter) => filter.key ? data.scope === 'weekly' && data.weekId === filter.weekId
+  : (data.scope === undefined || data.scope === 'alltime') && data.weekId === undefined;
 const driverCode = value => typeof value === 'string' && value.length > 0 && value.length <= 32 && !/[\u0000-\u001f\u007f]/u.test(value);
 const validEntry = (row, raceId, privateRow = false) => row && races.has(raceId) && cars.has(row.vehicleId)
   && Number.isSafeInteger(row.elapsedMs) && row.elapsedMs > 0 && row.elapsedMs <= races.get(raceId).timeLimit * 1000
@@ -28,7 +36,13 @@ function validBody(body) {
 export function createLeaderboardClient({ storage, fetcher = globalThis.fetch, random = globalThis.crypto,
   timeoutMs = 8000, now = Date.now } = {}) {
   const cache = new Map(), inflight = new Map(), revisions = new Map();
-  const invalidate = raceId => { revisions.set(raceId, (revisions.get(raceId) || 0) + 1); cache.delete(raceId); };
+  const invalidate = raceId => {
+    const keys = new Set([raceId, ...cache.keys(), ...inflight.keys(), ...revisions.keys()]);
+    for (const key of keys) if (key === raceId || key.startsWith(raceId + '|')) {
+      revisions.set(key, (revisions.get(key) || 0) + 1); cache.delete(key);
+    }
+  };
+  let calendarCache = null, calendarRequest = null;
   let readyToken = null, sending = null, sendingBody = null;
   const readToken = () => { try { const token = storage?.getItem(IDENTITY_KEY); return TOKEN.test(token || '') ? token : null; } catch { return null; } };
   const sameIdentity = token => { if (readToken() !== token) throw new Error('匿名身分已在其他分頁變更，請重新整理後再查詢。'); };
@@ -109,6 +123,10 @@ export function createLeaderboardClient({ storage, fetcher = globalThis.fetch, r
         || !validEntry(entry, raceId, true) || entry.runId.toLowerCase() !== pending.body.runId.toLowerCase()
         || entry.elapsedMs !== Math.round(pending.body.proof.samples.at(-1)[0] / 120 * 1000)
         || entry.vehicleId !== pending.body.proof.vehicleId || !driverCode(entry.driverCode)) throw new Error('上榜收據尚未核對完成，請重試同一筆成績。');
+      if (result.weekly != null && (!validWeekId(result.weekly.weekId) || typeof result.weekly.improved !== 'boolean'
+        || !validEntry(result.weekly.entry, raceId, true) || result.weekly.entry.runId.toLowerCase() !== entry.runId.toLowerCase()
+        || result.weekly.entry.elapsedMs !== entry.elapsedMs || result.weekly.entry.vehicleId !== entry.vehicleId
+        || result.weekly.entry.driverCode !== entry.driverCode)) throw new Error('每週成績收據尚未核對完成，請重試同一筆成績。');
       invalidate(raceId);clearPending(owner, pending.body.runId); return result;
     } catch (error) {
       if ([400, 409, 413, 422].includes(error.status)) clearPending(owner, pending.body.runId);
@@ -130,40 +148,57 @@ export function createLeaderboardClient({ storage, fetcher = globalThis.fetch, r
       return item ? { runId: item.body.runId, raceId: item.body.proof.raceId,
         elapsedMs: Math.round(item.body.proof.samples.at(-1)[0] / 120 * 1000) } : null;
     },
-    async board(raceId, { refresh = false } = {}) {
+    async calendar({ refresh = false } = {}) {
+      if (!refresh && calendarCache && now() - calendarCache.at < 60000) return copy(calendarCache.data);
+      if (calendarRequest) return calendarRequest;
+      calendarRequest = (async () => {
+        const data = await api('/api/gta/calendar');
+        const expected = Number.isSafeInteger(data.serverNow) ? racingCalendar(data.serverNow) : null;
+        const challenge = expected && dailyChallenge(expected.dayId);
+        if (data.version !== 1 || !expected || Object.entries(expected).some(([key,value]) => data[key] !== value)
+          || !data.dailyChallenge || Object.entries(challenge).some(([key,value]) => data.dailyChallenge[key] !== value)) throw new Error('賽季時間尚未核對完成，暫時使用裝置時間。');
+        const safe = { version: 1, serverNow: data.serverNow, receivedAt: now(), ...expected, dailyChallenge: challenge };
+        calendarCache = { at: safe.receivedAt, data: safe }; return copy(safe);
+      })().finally(() => { calendarRequest = null; });
+      return calendarRequest;
+    },
+    async board(raceId, { refresh = false, ...options } = {}) {
       if (!races.has(raceId)) throw new Error('找不到這條賽道。');
-      const previous = cache.get(raceId);
+      const filter = periodFilter(options), key = raceId + filter.key;
+      const previous = cache.get(key);
       if (!refresh && previous && now() - previous.at < 60000) return previous.data;
-      const revision = revisions.get(raceId) || 0;
-      if (inflight.get(raceId)?.revision === revision) return inflight.get(raceId).promise;
+      const revision = revisions.get(key) || 0;
+      if (inflight.get(key)?.revision === revision) return inflight.get(key).promise;
       const promise = (async () => {
-        const data = await api('/api/gta/leaderboard?raceId=' + encodeURIComponent(raceId));
-        if (data.version !== 1 || data.raceId !== raceId || !Number.isSafeInteger(data.totalDrivers) || data.totalDrivers < 0
+        const data = await api('/api/gta/leaderboard?raceId=' + encodeURIComponent(raceId) + (filter.query ? '&' + filter.query : ''));
+        if (data.version !== 1 || data.raceId !== raceId || !validPeriod(data, filter) || !Number.isSafeInteger(data.totalDrivers) || data.totalDrivers < 0
           || !Array.isArray(data.entries) || data.entries.length > 20
           || data.entries.some((row, i) => !validEntry(row, raceId) || !driverCode(row.driverCode)
             || i > 0 && row.elapsedMs < data.entries[i - 1].elapsedMs)) throw new Error('排行榜回覆不完整，請重新整理榜單。');
-        const safe = { version: 1, raceId, totalDrivers: data.totalDrivers, entries: data.entries.map(({ driverCode, elapsedMs, position, vehicleId }) => ({ driverCode, elapsedMs, position, vehicleId })) };
-        if ((revisions.get(raceId) || 0) === revision) cache.set(raceId, { at: now(), data: safe }); return safe;
-      })().finally(() => { if (inflight.get(raceId)?.promise === promise) inflight.delete(raceId); });
-      inflight.set(raceId, { revision, promise }); return promise;
+        const safe = { version: 1, raceId, ...(filter.key ? { scope: 'weekly', weekId: filter.weekId } : {}), totalDrivers: data.totalDrivers, entries: data.entries.map(({ driverCode, elapsedMs, position, vehicleId }) => ({ driverCode, elapsedMs, position, vehicleId })) };
+        if ((revisions.get(key) || 0) === revision) cache.set(key, { at: now(), data: safe }); return safe;
+      })().finally(() => { if (inflight.get(key)?.promise === promise) inflight.delete(key); });
+      inflight.set(key, { revision, promise }); return promise;
     },
-    async mine() {
-      const token = readToken(); if (!token) return { version: 1, driverCode: null, entries: [] };
+    async mine(options = {}) {
+      const filter = periodFilter(options), empty = { version: 1, ...(filter.key ? { scope: 'weekly', weekId: filter.weekId } : {}), driverCode: null, entries: [] };
+      const token = readToken(); if (!token) return empty;
       let data;
-      try { data = await api('/api/gta/leaderboard/mine', { token }); }
-      catch (error) { if (error.status === 401) return { version: 1, driverCode: null, entries: [] }; throw error; }
-      if (data.version !== 1 || !(data.driverCode === null || driverCode(data.driverCode)) || !Array.isArray(data.entries)
+      try { data = await api('/api/gta/leaderboard/mine' + (filter.query ? '?' + filter.query : ''), { token }); }
+      catch (error) { if (error.status === 401) return empty; throw error; }
+      if (data.version !== 1 || !validPeriod(data, filter) || !(data.driverCode === null || driverCode(data.driverCode)) || !Array.isArray(data.entries)
         || data.entries.length > races.size || new Set(data.entries.map(row => row.raceId)).size !== data.entries.length
         || data.entries.some(row => !validEntry(row, row.raceId, true))) throw new Error('個人上榜紀錄尚未取得完整回覆。');
       return data;
     },
     submit: body => send(body), retry: () => send(null),
-    async withdraw(raceId) {
+    async withdraw(raceId, options = {}) {
       if (sending) throw new Error('請等待目前的上榜操作完成。');
+      const filter = periodFilter(options);
       const token = readToken(); if (!token || !races.has(raceId)) throw new Error('請使用原本上榜的瀏覽器撤下紀錄。');
       const pending = await pendingFor(token);
-      const data = await api('/api/gta/leaderboard?raceId=' + encodeURIComponent(raceId), { method: 'DELETE', token });
-      if (data.raceId !== raceId || typeof data.removed !== 'boolean') throw new Error('撤榜狀態尚未確認，請重新查詢。');
+      const data = await api('/api/gta/leaderboard?raceId=' + encodeURIComponent(raceId) + (filter.query ? '&' + filter.query : ''), { method: 'DELETE', token });
+      if (data.raceId !== raceId || !validPeriod(data, filter) || typeof data.removed !== 'boolean') throw new Error('撤榜狀態尚未確認，請重新查詢。');
       invalidate(raceId);
       if (pending?.body.proof.raceId === raceId) clearPending(pending.owner, pending.body.runId);
       return data;

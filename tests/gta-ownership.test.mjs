@@ -148,12 +148,12 @@ test('unbought owned IDs cannot receive garage upgrades, health, selection or a 
 
 test('old v1 and v2 saves retain rewards and paid street-car customizations without inventing ownership', () => {
   const v1 = sanitizeProgress({ version: 1, completed: [MISSIONS[0].id], money: 9999, ownedVehicleIds: ['owned-suv'] });
-  assert.equal(v1.version, 5); assert.equal(v1.money, 850); assert.deepEqual(v1.ownedVehicleIds, []);
+  assert.equal(v1.version, 6); assert.equal(v1.money, 850); assert.deepEqual(v1.ownedVehicleIds, []);
   const oldLedger = [transaction('paint-old', 'paint', 'starter-sedan', { value: 'coral' }),
     transaction('engine-old', 'upgrade', 'starter-sedan', { value: 'engine' }), transaction('repair-old', 'repair', 'starter-sedan')];
   const v2 = sanitizeProgress({ version: 2, completed: [MISSIONS[0].id], ledger: oldLedger, selectedOwnedId: 'owned-suv',
     ownedVehicleIds: ['owned-suv'], ownedVehicleHealth: { 'owned-suv': 100 } });
-  assert.equal(v2.version, 5); assert.equal(v2.money, 850 - 60 - 180 - 90);
+  assert.equal(v2.version, 6); assert.equal(v2.money, 850 - 60 - 180 - 90);
   assert.deepEqual(v2.ledger, oldLedger);
   assert.equal(v2.customizations['starter-sedan'].colorId, 'coral');
   assert.equal(v2.customizations['starter-sedan'].upgrades.engine, 1);
@@ -238,7 +238,7 @@ test('v3 ownership, preference and damage survive storage while blocked storage 
   const entries = new Map(), storage = { getItem: key => entries.get(key) ?? null, setItem: (key, value) => entries.set(key, value) };
   assert.equal(saveProgress(storage, progress), true); assert.equal(STORAGE_KEY, 'hedo-gta-v1');
   const reloaded = loadProgress(storage);
-  assert.deepEqual(reloaded, progress); assert.equal(reloaded.version, 5);
+  assert.deepEqual(reloaded, progress); assert.equal(reloaded.version, 6);
   assert.equal(createOwnedVehicle(reloaded, 'owned-hatch', collection).vehicleHealth, 33);
   assert.equal(saveProgress({ setItem() { throw new Error('blocked'); } }, progress), false);
   assert.equal(progress.money, 250); assert.deepEqual(progress.ownedVehicleIds, ['owned-hatch']);

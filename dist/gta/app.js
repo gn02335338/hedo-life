@@ -8,7 +8,7 @@ import { createGameInput } from './input.js';
 import { createPoliceState, reportCrime, stepPolice } from './police.js';
 import { createCombatState, selectWeapon, startReload, stepCombat, applyDamage, getPoliceCombatants } from './combat.js';
 import { freshProgress, loadProgress, saveProgress, completeMission } from './progress.js';
-import { GARAGE_PALETTE, GARAGE_CATALOG, GARAGE_RULES, garageEligibility, quoteGarageAction, applyGarageAction, applyGarageCustomizations, getPerformanceProfile, claimRaceAchievements } from './garage.js';
+import { GARAGE_PALETTE, GARAGE_CATALOG, GARAGE_RULES, garageEligibility, quoteGarageAction, applyGarageAction, applyGarageCustomizations, getPerformanceProfile, claimRaceAchievements, claimDailyReward } from './garage.js';
 import { PRIVATE_GARAGE_RULES, applyOwnershipAction } from './ownership.js';
 import { isOwnedVehicle, ownedHealth, snapshotOwnedVehicles, retrieveOwnedVehicle, storeOwnedVehicle } from './ownership-session.js';
 import { createCollectionPanel } from './collection-ui.js';
@@ -19,6 +19,9 @@ import { deriveRacingRecords, personalBestSnapshot, raceSplitComparison, compare
 import { createRaceProof, appendRaceProof, finalizeRaceProof } from './racing-proof.js';
 import { recordTime, recordDelta } from './racing-records-ui.js';
 import { createLeaderboardClient } from './leaderboard-client.js';
+import { racingCalendar, dailyChallenge } from './racing-calendar.js';
+import { deriveDailyChallenge } from './daily-challenges.js';
+import { weekRange } from './daily-ui.js';
 
 const $ = id => document.getElementById(id);
 const panel = $('panel');
@@ -48,10 +51,11 @@ const controlHint = (desktop, touch) => touchControls.matches ? touch : desktop;
 let pendingJump = false;
 let active = null, waypoint = null, lastImpact = -10, time = 0;
 let race = createRaceState(), selectedRaceId = RACE_CATALOG[0].id;
-let raceTab='races',raceBeforeRecords=null,raceBest=null,raceSplit=null,raceProof=null;
+let raceTab='daily',raceBeforeRecords=null,raceBest=null,raceSplit=null,raceProof=null,raceDailyGoal=null;
 const rankingClient=createLeaderboardClient({storage}),raceUploadCandidates=new Map();
 let rankingScope='personal',rankingStatus='idle',rankingData=null,rankingMine=null,rankingError='',rankingMineError='';
 let rankingBusy=false,rankingMessage='',rankingPending=null,rankingPendingError='',rankingRequest=0;
+let rankingPeriod='weekly',calendarOffset=null,calendarError='',calendarSync=null,calendarViewDay=null;
 let lastFrame = 0, raf = 0, lastHud = 0, toastTimer;
 let audio, tone, volume, sirenTone, sirenVolume, soundEnabled = false;
 let restoreFocus = null;
@@ -114,6 +118,21 @@ function raceContext() {
     policeUnits:police.units,pedestrians:crowd,obstacles:BUILDINGS};
 }
 function raceDistance() { const start=RACE_CATALOG[0].start;return Math.hypot(actor.x-start.x,actor.z-start.z); }
+function calendarNow() { return Date.now()+(calendarOffset||0); }
+function currentRaceCalendar() { return racingCalendar(calendarNow()); }
+function rankingPeriodOptions(calendar=currentRaceCalendar()) {
+  return rankingPeriod==='alltime'?{}:{scope:'weekly',weekId:rankingPeriod==='previous'?calendar.previousWeekId:calendar.weekId};
+}
+function matchingPeriod(data,options) { return !data?false:options.scope==='weekly'?data.scope==='weekly'&&data.weekId===options.weekId:!data.scope||data.scope==='alltime'; }
+async function refreshRaceCalendar(refresh=false) {
+  if(calendarSync)return calendarSync;
+  calendarSync=(async()=>{
+    try {const data=await rankingClient.calendar({refresh});calendarOffset=data.serverNow-data.receivedAt;calendarError='';}
+    catch {calendarError=calendarOffset===null?'賽季時間暫時無法同步，今日挑戰先依裝置時間。':'暫時無法同步，先沿用上次同步時間。';}
+    refreshRacePanel();
+  })().finally(()=>{calendarSync=null;});
+  return calendarSync;
+}
 function navigateRace(id=selectedRaceId) {
   if(raceLive()){showRaces();return;}
   selectedRaceId=id;waypoint='racing';panel.close();updateHud();
@@ -121,7 +140,8 @@ function navigateRace(id=selectedRaceId) {
 }
 function renderRaces(message='',preserve=false) {
   if(!started||pendingDeath||pendingArrest||transition)return;
-  const records=deriveRacingRecords(progress);
+  const records=deriveRacingRecords(progress),calendar=currentRaceCalendar(),periodOptions=rankingPeriodOptions(calendar);
+  calendarViewDay=calendar.dayId;
   const entries=RACE_CATALOG.map(item=>{
     return {id:item.id,title:item.name,description:item.description,route:item.route,length:item.distance,
       mode:item.type==='time-trial'?'TIME TRIAL / 計時':'STREET RACE / 街頭賽',limit:item.timeLimit,
@@ -133,14 +153,21 @@ function renderRaces(message='',preserve=false) {
     onStart:beginRace,onNavigate:navigateRace,onCollection:()=>showCollection(),onGarage:()=>showGarage(),
     onRetire:()=>{abortRace('cancelled');panel.close();updateHud();},onResume:()=>panel.close(),
     tab:raceTab,records,raceId:selectedRaceId,
-    board:{scope:rankingScope,status:rankingStatus,data:rankingData?.raceId===selectedRaceId?rankingData:null,mine:rankingMine,
+    daily:{daily:deriveDailyChallenge(progress,calendar.dayId),calendar,nowMs:calendarNow(),
+      clockLabel:calendarOffset===null?'台北時間 · 使用裝置時間':calendarError?'台北時間 · 沿用上次同步':'台北時間 · 已同步伺服器',clockError:calendarError,
+      onClaim:()=>{const result=claimDailyReward(progress,currentRaceCalendar().dayId);progress=result.progress;const saved=saveProgress(storage,progress);updateHud();renderRaces(result.message+(saved?'':' 瀏覽器無法儲存，請保留本頁。'),true);},
+      onWeekly:()=>{raceTab='records';rankingScope='global';rankingPeriod='weekly';selectedRaceId=dailyChallenge(currentRaceCalendar().dayId).raceId;showRaces();},
+      onRefresh:()=>refreshRaceCalendar(true)},
+    board:{scope:rankingScope,period:rankingPeriod,periodLabel:rankingPeriod==='alltime'?'歷來最佳 · 不隨賽季重置':(rankingPeriod==='previous'?'上週 · ':'本週 · ')+weekRange(periodOptions.weekId)+' · 台北時間週一 00:00 換週',status:rankingStatus,
+      data:rankingData?.raceId===selectedRaceId&&matchingPeriod(rankingData,periodOptions)?rankingData:null,mine:matchingPeriod(rankingMine,periodOptions)?rankingMine:null,
       error:rankingError,mineError:rankingMineError,pending:rankingPending,pendingError:rankingPendingError,busy:rankingBusy,
       message:rankingMessage,candidate:raceUploadCandidates.get(selectedRaceId)||null},
     onTab:tab=>{raceTab=tab;showRaces();},
     onSelectRace:id=>{selectedRaceId=id;rankingData=null;rankingError='';showRaces();},
     onScope:scope=>{rankingScope=scope;showRaces();},
+    onPeriod:period=>{rankingPeriod=period;rankingData=null;rankingMine=null;rankingError='';rankingMessage='';showRaces();},
     onChallenge:id=>{raceTab='races';navigateRace(id);notify('已標記發車區。再次報名後，沿途比較個人最佳分段。');},
-    onRefresh:()=>loadRaceRankings(true),onPublish:publishRaceResult,onRetry:()=>publishRaceResult(null),onWithdraw:withdrawRaceResult,
+    onRefresh:async()=>{await refreshRaceCalendar(true);await loadRaceRankings(true);},onPublish:publishRaceResult,onRetry:()=>publishRaceResult(null),onWithdraw:id=>withdrawRaceResult(id,periodOptions),
     onClaim:()=>{const result=claimRaceAchievements(progress);progress=result.progress;const saved=saveProgress(storage,progress);updateHud();renderRaces((result.message||'成就獎金已領取。')+(saved?'':' 瀏覽器無法儲存，請保留本頁。'),true);}});
   if(preserve&&panel.open&&$('race-panel')) {
     const scroll=panel.scrollTop,focusId=document.activeElement?.id;
@@ -153,16 +180,20 @@ function renderRaces(message='',preserve=false) {
 function showRaces(message='') {
   if(!started||pendingDeath||pendingArrest||transition)return;
   flushOwnedHealth(true);renderRaces(message);
-  if(raceTab==='records'&&!raceLive())void loadRaceRankings();
+  if(!raceLive())void refreshRaceCalendar().then(()=>{if(panel.open&&$('race-panel')&&raceTab==='records'&&!raceLive())return loadRaceRankings();});
 }
 function refreshRacePanel() { if(panel.open&&$('race-panel')&&!raceLive())renderRaces('',true); }
 async function loadRaceRankings(refresh=false) {
-  const request=++rankingRequest,id=selectedRaceId,global=rankingScope==='global';
+  const request=++rankingRequest,id=selectedRaceId,global=rankingScope==='global',options=rankingPeriodOptions();
   rankingPendingError='';
   if(global){rankingStatus='loading';rankingError='';rankingMineError='';}
   refreshRacePanel();
-  const [pending,board,mine]=await Promise.allSettled([rankingClient.pending(),global?rankingClient.board(id,{refresh}):null,global?rankingClient.mine():null]);
+  const [pending,board,mine]=await Promise.allSettled([rankingClient.pending(),global?rankingClient.board(id,{refresh,...options}):null,global?rankingClient.mine(options):null]);
   if(request!==rankingRequest)return;
+  if(id!==selectedRaceId||global!==(rankingScope==='global')||JSON.stringify(options)!==JSON.stringify(rankingPeriodOptions())){
+    if(panel.open&&$('race-panel')&&raceTab==='records'&&!raceLive())void loadRaceRankings(true);
+    return;
+  }
   rankingPending=pending.status==='fulfilled'?pending.value:null;
   rankingPendingError=pending.status==='rejected'?pending.reason.message:'';
   if(global){
@@ -179,31 +210,36 @@ async function publishRaceResult(id) {
   rankingBusy=true;rankingMessage='正在核對行駛紀錄…';refreshRacePanel();
   try {
     const result=await(id?rankingClient.submit({runId:candidate.runId,proof:candidate.proof}):rankingClient.retry());
-    rankingMessage=result.improved?'成績已上榜 · '+result.entry.driverCode+' · '+recordTime(result.entry.elapsedMs):'成績已確認，榜單保留你較快的紀錄。';
+    rankingMessage='成績已確認 · '+result.entry.driverCode+' · '+recordTime(result.entry.elapsedMs)+'。'+(result.weekly?(result.weekly.improved?'已更新 ':'已保留較快的 ')+weekRange(result.weekly.weekId)+' 週榜紀錄。':'這筆較早的紀錄只更新歷來榜。');
     selectedRaceId=result.entry.raceId;rankingScope='global';
+    const calendar=currentRaceCalendar();rankingPeriod=result.weekly?.weekId===calendar.weekId?'weekly':result.weekly?.weekId===calendar.previousWeekId?'previous':'alltime';
   } catch(error){rankingMessage=error.message||'上榜暫時未完成，可稍後重試。';}
   finally {rankingBusy=false;await loadRaceRankings(true);}
 }
-async function withdrawRaceResult(id) {
+async function withdrawRaceResult(id,options) {
   if(rankingBusy)return;
   rankingBusy=true;rankingMessage='正在撤下公開紀錄…';refreshRacePanel();
-  try {await rankingClient.withdraw(id);rankingMessage='已撤下這條賽道的公開紀錄，個人最佳與成就仍保留。';}
+  const label=options.scope==='weekly'?weekRange(options.weekId)+' 週榜':'歷來榜';
+  try {await rankingClient.withdraw(id,options);rankingMessage='已撤下'+label+'的這條賽道紀錄。其他榜單與個人進度仍保留。';}
   catch(error){rankingMessage=error.message||'撤榜尚未確認，請重試。';}
   finally{rankingBusy=false;await loadRaceRankings(true);}
 }
-function beginRace(id) {
+function beginRace(id,expectedDay=null) {
   if(raceLive())return;
-  const result=startRace(progress,id,crypto.randomUUID(),raceContext());
+  const dayId=currentRaceCalendar().dayId;
+  if(expectedDay&&expectedDay!==dayId){raceTab='daily';showRaces('每日目標已更新，請確認新目標後重新報名。');return;}
+  const result=startRace(progress,id,crypto.randomUUID(),{...raceContext(),dailyDay:dayId});
   if(!result.ok){showRaces(result.message);return;}
   raceBeforeRecords=deriveRacingRecords(progress);raceBest=personalBestSnapshot(raceBeforeRecords,id);raceSplit=null;
   raceProof=createRaceProof(id,controlledId);
+  raceDailyGoal=dailyChallenge(dayId);if(raceDailyGoal.raceId!==id)raceDailyGoal=null;
   race=result.state;selectedRaceId=id;waypoint=null;clearInput();actor={...actor,speed:0,steerAngle:0,yawVelocity:0};
   fleet=fleet.map(car=>car.id===controlledId?{...car,...actor}:car);
   panel.close();updateHud();notify('3 秒後起跑。依序穿過檢查點，Shift 可加速。');
 }
 function abortRace(reason='cancelled',announce=true) {
   if(!raceLive())return;
-  race=cancelRace(race,reason);raceProof=null;raceSplit=null;needsRender=true;
+  race=cancelRace(race,reason);raceProof=null;raceSplit=null;raceDailyGoal=null;needsRender=true;
   if(announce)notify(race.result?.message||'本場已退出，沒有發放獎金。');
 }
 function showRaceResult() {
@@ -213,8 +249,9 @@ function showRaceResult() {
   fleet=fleet.map(car=>car.id===controlledId?{...car,...actor}:car);
   flushOwnedHealth();
   const completed=race.phase==='finished'||race.result?.reason==='lost',definition=RACE_CATALOG.find(item=>item.id===race.raceId);
-  const result=settleRace(progress,race);progress=result.progress;
+  const dayId=currentRaceCalendar().dayId,result=settleRace(progress,race,{dayId});progress=result.progress;
   const achievements=result.ok?claimRaceAchievements(progress):{progress,reward:0,unlocked:[],pendingCount:0};progress=achievements.progress;
+  const daily=result.ok?claimDailyReward(progress,dayId):{progress,reward:0};progress=daily.progress;
   if(result.ok&&proof)raceUploadCandidates.set(race.raceId,{runId:race.runId,proof,elapsedMs:Math.round(race.elapsed*1000)});
   const saved=saveProgress(storage,progress);needsRender=true;updateHud();
   const wrap=el('div','race-result');wrap.id='race-result';
@@ -235,12 +272,14 @@ function showRaceResult() {
     const bonus=el('div','race-result-achievements');bonus.id='race-result-achievements';bonus.append(el('strong','','成就獎勵 +$'+achievements.reward),el('p','',achievements.unlocked.map(item=>item.name).join(' · ')));wrap.append(bonus);
   }
   if(achievements.pendingCount)wrap.append(el('p','help-note','仍有成就待領取，可到成就頁查看。'));
+  if(daily.reward){const bonus=el('div','race-result-daily');bonus.id='race-result-daily';bonus.append(el('span','garage-eyebrow','DAILY COMPLETE / 今日目標達成'),el('strong','','每日獎勵 +$'+daily.reward),el('p','',dailyChallenge(dayId).title+' · 今日獎金已領取，重賽可再挑戰最佳。'));wrap.append(bonus);}
+  else if(result.ok&&raceDailyGoal){const state=deriveDailyChallenge(progress,dayId);wrap.append(el('p','help-note',raceDailyGoal.dayId!==dayId?'本場跨過每日更新時間，照常保留完賽與賽事獎金；可查看新的每日目標。':state.claimed?'今日獎勵已領取，這次仍會保存今日最佳。':state.claimable?'今日目標已達成，獎勵待領取；請至每日挑戰頁查看。':'距離每日目標：'+recordDelta(Math.round(race.elapsed*1000)-raceDailyGoal.targetMs)));}
   wrap.append(el('p','help-note',saved?'紀錄、獎金、成就與愛車已保存在這台裝置。':'瀏覽器目前無法儲存，這次變更只保留至本次遊玩結束。'));
   if(completed&&!result.ok&&result.message)wrap.append(el('p','help-note',result.message));
   const actions=el('div','race-result-actions');const leave=button('回到街頭 ↗','primary',()=>panel.close());leave.id='race-continue';
   const garage=button('導航去修車／改裝','secondary',()=>navigateGarage());garage.id='race-garage';
   const rankings=button('比較紀錄／匿名上榜','secondary',()=>{selectedRaceId=race.raceId;raceTab='records';rankingScope='global';showRaces();});rankings.id='race-result-rankings';
-  actions.append(leave,garage,button('查看下一場賽事','secondary',()=>{raceTab='races';showRaces();}),rankings,button('查看成就','secondary',()=>{raceTab='achievements';showRaces();}));wrap.append(actions);
+  actions.append(leave,garage,button('查看每日挑戰','secondary',()=>{raceTab='daily';showRaces();}),button('查看下一場賽事','secondary',()=>{raceTab='races';showRaces();}),rankings,button('查看成就','secondary',()=>{raceTab='achievements';showRaces();}));wrap.append(actions);
   openPanel(definition?.name||'街頭競速',completed?'RACE COMPLETE':'RACE ENDED',wrap);
 }
 function advanceRace(dt) {
@@ -535,6 +574,7 @@ function showHelp() {
   wrap.append(el('h3','','開自己的車，把獎金跑回來。'));
   wrap.append(el('p','help-note','T 或「賽事」查看三場街頭競速。開已購買的愛車到車庫前方發車區，無通緝、停穩後報名，三秒倒數後依序通過光圈。入門計時 $140、短途前兩名 $260、環城第一名 $420；可重賽。獎金會加入城市基金，可用於買車、修復與性能升級。改裝沿用真實駕駛性能；比賽中離車、報廢、死亡或被捕會中止且不發獎。暫停面板會凍結比賽。'));
   wrap.append(el('p','help-note','賽事中心另有「排行榜」與「成就」。個人最佳與分段差距會在下次競速時比較；8項成就各提供一次獎金。完賽後可自行上傳成績，以匿名車手代號加入全站時間榜，亦可撤下。斷線仍能跑賽事並保留本機紀錄；未確認的上榜操作可手動重試。'));
+  wrap.append(el('p','help-note','「每日」會在台北時間 00:00 換目標，同日達標可領一次額外獎金。每週榜在週一 00:00 換週，可切換本週、上週與歷來；週次依伺服器首次收到成績的時間決定，重試不會改週。'));
   wrap.append(button('知道了，出發 ↗', 'primary', () => panel.close()));
   openPanel('你的城市操作手冊', 'HOW TO PLAY', wrap);
 }
@@ -760,7 +800,7 @@ function finishTransition() {
   clearInput();updateHud();
 }
 function resetSession() {
-  race=createRaceState();raceProof=null;raceBest=null;raceSplit=null;raceBeforeRecords=null;
+  race=createRaceState();raceProof=null;raceBest=null;raceSplit=null;raceBeforeRecords=null;raceDailyGoal=null;
   flushOwnedHealth(true);
   actor=createPedestrian(FOOT_SPAWN);fleet=applyGarageCustomizations(createFleet(),progress);controlledId=null;transition=null;
   crowd=createCrowd();awareness=createAwareness();
@@ -921,6 +961,8 @@ function updateHud() {
   else if(waypoint==='racing'&&raceDistance()<=RACING_RULES.startRadius){notify('抵達發車區。車頭朝東、停穩後按 E 報名。');waypoint=null;}
   else if(!active&&waypoint&&!garageRoute&&!collectionRoute&&distance<5){notify('抵達'+target.name+'。');waypoint=null;}
   $('race-live-delta').hidden=!raceLive()||!raceBest;
+  $('race-live-daily').hidden=!raceLive()||!raceDailyGoal;
+  if(raceLive()&&raceDailyGoal)setText('race-live-daily','每日目標 ≤ '+recordTime(raceDailyGoal.targetMs)+' · +$'+raceDailyGoal.reward);
   if(raceLive()){
     const definition=RACE_CATALOG.find(item=>item.id===race.raceId),count=definition.checkpoints.length;
     setText('mission-title',race.phase==='countdown'?Math.ceil(race.countdownRemaining)+' · 準備起跑':raceTime(race.elapsed)+' · '+race.rank+'/'+(race.rivals.length+1)+' 名');
@@ -1154,6 +1196,18 @@ window.addEventListener('pagehide',event=>{
   if(!event.persisted){scene?.dispose();input?.dispose();}
 });
 window.addEventListener('pageshow',event=>{if(event.persisted){lastFrame=0;accumulator=0;needsRender=true;raf=requestAnimationFrame(tick);if(soundEnabled&&audio)audio.resume().catch(()=>{});}});
+
+// Calendar refresh is confined to an open, paused race centre. Driving never
+// waits on a network call or replays the progress ledger in its frame loop.
+setInterval(()=>{
+  if(document.hidden||!panel.open||!$('race-panel')||raceLive())return;
+  const dayId=currentRaceCalendar().dayId;
+  if(dayId!==calendarViewDay){
+    rankingRequest+=1;rankingData=null;rankingMine=null;calendarViewDay=dayId;
+    void refreshRaceCalendar(true).then(()=>{if(panel.open&&$('race-panel')&&raceTab==='records')return loadRaceRankings(true);});
+    refreshRacePanel();
+  } else if(raceTab==='daily')refreshRacePanel();
+},30000);
 
 if (progress.completed.length||progress.ownedVehicleIds.length) $('welcome-save').textContent = `已完成 ${progress.completed.length} / ${MISSIONS.length} 個委託 · ${progress.ownedVehicleIds.length} 輛愛車 · 本機進度`;
 try {

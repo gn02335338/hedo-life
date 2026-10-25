@@ -233,7 +233,7 @@ test('completion is sequential, idempotent and derives rewards without mutating 
   }
   assert.deepEqual(progress.completed, MISSIONS.map(mission => mission.id));
   assert.equal(progress.money, 500 + MISSIONS.reduce((total, mission) => total + mission.reward, 0));
-  assert.deepEqual(initial, { version: 5, completed: [], money: 500, ledger: [], customizations: {},
+  assert.deepEqual(initial, { version: 6, completed: [], money: 500, ledger: [], customizations: {},
     ownedVehicleIds: [], selectedOwnedId: null, ownedVehicleHealth: {} });
 });
 

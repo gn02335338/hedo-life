@@ -2,6 +2,7 @@ import { BUILDINGS, WORLD_LIMIT } from './world.js';
 import { RACE_CATALOG, RACING_RULES, validRaceCompletion, validRaceReceipt } from './racing-catalog.js';
 import { GARAGE_RULES, replayGarageProgress } from './garage.js';
 import { segmentClear } from './police.js';
+import { validDayId } from './racing-calendar.js';
 
 export { RACE_CATALOG, RACING_RULES } from './racing-catalog.js';
 export const RACE_MESSAGES = Object.freeze({
@@ -94,7 +95,7 @@ function createRivals(race, runId, context) {
 export function createRaceState() {
   return { phase: 'idle', runId: null, raceId: null, vehicleId: null, countdownRemaining: 0, elapsed: 0,
     checkpointIndex: 0, checkpoint: null, checkpointTimes: [], route: [], rank: 1, rivals: [], result: null,
-    events: [], lastPlayer: null, offRouteTime: 0, progress: 0 };
+    events: [], lastPlayer: null, offRouteTime: 0, progress: 0, dailyDay: null };
 }
 export function raceEligibility(progress, raceId, input = {}) {
   const race = raceById(raceId), context = contextFor(input), current = replayGarageProgress(progress);
@@ -124,6 +125,7 @@ export function startRace(progress, raceId, runId, input = {}) {
   const race = raceById(raceId), context = contextFor(input);
   return { ok: true, reason: null, message: '三秒倒數，準備起跑。', state: { ...createRaceState(), phase: 'countdown',
     runId, raceId, vehicleId: context.vehicle.id, countdownRemaining: RACING_RULES.countdownSeconds,
+    dailyDay: validDayId(input.dailyDay) ? input.dailyDay : null,
     checkpoint: race.checkpoints[0], route: race.route, rivals: createRivals(race, runId, context), lastPlayer: point(context.player) } };
 }
 function finish(state, phase, reason, success = false) {
@@ -248,7 +250,7 @@ export function stepRace(state, input = {}, dt = 0) {
   return next;
 }
 
-export function settleRace(progress, state) {
+export function settleRace(progress, state, options = {}) {
   const current = replayGarageProgress(progress), fail = reason => ({ ...reject(reason), progress: current, reward: 0 });
   const rewarded = state?.phase === 'finished' && state.result?.success;
   const completed = rewarded || state?.phase === 'failed' && state.result?.reason === 'lost';
@@ -258,7 +260,9 @@ export function settleRace(progress, state) {
   const receipt = { raceId: state.raceId, vehicleId: state.vehicleId, elapsedMs: Math.round(state.elapsed * 1000),
     rank: state.rank, checkpointTimes: [...state.checkpointTimes] };
   if (!current.ownedVehicleIds.includes(state.vehicleId) || !validRaceCompletion(receipt) || rewarded !== validRaceReceipt(receipt)) return fail('invalid-result');
-  const record = { id: state.runId, kind: rewarded ? 'race' : 'race-finish', ...receipt, missionCount: current.completed.length };
+  const dailyDay = validDayId(state.dailyDay) && state.dailyDay === options.dayId ? state.dailyDay : null;
+  const record = { id: state.runId, kind: rewarded ? 'race' : 'race-finish', ...receipt, missionCount: current.completed.length,
+    ...(dailyDay ? { dailyDay } : {}) };
   const next = replayGarageProgress({ ...current, ledger: [...current.ledger, record] });
   if (next.ledger.length !== current.ledger.length + 1) return fail('invalid-result');
   const reward = rewarded ? raceById(state.raceId).reward : 0;

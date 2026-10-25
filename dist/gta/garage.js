@@ -3,6 +3,8 @@ import { createFleet } from './fleet.js';
 import { OWNED_CAR_CATALOG, PRIVATE_GARAGE_RULES } from './ownership-catalog.js';
 import { RACE_CATALOG, validRaceCompletion, validRaceReceipt } from './racing-catalog.js';
 import { createRacingFacts, appendRacingFact, achievementUnlocked, raceAchievement, deriveRacingRecords } from './racing-records.js';
+import { dailyChallenge, validDayId } from './racing-calendar.js';
+import { createDailyFacts, appendDailyFact, dailyClaimSource, deriveDailyChallenge } from './daily-challenges.js';
 
 export const GARAGE_PALETTE = Object.freeze([
   { id: 'pearl', name: '珍珠白', color: 0xe8e9e3 },
@@ -55,7 +57,7 @@ export function getPerformanceProfile(tuning = {}) {
 }
 
 export function createGarageProgress() {
-  return { version: 5, completed: [], money: GARAGE_RULES.startingMoney, ledger: [], customizations: {},
+  return { version: 6, completed: [], money: GARAGE_RULES.startingMoney, ledger: [], customizations: {},
     ownedVehicleIds: [], selectedOwnedId: null, ownedVehicleHealth: {} };
 }
 
@@ -82,7 +84,7 @@ function actionDetails(customization, vehicleId, action) {
 export function replayGarageProgress(raw) {
   const progress = createGarageProgress();
   try {
-    if (!isRecord(raw) || !Object.hasOwn(raw, 'version') || ![1, 2, 3, 4, 5].includes(raw.version)
+    if (!isRecord(raw) || !Object.hasOwn(raw, 'version') || ![1, 2, 3, 4, 5, 6].includes(raw.version)
       || !Object.hasOwn(raw, 'completed') || !Array.isArray(raw.completed)) return progress;
     const completed = new Set(raw.completed.slice(0, 64).filter(id => typeof id === 'string'));
     for (const mission of MISSIONS) {
@@ -96,6 +98,7 @@ export function replayGarageProgress(raw) {
   catch { return progress; }
   let spent = 0, raceEarnings = 0, lastMissionCount = 0;
   const transactionIds = new Set(), claimedAchievements = new Set(), racingFacts = createRacingFacts();
+  const claimedDays = new Set(), dailyFacts = createDailyFacts();
   for (const entry of entries) {
     try {
       if (!isRecord(entry) || !isId(entry.id) || transactionIds.has(entry.id) || !originalCars.has(entry.vehicleId)
@@ -120,21 +123,34 @@ export function replayGarageProgress(raw) {
         if (raw.version < 5 || !catalog || !owned || !achievement || claimedAchievements.has(achievement.id)
           || !achievementUnlocked(achievement.id, racingFacts) || source?.runId !== entry.earnedRunId || source?.vehicleId !== entry.vehicleId) break;
         action = { ok: true, kind: 'achievement', cost: 0, reward: achievement.reward };
+      } else if (entry.kind === 'daily-reward') {
+        const definition = dailyChallenge(entry.dayId), source = dailyClaimSource(dailyFacts, entry.dayId);
+        if (raw.version < 6 || !catalog || !owned || !definition || claimedDays.has(entry.dayId)
+          || !source || source.runId !== entry.earnedRunId || source.vehicleId !== entry.vehicleId) break;
+        action = { ok: true, kind: 'daily-reward', cost: 0, reward: definition.reward };
       } else {
         if (catalog && !owned) break;
         action = actionDetails(customization, entry.vehicleId, entry);
       }
       const available = GARAGE_RULES.startingMoney + MISSIONS.slice(0, entry.missionCount).reduce((sum, mission) => sum + mission.reward, 0) + raceEarnings - spent;
       if (!action.ok || available < action.cost) break;
+      const dailyDay = raw.version >= 6 && ['race', 'race-finish'].includes(action.kind) && Object.hasOwn(entry, 'dailyDay') ? entry.dailyDay : null;
+      if (dailyDay !== null && !validDayId(dailyDay)) break;
       const record = { id: entry.id, vehicleId: entry.vehicleId, kind: action.kind,
         ...(action.value ? { value: action.value } : {}), missionCount: entry.missionCount,
         ...(['race', 'race-finish'].includes(action.kind) ? { raceId: entry.raceId, elapsedMs: entry.elapsedMs, rank: entry.rank, checkpointTimes: [...entry.checkpointTimes] } : {}),
-        ...(action.kind === 'achievement' ? { achievementId: entry.achievementId, earnedRunId: entry.earnedRunId } : {}) };
+        ...(dailyDay ? { dailyDay } : {}),
+        ...(action.kind === 'achievement' ? { achievementId: entry.achievementId, earnedRunId: entry.earnedRunId } : {}),
+        ...(action.kind === 'daily-reward' ? { dayId: entry.dayId, earnedRunId: entry.earnedRunId } : {}) };
       progress.ledger.push(record); transactionIds.add(record.id);
       lastMissionCount = record.missionCount; spent += action.cost;
       raceEarnings += action.reward || 0;
-      if (['race', 'race-finish'].includes(action.kind)) appendRacingFact(racingFacts, record, customization.upgrades);
+      if (['race', 'race-finish'].includes(action.kind)) {
+        appendRacingFact(racingFacts, record, customization.upgrades);
+        appendDailyFact(dailyFacts, record);
+      }
       if (action.kind === 'achievement') claimedAchievements.add(record.achievementId);
+      if (action.kind === 'daily-reward') claimedDays.add(record.dayId);
       if (action.kind === 'purchase') progress.ownedVehicleIds.push(record.vehicleId);
       if (action.kind === 'purchase' || action.kind === 'recover' || catalog && action.kind === 'repair') progress.ownedVehicleHealth[record.vehicleId] = 100;
       if (action.kind === 'paint') customization.colorId = action.value;
@@ -250,4 +266,24 @@ export function claimRaceAchievements(progress) {
   return { ok: pending.length === 0 || earned.length > 0, reason: pendingCount ? 'ledger-full' : null,
     message: reward ? `成就獎勵 $${reward} 已加入城市基金。` : pendingCount ? '本機交易紀錄已滿，成就獎勵尚未領取。' : '目前沒有待領的成就獎勵。',
     progress: next, reward, unlocked: earned, pendingCount };
+}
+
+// The current day is supplied by the calendar at the UI boundary. Prior rewards
+// remain replayable, but a new claim only considers this day's qualifying run.
+export function claimDailyReward(progress, dayId) {
+  const current = replayGarageProgress(progress), daily = deriveDailyChallenge(current, dayId);
+  const fail = (reason, message) => ({ ok: false, reason, message, progress: current, reward: 0, dayId });
+  if (!daily.definition) return fail('invalid-day', '找不到這一天的競速挑戰。');
+  if (daily.claimed) return { ok: true, reason: 'already-claimed', message: '今日獎勵已領取，繼續挑戰最佳時間。', progress: current, reward: 0, dayId };
+  if (!daily.claimable) return fail('not-qualified', '先完成今日賽道的目標時間，再領取獎勵。');
+  if (current.ledger.length >= GARAGE_RULES.maxLedger) return fail('ledger-full', '本機交易紀錄已滿，今日獎勵尚未領取。');
+  const ids = new Set(current.ledger.map(entry => entry.id)), baseId = `daily-${dayId}`;
+  let id = baseId, suffix = 0;
+  while (ids.has(id)) { suffix += 1; id = `${baseId}-${suffix}`; }
+  const record = { id, kind: 'daily-reward', dayId, earnedRunId: daily.qualifyingRun.runId,
+    vehicleId: daily.qualifyingRun.vehicleId, missionCount: current.completed.length };
+  const next = replayGarageProgress({ ...current, ledger: [...current.ledger, record] });
+  if (next.ledger.length !== current.ledger.length + 1) return fail('invalid-result', '今日成績無法領取獎勵。');
+  return { ok: true, reason: null, message: `每日挑戰獎勵 $${daily.reward} 已加入城市基金。`,
+    progress: next, reward: daily.reward, dayId, earnedRunId: daily.qualifyingRun.runId };
 }

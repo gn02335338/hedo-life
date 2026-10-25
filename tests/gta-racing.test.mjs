@@ -296,7 +296,7 @@ test('invalid or forged receipt facts stop the valid prefix, preserving existing
   for (const version of [1, 2, 3]) {
     const oldLedger = version === 3 ? [buy] : version === 2 ? [{ id: 'paint', vehicleId: 'starter-sedan', kind: 'paint', value: 'pearl', missionCount: 0 }] : [];
     const legacy = sanitizeProgress({ version, completed: [MISSIONS[0].id], ledger: [...oldLedger, receipt()], money: 9999 });
-    assert.equal(legacy.version, 5);
+    assert.equal(legacy.version, 6);
     assert.equal(legacy.money, version === 3 ? 600 : version === 2 ? 790 : 850);
     assert.equal(legacy.ledger.length, oldLedger.length);
   }
