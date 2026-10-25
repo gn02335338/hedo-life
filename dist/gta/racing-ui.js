@@ -1,3 +1,5 @@
+import { createRaceCentreTabs, createRaceRecordsPanel, createRaceAchievementsPanel } from './racing-records-ui.js';
+
 const el = (tag, className, text) => {
   const node = document.createElement(tag); node.className = className || '';
   if (text != null) node.textContent = text;
@@ -29,7 +31,8 @@ function routeArt(route = []) {
   }
   return svg;
 }
-export function createRacingPanel({entries,race,car,money,message,onStart,onNavigate,onCollection,onGarage,onRetire,onResume}) {
+export function createRacingPanel({entries,race,car,money,message,onStart,onNavigate,onCollection,onGarage,onRetire,onResume,
+  tab='races',records,raceId,board,onTab,onSelectRace,onScope,onChallenge,onRefresh,onPublish,onRetry,onWithdraw,onClaim}) {
   const wrap=el('div','race-panel');wrap.id='race-panel';
   const hero=el('div','race-hero');
   const identity=el('div');identity.append(el('span','garage-eyebrow','HEDO AFTERHOURS / STREET SERIES'),el('h3','', '改裝的下一步，是上場。'),el('p','',car?.owned?car.name+' · 引擎 '+(car.upgrades?.engine||0)+'/2 · 煞車 '+(car.upgrades?.brakes||0)+'/2 · 操控 '+(car.upgrades?.handling||0)+'/2':'開自己的愛車到發車區。原廠車也能參加。'));
@@ -40,7 +43,12 @@ export function createRacingPanel({entries,race,car,money,message,onStart,onNavi
     const active=el('div','race-active-card');active.append(el('span','garage-eyebrow','RACE PAUSED / 賽事已暫停'),el('h3','',current?.title||'街頭競速'),el('p','',race.phase==='countdown'?'起跑倒數 '+Math.ceil(race.countdownRemaining):raceTime(race.elapsed)+' · 第 '+race.rank+' 名'),el('p','help-note','時間、對手與城市都會等你回來。退出本場不發獎金，車況與既有基金保留。'));
     const resume=button('回到賽道 ↗','primary',onResume);resume.id='race-resume';const retire=button('退出本場賽事','secondary',onRetire);retire.id='race-retire';active.append(resume,retire);wrap.append(active);return wrap;
   }
-  wrap.append(el('p','race-instructions','免報名費。停穩、車頭朝東，倒數後依序通過發光檢查點。Shift 加速、S 煞車；發生碰撞仍可能引來警察。'));
+  if(records&&onTab) {
+    wrap.append(createRaceCentreTabs(tab,onTab));
+    if(tab==='records') { wrap.append(createRaceRecordsPanel({records,raceId,board,onSelectRace,onScope,onChallenge,onRefresh,onPublish,onRetry,onWithdraw}));return wrap; }
+    if(tab==='achievements') { wrap.append(createRaceAchievementsPanel({records,onClaim}));return wrap; }
+  }
+  wrap.append(el('p','race-instructions','免報名費。停穩、車頭朝東，倒數後依序通過發光檢查點。已有最佳紀錄時，沿途顯示分段差距。Shift 加速、S 煞車；碰撞仍可能引來警察。'));
   const grid=el('div','race-grid');
   for(const [index,entry] of entries.entries()) {
     const card=el('article','race-card');card.dataset.raceId=entry.id;

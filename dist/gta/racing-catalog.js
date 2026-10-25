@@ -27,10 +27,10 @@ export const RACE_CATALOG = Object.freeze([
 
 // Receipts contain only bounded route facts. Rewards always come from this
 // catalog, never from cached money or a caller-supplied prize value.
-export function validRaceReceipt(receipt) {
+export function validRaceCompletion(receipt) {
   const race = RACE_CATALOG.find(item => item.id === receipt?.raceId);
   if (!race || !Number.isInteger(receipt.elapsedMs) || receipt.elapsedMs <= 0 || receipt.elapsedMs > race.timeLimit * 1000
-    || !Number.isInteger(receipt.rank) || receipt.rank < 1 || receipt.rank > race.maxRank
+    || !Number.isInteger(receipt.rank) || receipt.rank < 1 || receipt.rank > race.rivalSpeeds.length + 1
     || !Array.isArray(receipt.checkpointTimes) || receipt.checkpointTimes.length !== race.checkpoints.length) return false;
   let previousTime = 0;
   for (let index = 0; index < race.checkpoints.length; index += 1) {
@@ -40,4 +40,9 @@ export function validRaceReceipt(receipt) {
     previousTime = time;
   }
   return previousTime === receipt.elapsedMs;
+}
+
+export function validRaceReceipt(receipt) {
+  const race = RACE_CATALOG.find(item => item.id === receipt?.raceId);
+  return Boolean(race && validRaceCompletion(receipt) && receipt.rank <= race.maxRank);
 }

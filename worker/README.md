@@ -1216,6 +1216,63 @@ npm run build:check
 The migration changes no engine rules, published replay seeds, anonymous token
 format, database schema, achievement IDs, or locked-content presentation.
 
+## GTA street racing leaderboards (v11)
+
+`/gta/` has opt-in, per-course time rankings. It reuses the existing anonymous
+bearer, `ARCHIVE` binding and `HedoArchive` SQLite object `global-v3`. No new
+Worker, namespace, deployment secret or career replay cohort is required.
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| GET | `/api/gta/leaderboard?raceId=…` | Public top twenty: `{version,raceId,entries,totalDrivers}`; entries contain only `{driverCode,elapsedMs,position,vehicleId}` |
+| GET | `/api/gta/leaderboard/mine` | Existing bearer; this player's driver code and published best receipts, at most one per course |
+| POST | `/api/gta/leaderboard` | Existing bearer; exact `{runId,proof}`; returns `{recorded,duplicate,improved,entry,driverCode}` |
+| DELETE | `/api/gta/leaderboard?raceId=…` | Existing bearer; withdraw own course best; returns `{removed,raceId}` |
+
+`proof` is `{version:1,raceId,vehicleId,samples}` with bounded `[tick,x,z,speed]`
+samples. Fixed steps, a stationary valid start, speed/acceleration bounds,
+building intersections, route departure and sequential checkpoint crossings
+are checked by the shared `dist/gta/racing-proof.js`. Finish and split times
+are derived from the proof, never accepted as caller-supplied scores. At most
+6,002 samples cover the longest 100-second route. This is trajectory plausibility
+validation, not a full authoritative replay of dynamic traffic, combat and
+vehicle physics; local funds, ownership, upgrades and achievements are not
+server-authoritative rewards.
+
+The GTA POST uses a streaming 256 KiB body cap; ordinary public JSON endpoints
+retain their 64 KiB cap. Existing same-origin, bearer and request-rate guards
+apply. All responses remain no-store. New `gta_racers`,
+`gta_race_submissions` and `gta_race_bests` tables are created additively in the
+existing object. They store an independent random public driver code, player/run
+ownership, a canonical proof hash and numeric result receipts. Raw trajectories,
+client storage, credentials and career contents are not retained in these tables
+or exposed publicly. Best updates and immutable receipts commit atomically.
+
+Each player has one best per course; a slower run does not replace it. Equal
+millisecond times share competition ranks (1, 1, 3). Same-ID/same-owner/same-proof
+retries return the existing receipt; changing its owner or proof returns 409.
+The POST entry describes the submitted run, even when `improved` is false.
+Withdrawal removes the public best, preserving its receipt for idempotency;
+explicitly resubmitting that same proof can publish it again. Withdrawal never
+changes local game funds, personal bests, achievements or saved vehicles.
+
+The browser uploads only after a player's explicit action. Its one-slot
+`hedo-gta-ranking-pending-v1` queue binds the exact body to a SHA-256 digest of
+the existing token. Network failures retain it for manual retry; another run
+cannot overwrite it. This key participates in the existing domain migration,
+including conflict detection, without changing the anonymous identity. Public
+reads do not create a credential. The in-memory 60-second board cache is
+invalidated after publication or withdrawal, including in-flight older reads.
+No networking or storage writes run in the driving loop. Local v5 progress
+continues accepting v1–v4 saves; achievement cash is replayed locally from
+fixed catalog rules and can be claimed only once.
+
+Targeted checks: `node --test tests/gta-racing*.test.mjs
+tests/gta-leaderboard-client.test.mjs tests/api-gta-racing.test.mjs`. API tests
+exercise isolated real SQLite Durable Objects and synthetic driving proofs;
+they must not seed the production rankings. Production smoke runs use actual
+browser gameplay and withdraw only their own test rankings afterward.
+
 ## Moving Cards anonymous game
 
 `/cards/` is the standalone card collection and turn-based campaign. It reuses

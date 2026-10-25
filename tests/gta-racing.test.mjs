@@ -245,7 +245,10 @@ test('rank and sequential timestamps determine street prizes; third place gets n
   const { state: initial } = ready('block-sprint');
   const lost = followRoute('block-sprint', { rivals: initial.rivals.map(rival => ({ ...rival, finished: true, progress: 1, finishTime: .1 })) });
   assert.equal(lost.state.result.reason, 'lost'); assert.equal(lost.state.rank, 3);
-  assert.equal(lost.state.result.reward, 0); assert.equal(settleRace(lost.progress, lost.state).ok, false);
+  assert.equal(lost.state.result.reward, 0);
+  const settled = settleRace(lost.progress, lost.state);
+  assert.equal(settled.ok, true); assert.equal(settled.reward, 0); assert.equal(settled.progress.money, lost.progress.money);
+  assert.equal(settled.progress.ledger.at(-1).kind, 'race-finish');
 });
 
 test('settlement uses catalog rewards, is idempotent, survives reload and allows separately completed reruns', () => {
@@ -293,7 +296,7 @@ test('invalid or forged receipt facts stop the valid prefix, preserving existing
   for (const version of [1, 2, 3]) {
     const oldLedger = version === 3 ? [buy] : version === 2 ? [{ id: 'paint', vehicleId: 'starter-sedan', kind: 'paint', value: 'pearl', missionCount: 0 }] : [];
     const legacy = sanitizeProgress({ version, completed: [MISSIONS[0].id], ledger: [...oldLedger, receipt()], money: 9999 });
-    assert.equal(legacy.version, 4);
+    assert.equal(legacy.version, 5);
     assert.equal(legacy.money, version === 3 ? 600 : version === 2 ? 790 : 850);
     assert.equal(legacy.ledger.length, oldLedger.length);
   }

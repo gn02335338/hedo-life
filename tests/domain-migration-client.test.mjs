@@ -60,8 +60,8 @@ test('automatic first import preserves exact raw saves, legacy collections, side
   assert.equal(readBackups(local).length, 0, 'empty destination must not duplicate a potentially near-quota source save');
 });
 
-test('different card practice progress or pending requests require a migration choice and preserve both copies',async()=>{
- for(const key of ['hodo-cards-practice-v1','hodo-cards-pending-v1']){
+test('different sidegame progress or pending requests require a migration choice and preserve both copies',async()=>{
+ for(const key of ['hodo-cards-practice-v1','hodo-cards-pending-v1','hedo-gta-ranking-pending-v1']){
   const incoming=payload({'hedo-anonymous-v1':firstToken,[key]:'source-card-state'});
   const local=storage({'hedo-anonymous-v1':firstToken,[key]:'destination-card-state'}),session=storage();
   assert.equal(migrationConflict(incoming,captureSnapshot(local,session)),'sidegame');

@@ -14,6 +14,8 @@ import { LeaderboardStore, validateLeaderboardFilter, validateLeaderboardNicknam
 import { deriveLeaderboardScoreV56, leaderboardEligibilityV56, SCORE_VERSION_V56 } from '../dist/leaderboard-score-v56.js';
 import { handleDomainMigration } from './domain-migration.js';
 import { CardGameStore, CardRateGuard, validateCardLifeClaim } from './card-game.js';
+import { GtaRacingStore, validateGtaRaceFilter } from './gta-racing.js';
+import { RACE_PROOF_LIMITS } from '../dist/gta/racing-proof.js';
 
 const ENDING_IDS = new Set(ENDINGS.map(ending => ending.id));
 
@@ -176,6 +178,10 @@ export class HedoArchive extends DurableObject {
     return this.leaderboards ||= new LeaderboardStore(this.sql, this.ctx.storage);
   }
 
+  gtaRacingStore() {
+    return this.gtaRacing ||= new GtaRacingStore(this.sql, this.ctx.storage);
+  }
+
   cardStore() {
     return this.cards ||= new CardGameStore(this.sql, this.ctx.storage);
   }
@@ -331,6 +337,27 @@ export class HedoArchive extends DurableObject {
         return await this.adminPrivate.fetch(request);
       }
       if (['POST', 'DELETE', 'PATCH'].includes(request.method)) assertSameOrigin(request);
+      if (path === '/api/gta' || path.startsWith('/api/gta/')) {
+        const url = new URL(request.url);
+        if (path === '/api/gta/leaderboard' && request.method === 'GET') {
+          this.rate.check(`gta-board:${request.headers.get('CF-Connecting-IP') || 'unknown'}`);
+          return json(this.gtaRacingStore().public(validateGtaRaceFilter(url)));
+        }
+        if (path === '/api/gta/leaderboard' && request.method === 'DELETE') {
+          const playerId = await this.authenticate(request);
+          return json(this.gtaRacingStore().remove(playerId, validateGtaRaceFilter(url)));
+        }
+        if (url.search) throw new ApiError(400, 'invalid_gta_query', '這個競速端點不接受額外查詢欄位。');
+        if (path === '/api/gta/leaderboard' && request.method === 'POST') {
+          const playerId = await this.authenticate(request);
+          return json(await this.gtaRacingStore().submit(playerId, await readJson(request, { maxBytes: RACE_PROOF_LIMITS.maxBytes })));
+        }
+        if (path === '/api/gta/leaderboard/mine' && request.method === 'GET') {
+          return json(this.gtaRacingStore().mine(await this.authenticate(request)));
+        }
+        if (['/api/gta/leaderboard', '/api/gta/leaderboard/mine'].includes(path)) throw new ApiError(405, 'method_not_allowed', '這個競速端點不接受此操作。');
+        throw new ApiError(404, 'not_found', '找不到這個競速端點。');
+      }
       if (path === '/api/cards' || path.startsWith('/api/cards/')) {
         if (new URL(request.url).search) throw new ApiError(400, 'invalid_card_query', '卡牌端點不接受額外查詢欄位。');
         if (path === '/api/cards' && request.method === 'GET') return json(this.cardStore().snapshot(await this.authenticate(request, { cards: true })));

@@ -1,5 +1,5 @@
 import { BUILDINGS, WORLD_LIMIT } from './world.js';
-import { RACE_CATALOG, RACING_RULES, validRaceReceipt } from './racing-catalog.js';
+import { RACE_CATALOG, RACING_RULES, validRaceCompletion, validRaceReceipt } from './racing-catalog.js';
 import { GARAGE_RULES, replayGarageProgress } from './garage.js';
 import { segmentClear } from './police.js';
 
@@ -129,7 +129,7 @@ export function startRace(progress, raceId, runId, input = {}) {
 function finish(state, phase, reason, success = false) {
   state.phase = phase;
   const race = raceById(state.raceId);
-  const receipt = success ? { raceId: state.raceId, vehicleId: state.vehicleId, elapsedMs: Math.round(state.elapsed * 1000),
+  const receipt = success || reason === 'lost' ? { raceId: state.raceId, vehicleId: state.vehicleId, elapsedMs: Math.round(state.elapsed * 1000),
     rank: state.rank, checkpointTimes: [...state.checkpointTimes] } : null;
   state.result = { success, reason, message: RACE_MESSAGES[reason] || RACE_MESSAGES.cancelled,
     elapsed: state.elapsed, rank: state.rank, reward: success ? race.reward : 0, receipt };
@@ -250,15 +250,17 @@ export function stepRace(state, input = {}, dt = 0) {
 
 export function settleRace(progress, state) {
   const current = replayGarageProgress(progress), fail = reason => ({ ...reject(reason), progress: current, reward: 0 });
-  if (state?.phase !== 'finished' || !state.result?.success || !validId(state.runId) || !Array.isArray(state.checkpointTimes)) return fail('invalid-result');
+  const rewarded = state?.phase === 'finished' && state.result?.success;
+  const completed = rewarded || state?.phase === 'failed' && state.result?.reason === 'lost';
+  if (!completed || !validId(state.runId) || !Array.isArray(state.checkpointTimes)) return fail('invalid-result');
   if (current.ledger.some(entry => entry.id === state.runId)) return fail('duplicate');
   if (current.ledger.length >= GARAGE_RULES.maxLedger) return fail('ledger-full');
   const receipt = { raceId: state.raceId, vehicleId: state.vehicleId, elapsedMs: Math.round(state.elapsed * 1000),
     rank: state.rank, checkpointTimes: [...state.checkpointTimes] };
-  if (!current.ownedVehicleIds.includes(state.vehicleId) || !validRaceReceipt(receipt)) return fail('invalid-result');
-  const record = { id: state.runId, kind: 'race', ...receipt, missionCount: current.completed.length };
+  if (!current.ownedVehicleIds.includes(state.vehicleId) || !validRaceCompletion(receipt) || rewarded !== validRaceReceipt(receipt)) return fail('invalid-result');
+  const record = { id: state.runId, kind: rewarded ? 'race' : 'race-finish', ...receipt, missionCount: current.completed.length };
   const next = replayGarageProgress({ ...current, ledger: [...current.ledger, record] });
   if (next.ledger.length !== current.ledger.length + 1) return fail('invalid-result');
-  const reward = raceById(state.raceId).reward;
-  return { ok: true, reason: null, message: `完賽獎金 $${reward} 已加入城市基金。`, progress: next, reward };
+  const reward = rewarded ? raceById(state.raceId).reward : 0;
+  return { ok: true, reason: null, message: reward ? `完賽獎金 $${reward} 已加入城市基金。` : '有效完賽時間已保存；這次名次未達賽事獎金條件。', progress: next, reward };
 }

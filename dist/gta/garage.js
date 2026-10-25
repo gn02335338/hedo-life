@@ -1,7 +1,8 @@
 import { LOCATIONS, MISSIONS } from './world.js';
 import { createFleet } from './fleet.js';
 import { OWNED_CAR_CATALOG, PRIVATE_GARAGE_RULES } from './ownership-catalog.js';
-import { RACE_CATALOG, validRaceReceipt } from './racing-catalog.js';
+import { RACE_CATALOG, validRaceCompletion, validRaceReceipt } from './racing-catalog.js';
+import { createRacingFacts, appendRacingFact, achievementUnlocked, raceAchievement, deriveRacingRecords } from './racing-records.js';
 
 export const GARAGE_PALETTE = Object.freeze([
   { id: 'pearl', name: '珍珠白', color: 0xe8e9e3 },
@@ -54,7 +55,7 @@ export function getPerformanceProfile(tuning = {}) {
 }
 
 export function createGarageProgress() {
-  return { version: 4, completed: [], money: GARAGE_RULES.startingMoney, ledger: [], customizations: {},
+  return { version: 5, completed: [], money: GARAGE_RULES.startingMoney, ledger: [], customizations: {},
     ownedVehicleIds: [], selectedOwnedId: null, ownedVehicleHealth: {} };
 }
 
@@ -81,7 +82,7 @@ function actionDetails(customization, vehicleId, action) {
 export function replayGarageProgress(raw) {
   const progress = createGarageProgress();
   try {
-    if (!isRecord(raw) || !Object.hasOwn(raw, 'version') || ![1, 2, 3, 4].includes(raw.version)
+    if (!isRecord(raw) || !Object.hasOwn(raw, 'version') || ![1, 2, 3, 4, 5].includes(raw.version)
       || !Object.hasOwn(raw, 'completed') || !Array.isArray(raw.completed)) return progress;
     const completed = new Set(raw.completed.slice(0, 64).filter(id => typeof id === 'string'));
     for (const mission of MISSIONS) {
@@ -94,7 +95,7 @@ export function replayGarageProgress(raw) {
   try { entries = Object.hasOwn(raw, 'ledger') && Array.isArray(raw.ledger) ? raw.ledger.slice(0, GARAGE_RULES.maxLedger) : []; }
   catch { return progress; }
   let spent = 0, raceEarnings = 0, lastMissionCount = 0;
-  const transactionIds = new Set();
+  const transactionIds = new Set(), claimedAchievements = new Set(), racingFacts = createRacingFacts();
   for (const entry of entries) {
     try {
       if (!isRecord(entry) || !isId(entry.id) || transactionIds.has(entry.id) || !originalCars.has(entry.vehicleId)
@@ -111,6 +112,14 @@ export function replayGarageProgress(raw) {
       } else if (entry.kind === 'race') {
         if (raw.version < 4 || !catalog || !owned || !validRaceReceipt(entry)) break;
         action = { ok: true, kind: 'race', cost: 0, reward: RACE_CATALOG.find(race => race.id === entry.raceId).reward };
+      } else if (entry.kind === 'race-finish') {
+        if (raw.version < 5 || !catalog || !owned || !validRaceCompletion(entry) || validRaceReceipt(entry)) break;
+        action = { ok: true, kind: 'race-finish', cost: 0, reward: 0 };
+      } else if (entry.kind === 'achievement') {
+        const achievement = raceAchievement(entry.achievementId), source = racingFacts.unlockedBy[entry.achievementId];
+        if (raw.version < 5 || !catalog || !owned || !achievement || claimedAchievements.has(achievement.id)
+          || !achievementUnlocked(achievement.id, racingFacts) || source?.runId !== entry.earnedRunId || source?.vehicleId !== entry.vehicleId) break;
+        action = { ok: true, kind: 'achievement', cost: 0, reward: achievement.reward };
       } else {
         if (catalog && !owned) break;
         action = actionDetails(customization, entry.vehicleId, entry);
@@ -119,10 +128,13 @@ export function replayGarageProgress(raw) {
       if (!action.ok || available < action.cost) break;
       const record = { id: entry.id, vehicleId: entry.vehicleId, kind: action.kind,
         ...(action.value ? { value: action.value } : {}), missionCount: entry.missionCount,
-        ...(action.kind === 'race' ? { raceId: entry.raceId, elapsedMs: entry.elapsedMs, rank: entry.rank, checkpointTimes: [...entry.checkpointTimes] } : {}) };
+        ...(['race', 'race-finish'].includes(action.kind) ? { raceId: entry.raceId, elapsedMs: entry.elapsedMs, rank: entry.rank, checkpointTimes: [...entry.checkpointTimes] } : {}),
+        ...(action.kind === 'achievement' ? { achievementId: entry.achievementId, earnedRunId: entry.earnedRunId } : {}) };
       progress.ledger.push(record); transactionIds.add(record.id);
       lastMissionCount = record.missionCount; spent += action.cost;
       raceEarnings += action.reward || 0;
+      if (['race', 'race-finish'].includes(action.kind)) appendRacingFact(racingFacts, record, customization.upgrades);
+      if (action.kind === 'achievement') claimedAchievements.add(record.achievementId);
       if (action.kind === 'purchase') progress.ownedVehicleIds.push(record.vehicleId);
       if (action.kind === 'purchase' || action.kind === 'recover' || catalog && action.kind === 'repair') progress.ownedVehicleHealth[record.vehicleId] = 100;
       if (action.kind === 'paint') customization.colorId = action.value;
@@ -214,4 +226,28 @@ export function applyGarageAction(progress, vehicle, action, context = {}) {
     burnRemaining: 0, wreckAge: 0, burnSource: null, impact: false, impactSpeed: 0, impactVehicleId: null };
   return { ok: true, reason: null, message: quote.kind === 'repair' ? '車輛已完整修復。' : quote.kind === 'paint' ? '新車色已完成。' : '性能升級已完成。',
     cost: quote.cost, progress: next, vehicle: updated, clearCollisionCooldown: quote.kind === 'repair' };
+}
+
+// A reward is a separate, append-only receipt after its qualifying race facts.
+// Importing a v1-v4 save never backdates income or changes prior affordability.
+export function claimRaceAchievements(progress) {
+  const current = replayGarageProgress(progress), records = deriveRacingRecords(current);
+  const pending = records.achievements.filter(item => item.claimable);
+  const available = Math.max(0, GARAGE_RULES.maxLedger - current.ledger.length);
+  const unlocked = pending.slice(0, available), ids = new Set(current.ledger.map(entry => entry.id));
+  const claims = unlocked.map(achievement => {
+    const baseId = `achievement-${achievement.id}`;
+    let id = baseId, suffix = 0;
+    while (ids.has(id)) { suffix += 1; id = `${baseId}-${suffix}`; }
+    ids.add(id);
+    return { id, kind: 'achievement', vehicleId: achievement.vehicleId, missionCount: current.completed.length,
+      achievementId: achievement.id, earnedRunId: achievement.unlockedBy };
+  });
+  const next = claims.length ? replayGarageProgress({ ...current, ledger: [...current.ledger, ...claims] }) : current;
+  const accepted = next.ledger.length - current.ledger.length;
+  const earned = unlocked.slice(0, accepted), reward = earned.reduce((sum, item) => sum + item.reward, 0);
+  const pendingCount = pending.length - earned.length;
+  return { ok: pending.length === 0 || earned.length > 0, reason: pendingCount ? 'ledger-full' : null,
+    message: reward ? `成就獎勵 $${reward} 已加入城市基金。` : pendingCount ? '本機交易紀錄已滿，成就獎勵尚未領取。' : '目前沒有待領的成就獎勵。',
+    progress: next, reward, unlocked: earned, pendingCount };
 }

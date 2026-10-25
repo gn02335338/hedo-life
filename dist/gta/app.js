@@ -8,13 +8,17 @@ import { createGameInput } from './input.js';
 import { createPoliceState, reportCrime, stepPolice } from './police.js';
 import { createCombatState, selectWeapon, startReload, stepCombat, applyDamage, getPoliceCombatants } from './combat.js';
 import { freshProgress, loadProgress, saveProgress, completeMission } from './progress.js';
-import { GARAGE_PALETTE, GARAGE_CATALOG, GARAGE_RULES, garageEligibility, quoteGarageAction, applyGarageAction, applyGarageCustomizations, getPerformanceProfile } from './garage.js';
+import { GARAGE_PALETTE, GARAGE_CATALOG, GARAGE_RULES, garageEligibility, quoteGarageAction, applyGarageAction, applyGarageCustomizations, getPerformanceProfile, claimRaceAchievements } from './garage.js';
 import { PRIVATE_GARAGE_RULES, applyOwnershipAction } from './ownership.js';
 import { isOwnedVehicle, ownedHealth, snapshotOwnedVehicles, retrieveOwnedVehicle, storeOwnedVehicle } from './ownership-session.js';
 import { createCollectionPanel } from './collection-ui.js';
 import { RACE_CATALOG, RACING_RULES } from './racing-catalog.js';
 import { createRaceState, raceEligibility, startRace, stepRace, cancelRace, settleRace } from './racing.js';
 import { createRacingPanel, raceTime } from './racing-ui.js';
+import { deriveRacingRecords, personalBestSnapshot, raceSplitComparison, compareRaceResult } from './racing-records.js';
+import { createRaceProof, appendRaceProof, finalizeRaceProof } from './racing-proof.js';
+import { recordTime, recordDelta } from './racing-records-ui.js';
+import { createLeaderboardClient } from './leaderboard-client.js';
 
 const $ = id => document.getElementById(id);
 const panel = $('panel');
@@ -44,6 +48,10 @@ const controlHint = (desktop, touch) => touchControls.matches ? touch : desktop;
 let pendingJump = false;
 let active = null, waypoint = null, lastImpact = -10, time = 0;
 let race = createRaceState(), selectedRaceId = RACE_CATALOG[0].id;
+let raceTab='races',raceBeforeRecords=null,raceBest=null,raceSplit=null,raceProof=null;
+const rankingClient=createLeaderboardClient({storage}),raceUploadCandidates=new Map();
+let rankingScope='personal',rankingStatus='idle',rankingData=null,rankingMine=null,rankingError='',rankingMineError='';
+let rankingBusy=false,rankingMessage='',rankingPending=null,rankingPendingError='',rankingRequest=0;
 let lastFrame = 0, raf = 0, lastHud = 0, toastTimer;
 let audio, tone, volume, sirenTone, sirenVolume, soundEnabled = false;
 let restoreFocus = null;
@@ -111,60 +119,136 @@ function navigateRace(id=selectedRaceId) {
   selectedRaceId=id;waypoint='racing';panel.close();updateHud();
   notify('發車區已標記。開自己的車前往，車頭朝東、停穩後報名。');
 }
-function showRaces(message='') {
+function renderRaces(message='',preserve=false) {
   if(!started||pendingDeath||pendingArrest||transition)return;
-  flushOwnedHealth(true);
+  const records=deriveRacingRecords(progress);
   const entries=RACE_CATALOG.map(item=>{
-    const receipts=progress.ledger.filter(row=>row.kind==='race'&&row.raceId===item.id);
     return {id:item.id,title:item.name,description:item.description,route:item.route,length:item.distance,
       mode:item.type==='time-trial'?'TIME TRIAL / 計時':'STREET RACE / 街頭賽',limit:item.timeLimit,
       rewardLabel:(item.type==='time-trial'?'限時完賽':item.maxRank===1?'奪冠':'前 '+item.maxRank+' 名')+' +$'+item.reward,
-      best:receipts.length?Math.min(...receipts.map(row=>row.elapsedMs))/1000:null,
+      best:records.byRace[item.id].best?.elapsedMs/1000||null,
       eligible:raceEligibility(progress,item.id,raceContext())};
   });
   const wrap=createRacingPanel({entries,race,car:currentCar(),money:progress.money,message,
     onStart:beginRace,onNavigate:navigateRace,onCollection:()=>showCollection(),onGarage:()=>showGarage(),
-    onRetire:()=>{abortRace('cancelled');panel.close();updateHud();},onResume:()=>panel.close()});
+    onRetire:()=>{abortRace('cancelled');panel.close();updateHud();},onResume:()=>panel.close(),
+    tab:raceTab,records,raceId:selectedRaceId,
+    board:{scope:rankingScope,status:rankingStatus,data:rankingData?.raceId===selectedRaceId?rankingData:null,mine:rankingMine,
+      error:rankingError,mineError:rankingMineError,pending:rankingPending,pendingError:rankingPendingError,busy:rankingBusy,
+      message:rankingMessage,candidate:raceUploadCandidates.get(selectedRaceId)||null},
+    onTab:tab=>{raceTab=tab;showRaces();},
+    onSelectRace:id=>{selectedRaceId=id;rankingData=null;rankingError='';showRaces();},
+    onScope:scope=>{rankingScope=scope;showRaces();},
+    onChallenge:id=>{raceTab='races';navigateRace(id);notify('已標記發車區。再次報名後，沿途比較個人最佳分段。');},
+    onRefresh:()=>loadRaceRankings(true),onPublish:publishRaceResult,onRetry:()=>publishRaceResult(null),onWithdraw:withdrawRaceResult,
+    onClaim:()=>{const result=claimRaceAchievements(progress);progress=result.progress;const saved=saveProgress(storage,progress);updateHud();renderRaces((result.message||'成就獎金已領取。')+(saved?'':' 瀏覽器無法儲存，請保留本頁。'),true);}});
+  if(preserve&&panel.open&&$('race-panel')) {
+    const scroll=panel.scrollTop,focusId=document.activeElement?.id;
+    $('race-panel').replaceWith(wrap);panel.scrollTop=scroll;
+    if(focusId)$(focusId)?.focus({preventScroll:true});
+    return;
+  }
   openPanel('街頭賽事','AFTERHOURS / 把性能跑出來',wrap);
+}
+function showRaces(message='') {
+  if(!started||pendingDeath||pendingArrest||transition)return;
+  flushOwnedHealth(true);renderRaces(message);
+  if(raceTab==='records'&&!raceLive())void loadRaceRankings();
+}
+function refreshRacePanel() { if(panel.open&&$('race-panel')&&!raceLive())renderRaces('',true); }
+async function loadRaceRankings(refresh=false) {
+  const request=++rankingRequest,id=selectedRaceId,global=rankingScope==='global';
+  rankingPendingError='';
+  if(global){rankingStatus='loading';rankingError='';rankingMineError='';}
+  refreshRacePanel();
+  const [pending,board,mine]=await Promise.allSettled([rankingClient.pending(),global?rankingClient.board(id,{refresh}):null,global?rankingClient.mine():null]);
+  if(request!==rankingRequest)return;
+  rankingPending=pending.status==='fulfilled'?pending.value:null;
+  rankingPendingError=pending.status==='rejected'?pending.reason.message:'';
+  if(global){
+    rankingStatus=board.status==='fulfilled'?'ready':'error';
+    if(board.status==='fulfilled')rankingData=board.value;else rankingError=board.reason.message;
+    if(mine.status==='fulfilled')rankingMine=mine.value;else rankingMineError=mine.reason.message;
+  }
+  refreshRacePanel();
+}
+async function publishRaceResult(id) {
+  if(rankingBusy)return;
+  const candidate=id?raceUploadCandidates.get(id):null;
+  if(id&&!candidate)return;
+  rankingBusy=true;rankingMessage='正在核對行駛紀錄…';refreshRacePanel();
+  try {
+    const result=await(id?rankingClient.submit({runId:candidate.runId,proof:candidate.proof}):rankingClient.retry());
+    rankingMessage=result.improved?'成績已上榜 · '+result.entry.driverCode+' · '+recordTime(result.entry.elapsedMs):'成績已確認，榜單保留你較快的紀錄。';
+    selectedRaceId=result.entry.raceId;rankingScope='global';
+  } catch(error){rankingMessage=error.message||'上榜暫時未完成，可稍後重試。';}
+  finally {rankingBusy=false;await loadRaceRankings(true);}
+}
+async function withdrawRaceResult(id) {
+  if(rankingBusy)return;
+  rankingBusy=true;rankingMessage='正在撤下公開紀錄…';refreshRacePanel();
+  try {await rankingClient.withdraw(id);rankingMessage='已撤下這條賽道的公開紀錄，個人最佳與成就仍保留。';}
+  catch(error){rankingMessage=error.message||'撤榜尚未確認，請重試。';}
+  finally{rankingBusy=false;await loadRaceRankings(true);}
 }
 function beginRace(id) {
   if(raceLive())return;
   const result=startRace(progress,id,crypto.randomUUID(),raceContext());
   if(!result.ok){showRaces(result.message);return;}
+  raceBeforeRecords=deriveRacingRecords(progress);raceBest=personalBestSnapshot(raceBeforeRecords,id);raceSplit=null;
+  raceProof=createRaceProof(id,controlledId);
   race=result.state;selectedRaceId=id;waypoint=null;clearInput();actor={...actor,speed:0,steerAngle:0,yawVelocity:0};
   fleet=fleet.map(car=>car.id===controlledId?{...car,...actor}:car);
   panel.close();updateHud();notify('3 秒後起跑。依序穿過檢查點，Shift 可加速。');
 }
 function abortRace(reason='cancelled',announce=true) {
   if(!raceLive())return;
-  race=cancelRace(race,reason);needsRender=true;
+  race=cancelRace(race,reason);raceProof=null;raceSplit=null;needsRender=true;
   if(announce)notify(race.result?.message||'本場已退出，沒有發放獎金。');
 }
 function showRaceResult() {
+  const comparison=compareRaceResult(raceBeforeRecords||deriveRacingRecords(progress),race),proof=finalizeRaceProof(raceProof);
+  raceProof=null;
   actor={...actor,speed:0,steerAngle:0,yawVelocity:0};
   fleet=fleet.map(car=>car.id===controlledId?{...car,...actor}:car);
   flushOwnedHealth();
   const completed=race.phase==='finished'||race.result?.reason==='lost',definition=RACE_CATALOG.find(item=>item.id===race.raceId);
   const result=settleRace(progress,race);progress=result.progress;
+  const achievements=result.ok?claimRaceAchievements(progress):{progress,reward:0,unlocked:[],pendingCount:0};progress=achievements.progress;
+  if(result.ok&&proof)raceUploadCandidates.set(race.raceId,{runId:race.runId,proof,elapsedMs:Math.round(race.elapsed*1000)});
   const saved=saveProgress(storage,progress);needsRender=true;updateHud();
   const wrap=el('div','race-result');wrap.id='race-result';
   wrap.append(el('span','garage-eyebrow',completed?'FINISH LINE / 完成比賽':'RACE ENDED / 本場結束'),
     el('p','result-message',completed?(result.reward>0?'這一趟，性能換成了獎金。':'你通過了終點。下一場再挑戰獎金名次。'):race.result?.message||'本場未完成，沒有發放獎金。'));
   const stats=el('div','race-result-stats');
-  for(const [label,value] of [['完賽時間',raceTime(race.elapsed)],['名次',completed?String(race.rank):'DNF'],['獎金','+$'+(result.reward||0)]]){
+  for(const [label,value] of [['完賽時間',recordTime(race.elapsed*1000)],['名次',completed?String(race.rank):'DNF'],['賽事獎金','+$'+(result.reward||0)]]){
     const item=el('div','',label);item.append(el('strong','',value));stats.append(item);
   }
-  wrap.append(stats,el('p','help-note',saved?'獎金、基金與愛車紀錄已保存在這台裝置。':'瀏覽器目前無法儲存，這次變更只保留至本次遊玩結束。'));
-  if(race.phase==='finished'&&!result.ok&&result.message)wrap.append(el('p','help-note',result.message));
+  wrap.append(stats);
+  if(result.ok){
+    const pb=el('div','race-result-pb'+(comparison.isPersonalBest?' is-best':''));pb.id='race-result-pb';
+    pb.append(el('span','garage-eyebrow',comparison.isFirst?'FIRST RECORD / 第一個基準':comparison.isPersonalBest?'NEW PERSONAL BEST / 新個人最佳':'PERSONAL BEST / 繼續挑戰'),
+      el('strong','',comparison.isFirst?'第一筆完賽紀錄已留下。':recordDelta(comparison.deltaMs)));
+    if(comparison.previousBest)pb.append(el('small','','上一個最佳 '+recordTime(comparison.previousBest.elapsedMs)));wrap.append(pb);
+  }
+  if(achievements.unlocked.length){
+    const bonus=el('div','race-result-achievements');bonus.id='race-result-achievements';bonus.append(el('strong','','成就獎勵 +$'+achievements.reward),el('p','',achievements.unlocked.map(item=>item.name).join(' · ')));wrap.append(bonus);
+  }
+  if(achievements.pendingCount)wrap.append(el('p','help-note','仍有成就待領取，可到成就頁查看。'));
+  wrap.append(el('p','help-note',saved?'紀錄、獎金、成就與愛車已保存在這台裝置。':'瀏覽器目前無法儲存，這次變更只保留至本次遊玩結束。'));
+  if(completed&&!result.ok&&result.message)wrap.append(el('p','help-note',result.message));
   const actions=el('div','race-result-actions');const leave=button('回到街頭 ↗','primary',()=>panel.close());leave.id='race-continue';
   const garage=button('導航去修車／改裝','secondary',()=>navigateGarage());garage.id='race-garage';
-  actions.append(leave,garage,button('查看下一場賽事','secondary',()=>showRaces()));wrap.append(actions);
+  const rankings=button('比較紀錄／匿名上榜','secondary',()=>{selectedRaceId=race.raceId;raceTab='records';rankingScope='global';showRaces();});rankings.id='race-result-rankings';
+  actions.append(leave,garage,button('查看下一場賽事','secondary',()=>{raceTab='races';showRaces();}),rankings,button('查看成就','secondary',()=>{raceTab='achievements';showRaces();}));wrap.append(actions);
   openPanel(definition?.name||'街頭競速',completed?'RACE COMPLETE':'RACE ENDED',wrap);
 }
 function advanceRace(dt) {
   if(!raceLive())return;
   const before=race.phase,checkpoint=race.checkpointIndex;
   race=stepRace(race,{...raceContext(),traffic:[...fleet,...police.units]},dt);
+  if(raceProof&&(race.phase==='racing'||race.phase==='finished'||race.result?.reason==='lost'))appendRaceProof(raceProof,race.elapsed,race.lastPlayer,actor.speed);
+  if(checkpoint!==race.checkpointIndex)raceSplit=raceSplitComparison(race,raceBest);
   if(!raceLive()){showRaceResult();return;}
   if(before==='countdown'&&race.phase==='racing')notify('GO！下一個檢查點已標記。');
   else if(race.checkpointIndex!==checkpoint)notify('通過檢查點 '+race.checkpointIndex+' / '+RACE_CATALOG.find(item=>item.id===race.raceId).checkpoints.length+'。');
@@ -450,6 +534,7 @@ function showHelp() {
   wrap.append(el('p','help-note','B 或「車庫」開啟選購與收藏。可以步行到私人車庫，解除通緝後買車、取車或切換愛車。每款限一輛，共三個車位；開自己的車不會觸發失竊通緝。G 修車廠可為愛車改色與升級，每輛車各自保留。收存不會修復車況，報廢愛車可付 $120 救援；重開遊戲時所有愛車都在庫內保管。'));
   wrap.append(el('h3','','開自己的車，把獎金跑回來。'));
   wrap.append(el('p','help-note','T 或「賽事」查看三場街頭競速。開已購買的愛車到車庫前方發車區，無通緝、停穩後報名，三秒倒數後依序通過光圈。入門計時 $140、短途前兩名 $260、環城第一名 $420；可重賽。獎金會加入城市基金，可用於買車、修復與性能升級。改裝沿用真實駕駛性能；比賽中離車、報廢、死亡或被捕會中止且不發獎。暫停面板會凍結比賽。'));
+  wrap.append(el('p','help-note','賽事中心另有「排行榜」與「成就」。個人最佳與分段差距會在下次競速時比較；8項成就各提供一次獎金。完賽後可自行上傳成績，以匿名車手代號加入全站時間榜，亦可撤下。斷線仍能跑賽事並保留本機紀錄；未確認的上榜操作可手動重試。'));
   wrap.append(button('知道了，出發 ↗', 'primary', () => panel.close()));
   openPanel('你的城市操作手冊', 'HOW TO PLAY', wrap);
 }
@@ -675,7 +760,7 @@ function finishTransition() {
   clearInput();updateHud();
 }
 function resetSession() {
-  race=createRaceState();
+  race=createRaceState();raceProof=null;raceBest=null;raceSplit=null;raceBeforeRecords=null;
   flushOwnedHealth(true);
   actor=createPedestrian(FOOT_SPAWN);fleet=applyGarageCustomizations(createFleet(),progress);controlledId=null;transition=null;
   crowd=createCrowd();awareness=createAwareness();
@@ -835,12 +920,14 @@ function updateHud() {
   else if(waypoint==='collection'&&collectionDistance()<=PRIVATE_GARAGE_RULES.radius){notify(controlHint('抵達私人車庫。按 E 辦理買車、取車或收車。','抵達私人車庫。點「私人車庫」辦理服務。'));waypoint=null;}
   else if(waypoint==='racing'&&raceDistance()<=RACING_RULES.startRadius){notify('抵達發車區。車頭朝東、停穩後按 E 報名。');waypoint=null;}
   else if(!active&&waypoint&&!garageRoute&&!collectionRoute&&distance<5){notify('抵達'+target.name+'。');waypoint=null;}
+  $('race-live-delta').hidden=!raceLive()||!raceBest;
   if(raceLive()){
     const definition=RACE_CATALOG.find(item=>item.id===race.raceId),count=definition.checkpoints.length;
     setText('mission-title',race.phase==='countdown'?Math.ceil(race.countdownRemaining)+' · 準備起跑':raceTime(race.elapsed)+' · '+race.rank+'/'+(race.rivals.length+1)+' 名');
     setText('mission-detail',definition.name+' · 檢查點 '+Math.min(count,race.checkpointIndex+1)+' / '+count);
     setText('mission-step',race.phase==='countdown'?'車頭朝東 · 等待綠燈':'剩餘 '+Math.max(0,Math.ceil(definition.timeLimit-race.elapsed))+' 秒');
     setText('mission-distance',Math.round(distance)+' m');
+    if(raceBest){setText('race-live-delta',raceSplit?'第 '+(raceSplit.index+1)+' 段 · '+recordDelta(raceSplit.deltaMs):'最佳目標 '+recordTime(raceBest.elapsedMs));$('race-live-delta').dataset.ahead=String(Boolean(raceSplit&&raceSplit.deltaMs<=0));}
   }else if(waypoint==='racing'){setText('mission-title','前往街頭發車區');setText('mission-detail','開自己的車前往，停穩後報名。原廠車也能參加。');setText('mission-step','T 查看賽事 · E 報名');}
   setText('drive-hint',walking?(combat.weaponId==='unarmed'?'WASD 移動 · Shift 奔跑 · F 搶車 · Tab 武器':'左鍵／X 射擊 · 右鍵／Z 瞄準 · R 換彈 · Q 換武器'):'W 油門 · S 煞車／倒車 · A/D 轉向 · Space 手煞車 · F 下車');
   const brake=document.querySelector('[data-control="brake"]'),boost=document.querySelector('[data-control="boost"]');
