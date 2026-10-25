@@ -10,5 +10,6 @@
 .time-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:9px;padding-top:8px;border-top:1px solid #daddc6}
 .time-presets button{padding:6px 2px;min-height:28px;border:1px solid transparent;border-radius:4px;background:transparent;font-size:9px;color:#6a7b5d;white-space:nowrap}
 .time-presets button[aria-pressed=true]{background:#dce5cb;border-color:#becdaf;color:#365d3f;font-weight:600}
+.map-intro .explore-button{color:var(--ink)}
 @media(max-width:780px){.time-presets{gap:2px;margin-top:7px;padding-top:6px}.time-presets button{font-size:9px;min-height:30px;padding:5px 0}.life-panel-heading>span:last-child{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.life-pulse{animation:none}}

@@ -423,7 +423,9 @@ function setHour(value) {
   $('#time-icon').textContent = icon; $('#weather-icon').textContent = icon;
   $('#time-name').textContent = night ? '晚安小島' : evening ? '收工時分' : morning ? '早安小島' : '午間小島';
   $('#weather-label').textContent = night ? '月亮已經打卡下班' : evening ? '夕陽準時，會議不一定' : '晴時偶有會議';
-  document.body.classList.toggle('night', night);
+  // Follow the scene's sun arc for readable text over dawn/dusk water.
+  const dimSea = Math.sin((hour - 6) / 12 * Math.PI) < .28;
+  document.body.classList.toggle('night', dimSea);
   scene?.setHour(hour);
   document.querySelectorAll('[data-time-preset]').forEach(node => node.setAttribute('aria-pressed', String(Number(node.dataset.timePreset) === hour)));
 }
