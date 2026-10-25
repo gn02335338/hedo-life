@@ -6,12 +6,13 @@ import {isShareholderV58,validateShareholderInputV58} from '../dist/shareholders
 import {isRecruitmentV60} from '../dist/seed-profile-v60.js';
 import {isParticipationV63} from '../dist/participation-profile-v63.js';
 import {isPatronageProgressV69} from '../dist/patronage-progress-v69.js';
+import {CAST_IDS_V74,isCastV74} from '../dist/cast-v74.js';
 
 export const MAX_BODY_BYTES = 64 * 1024;
 export const MAX_ACTIONS = 160;
 const RAGE_TARGET_IDS=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','zoe','action','hester','simon','james','johnny']);
 
-const targetAllowed=(seed,target)=>RAGE_TARGET_IDS.has(target)||(target==='alice'&&isCareerContentV71(seed));
+const targetAllowed=(seed,target)=>RAGE_TARGET_IDS.has(target)||(target==='alice'&&isCareerContentV71(seed))||(CAST_IDS_V74.includes(target)&&isCastV74(seed));
 
 export class ApiError extends Error {
   constructor(status, code, message) {

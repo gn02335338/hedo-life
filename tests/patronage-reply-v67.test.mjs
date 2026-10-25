@@ -1,3 +1,4 @@
+import {CAST_IDS_V74} from '../dist/cast-v74.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PERSONAS} from '../dist/persona.js';
@@ -12,7 +13,7 @@ const outcomes=(run,target,event=work)=>withPatronageOutcomesV67(run,event,targe
 const expectation=(rows,key)=>rows.reduce((sum,row)=>sum+row.weight*(row.delta[key]||0),0)/rows.reduce((sum,row)=>sum+row.weight,0);
 const success=rows=>rows.filter(row=>['obliged','welcomed'].includes(row.reaction)).reduce((sum,row)=>sum+row.weight,0)/rows.reduce((sum,row)=>sum+row.weight,0);
 const clone=value=>structuredClone(value);
-const historicalTargets=Object.keys(PERSONAS).filter(target=>target!=='alice');
+const historicalTargets=Object.keys(PERSONAS).filter(target=>target!=='alice'&&!CAST_IDS_V74.includes(target));
 
 test('only a strictly versioned new appointment receives benefits; historical and private responses retain object identity',()=>{
  const run=fresh(),old=legacy(run,'sonny'),before=clone(old);

@@ -1,3 +1,4 @@
+import {ISLAND_ENCOUNTERS_V74} from './encounters-cast-v74.js';
 // Original, optional conversations for walking around the island.
 // Resolve each id through displayPersona; show only the selected response.
 // Completion belongs to the current page session, separate from career saves.
@@ -321,4 +322,5 @@ export const ENCOUNTERS = [
       { label: '替白開水畫一張基本款卡片', response: '你畫了一只透明杯，對方在下面寫「隨時可補充」。這張卡被放進空格，沒有閃亮邊框，倒成了整本最容易在今天用上的一張。' },
     ],
   },
+  ...ISLAND_ENCOUNTERS_V74,
 ];

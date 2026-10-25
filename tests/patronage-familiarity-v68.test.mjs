@@ -1,3 +1,4 @@
+import {CAST_IDS_V74} from '../dist/cast-v74.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -76,12 +77,12 @@ test('only strict fresh r68 seeds use the familiarity correction',()=>{
  for(const kind of ['n','s','d']){
   const seed='e39-r68-'+kind+'-'+ 'a'.repeat(22);assert.equal(isPatronageFamiliarityV68(seed),true);assert.equal(isPatronageFamiliarityV68({seed}),true);
  }
- for(const seed of ['e39-r67-n-'+'a'.repeat(22),'e39-r74-n-'+'a'.repeat(22),'e39-r68-x-'+'a'.repeat(22),'e39-r68-n-'+'a'.repeat(21),'e39-r68-n-'+'a'.repeat(23),'e39-r68-n-'+'A'.repeat(22),'e39-r68-n-'+'g'.repeat(22),'e39-r68-n-'+'a'.repeat(22)+'-extra',null])assert.equal(isPatronageFamiliarityV68(seed),false);
+ for(const seed of ['e39-r67-n-'+'a'.repeat(22),'e39-r75-n-'+'a'.repeat(22),'e39-r68-x-'+'a'.repeat(22),'e39-r68-n-'+'a'.repeat(21),'e39-r68-n-'+'a'.repeat(23),'e39-r68-n-'+'A'.repeat(22),'e39-r68-n-'+'g'.repeat(22),'e39-r68-n-'+'a'.repeat(22)+'-extra',null])assert.equal(isPatronageFamiliarityV68(seed),false);
 });
 
 test('natural negative r68 replies to every public character preserve encounters but cannot improve a meal through extra familiarity',()=>{
  const records=NATURAL_CASES.filter(row=>row.key.startsWith('negative-target-'));
- assert.equal(records.length,28);assert.deepEqual(records.map(row=>row.target).sort(),Object.keys(PERSONAS).filter(id=>id!=='alice').sort());
+ assert.equal(records.length,28);assert.deepEqual(records.map(row=>row.target).sort(),Object.keys(PERSONAS).filter(id=>id!=='alice'&&!CAST_IDS_V74.includes(id)).sort());
  for(const record of records){
   const {before,after,row,beforeProfiles:b,afterProfiles:a}=replayCase(record);
   assert.match(record.seed,/^e39-r68-[sd]-[0-9a-f]{22}$/);assert.equal(row.patronageOutcome.affinityDelta,record.affinityDelta);assert.ok(row.patronageOutcome.affinityDelta<0);

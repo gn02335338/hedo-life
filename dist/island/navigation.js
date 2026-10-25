@@ -45,6 +45,7 @@ const castLocalPositions = {
   captain:[2.4,1.6], simon:[-.9,-3.35], action:[-.5,1.8],
   owen:[2.3,2.55], sonny:[-1.25,-.8,1.23], kind:[1.1,.4,1.23],
   cindy:[1.35,2.35], james:[-.8,-2.6], johnny:[.4,-2.15],
+  wine:[3,-1.5], peter:[-3,-1.5], tony:[-3,-1.5], henry:[-3,-.5], mia:[-3,0],
 };
 export const CAST_POSITIONS = Object.freeze(Object.fromEntries(ISLAND_CAST.map(({id,districtId})=>{
   const [x,z,y=WALK_HEIGHT]=castLocalPositions[id];

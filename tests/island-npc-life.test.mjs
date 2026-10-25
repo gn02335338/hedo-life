@@ -23,11 +23,11 @@ function assertBridgesClear(life) {
   }
 }
 
-test('all 56 actors move and rest within their own safe ground, with swept collisions and clear bridge approaches', () => {
+test('all 61 actors move and rest within their own safe ground, with swept collisions and clear bridge approaches', () => {
   const life = createNpcLife({ residents: fullRoster() }), initial = new Map(life.getState().map(row => [row.key, row])), moved = new Set(), rested = new Set();
   assert.equal(initial.size, ISLAND_CAST.length + 27); let prior = life.getState(); const started = performance.now();
   for (let frame = 0; frame < 1200; frame++) {
-    const state = life.update(.1); assert.equal(state.length, 56);
+    const state = life.update(.1); assert.equal(state.length, 61);
     for (let i = 0; i < state.length; i++) {
       const row = state[i]; assert.ok(Number.isFinite(row.heading));
       assert.ok(isDistrictWalkable(row.position, row.districtId, .21), `${row.key}: water or building collision`);
@@ -38,8 +38,8 @@ test('all 56 actors move and rest within their own safe ground, with swept colli
     }
     assertSeparated(state); if (frame % 60 === 0) assertBridgesClear(life); prior = state;
   }
-  assert.equal(moved.size, 56, `actors that did not walk: ${[...initial.keys()].filter(key => !moved.has(key))}`);
-  assert.equal(rested.size, 56, 'every route includes unhurried waypoint stops');
+  assert.equal(moved.size, 61, `actors that did not walk: ${[...initial.keys()].filter(key => !moved.has(key))}`);
+  assert.equal(rested.size, 61, 'every route includes unhurried waypoint stops');
   assert.ok(performance.now() - started < 10000, 'bounded full-capacity simulation should complete without frame-by-frame pathfinding');
 });
 
@@ -108,11 +108,11 @@ test('mid-patrol arrivals find free space, retain surviving poses and never sile
   assert.deepEqual(poses(life).filter(row => row.key.startsWith('person:')), before, 'arrival must never relocate established colleagues');
   const arrival = life.getState().find(row => row.kind === 'resident'); assert.ok(arrival); assertSeparated(life.getState());
   assert.ok(gap(arrival.position, RESIDENT_POSITIONS[occupied.districtId][occupied.slot]) > .01, 'occupied home uses a free alternative');
-  life.setResidents(fullRoster()); assert.equal(life.getState().length, 56);
+  life.setResidents(fullRoster()); assert.equal(life.getState().length, 61);
   for (let generation = 0; generation < 12; generation++) {
     tick(life, 3); const before = poses(life); life.setResidents(fullRoster(generation ? `-${generation - 1}` : ''));
     if (!generation) assert.deepEqual(poses(life), before, 'unchanged roster must not reset current positions or route state');
-    life.setResidents(fullRoster(`-${generation}`)); assert.equal(life.getState().length, 56); assertSeparated(life.getState()); assertBridgesClear(life);
+    life.setResidents(fullRoster(`-${generation}`)); assert.equal(life.getState().length, 61); assertSeparated(life.getState()); assertBridgesClear(life);
   }
 });
 
@@ -158,5 +158,5 @@ test('all moving colleagues and residents remain approachable from the connected
       if (isWalkable({ x: start.x + nx * step, z: start.z + nz * step }, .22, obstacles, { dynamicCharacters: true })) queue.push([nx, nz]);
     }
   }
-  assert.equal(reached.size, 56, `unreachable: ${actors.filter(row => !reached.has(row.key)).map(row => row.key)}`);
+  assert.equal(reached.size, 61, `unreachable: ${actors.filter(row => !reached.has(row.key)).map(row => row.key)}`);
 });

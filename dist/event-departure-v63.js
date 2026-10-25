@@ -1,10 +1,12 @@
 import {isCaptainVoyageV73} from './captain-profile-v73.js';
 import {isParticipationV63} from './participation-profile-v63.js';
+import {CAST_IDS_V74,isCastV74} from './cast-v74.js';
 
 export {isParticipationV63} from './participation-profile-v63.js';
 const categories=['captain-voyage','blockchain','gap','onboarding','activity','invitation','treats','shareholder','recruitment','hidden','meal','rest','salary','patronage','company','wealth','personnel','pip-review','pip-passed','collapse','chapter','rage','verbal','career','work','private'];
 const personnel=new Set(['crisis-boss','paperwork','dismissal-final','labor-claim','labor-mediation','floor-notice','watch-review','watch-future','education-scrutiny']);
 const knownTargets=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','hidden-visitor','zoe','action','hester','simon','james','johnny']);
+const knownTarget=(run,id)=>knownTargets.has(id)||isCastV74(run)&&(CAST_IDS_V74.includes(id)||id==='alice');
 
 export function eventDepartureCategoryV63(run,event){
  if(event?.id==='work-gap-v50')return 'gap';
@@ -84,7 +86,7 @@ export function eventDepartureDescriptorV63(run,event){
 export function resolveEventDepartureV63(run,event,ticket){
  const descriptor=eventDepartureDescriptorV63(run,event);
  if(!descriptor.available||!Number.isFinite(ticket)||ticket<0||ticket>=1)throw new Error('Unavailable event departure');
- const category=eventDepartureCategoryV63(run,event),target=knownTargets.has(event.speaker)?event.speaker:null;
+ const category=eventDepartureCategoryV63(run,event),target=knownTarget(run,event.speaker)?event.speaker:null;
  let delta={},affinityDelta=0,result='你把話說清楚，拿起自己的東西離開。原本已經發生的經過留在紀錄裡，沒有因為你走出門就重來。';
  if(category==='work'){
   const furious=ticket>=.88,quiet=ticket<.22;
@@ -131,7 +133,7 @@ export function resolveEventDepartureV63(run,event,ticket){
 
 export function isEventDepartureOutcomeV63(run,row){
  const x=row?.departureOutcome;
- return Boolean(isParticipationV63(run)&&row?.kind==='event-departure'&&row.choiceIndex===0&&x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).sort().join(',')==='affinityDelta,category,completed,sourceEventId,sourceKind,status,target,version,workDaySpent'&&x.version===1&&categories.includes(x.category)&&(x.category!=='captain-voyage'||isCaptainVoyageV73(run)&&x.sourceKind==='captain-voyage'&&/^captain73-/.test(x.sourceEventId))&&x.sourceEventId===row.eventId&&typeof x.sourceEventId==='string'&&typeof x.sourceKind==='string'&&(x.target===null||knownTargets.has(x.target))&&Number.isInteger(x.affinityDelta)&&x.affinityDelta>=-20&&x.affinityDelta<=0&&x.status==='left'&&x.completed===false&&x.workDaySpent===(x.category==='work'));
+ return Boolean(isParticipationV63(run)&&row?.kind==='event-departure'&&row.choiceIndex===0&&x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).sort().join(',')==='affinityDelta,category,completed,sourceEventId,sourceKind,status,target,version,workDaySpent'&&x.version===1&&categories.includes(x.category)&&(x.category!=='captain-voyage'||isCaptainVoyageV73(run)&&x.sourceKind==='captain-voyage'&&/^captain73-/.test(x.sourceEventId))&&x.sourceEventId===row.eventId&&typeof x.sourceEventId==='string'&&typeof x.sourceKind==='string'&&(x.target===null||knownTarget(run,x.target))&&Number.isInteger(x.affinityDelta)&&x.affinityDelta>=-20&&x.affinityDelta<=0&&x.status==='left'&&x.completed===false&&x.workDaySpent===(x.category==='work'));
 }
 
 export function withDeparturePipReviewV63(event,run){

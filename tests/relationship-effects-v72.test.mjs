@@ -1,3 +1,4 @@
+import {CAST_IDS_V74} from '../dist/cast-v74.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as E from '../dist/engine.js';
@@ -14,7 +15,7 @@ const unit=(target,amounts)=>({seed,roleId:'system',actualRoleId:'system',turn:7
 const event=target=>({id:'unit-current',kind:'daily',speaker:target});
 const outcome=(target='jack')=>({version:1,target,reaction:'help',affinityDelta:2,origin:'unit-current',tier:'trusted'});
 
-test('sixteen threshold stories and twenty-nine original voices cover support, conflict and repair without revealing odds',()=>{
+test('sixteen threshold stories and the complete public cast voices cover support, conflict and repair without revealing odds',()=>{
  assert.equal(RELATIONSHIP_EVENTS_V72.length,16);assert.equal(new Set(RELATIONSHIP_EVENTS_V72.map(row=>row.id)).size,16);
  assert.deepEqual(Object.keys(RELATIONSHIP_VOICES_V72),Object.keys(PERSONAS));
  for(const scene of RELATIONSHIP_EVENTS_V72){
@@ -36,8 +37,8 @@ test('relationship tiers are bounded opportunity ranges rather than a guaranteed
  assert.deepEqual(run,before);
 });
 
-test('every current person can help or refuse, while only explicitly reported backstabs affect Wing mood',()=>{
- for(const target of Object.keys(PERSONAS)){
+test('every published r72 person can help or refuse, while only explicitly reported backstabs affect Wing mood',()=>{
+ for(const target of Object.keys(PERSONAS).filter(id=>!CAST_IDS_V74.includes(id))){
   const warm=relationshipPulseV72(unit(target,[7,7,7]),event(target),{choiceIndex:0},()=>0);
   const cold=relationshipPulseV72(unit(target,[-12,-12,-12]),event(target),{choiceIndex:0},()=>.58);
   assert.equal(warm.relationshipOutcome.target,target);assert.equal(warm.reaction,'help');assert.ok(warm.delta.energy>0);

@@ -192,7 +192,7 @@ for(const mobile of [false,true]){
   }
  });
  test(`${device}: starting a new life enables the calendar before the first work transition`,async()=>{
-  const app=await harness(mobile),seed=app.randomSeed();assert.match(seed,/^e39-r73-n-[a-f\d]{22}$/);assert.equal(seed.length,32);
+  const app=await harness(mobile),seed=app.randomSeed();assert.match(seed,/^e39-r74-n-[a-f\d]{22}$/);assert.equal(seed.length,32);
   const candidate=engine.createRun('sales',seed);app.candidate(candidate);await app.action('start');
   const expected=engine.enableActivitySchedule(candidate),actual=plain(app.state());delete actual.runId;
   assert.deepEqual(actual,plain(expected));assert.equal(actual.eventId,'onboarding');

@@ -3,6 +3,7 @@
 import {CAST_PROFILES_V39} from './cast-v39.js';
 import {CAST_PROFILES_V65} from './cast-v65.js';
 import {ALICE_PROFILE_V71} from './career-content-v71.js';
+import {CAST_PROFILES_V74} from './cast-v74.js';
 export { displayChronicleEvent, displayChronicleHistory } from './chronicle-scene-copy.js';
 // Short introductions belong to the character book, not the replay narrative.
 // Keep schools, personal relationships and workplace rumors out of these cards.
@@ -51,7 +52,8 @@ export const PERSONAS = Object.freeze(Object.fromEntries([
  ...Object.entries(CAST_PROFILES_V39).map(([id,p])=>[id,p.name,p.title]),
  ...Object.entries(CAST_PROFILES_V65).map(([id,p])=>[id,p.name,p.title]),
  ['alice',ALICE_PROFILE_V71.name,ALICE_PROFILE_V71.title],
-].map(([id,name,title])=>[id,Object.freeze({name,title,image:`./assets/${id}.png`,portrait:!['wing','spencer'].includes(id),about:CHARACTER_BIOS[id]||CAST_PROFILES_V65[id]?.about||(id==='alice'?ALICE_PROFILE_V71.about:undefined)})])));
+ ...Object.entries(CAST_PROFILES_V74).map(([id,p])=>[id,p.name,p.title]),
+].map(([id,name,title])=>[id,Object.freeze({name,title,image:CAST_PROFILES_V74[id]?`./assets/avatars-v74/${id}.webp`:`./assets/${id}.png`,portrait:!['wing','spencer'].includes(id),about:CHARACTER_BIOS[id]||CAST_PROFILES_V65[id]?.about||CAST_PROFILES_V74[id]?.about||(id==='alice'?ALICE_PROFILE_V71.about:undefined)})])));
 
 const names = Object.freeze({
  Wing:'翅膀',WING:'翅膀',Spencer:'屎潘蛇',SPENCER:'屎潘蛇',

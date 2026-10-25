@@ -2,6 +2,7 @@ import {isLifeSystemsV72} from './life-systems-v72.js';
 import {characterAffinity,deriveCharacterStats} from './character-stats.js';
 import {PERSONAS,displayPersona} from './persona.js';
 import {RELATIONSHIP_EVENTS_V72} from './events-relationships-v72.js';
+import {CAST_RELATIONSHIP_VOICES_V74} from './cast-v74.js';
 
 // These reactions are original office comedy. Each person has a distinct way
 // of helping, refusing or passing responsibility; no demographic inference is
@@ -37,7 +38,7 @@ const voices=[
  ['johnny','強尼替你把排程和延期原因排在一起，這次進度不用只寫快好了。','強尼先接住一輪追問，讓你把真正能交的部分確認完。','強尼說時程沒有他能挪的空格，這段沒能替你接手。','強尼覺得你又替別人答應時間，你們先花一輪把日期的來處查清楚。','強尼把所有口頭承諾照原日期排上表，你替別人緩過的那一段也回到自己名下。'],
  ['alice','愛麗絲把真正的合作攻略整理給你，這次保底沒有拿來代替說明。','愛麗絲先接下一段確認，讓你把工作做完再決定要不要打開卡池。','愛麗絲把手機收起來，說這段需要你先問清楚自己的承諾。','愛麗絲覺得你拿交情替別人按了同意，談話先停在誰有權答應。','愛麗絲只保留那張沒有前後文的截圖，你得把原本說清楚的界線再補回群組。']
 ];
-export const RELATIONSHIP_VOICES_V72=Object.freeze(Object.fromEntries(voices.map(([id,help,cover,refusal,argument,backstab,report=false])=>[id,Object.freeze({help,cover,refusal,argument,backstab,report})])));
+export const RELATIONSHIP_VOICES_V72=Object.freeze({...Object.fromEntries(voices.map(([id,help,cover,refusal,argument,backstab,report=false])=>[id,Object.freeze({help,cover,refusal,argument,backstab,report})])),...CAST_RELATIONSHIP_VOICES_V74});
 const reactionNames={help:'有人遞來支援',cover:'有人替你接一輪',refusal:'這次不願配合',argument:'一句話又吵一輪',backstab:'交接裡多了一根刺'};
 const contexts=['treatsContext','recruitmentContext','shareholderContext','activityInvitationContext','hiddenEncounterContext','activityContext','chapterContext','companyContext','rageContext','verbalContext','patronageReplyContext','patronageContext','raiseContext','mealContext','wealthReturnEventId','personnelPending'];
 function safeWork(run){

@@ -1,0 +1,51 @@
+{
+  "generator": "built-in imagegen",
+  "referenceHandling": "User-supplied photos were private loose hair and clothing references; faces are original animated designs.",
+  "portraits": [
+    {
+      "id": "wine",
+      "path": "./assets/avatars-v74/wine.webp",
+      "width": 560,
+      "height": 583,
+      "bytes": 78006,
+      "sha256": "c5483608890fedf0b88b7867f6f6d29caee32b4a883ab7bc35dc05a4760c6fec",
+      "hasAlpha": true
+    },
+    {
+      "id": "peter",
+      "path": "./assets/avatars-v74/peter.webp",
+      "width": 560,
+      "height": 703,
+      "bytes": 77926,
+      "sha256": "046b1ea63ccd7a07b30fb238dbe9c3b4f1d07a06070d0c6ef46a28478e66fdc8",
+      "hasAlpha": true
+    },
+    {
+      "id": "tony",
+      "path": "./assets/avatars-v74/tony.webp",
+      "width": 560,
+      "height": 634,
+      "bytes": 74366,
+      "sha256": "c0a9621c469bb95852ac390ba35264b2021f7a25d0d0abc20bf166dcb43ee35a",
+      "hasAlpha": true
+    },
+    {
+      "id": "henry",
+      "path": "./assets/avatars-v74/henry.webp",
+      "width": 560,
+      "height": 565,
+      "bytes": 62306,
+      "sha256": "c1aeeab0368fc4b6ebce70fc889e73df333918d071df15cb994e6763449cb609",
+      "hasAlpha": true
+    },
+    {
+      "id": "mia",
+      "path": "./assets/avatars-v74/mia.webp",
+      "width": 560,
+      "height": 605,
+      "bytes": 70904,
+      "sha256": "fd17a95d8f8d754c51a10cb77079ebaf9e0fed04a25bb869b204bed2d78fe15e",
+      "hasAlpha": true
+    }
+  ]
+}

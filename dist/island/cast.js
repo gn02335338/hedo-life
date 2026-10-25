@@ -31,4 +31,9 @@ export const ISLAND_CAST = Object.freeze([
   { id: 'james', districtId: 'harbor' },
   { id: 'johnny', districtId: 'harbor' },
   { id: 'alice', districtId: 'cafe' },
+  { id: 'wine', districtId: 'lab' },
+  { id: 'peter', districtId: 'lab' },
+  { id: 'tony', districtId: 'harbor' },
+  { id: 'henry', districtId: 'meeting' },
+  { id: 'mia', districtId: 'hr' },
 ].map(person => Object.freeze(person)));

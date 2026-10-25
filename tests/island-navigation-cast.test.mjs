@@ -18,7 +18,7 @@ const targets = [...LAYOUT.map(({id}) => ({kind:'building',key:`building:${id}`,
   position:DISTRICT_ENTRANCES[id],radius:1.25})),...castTargets,...residentTargets];
 
 test('every public colleague has a distinct authored place without displacing guides or community slots',()=>{
-  assert.equal(ISLAND_CAST.length,29);
+  assert.equal(ISLAND_CAST.length,34);
   assert.deepEqual(Object.keys(CAST_POSITIONS).sort(),ISLAND_CAST.map(person=>person.id).sort());
   for(const {id,districtId} of ISLAND_CAST){
     const point=CAST_POSITIONS[id],district=LAYOUT.find(item=>item.id===districtId);
@@ -39,7 +39,7 @@ test('every public colleague has a distinct authored place without displacing gu
   }
 });
 
-test('all29 colleague conversations and all27 community conversations are reachable by actual walking at full capacity',()=>{
+test('all34 colleague conversations and all27 community conversations are reachable by actual walking at full capacity',()=>{
   // Each flood node carries its real proximity selection from the parent path.
   // This proves conversations can be selected after walking past other people,
   // rather than only checking geometry or resetting interaction hysteresis.
@@ -51,7 +51,7 @@ test('all29 colleague conversations and all27 community conversations are reacha
     const cell=queue[head],position=point(cell.x,cell.z),selected=targets.find(target=>target.key===cell.current);
     if(selected&&selected.kind!=='building'&&distance(position,selected.position)<.9&&!approaches.has(selected.key))approaches.set(selected.key,cell);
     for(const district of LAYOUT)if(distance(position,DISTRICT_ENTRANCES[district.id])<.2)entrances.add(district.id);
-    if(approaches.size===56&&entrances.size===9)break;
+    if(approaches.size===castTargets.length+residentTargets.length&&entrances.size===9)break;
     for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
       const x=cell.x+dx,z=cell.z+dz,k=key(x,z);
       if(parents.has(k)||Math.abs(x)>100||Math.abs(z)>110)continue;

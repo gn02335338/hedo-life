@@ -1,4 +1,6 @@
 import {PERSONAS} from './persona.js';
+import {isCastV74} from './cast-profile-v74.js';
+import {castPatronageVoiceV74,castPrivatePatronageV74} from './cast-interactions-v74.js';
 import {isExpansionV65} from './expansion-profile-v65.js';
 import {withPatronageOutcomesV67} from './patronage-reply-v67.js';
 import {isCareerContentV71} from './career-content-v71.js';
@@ -166,7 +168,7 @@ const ALICE_PRIVATE_V71=Object.freeze([
  '愛麗絲轉去問其他人想玩什麼，沒有再等你的行程表。沒人把這桌送去公司請示，大家只是各自選擇下一站；你仍坐在飯桌旁，自己的優先順序卻沒有排進別人的私人時間。',
  '你把命令改成問愛麗絲要不要一起玩，對方反而替你留了位置。這回沒有動用家譜，也沒有人需要答應整個晚上；你們講好一局就收，飯與牌都停在本人願意的位置。'
 ]);
-const voiceFor=(run,target)=>Object.hasOwn(PERSONAS,target)?target==='alice'?(isCareerContentV71(run)?ALICE_VOICE_V71:null):VOICES[target]||(isExpansionV65(run)?VOICES_V65[target]:null):null;
+const voiceFor=(run,target)=>Object.hasOwn(PERSONAS,target)?target==='alice'?(isCareerContentV71(run)?ALICE_VOICE_V71:null):VOICES[target]||(isCastV74(run)?castPatronageVoiceV74(target):null)||(isExpansionV65(run)?VOICES_V65[target]:null):null;
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 function contextOf(event){
  const id=String(event?.id||'');
@@ -271,7 +273,7 @@ export function patronageReplyOutcomesV43(run,event,target,{affinity=50}={}){
   if(boss<30){weights[1]+=12;weights[2]+=6;weights[3]-=5;}
  }
  const outcomes=REACTIONS.map((reaction,index)=>{
-  const privateReactions=target==='alice'&&isCareerContentV71(run)?ALICE_PRIVATE_V71:PRIVATE_REACTIONS[target]||(isExpansionV65(run)?PRIVATE_REACTIONS_V65[target]:null);
+  const privateReactions=target==='alice'&&isCareerContentV71(run)?ALICE_PRIVATE_V71:PRIVATE_REACTIONS[target]||(isCastV74(run)?castPrivatePatronageV74(target):null)||(isExpansionV65(run)?PRIVATE_REACTIONS_V65[target]:null);
   let result=social&&privateReactions?privateReactions[index]:v[reaction];
   if(social&&mode==='flattery')result=target==='wing'?[
    '翅膀聽得很受用，順手請你替大家張羅下一輪。你原本只想捧一句，最後連飯局的小事也接到手上；他覺得自己人就是懂事，你則發現拍完馬屁仍然得親自去拿杯子。',

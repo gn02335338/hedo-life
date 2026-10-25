@@ -3,6 +3,7 @@ const privateChapter = (title) => ({ title, url: null, date: null, dateLabel: '�
 const official = (title, url, summary, date = null) => ({ title, url, summary, date, dateLabel: date || '官方產品介紹' });
 
 export const SOURCES = {
+  castFictionV74:{title:'新同事與辦公室日常',url:null,date:null,dateLabel:'史冊主題與原創遊戲改編',summary:'從同名誤會、加班交接、助理職稱、活動安排、人資接待與辦公室衛生等主題延伸的原創情境。對白、選項及結果為遊戲創作，角色照片僅作動畫造型參考。'},
  captainFictionV73:{title:'私人航程・原創支線',url:null,summary:'以社交邀約、船員比喻與日常活動發想的虛構遊戲支線；不記錄或推定任何人的真實私人關係。'},
   relationshipFictionV72: { title: '交情與辦公室合作', url: null, date: null, dateLabel: '原創遊戲設定', summary: '以本局角色交情改編的互助、衝突與牽線故事；人物反應、機率與因果皆為遊戲創作。' },
   companyFictionV72: { title: '公司機會與經營風險', url: null, date: null, dateLabel: '原創公司幻想', summary: '依本局經歷、人物關係與隨機事件創作的公司走向，不是真實企業的市場、財務或掛牌預測。' },

@@ -1,6 +1,8 @@
 import {professorVerbalVoiceV37} from './verbal-professor-v37.js';
 import {CAST_IDS_V39} from './cast-v39.js';
 import {castVerbalVoiceV39} from './verbal-cast-v39.js';
+import {CAST_IDS_V74,CAST_PROFILES_V74,isCastV74} from './cast-v74.js';
+import {castVerbalReactionsV74} from './cast-interactions-v74.js';
 // Original fictional dialogue. These are spoken office insults and responses,
 // not physical attacks, historical quotations or findings about real people.
 const VOICES = {
@@ -214,6 +216,7 @@ function timing(origin, phase) {
 }
 
 export function verbalVoiceV30(target, origin, phase, run) {
+  if(isCastV74(run)&&CAST_IDS_V74.includes(target))return {name:CAST_PROFILES_V74[target].name,line:`${CAST_PROFILES_V74[target].name}，幹，眼前這件事先講清楚。誰答應哪段就照原話留下，不要把每個空格都丟給同一個人。`,...castVerbalReactionsV74(target,{privateScene:/^meal-with-/.test(origin||'')})};
   if(/^e39-/.test(run?.seed||'')&&CAST_IDS_V39.includes(target))return castVerbalVoiceV39(target,origin,phase);
   if(target==='professor'&&/^e(?:37|38|39)-/.test(run?.seed||''))return professorVerbalVoiceV37(origin,phase);
   const voice = VOICES[Object.hasOwn(VOICES, target) ? target : 'self'];

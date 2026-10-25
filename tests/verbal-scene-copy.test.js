@@ -1,3 +1,4 @@
+import {CAST_IDS_V74} from '../dist/cast-v74.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync} from 'node:fs';
@@ -15,8 +16,8 @@ const phases=['event','result'];
 const copy=value=>JSON.parse(JSON.stringify(value));
 const sample=createRun('ai','e39-verbal-scene-copy');
 const rendered=event=>({...event,speaker:event.speaker||'wing'});
-const publishedEvents=EVENTS.filter(event=>!event.requiresCastV65&&!event.requiresCastV66&&!event.requiresCareerV71);
-const publishedPeople=Object.keys(PERSONAS).filter(id=>!CAST_IDS_V65.includes(id)&&id!=='alice');
+const publishedEvents=EVENTS.filter(event=>!event.requiresCastV65&&!event.requiresCastV66&&!event.requiresCareerV71&&!event.requiresCastV74);
+const publishedPeople=Object.keys(PERSONAS).filter(id=>!CAST_IDS_V65.includes(id)&&id!=='alice'&&!CAST_IDS_V74.includes(id));
 const source=id=>{const event=EVENTS.find(row=>row.id===id);assert.ok(event,id);return rendered(event);};
 const quote=(event,target,run=sample,phase='event')=>verbalSceneLine({event,target,run,phase});
 const both=(id,target,run=sample)=>phases.map(phase=>quote({id,speaker:target},target,run,phase));

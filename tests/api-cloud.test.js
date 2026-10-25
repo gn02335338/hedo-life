@@ -338,7 +338,7 @@ test('a verified twenty-two-character cache stays historical offline and appends
  assert.equal(legacy.length,22,'the cache fixture describes the published v39 roster');
  const original=client([],()=>withCharacters(legacy));await original.cloud.init();
  const serialized=original.saved.get('hedo-character-cache-v1'),oldCache=JSON.parse(serialized),newIds=CHARACTER_IDS.filter(id=>!legacy.some(row=>row.id===id));
- assert.deepEqual(newIds,['zoe','action','hester','simon','james','johnny','alice']);
+ assert.deepEqual(newIds,['zoe','action','hester','simon','james','johnny','alice','wine','peter','tony','henry','mia']);
  const added=newIds.map(id=>({id,...Object.fromEntries(CHARACTER_METRICS.map(metric=>[metric,0]))})),full=[...legacy,...added];let online=false;
  const c=client([],()=>{if(!online)throw new TypeError('offline');return withCharacters(full);},{savedEntries:[...original.saved]});await c.cloud.init();
  assert.deepEqual(JSON.parse(JSON.stringify(c.cloud.state.characters)),legacy);assert.equal(c.saved.get('hedo-character-cache-v1'),serialized);assert.equal(c.cloud.state.charactersVerifiedAt,oldCache.verifiedAt);assert.equal(c.cloud.state.characterTrackingSince,oldCache.trackingSince);

@@ -1,4 +1,8 @@
 import {isCaptainVoyageV73} from './captain-profile-v73.js';
+import {isCastV74,CAST_IDS_V74} from './cast-v74.js';
+import {MEAL_GUEST_IDS_V74,MEAL_EVENTS_V74,mealPageIdV74,getMealEventV74} from './meals-cast-v74.js';
+import {getRageV74,rageTargetForV74,withCastRageCopyV74,castVerbalLineV74,withCastVerbalScenarioV74,isPrivateCastSceneV74,privateCastSceneAllowedV74,privateCastTimingTextV74} from './cast-interactions-v74.js';
+import {selectWorkEventV74} from './work-events-v74.js';
 import {dueCaptainVoyageV73,createCaptainVoyageContextV73,getCaptainVoyageEventV73,resolveCaptainVoyageChoiceV73} from './captain-voyage-v73.js';
 import {getRageV65,rageTargetForV65} from './rage-cast-v65.js';
 import {isCareerContentV71} from './career-content-v71.js';
@@ -97,9 +101,12 @@ export const STAT_KEYS = Object.keys(STAT_LABELS);
 const clamp = n => Math.max(0,Math.min(100,n));
 // Rule prefixes keep published seeds and queued completions on their original deterministic path.
 const contentRules = run => run.seed.startsWith('e39-')?39:run.seed.startsWith('e38-')?38:run.seed.startsWith('e37-')?37:run.seed.startsWith('e36-')?36:run.seed.startsWith('e35-')?35:run.seed.startsWith('e34-')?34:run.seed.startsWith('e33-')?33:run.seed.startsWith('e32-')?32:run.seed.startsWith('e31-')?31:run.seed.startsWith('e30-')?30:run.seed.startsWith('e29-')?29:run.seed.startsWith('e28-')?28:run.seed.startsWith('e27-')?27:run.seed.startsWith('e26-')?26:run.seed.startsWith('e25-')?25:run.seed.startsWith('e24-')?24:run.seed.startsWith('e23-')?23:run.seed.startsWith('e22-')?22:run.seed.startsWith('e21-')?21:run.seed.startsWith('e20-')?20:run.seed.startsWith('e19-')?19:run.seed.startsWith('e18-')?18:run.seed.startsWith('e17-')?17:run.seed.startsWith('e16-')?16:run.seed.startsWith('e15-')?15:run.seed.startsWith('e14-')?14:run.seed.startsWith('e13-')?13:run.seed.startsWith('e12-')?12:run.seed.startsWith('e11-')?11:run.seed.startsWith('e10-')?10:run.seed.startsWith('e9-')?9:run.seed.startsWith('e8-')?8:run.seed.startsWith('e7-')?7:run.seed.startsWith('e6-')?6:run.seed.startsWith('e5-')?5:run.seed.startsWith('e4-')?4:run.seed.startsWith('e3-')?3:run.seed.startsWith('e2-')?2:1;
-const mealEventIds=run=>isCareerContentV71(run)?MEAL_EVENTS_V71:isExpansionV65(run)?MEAL_EVENTS_V65:contentRules(run)>=39?MEAL_EVENTS_V39:contentRules(run)>=37?MEAL_EVENTS_V37:MEAL_EVENTS_V25;
-const mealGuestIds=run=>isCareerContentV71(run)?MEAL_GUEST_IDS_V71:isExpansionV65(run)?MEAL_GUEST_IDS_V65:contentRules(run)>=39?MEAL_GUEST_IDS_V39:contentRules(run)>=37?MEAL_GUEST_IDS_V37:MEAL_GUEST_IDS_V25;
-const mealPageId=(run,page)=>isExpansionV65(run)?mealPageIdV65(page):contentRules(run)>=39?mealPageIdV39(page):contentRules(run)>=37?mealPageIdV37(page):page===0?'meal-guests-a':'meal-guests-b';
+const mealEventIds=run=>isCastV74(run)?MEAL_EVENTS_V74:isCareerContentV71(run)?MEAL_EVENTS_V71:isExpansionV65(run)?MEAL_EVENTS_V65:contentRules(run)>=39?MEAL_EVENTS_V39:contentRules(run)>=37?MEAL_EVENTS_V37:MEAL_EVENTS_V25;
+const mealGuestIds=run=>isCastV74(run)?MEAL_GUEST_IDS_V74:isCareerContentV71(run)?MEAL_GUEST_IDS_V71:isExpansionV65(run)?MEAL_GUEST_IDS_V65:contentRules(run)>=39?MEAL_GUEST_IDS_V39:contentRules(run)>=37?MEAL_GUEST_IDS_V37:MEAL_GUEST_IDS_V25;
+const mealPageId=(run,page)=>isCastV74(run)?mealPageIdV74(page):isExpansionV65(run)?mealPageIdV65(page):contentRules(run)>=39?mealPageIdV39(page):contentRules(run)>=37?mealPageIdV37(page):page===0?'meal-guests-a':'meal-guests-b';
+const privateReturnEffectForRun=(source,run)=>isPrivateCastSceneV74(run,source)?'cast74SocialFinish':privateReturnEffectV39(source,run);
+const patronageProgressFlow=(run,event)=>isPrivateCastSceneV74(run,event)?{effect:'cast74SocialFinish'}:patronageProgressEffectV69(run,event);
+const patronageLineForRun=(run,event,target)=>isPrivateCastSceneV74(run,event)?privateCastTimingTextV74(patronageReplyLineV43(run,event,target)):patronageReplyLineV43(run,event,target);
 const rules2 = run => contentRules(run)>=2;
 const hasPatronageBenefitsV67=run=>isPatronageBenefitsV67(run)&&!!run.patronage;
 const occasionalEducation = run => rules2(run)||run.seed.startsWith('e1-');
@@ -111,7 +118,7 @@ function flag(run,name,n=1){run.flags[name]=(run.flags[name]||0)+n;}
 function salaryCutTarget(run,percent){return contentRules(run)>=25?Math.max(1,Math.min(run.pay-1,Math.round(run.pay*(1-percent/100)))):Math.max(20,Math.round(run.pay*(1-percent/100)));}
 const c=(text,detail,result,delta={},effect=null,flags=[])=>({text,detail,result,delta,effect,flags});
 const e=(id,title,body,wing,choices,kind='crisis',speaker=null)=>({id,title,body,wing,speaker:speaker||({'crisis-boss':'exit-team',paperwork:'exit-team','pip-review':'hope','pip-passed':'hope','salary-cut':'hope','salary-final':'hope'}[id]||'wing'),choices,kind,era:kind==='onboarding'?'入職報到':kind==='career'?'人事異動':'突發人事事件',sourceIds:[]});
-const conversationalTarget=(run,event)=>isCareerContentV71(run)?rageTargetForV71(run,event):isExpansionV65(run)?rageTargetForV65(event):contentRules(run)>=39?rageTargetForV39(event):contentRules(run)>=37?rageTargetForV37(event):contentRules(run)>=23?rageTargetForV23(event):contentRules(run)>=22?rageTargetForV22(event):contentRules(run)>=20?rageTargetForV20(event):contentRules(run)>=16?rageTargetForV16(event):rageTargetFor(event);
+const conversationalTarget=(run,event)=>isCastV74(run)?rageTargetForV74(run,event):isCareerContentV71(run)?rageTargetForV71(run,event):isExpansionV65(run)?rageTargetForV65(event):contentRules(run)>=39?rageTargetForV39(event):contentRules(run)>=37?rageTargetForV37(event):contentRules(run)>=23?rageTargetForV23(event):contentRules(run)>=22?rageTargetForV22(event):contentRules(run)>=20?rageTargetForV20(event):contentRules(run)>=16?rageTargetForV16(event):rageTargetFor(event);
 export function jobTitle(run){if(contentRules(run)>=29&&patronageTitleV29(run))return patronageTitleV29(run);if(contentRules(run)>=16)return displayText(careerTitle(run));if(contentRules(run)>=8)return careerTitle(run);const role=ROLE_MAP[run.actualRoleId];return run.assignment==='assistant'?role.assistantTitle:role.ladder[Math.min(run.rank,role.ladder.length-1)];}
 export function bossLabel(n){return n<=12?'準備找你談談':n<30?'看誰都不順眼':n<60?'今天還算陰天':n<85?'龍心尚可':'聖眷正濃';}
 export function createRun(roleId,seed=Date.now()){
@@ -161,6 +168,7 @@ function skillChoice(run,text,detail,condition,yes,no,effect,yesDelta={},noDelta
 function rawGetEvent(run){
  if(!run||run.completed)return null;
  if(PATRONAGE_EVENTS_V67.includes(run.eventId))return getPatronageEventV67(run,run.eventId);
+ if(isCastV74(run)&&MEAL_EVENTS_V74.includes(run.eventId))return getMealEventV74(run);
  if(isCareerContentV71(run)&&MEAL_EVENTS_V71.includes(run.eventId))return getMealEventV71(run);
  if(isExpansionV65(run)&&MEAL_EVENTS_V65.includes(run.eventId))return getMealEventV65(run);
  if(contentRules(run)>=32&&COMPANY_EVENTS_V32.includes(run.eventId))return withEmployeeAcquisitionV66(isLifeSystemsV72(run)?getCompanyEventV72(run):contentRules(run)>=39?getCompanyEventV39(run):getCompanyEventV32(run),run);
@@ -184,8 +192,8 @@ function rawGetEvent(run){
  case 'raise-request':case 'raise-response':case 'raise-confirmation':if(contentRules(run)<19)throw new Error('Unknown raise event');return getRaiseEvent(run);
  case 'rage-release':case 'rage-aftermath':case 'rage-legal':case 'rage-showdown':case 'rage-public':{
   if(contentRules(run)<14||!run.rageContext)throw new Error('Invalid rage world');
-  if(contentRules(run)>=39&&isPrivateSceneV39(getSourceEventV50({...run,eventId:run.rageContext.eventId,rageContext:null})))return withAliceRageCopyV71(getPrivateRageV39(run),run);
-  const event=isCareerContentV71(run)?getRageV71(run):isExpansionV65(run)?getRageV65(run):contentRules(run)>=39?getRageV39(run):contentRules(run)>=37?getRageV37(run):contentRules(run)>=23?getRageV23(run):contentRules(run)>=22?getRageV22(run):contentRules(run)>=20?getRageV20(run):contentRules(run)>=16?getRageV16(run):getRageV14(run);
+  if(contentRules(run)>=39&&isPrivateSceneV39(getSourceEventV50({...run,eventId:run.rageContext.eventId,rageContext:null})))return withCastRageCopyV74(withAliceRageCopyV71(getPrivateRageV39(run),run),run);
+  const event=isCastV74(run)?getRageV74(run):isCareerContentV71(run)?getRageV71(run):isExpansionV65(run)?getRageV65(run):contentRules(run)>=39?getRageV39(run):contentRules(run)>=37?getRageV37(run):contentRules(run)>=23?getRageV23(run):contentRules(run)>=22?getRageV22(run):contentRules(run)>=20?getRageV20(run):contentRules(run)>=16?getRageV16(run):getRageV14(run);
   return contentRules(run)>=25?withMealRageCopyV25(event,run):event;
  }
  case 'rage-menu':if(contentRules(run)<13||!run.rageContext)throw new Error('Invalid rage scene');return getRage(run);
@@ -299,17 +307,19 @@ function rawGetEvent(run){
  ],'career');
  }
  const event=EVENTS.find(e=>e.id===run.eventId)||FANTASY_EVENTS.find(e=>e.id===run.eventId);
- if(!event||(event.requiresRelationshipV72&&!isLifeSystemsV72(run))||(event.requiresCareerV71&&!isCareerContentV71(run))||(event.requiresCastV66&&!isExpansionV66(run))||(event.requiresCastV65&&!isExpansionV65(run))||(event.minRules??0)>contentRules(run)||(contentRules(run)>=29&&event.requireGender&&event.requireGender!==run.characterGender))throw new Error(`Unknown event ${run.eventId}`);
+ if(!event||(event.requiresCastV74&&!isCastV74(run))||(event.requiresRelationshipV72&&!isLifeSystemsV72(run))||(event.requiresCareerV71&&!isCareerContentV71(run))||(event.requiresCastV66&&!isExpansionV66(run))||(event.requiresCastV65&&!isExpansionV65(run))||(event.minRules??0)>contentRules(run)||(contentRules(run)>=29&&event.requireGender&&event.requireGender!==run.characterGender))throw new Error(`Unknown event ${run.eventId}`);
  if(event===FANTASY_EVENTS[3])return {...event,kind:'fantasy',choices:[...event.choices,c('不去交易所。我的人生另有用途。','選擇職涯、離職或隱藏結局。','你從口袋裡拿出那張舊清單，翻到背面。空白，剛好可以寫自己的。',{},'careerExit')]};
- return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':'daily'};
+ return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':isPrivateCastSceneV74(run,event)?'private-social':'daily'};
 }
 function getPublishedEvent(run){
  if(run?.verbalContext?.version===2&&(run.eventId===run.verbalContext.eventId||VERBAL_V2_EVENTS.includes(run.eventId)||contentRules(run)>=32&&VERBAL_OUTCOME_EVENTS_V32.includes(run.eventId))){
   const context=run.verbalContext;
   if(contentRules(run)>=32&&context.stage==='aftermath')return contentRules(run)>=33?getVerbalAftermathV33(run):getVerbalAftermathV32(run);
   const source=getSourceEventV50({...run,eventId:context.eventId,verbalContext:null});
-  if(contentRules(run)>=39&&isPrivateSceneV39(source))return withAliceVerbalScenarioV71(getPrivateVerbalScenarioV39(run,source),run);
-  const event=withAliceVerbalScenarioV71(withRecruitmentVerbalDecisionV60(withCastVerbalScenarioV65(getVerbalScenarioV2(run,source),run),run),run);
+  if(contentRules(run)>=39&&isPrivateSceneV39(source))return withCastVerbalScenarioV74(withAliceVerbalScenarioV71(getPrivateVerbalScenarioV39(run,source),run),run);
+  const reviewed=withCastVerbalScenarioV65(getVerbalScenarioV2(run,source),run);
+  const recruited=withRecruitmentVerbalDecisionV60(reviewed,run);
+  const event=withCastVerbalScenarioV74(withAliceVerbalScenarioV71(recruited,run),run);
   return contentRules(run)>=32&&context.stage==='release'?withVerbalAftermathV32(event):event;
  }
  const base=withGenderContextV29(rawGetEvent(run),run),event=isLifeSystemsV72(run)?withCompanyEntryV72(base,run,FANTASY_EVENTS[3].id):contentRules(run)>=32?withCompanyEntryV32(base,run,FANTASY_EVENTS[3].id):base;
@@ -363,7 +373,7 @@ function nextNormal(run){
  if(contentRules(run)>=20&&run.flags.floor_watch)return watchNextEvent(run);
  if(run.turn>=20&&run.turn<MAX_TURNS)return FANTASY_EVENTS[run.turn-20].id;
  if(run.turn>=MAX_TURNS)return contentRules(run)>=8?'rank-exit':'career-exit';
- const supported=ev=>relationshipEventAllowedV72(run,ev)&&patronageDailyAllowedV67(run,ev)&&(!ev.requiresCareerV71||isCareerContentV71(run))&&(!ev.requiresCastV66||isExpansionV66(run))&&(!ev.requiresCastV65||isExpansionV65(run))&&officeTreatDailyAllowedV61(run,ev)&&calendarDailyAllowedV46(run,ev)&&(ev.minRules??0)<=contentRules(run)&&(!ev.requireGender||contentRules(run)>=29&&ev.requireGender===run.characterGender)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0))&&(contentRules(run)<8||((ev.minRank??0)<=legacyCareerRank(run)&&(ev.maxRank??4)>=legacyCareerRank(run)));
+ const supported=ev=>(!ev.requiresCastV74||isCastV74(run))&&privateCastSceneAllowedV74(run,ev)&&relationshipEventAllowedV72(run,ev)&&patronageDailyAllowedV67(run,ev)&&(!ev.requiresCareerV71||isCareerContentV71(run))&&(!ev.requiresCastV66||isExpansionV66(run))&&(!ev.requiresCastV65||isExpansionV65(run))&&officeTreatDailyAllowedV61(run,ev)&&calendarDailyAllowedV46(run,ev)&&(ev.minRules??0)<=contentRules(run)&&(!ev.requireGender||contentRules(run)>=29&&ev.requireGender===run.characterGender)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0))&&(contentRules(run)<8||((ev.minRank??0)<=legacyCareerRank(run)&&(ev.maxRank??4)>=legacyCareerRank(run)));
  const matchesRole=ev=>!ev.roles||ev.roles.includes(run.actualRoleId)||(contentRules(run)<21&&ev.roles.includes(run.roleId));
  let pool=EVENTS.filter(ev=>supported(ev)&&!run.seen.includes(ev.id)&&(ev.minTurn??0)<=run.turn&&(ev.maxTurn??99)>=run.turn&&matchesRole(ev));
  if(!pool.length)pool=EVENTS.filter(ev=>supported(ev)&&matchesRole(ev));
@@ -372,6 +382,7 @@ function nextNormal(run){
   if(relationship)return relationship;
   pool=pool.filter(event=>!event.requiresRelationshipV72);
  }
+ if(isCastV74(run))return selectWorkEventV74(run,pool,()=>roll(run),EVENTS);
  if(isCareerContentV71(run))return selectWorkEventV71(run,pool,()=>roll(run),EVENTS);
  if(contentRules(run)>=35)return selectWorkEventV35(run,pool,()=>roll(run),EVENTS);
  if(contentRules(run)>=21)return selectWorkEventV21(run,pool,()=>roll(run),EVENTS);
@@ -380,8 +391,21 @@ function nextNormal(run){
 function rankCompatibleReturn(run,eventId){
  if(contentRules(run)<8)return eventId;
  const event=EVENTS.find(candidate=>candidate.id===eventId);
+ if(event&&!privateCastSceneAllowedV74(run,event))return nextNormal(run);
  if(event&&!patronageDailyAllowedV67(run,event))return nextNormal(run);
  return event&&((event.minRank??0)>legacyCareerRank(run)||(event.maxRank??4)<legacyCareerRank(run))?nextNormal(run):eventId;
+}
+function closePrivateCastSocialV74(next,eventId){
+ const source=EVENTS.find(event=>event.id===eventId);
+ if(!isPrivateCastSceneV74(next,source))throw new Error('Invalid private colleague continuation');
+ if(!next.seen.includes(eventId))next.seen.push(eventId);
+ next.flags.cast74_private_last_turn=next.turn+1;
+ next.eventId=nextNormal(next);
+ if(restWarningV62(next)&&next.lastBreakTurn!==next.turn){
+  const candidate={...next,flags:{...next.flags,work_gap_open:1}};
+  if(workGapSurfaceSafeV50(candidate,getSourceEventV50(next)))next.flags.work_gap_open=1;
+ }
+ return next;
 }
 function finish(run,family){if(contentRules(run)>=38){if(needsChapterResolutionV38(family)&&!run.flags.departure38_voluntary)throw new Error('Departure needs explicit confirmation');run.chapterContext=null;}run.endingId=`${family}-${run.roleId}`;if(!ENDINGS.some(e=>e.id===run.endingId&&(e.minRules||1)<=contentRules(run)))throw new Error(`Unknown ending ${run.endingId}`);run.completed=true;run.pending=false;run.pendingFamily=null;run.pendingEffect=null;run.eventId=null;if(isCaptainVoyageV73(run))run.captainVoyageContext=null;if(rules2(run))run.breakReturnEventId=null;if(contentRules(run)>=13){run.rageContext=null;run.banquetReturnEventId=null;}if(contentRules(run)>=18)run.meltdownReturnEventId=null;if(contentRules(run)>=19)run.raiseContext=null;if(contentRules(run)>=20)run.personnelPending=null;if(contentRules(run)>=24)run.salaryAdvice=null;if(contentRules(run)>=25)run.mealContext=null;if(contentRules(run)>=27)run.wealthReturnEventId=null;if(contentRules(run)>=29)run.patronageContext=null;if(contentRules(run)>=30)run.verbalContext=null;if(contentRules(run)>=32)run.companyContext=null;return run;}
 export function endingEligibility(run,target){if(contentRules(run)>=32&&['nasdaq','taiwan','acquired'].includes(target))return companyEligibleV32(run);const s=run.stats;const common=s.energy>=20&&s.cash>=30&&s.skill>=65&&s.trust>=55;
@@ -630,7 +654,7 @@ function advanceVerbalScenarioV2(run,next,last,effect){
  if(contentRules(next)>=39&&context.phase==='event'){
   const source=getSourceEventV50({...next,eventId:context.eventId,verbalContext:null});
   if(isPrivateSceneV39(source)){
-   const close=privateReturnEffectV39(source,next);next.verbalContext=null;next.eventId=context.eventId;
+   const close=privateReturnEffectForRun(source,next);next.verbalContext=null;next.eventId=context.eventId;
    if(close){next.pending=true;next.pendingEffect=close;next.pendingFamily=null;return advance(next);}
    return next;
   }
@@ -677,6 +701,7 @@ function advanceCore(run,options={}){
   }
   return finish(next,next.pendingFamily);
  }
+ if(isCastV74(next)&&(effect==='cast74SocialFinish'||last.kind==='private-social'))return closePrivateCastSocialV74(next,effect==='cast74SocialFinish'?next.eventId:last.eventId);
  if(isLifeSystemsV72(next)&&effect==='company72Open'){
   const dossier=selectCompanyDossierV72(next,()=>roll(next));
   next.companyDossierV72=dossier;
@@ -795,7 +820,7 @@ function advanceCore(run,options={}){
  if(contentRules(next)>=18&&['moodRecover','moodUnpaidLeave'].includes(effect)){next.eventId=next.meltdownReturnEventId;next.meltdownReturnEventId=null;return next;}
  if(contentRules(next)>=14&&effect==='rageReturn'){
   const context=next.rageContext;next.eventId=context.eventId;next.rageContext=null;
-  if(contentRules(next)>=39&&context.phase==='event'){const source=getSourceEventV50(next),close=isPrivateSceneV39(source)?privateReturnEffectV39(source,next):null;if(close){next.pending=true;next.pendingEffect=close;next.pendingFamily=null;return advance(next);}}
+  if(contentRules(next)>=39&&context.phase==='event'){const source=getSourceEventV50(next),close=isPrivateSceneV39(source)?privateReturnEffectForRun(source,next):null;if(close){next.pending=true;next.pendingEffect=close;next.pendingFamily=null;return advance(next);}}
   if(context.phase==='result'){
    // Resume the already committed choice using its own history entry. The
    // intervening rage result must not replace the original transition kind.
@@ -1348,7 +1373,7 @@ function advanceEventDepartureV63(run){
    if(PERSONNEL_SCENES.includes(c.eventId)||['crisis-boss','paperwork','pip-review'].includes(c.eventId)){
     next.personnelPending=null;next.resumeEventId=null;next.flags.hr_pip_allowed=0;next.eventId='dismissal-final';returned=next;
    }else{
-    const source=getSourceEventV50(next),close=privateReturnEffectV39(source,next);
+    const source=getSourceEventV50(next),close=privateReturnEffectForRun(source,next);
     if(close){next.pending=true;next.pendingEffect=close;returned=advanceCore(next);}else returned=next;
    }
   }
@@ -1356,12 +1381,13 @@ function advanceEventDepartureV63(run){
   const c=next.rageContext;next.flags.departure63_legal_pending=Number(c.mode==='real');next.rageContext=null;next.eventId=c.eventId;
   if(c.phase==='result')returned=resumeDepartureCommittedV63(next,c);
   else{
-   const source=getSourceEventV50(next),close=privateReturnEffectV39(source,next);
+   const source=getSourceEventV50(next),close=privateReturnEffectForRun(source,next);
    if(close){next.pending=true;next.pendingEffect=close;returned=advanceCore(next);}else returned=next;
   }
  }else if(category==='private'){
   const origin=next.banquetReturnEventId||next.breakReturnEventId||next.resumeEventId;
-  next.banquetReturnEventId=null;next.breakReturnEventId=null;next.resumeEventId=null;returned=departureReturnV63(next,origin);
+  next.banquetReturnEventId=null;next.breakReturnEventId=null;next.resumeEventId=null;
+  returned=isPrivateCastSceneV74(next,EVENTS.find(event=>event.id===context.eventId))?closePrivateCastSocialV74(next,context.eventId):departureReturnV63(next,origin);
  }else{
   const origin=next.resumeEventId||next.exitReturnEventId;
   next.resumeEventId=null;next.exitReturnEventId=null;
@@ -1465,7 +1491,7 @@ export function canRequestBreak(run){if(run?.captainVoyageContext)return false;i
 export function requestBreak(run){if(!canRequestBreak(run))return run;const next=structuredClone(run);next.actions.push({type:'break'});next.lastBreakTurn=next.turn;next.breakReturnEventId=next.eventId;const invite=canKindDarkInviteV29(next)&&contentRules(next)>=6&&!(contentRules(next)>=7&&next.lastKindInviteTurn===next.turn)&&roll(next)<KIND_BREAK_CHANCE;next.eventId=invite?'kind-break':'self-care';if(invite&&contentRules(next)>=7)next.lastKindInviteTurn=next.turn;return next;}
 export function canRequestCareer(run){if(run?.captainVoyageContext)return false;if(run?.blockchainContext)return false;if(run?.departureContext)return false;if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;return !!(run&&!run.activityInvitationContext&&!run.hiddenEncounterContext&&!run.activityContext&&!run.chapterContext&&!run.companyContext&&!(contentRules(run)>=30&&run.verbalContext)&&!(contentRules(run)>=29&&run.patronage)&&contentRules(run)>=10&&!(contentRules(run)>=20&&run.flags.floor_watch)&&!run.pending&&!run.completed&&!(contentRules(run)>=14&&run.rageContext)&&!run.pip?.active&&!run.resumeEventId&&!run.exitReturnEventId&&!run.breakReturnEventId&&run.rank<careerMaxRank(run)&&run.turn>=3&&run.turn<careerReviewCutoff(run)&&careerReviewWait(run)&&['daily','fantasy'].includes(getSourceEventV50(run)?.kind));}
 export function requestCareer(run){if(!canRequestCareer(run))return run;const next=structuredClone(run);next.actions.push({type:'career'});next.resumeEventId=next.eventId;next.eventId='career-review';return next;}
-export function canRequestRaise(run){if(run?.captainVoyageContext)return false;if(run?.blockchainContext)return false;if(run?.departureContext)return false;if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;return !run?.activityInvitationContext&&!run?.hiddenEncounterContext&&!run?.activityContext&&!run?.chapterContext&&!run?.companyContext&&!(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
+export function canRequestRaise(run){if(run&&!run.pending&&!run.completed&&isCastV74(run)&&getSourceEventV50(run)?.kind==='private-social')return false;if(run?.captainVoyageContext)return false;if(run?.blockchainContext)return false;if(run?.departureContext)return false;if(run?.treatsContext)return false;if(run?.recruitmentContext)return false;if(run?.shareholderContext)return false;return !run?.activityInvitationContext&&!run?.hiddenEncounterContext&&!run?.activityContext&&!run?.chapterContext&&!run?.companyContext&&!(run&&contentRules(run)>=30&&run.verbalContext)&&raiseAvailability(run).allowed;}
 export function requestRaise(run){if(!canRequestRaise(run))return run;const next=structuredClone(run);next.actions.push({type:'raise'});next.raiseContext={eventId:run.eventId,fromPay:run.pay,offerPay:null,percent:null,outcome:null,view:null,approach:null};next.eventId='raise-request';return next;}
 export function canRequestSalaryAdvice(run){if(run?.captainVoyageContext)return false;if(run?.blockchainContext)return false;if(run?.departureContext)return false;
  if(run?.treatsContext)return false;
@@ -1492,13 +1518,13 @@ export function canRequestPatronageReply(run){if(run?.captainVoyageContext)retur
  if(isWorkGapOpenV50(run))return false;
  if(!run||run.activityInvitationContext||run.hiddenEncounterContext||run.activityContext||contentRules(run)<29||!run.patronage||run.pending||run.completed||run.pendingFamily||run.patronageReplyContext||run.chapterContext||run.companyContext||run.rageContext||run.verbalContext||run.stats.mood<=0||run.stats.energy<=0||run.stats.cash<=0||run.actions.length>=299||run.flags.patronage_reply_last_turn===run.turn+1)return false;
  const event=getSourceEventV50(run);
- if(isPatronageProgressV69(run)&&!patronageProgressEffectV69(run,event))return false;
+ if(isPatronageProgressV69(run)&&!patronageProgressFlow(run,event))return false;
  return !!event&&!['rage','rage-world','verbal','patronage'].includes(event.kind)&&!['self-care','exit-menu','rank-exit','career-exit','story-exit',...WEALTH_EVENTS_V27].includes(event.id)&&!/^meal-guests-/.test(event.id)&&verbalTargetsV30(event).some(id=>Object.hasOwn(PERSONAS,id));
 }
 export function getPatronageReplyTargets(run){return canRequestPatronageReply(run)?verbalTargetsV30(getSourceEventV50(run)).filter(id=>Object.hasOwn(PERSONAS,id)):[];}
 export function getPatronageReplyLine(run,target){
  const targets=getPatronageReplyTargets(run);
- return targets.includes(target)?patronageReplyLineV43(run,getSourceEventV50(run),target):'';
+ return targets.includes(target)?patronageLineForRun(run,getSourceEventV50(run),target):'';
 }
 export function requestPatronageReply(run,target){
  if(!getPatronageReplyTargets(run).includes(target))return run;
@@ -1507,8 +1533,8 @@ export function requestPatronageReply(run,target){
  let ticket=roll(next)*outcomes.reduce((total,outcome)=>total+outcome.weight,0);
  const selected=outcomes.find(outcome=>(ticket-=outcome.weight)<0)||outcomes.at(-1),breakdown=[];
  if(isPatronageProgressV69(run)){
-  const flow=patronageProgressEffectV69(run,event);
-  const choice={text:patronageReplyLineV43(run,event,target),result:patronageReplyResultV69(selected.result)+(flow.closing?' '+flow.closing:''),delta:selected.delta,flags:[],effect:flow.effect};
+  const flow=patronageProgressFlow(run,event);
+  const result=patronageReplyResultV69(selected.result),choice={text:patronageLineForRun(run,event,target),result:(isPrivateCastSceneV74(run,event)?privateCastTimingTextV74(result):result)+(flow.closing?' '+flow.closing:''),delta:selected.delta,flags:[],effect:flow.effect};
   // Carry forward the single reply draw, then use the ordinary choice
   // pipeline. Keeping run's pre-choice stats/history preserves real deltas.
   const input={...run,rng:next.rng};
@@ -1542,7 +1568,7 @@ export function canRequestVerbal(run){if(run?.blockchainContext)return false;if(
  return !!event&&!VERBAL_EVENTS_V30.includes(event.id)&&!['rage','rage-world','verbal'].includes(event.kind);
 }
 export function getVerbalTargets(run){return canRequestVerbal(run)?verbalTargetsV30(getSourceEventV50(run)):[];}
-const spokenLine=(run,event,target,phase)=>(isCaptainVoyageV73(run)?(Object.hasOwn(event?.verbalTargetsV73||{},target)?event.verbalTargetsV73[target]?.[phase==='result'?1:0]:event?.speaker===target?event.verbalLinesV73?.[phase==='result'?1:0]:null):null)||(isLifeSystemsV72(run)&&event?.speaker===target?event.verbalLinesV72?.[phase==='result'?1:0]:null)||(isCareerContentV71(run)&&event?.speaker===target?event.verbalLinesV71?.[phase==='result'?1:0]:null)||aliceVerbalLineV71(run,event,target,phase)||castVerbalLineV66(run,event,target,phase)||castVerbalLineV65(run,event,target,phase)||recruitmentVerbalLineV60(run,event,target,phase)||(contentRules(run)>=39?strongVerbalLineV39({event,target,run,phase,base:verbalLineV2(run,event,target,phase)}):verbalLineV2(run,event,target,phase));
+const spokenLine=(run,event,target,phase)=>castVerbalLineV74(run,event,target,phase)||(isCaptainVoyageV73(run)?(Object.hasOwn(event?.verbalTargetsV73||{},target)?event.verbalTargetsV73[target]?.[phase==='result'?1:0]:event?.speaker===target?event.verbalLinesV73?.[phase==='result'?1:0]:null):null)||(isLifeSystemsV72(run)&&event?.speaker===target?event.verbalLinesV72?.[phase==='result'?1:0]:null)||(isCareerContentV71(run)&&event?.speaker===target?event.verbalLinesV71?.[phase==='result'?1:0]:null)||aliceVerbalLineV71(run,event,target,phase)||castVerbalLineV66(run,event,target,phase)||castVerbalLineV65(run,event,target,phase)||recruitmentVerbalLineV60(run,event,target,phase)||(contentRules(run)>=39?strongVerbalLineV39({event,target,run,phase,base:verbalLineV2(run,event,target,phase)}):verbalLineV2(run,event,target,phase));
 export function getVerbalLine(run,target){
  if(!canRequestVerbal(run))return '';
  const event=getSourceEventV50(run),targets=getVerbalTargets(run),selected=target??targets[0];
@@ -1608,7 +1634,7 @@ export function requestRage(run,target){
  const next=structuredClone(current);next.actions.push({type:'rage'});
  next.rageContext={eventId:next.eventId,speaker:getSourceEventV50(next)?.speaker||'wing'};next.eventId='rage-menu';return next;
 }
-export function requestExit(run){if(run?.captainVoyageContext)return run;if(run?.blockchainContext)return run;if(run?.departureContext)return run;if(run?.treatsContext)return run;if(run?.recruitmentContext)return run;if(run?.shareholderContext)return run;if(run?.activityInvitationContext||run?.hiddenEncounterContext||run?.activityContext||run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
+export function requestExit(run){if(run?.captainVoyageContext)return run;if(run?.blockchainContext)return run;if(run?.departureContext)return run;if(run?.treatsContext)return run;if(run?.recruitmentContext)return run;if(run?.shareholderContext)return run;if(run?.activityInvitationContext||run?.hiddenEncounterContext||run?.activityContext||run?.chapterContext||run?.companyContext)return run;if(run&&contentRules(run)>=30&&run.verbalContext)return run;if(run&&contentRules(run)>=20&&PERSONNEL_SCENES.includes(run.eventId))return run;if(!run||run.pending||run.completed||(contentRules(run)>=13&&run.rageContext)||(contentRules(run)>=19&&run.raiseContext)||(contentRules(run)>=24&&run.salaryAdvice?.status==='open'))return run;if(isCastV74(run)&&getSourceEventV50(run)?.kind==='private-social')return run;if(['mood-collapse',...(contentRules(run)>=29?[PATRONAGE_EVENT_V29]:[]),...(contentRules(run)>=27?WEALTH_EVENTS_V27:[]),...(contentRules(run)>=25?['mood-self-destruct',...mealEventIds(run)]:[]),'exit-menu','career-exit','self-care','kind-break','kind-workday','rank-exit','story-exit','career-step-down'].includes(run.eventId))return run;const next=structuredClone(run);next.actions.push({type:'exit'});next.exitReturnEventId=next.eventId;next.eventId='exit-menu';return next;}
 function replayActions(roleId,seed,actions,count=actions.length){
  if(typeof seed!=='string'||seed.length>32||!Array.isArray(actions)||actions.length>300)throw new Error('Invalid replay');
  let run=createRun(roleId,seed);
@@ -1681,6 +1707,8 @@ function replayActions(roleId,seed,actions,count=actions.length){
 export function replayRun(roleId,seed,actions){return replayActions(roleId,seed,actions);}
 export function validRun(run){
  try {
+  if(!isCastV74(run)&&(run?.eventId?.startsWith('cast74-')||run?.history?.some(row=>row?.kind==='private-social'||row?.eventId?.startsWith('cast74-')||CAST_IDS_V74.includes(row?.speaker))||Object.keys(run?.flags||{}).some(key=>key.startsWith('cast74_'))))return false;
+  if(isCastV74(run)&&run?.flags?.cast74_private_last_turn!==undefined&&(!Number.isInteger(run.flags.cast74_private_last_turn)||run.flags.cast74_private_last_turn<1||run.flags.cast74_private_last_turn>run.turn+1))return false;
   if(isWorkGapV50(run)&&(![0,1].includes(run.flags?.work_gap_open)||!run.actions?.length&&run.flags.work_gap_open!==0))return false;
   if(isEnergySafetyV54(run)&&(![0,1].includes(run.flags?.[ENERGY_SAFETY_OWED_V54])||!run.actions?.length&&run.flags[ENERGY_SAFETY_OWED_V54]!==0))return false;
   if(!isEnergySafetyV54(run)&&run?.flags?.[ENERGY_SAFETY_OWED_V54]!==undefined)return false;
@@ -1880,7 +1908,7 @@ export function validRun(run){
   if(contentRules(run)>=25){
    const context=run.mealContext;
    if(context!==null){
-    if(!context||typeof context!=='object'||Array.isArray(context)||Object.keys(context).sort().join(',')!=='guest,origin,page'||!['self-care','crisis-mood'].includes(context.origin)||!(isCareerContentV71(run)?[0,1,2,3]:contentRules(run)>=37?[0,1,2]:[0,1]).includes(context.page)||!(context.guest===null||mealGuestIds(run).includes(context.guest)))return false;
+    if(!context||typeof context!=='object'||Array.isArray(context)||Object.keys(context).sort().join(',')!=='guest,origin,page'||!['self-care','crisis-mood'].includes(context.origin)||!(isCastV74(run)?[0,1,2,3,4]:isCareerContentV71(run)?[0,1,2,3]:contentRules(run)>=37?[0,1,2]:[0,1]).includes(context.page)||!(context.guest===null||mealGuestIds(run).includes(context.guest)))return false;
     const expected=context.guest===null?mealPageId(run,context.page):`meal-with-${context.guest}`;
     if(currentEventId!==expected)return false;
     if(context.origin==='self-care'?(!run.breakReturnEventId||run.resumeEventId):(!run.resumeEventId||run.breakReturnEventId))return false;

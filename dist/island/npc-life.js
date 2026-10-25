@@ -96,7 +96,7 @@ export function createNpcLife({ residents = [] } = {}) {
       // Only the new actor chooses a free spawn; established walkers never jump.
       let spawn = agent.points.find(point => patrolArea(point, agent) && free(point, agent, visitorVisible ? visitor : null));
       if (!spawn) {
-        // At most seven actors share a district. A bounded interior grid gives
+        // At most nine actors share a district. A bounded interior grid gives
         // a new arrival space even if all of its usual short patrol is busy.
         const center = districts.get(row.districtId), alternatives = [];
         for (let x = -3.5; x <= 3.5; x += .25) for (let z = -3.5; z <= 3.5; z += .25) {

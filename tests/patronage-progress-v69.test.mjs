@@ -56,7 +56,7 @@ const workParts=row=>(row.breakdown||[]).filter(part=>['income','workday','patro
 
 test('strict r69 through r71 profiles enable complete replies, while malformed and historical profile strings do not',()=>{
  for(const profile of [69,70,71])for(const marker of ['n','s','d'])assert.equal(isPatronageProgressV69('e39-r'+profile+'-'+marker+'-'+'ab'.repeat(11)),true);
- for(const seed of ['e39-r68-s-'+'a'.repeat(22),'e39-r74-s-'+'a'.repeat(22),'e39-r69-s-'+'a'.repeat(21),'e39-r69-s-'+'a'.repeat(23),'e39-r69-x-'+'a'.repeat(22),'e39-r69-s-'+'A'.repeat(22),'e39-r69-s-'+'g'.repeat(22),'e39-r69-s-'+'a'.repeat(22)+'-extra'])assert.equal(isPatronageProgressV69(seed),false);
+ for(const seed of ['e39-r68-s-'+'a'.repeat(22),'e39-r75-s-'+'a'.repeat(22),'e39-r69-s-'+'a'.repeat(21),'e39-r69-s-'+'a'.repeat(23),'e39-r69-x-'+'a'.repeat(22),'e39-r69-s-'+'A'.repeat(22),'e39-r69-s-'+'g'.repeat(22),'e39-r69-s-'+'a'.repeat(22)+'-extra'])assert.equal(isPatronageProgressV69(seed),false);
 });
 
 test('both rolled family appointments retain their real salary and subsidy before answering a work scene directly',()=>{

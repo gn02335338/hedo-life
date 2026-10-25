@@ -1,3 +1,4 @@
+import {CAST_IDS_V74} from '../dist/cast-v74.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CHARACTER_IDS,CHARACTER_METRICS,deriveCharacterStats,characterAffinity,isPatronageOutcomeV43} from '../dist/character-stats.js';
@@ -21,7 +22,7 @@ const action=()=>({type:'patronage-reply',version:1,eventId:'some-work-scene',ta
 const rejected=body=>assert.throws(()=>validateCompletion(body,ROLE_MAP),error=>error instanceof ApiError&&error.code==='invalid_actions');
 // Legacy version-1 fixtures exercise their original 28-person public roster.
 // Alice's strict r71 evidence and HTTP grammar are covered by the r71 tests.
-const historicalTargets=CHARACTER_IDS.filter(id=>id!=='alice');
+const historicalTargets=CHARACTER_IDS.filter(id=>id!=='alice'&&!CAST_IDS_V74.includes(id));
 
 test('a patronage reply credits only its selected public character and never records a hit',()=>{
  assert.equal(historicalTargets.length,28);

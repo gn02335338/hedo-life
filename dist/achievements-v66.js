@@ -16,7 +16,7 @@ const badge=spec=>Object.freeze({id:spec.id,title:spec.title,description:spec.de
 const name=id=>displayPersona(id)?.name||'這位同事';
 // This published catalog keeps its 28-person ID order. Later public cast
 // additions receive their own additive catalog rather than moving old badges.
-const people=Object.keys(PERSONAS).filter(id=>id!=='alice'),roleName=id=>id==='design'?'產品設計':id==='executive'?'高階主管':ROLES.find(role=>role.id===id)?.name;
+const people=Object.freeze(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','zoe','action','hester','simon','james','johnny']),roleName=id=>id==='design'?'產品設計':id==='executive'?'高階主管':ROLES.find(role=>role.id===id)?.name;
 const socialKinds=[
  ['warm','飯桌翻到下一頁','和這位角色付費用餐，真的聊得很開，之後仍完成一個工作選擇。吃完這頓飯，工作群組之外也多了一點前情。','wallet','cup'],
  ['mine','便當旁邊還有雷','和這位角色付費用餐，真的踩到聊天雷區，之後仍完成一個工作選擇。便當收好了，那句說錯的話還在腦內加熱。','wallet','storm'],

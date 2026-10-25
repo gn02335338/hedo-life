@@ -9,13 +9,14 @@ import {isPatronageProgressV69} from './patronage-progress-v69.js';
 import {isCareerContentV71} from './career-content-v71.js';
 import {isLifeSystemsV72} from './life-systems-v72.js';
 import {isCaptainVoyageOutcomeV73} from './captain-voyage-v73.js';
+import {castAvailableV74,isCastV74} from './cast-v74.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
 export const CHARACTER_STATS_VERSION=1;
 export const CHARACTER_IDS=Object.freeze(Object.keys(PERSONAS));
 export const CHARACTER_METRICS=Object.freeze(['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents']);
-const known=(id,run)=>CHARACTER_IDS.includes(id)&&(!CAST_IDS_V65.includes(id)||isCastV65(run))&&(id!=='alice'||isCareerContentV71(run));
+const known=(id,run)=>CHARACTER_IDS.includes(id)&&castAvailableV74(run,id)&&(!CAST_IDS_V65.includes(id)||isCastV65(run))&&(id!=='alice'||isCareerContentV71(run));
 const verbalKinds=new Set(['ignored','relationship','retort','support','personnel','legal']);
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 const choiceDelta=row=>{
@@ -30,6 +31,7 @@ export function isPatronageOutcomeV43(run,row){
  const evidence=row?.patronageOutcome;
  const sourceV69=evidence?.version===2&&isPatronageProgressV69(run)&&evidence.origin===row?.eventId&&Number.isInteger(row?.choiceIndex)&&row.choiceIndex>=1&&(
   row.kind==='daily'&&typeof row.eventId==='string'&&!['onboarding','patronage-reply','finale'].includes(row.eventId)||
+  row.kind==='private-social'&&isCastV74(run)&&/^cast74-/.test(row.eventId||'')||
   row.kind==='fantasy'&&['road','runway','audit'].includes(row.eventId)||
   row.kind==='career'&&['patronage67-education','patronage67-pay-review','patronage67-smalltalk'].includes(row.eventId)||
   row.kind==='self-care'&&['kind-break','kind-workday'].includes(row.eventId)||

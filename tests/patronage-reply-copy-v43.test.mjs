@@ -1,3 +1,4 @@
+import {CAST_IDS_V74} from '../dist/cast-v74.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PERSONAS} from '../dist/persona.js';
@@ -5,7 +6,7 @@ import {CAST_IDS_V65} from '../dist/cast-v65.js';
 import {patronageReplyModeV43,patronageReplyLineV43,patronageReplyOutcomesV43} from '../dist/patronage-reply-v43.js';
 const run={stats:{boss:50,mood:50}},work={id:'ordinary-work',kind:'daily'},social={id:'private-conversation',scope:'private'};
 // This fixture predates both the six r65 guests and the separately gated Alice.
-const legacyTargets=Object.keys(PERSONAS).filter(id=>id!=='alice'&&!CAST_IDS_V65.includes(id));
+const legacyTargets=Object.keys(PERSONAS).filter(id=>id!=='alice'&&!CAST_IDS_V65.includes(id)&&!CAST_IDS_V74.includes(id));
 test('historical public characters retain distinct appointment lines and four bounded reactions, with authority aimed at the actual person',()=>{
  assert.equal(legacyTargets.length,22);
  const lines=new Set();

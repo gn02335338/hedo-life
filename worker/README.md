@@ -1467,3 +1467,12 @@ closing them restores the pending work/gap with resource safeguards. Crew
 status has no independent client-submitted reward. Old r72 and earlier proofs
 keep their original results; new career UI starts r73. Raw source research,
 private identifiers and unverified private-life claims are not shipped.
+
+
+## New cast profile v74
+
+Fresh browser lives use the strict `e39-r74-[nsd]-[0-9a-f]{22}` profile. It inherits the published v60–v73 rules and enables 156 original source events, including 31 for each of five new public characters. Earlier profiles retain their event pools, RNG and action envelopes. The character projection appends `wine`, `peter`, `tony`, `henry` and `mia` after the existing 29 IDs. The verified cloud snapshot supplies the extended roster; historical offline caches remain historical until a valid snapshot arrives. No anonymous identity, archive key, Durable Object binding, SQL migration or HTTP endpoint changes.
+
+The five dinner guests use a fifth chooser page through the existing `mealPage` and `mealPick` effects. Invitation and dinner replies are server-replayed; no client-supplied affection or random result is accepted. Ordinary new private gatherings use the `private-social` history kind and do not count as completed work, tenure, salary, PIP service or loan repayment. They are excluded during active PIP, queued personnel notices or resource warnings. Closing one marks it seen and arms a same-workday cooldown; normal answers, leaving and conflict aftermath resume the waiting work rules without creating an employment departure. All source IDs, presence checks and consequences remain canonical engine decisions.
+
+The 1,000-card achievement catalog retains its published IDs and art. Its v66 relationship roster is explicitly frozen at the original 28 people, so later character additions do not silently resize or reorder that catalog. Locked names, pictures and choice outcomes stay hidden in player UI. New avatar files and generation prompts are documented in `research/portraits-v74.md`; private photos and raw source material are excluded from the repository.
