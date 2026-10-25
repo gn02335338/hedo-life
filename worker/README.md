@@ -1044,14 +1044,23 @@ credential, personal-data field or database migration.
 It is a standalone original 3D miniature with nine districts, 27 district dialogue
 choices and a six-stop day tour. Walking mode adds a controllable visitor,
 connected bridges and all 29 current public colleagues with 87 separate encounter choices.
-The roster matches `PERSONAS`, includes Alice, and places each colleague at one
-reachable location. The searchable character directory and district character
+The roster matches `PERSONAS`, includes Alice, and gives each colleague a reachable home and a bounded neighborhood walking route. The searchable character directory and district character
 buttons also support conversations without WebGL. Hidden anonymous character-book
 cards are not revealed by the island roster.
 Keyboard and touch controls release movement when interrupted; conversations and
 the open district list stop walking. Public resident profiles are loaded from the
 approved-only island API described below. Career saved games, collections and
 replay validation remain unchanged.
+
+NPC motion is a renderer-independent, bounded local simulation. Official characters
+and approved residents walk and rest within their district, avoid terrain and
+other actors, stop near the roaming visitor, and remain pinned during their own
+conversation (including one opened from the directory). Interaction targets,
+name labels and player collision follow current positions rather than old homes.
+Pause/reduced-motion and hidden tabs stop movement without elapsed-time catch-up.
+Life snapshots drive public activity counts and character status once per second;
+positions, routes, timers and activities are never uploaded or stored. Changing
+the displayed time of day does not advance or reset a career run.
 
 Island exploration reads and writes the browser-local `hedo-island-v1` key. Its version 1
 record contains visited district IDs and selected choice indexes (0–2), with no

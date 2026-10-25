@@ -10,11 +10,12 @@ import { mergeGeometries } from './vendor/BufferGeometryUtils.js';
 import { displayPersona } from '../persona.js';
 import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, CAST_POSITIONS, PLAYER_RADIUS, isWalkable, movePlayer, nearestInteraction } from './navigation.js';
 
-import { OUTFITS, RESIDENT_POSITIONS, normalizeResidents, residentObstacles } from './residents.js';
+import { OUTFITS, RESIDENT_POSITIONS, normalizeResidents } from './residents.js';
 
 import { ISLAND_CAST } from './cast.js';
+import { createNpcLife } from './npc-life.js';
 
-export async function createIslandScene({ container, districts = [], onSelect = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {} }) {
+export async function createIslandScene({ container, districts = [], onSelect = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {}, onLifeUpdate = () => {} }) {
   if (!container) throw new Error('Missing island container');
   let renderer;
   try {
@@ -94,7 +95,11 @@ export async function createIslandScene({ container, districts = [], onSelect = 
   const colleagues = [];
   const interactionTargets = [];
   const residentActors = new Map();
-  let communityObstacles = [];
+  const actorsByKey = new Map();
+  const npcLife = createNpcLife();
+  let characterObstacles = npcLife.getObstacles();
+  let lifeSnapshot = npcLife.getState(), lastLifePublished = -Infinity;
+  const dynamicNavigation = Object.freeze({dynamicCharacters:true});
   let roaming = false, movementEnabled = true, nearby = null;
   let moveInput = { x:0, z:0 };
   let playerPosition = { ...PLAYER_SPAWN };
@@ -514,6 +519,52 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     for (let i = 0; i < 3; i++) box(p, palette.woodLight, 2.5 + (i % 2) * .4, 1.3 + Math.floor(i / 2) * .45, 1.95, .42, .43, .43, .1);
   }
 
+  // District keepsakes sit on existing furniture, roofs or the decorative dock.
+  // Nothing here adds a standing obstacle to the shared walking paths.
+  function districtKeepsakes(p,id) {
+    if(id==='lobby'){
+      for(let i=0;i<3;i++){box(p,palette.teal,.75,6.27,-1.02+i*.36,.29,.13,.26);ball(p,palette.leafLight,.75,6.42,-1.02+i*.36,.18,1,.7,1);}
+    }else if(id==='lab'){
+      cylinder(p,palette.white,.1,3.45,-1.35,.035,.65,7);
+      for(let i=0;i<3;i++){const a=i*Math.PI*2/3;box(p,palette.gold,.1+Math.cos(a)*.21,3.78,-1.35+Math.sin(a)*.21,.25,.04,.07,-a);}
+      ball(p,palette.red,.1,3.82,-1.35,.065);
+    }else if(id==='meeting'){
+      for(let i=0;i<3;i++)box(p,[palette.gold,palette.lilac,palette.blue][i],-.42+i*.38,1.89,-.85,.26,.03,.2,.16*i);
+    }else if(id==='hr'){
+      for(const x of [-1.26,.66])for(let i=0;i<3;i++)ball(p,i%2?palette.pink:palette.white,x-.16+i*.16,1.89,.77,.07);
+    }else if(id==='finance'){
+      cylinder(p,palette.wood,1.05,4.1,-.85,.24,.22,8);
+      ball(p,palette.leaf,1.05,4.4,-.85,.31,1,1.1,1);
+      ball(p,palette.leafLight,1.15,4.58,-.88,.2);
+    }else if(id==='cafe'){
+      box(p,palette.woodLight,-1.08,2.1,.4,1.0,.065,.32);
+      for(let i=0;i<3;i++){
+        cylinder(p,palette.brick,-1.36+i*.28,2.21,.4,.105,.18,8);
+        ball(p,[palette.leaf,palette.leafLight,palette.leafDark][i],-1.36+i*.28,2.38,.4,.13,.8,1.25,.8);
+      }
+      cylinder(p,palette.white,-2.73,1.51,1.67,.055,.12,8);
+      box(p,palette.pink,-2.35,1.49,1.72,.25,.025,.2,.18);
+    }else if(id==='plaza'){
+      for(let i=0;i<2;i++){
+        const x=.6+i*.65,z=-.55;
+        box(p,palette.wood,x,1.71,z,.56,.3,.47);
+        for(const side of [-1,1])box(p,palette.woodLight,x+side*.26,1.9,z,.045,.1,.49);
+        for(let j=0;j<4;j++)ball(p,i?palette.gold:palette.red,x-.16+(j%2)*.29,1.9,z-.1+Math.floor(j/2)*.2,.105);
+      }
+    }else if(id==='court'){
+      for(let i=0;i<3;i++){cylinder(p,i%2?palette.blue:palette.white,-.65+i*.32,1.55,-2.48,.055,.22,8);cylinder(p,palette.navy,-.65+i*.32,1.68,-2.48,.036,.035,8);}
+      box(p,palette.gold,.55,1.48,-2.48,.43,.045,.28,-.06);
+    }else if(id==='harbor'){
+      for(let i=0;i<3;i++){
+        const coil=mesh(p,geo(new THREE.TorusGeometry(.15+i*.05,.025,5,14)),palette.cream,-.23,.72,5.1);
+        coil.rotation.x=-Math.PI/2;
+      }
+      const rod=cylinder(p,palette.woodDark,.55,1.08,5.4,.025,1.4,6);rod.rotation.x=-.7;
+      line(p,[[.55,1.6,4.95],[.55,1.48,6.06],[.55,.05,6.06]],'#d6dcc8');
+      cylinder(p,palette.teal,-.3,.86,4.45,.18,.35,8);
+    }
+  }
+
   function bakeStatic(tile) {
     tile.updateMatrixWorld(true);
     const inverse = new THREE.Matrix4().copy(tile.matrixWorld).invert();
@@ -549,6 +600,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
   }
 
   const buildingFunctions = { lobby: office, lab: laboratory, meeting, hr: humanResources, finance, cafe, plaza, court, harbor };
+  const districtGround=['#bac994','#a6bfab','#c3bc9c','#c4c999','#b3c2ae','#c8bd99','#bdc89a','#9fbda4','#c8c4a0'];
   for (let index = 0; index < LAYOUT.length; index++) {
     const config = LAYOUT[index];
     const tile = group(scene, config.x, 0, config.z);
@@ -557,7 +609,8 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     const bottom = cylinder(tile, palette.darkSand, 0, -.19, 0, 4.27, 1.02, 6); bottom.rotation.y = Math.PI / 6;
     const cliff = cylinder(tile, palette.sand, 0, .22, 0, 4.52, .98, 6); cliff.rotation.y = Math.PI / 6;
     const edge = cylinder(tile, palette.cream, 0, .73, 0, 4.62, .25, 6); edge.rotation.y = Math.PI / 6;
-    const ground = cylinder(tile, index % 3 === 0 ? palette.grassLight : palette.grass, 0, .95, 0, 4.36, .2, 6); ground.rotation.y = Math.PI / 6;
+    const rim=cylinder(tile,mat(new THREE.Color(config.color).lerp(new THREE.Color('#f2e6ca'),.6).getStyle()),0,.79,0,4.64,.085,6);rim.rotation.y=Math.PI/6;
+    const ground = cylinder(tile, mat(districtGround[index]), 0, .95, 0, 4.36, .2, 6); ground.rotation.y = Math.PI / 6;
     const terrace = cylinder(tile, palette.path, 0, 1.057, .2, 3.0, .025, 10);
     terrace.scale.z = .92;
     for (let j = 0; j < 3; j++) {
@@ -568,6 +621,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     const foam = mesh(tile, geo(new THREE.RingGeometry(4.58, 4.7, 6)), mat('#d6e6cd', { transparent: true, opacity: .55, depthWrite: false, side: THREE.DoubleSide }), 0, -.04, 0);
     foam.rotation.x = -Math.PI / 2; foam.rotation.z = Math.PI / 6;
     buildingFunctions[config.id](tile);
+    districtKeepsakes(tile,config.id);
     const treePositions = config.id === 'court' ? [[-2.9,-2.1],[2.8,-2.2],[3.25,.6]] : [[-2.9,-1.55],[2.65,-2],[-2.9,.1],[1.0,-3.1],[3.0,.85]];
     for (let i = 0; i < treePositions.length; i++) {
       const [x,z] = treePositions[i];
@@ -713,13 +767,14 @@ export async function createIslandScene({ container, districts = [], onSelect = 
   ISLAND_CAST.forEach(({id,districtId},index) => {
     const config=LAYOUT.find(district=>district.id===districtId);
     const person = makePerson(index,config,colleagueLooks[id]);
-    person.id=id;person.fixed=true;person.home=CAST_POSITIONS[id];
+    person.id=id;person.home=CAST_POSITIONS[id];person.walkDistance=0;
     person.object.scale.setScalar(1.18);
     person.object.position.set(person.home.x,person.home.y,person.home.z);
     person.object.rotation.y=-.25;
     const label=document.createElement('div');label.className='map-npc-label';label.textContent=displayPersona(id).name;label.setAttribute('aria-hidden','true');label.style.pointerEvents='none';label.style.display='none';overlay.append(label);
-    person.label=label;colleagues.push(person);
-    interactionTargets.push({kind:'person',id,districtId,key:`person:${id}`,position:person.home,radius:1.4});
+    person.label=label;colleagues.push(person);actorsByKey.set(`person:${id}`,person);
+    person.target={kind:'person',id,districtId,key:`person:${id}`,position:person.home,radius:1.4};
+    interactionTargets.push(person.target);
   });
   const player=makePerson(100,LAYOUT[0],{player:true,shirt:palette.gold,skin:'#e9b48c',hair:'#5c4337'});
   player.object.scale.setScalar(1.42);
@@ -794,13 +849,16 @@ export async function createIslandScene({ container, districts = [], onSelect = 
   renderer.domElement.addEventListener('pointercancel',()=>{pointerDown=null;});
   const onContextLost=(event)=>{
     event.preventDefault();
+    contextLost=true;cancelAnimationFrame(frameId);
     container.dispatchEvent(new CustomEvent('island-context-lost',{bubbles:true}));
   };
   renderer.domElement.addEventListener('webglcontextlost',onContextLost);
 
   const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
-  let paused=reducedMotion.matches,destroyed=false,topView=false,width=1,height=1,frameId=0;
+  let paused=reducedMotion.matches,destroyed=false,contextLost=false,topView=false,width=1,height=1,frameId=0;
   let elapsed=0,lastTime=performance.now(),transition=null,needsRender=true,renderedOnce=false;
+  const onMotionPreference=()=>{needsRender=true;};
+  reducedMotion.addEventListener('change',onMotionPreference);
   let baseView=24;
   const onKeyDown=(event)=>{
     if(event.key==='+'||event.key==='='||event.key==='-'){
@@ -841,7 +899,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     const residents=normalizeResidents({version:1,residents:input});
     // Keep one reusable model per physical slot. Repeated refreshes or changed
     // approvals never accumulate detached geometry, materials or label nodes.
-    for(const actor of residentActors.values()) {actor.object.visible=false;actor.id=null;actor.label.textContent='';actor.label.style.display='none';}
+    for(const actor of residentActors.values()) {actorsByKey.delete(`resident:${actor.id}`);actor.object.visible=false;actor.id=null;actor.target=null;actor.label.textContent='';actor.label.style.display='none';}
     for(let i=interactionTargets.length-1;i>=0;i--)if(interactionTargets[i].kind==='resident')interactionTargets.splice(i,1);
     for(const resident of residents) {
       const slotKey=`${resident.districtId}:${resident.slot}`;
@@ -849,7 +907,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       const tile=LAYOUT.find(d=>d.id===resident.districtId);
       if(!actor) {
         actor=makePerson(200+residentActors.size,tile,{shirt:palette.teal,accessory:['coffee','bag','cap'][resident.slot],skin:['#e9b48c','#cc936e','#a77256'][resident.slot],hair:['#5c4337','#39494c','#7b5844'][resident.slot]});
-        actor.fixed=true;actor.resident=true;actor.home=RESIDENT_POSITIONS[resident.districtId][resident.slot];
+        actor.resident=true;actor.home=RESIDENT_POSITIONS[resident.districtId][resident.slot];actor.walkDistance=0;
         actor.object.scale.setScalar(1.18);
         actor.object.position.set(actor.home.x,WALK_HEIGHT,actor.home.z);
         actor.object.rotation.y=.35;
@@ -859,23 +917,29 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       const outfit=OUTFITS.find(item=>item.id===resident.outfit);
       for(const part of actor.uniform)part.material=mat(outfit.color);
       actor.id=resident.id;actor.label.textContent=resident.nickname;actor.object.visible=true;
-      interactionTargets.push({kind:'resident',id:resident.id,districtId:resident.districtId,key:`resident:${resident.id}`,position:actor.home,radius:1.15,exitRadius:1.4});
+      actor.target={kind:'resident',id:resident.id,districtId:resident.districtId,key:`resident:${resident.id}`,position:actor.home,radius:1.15,exitRadius:1.4};
+      interactionTargets.push(actor.target);actorsByKey.set(actor.target.key,actor);
     }
-    communityObstacles=residentObstacles(residents);
-    // A newly approved character can occupy where the visitor was waiting.
-    // Move the visitor only as far as needed to leave that new solid footprint.
-    if(!isWalkable(playerPosition,PLAYER_RADIUS,communityObstacles)) {
+    npcLife.setResidents(residents);
+    updateNpcLife(0);
+    ensurePlayerSpace();
+    needsRender=true;updateNearby();
+    return residents;
+  }
+  function ensurePlayerSpace() {
+    // Arrivals or walkers in overview mode may occupy the saved visitor spot.
+    // Relocate only when needed, choosing the nearest collision-free ground.
+    if(!isWalkable(playerPosition,PLAYER_RADIUS,characterObstacles,dynamicNavigation)) {
       let free=null;
-      for(let radius=.12;radius<=2.4&&!free;radius+=.12)for(let i=0;i<32;i++) {
-        const angle=i/32*Math.PI*2,point={x:playerPosition.x+Math.cos(angle)*radius,z:playerPosition.z+Math.sin(angle)*radius};
-        if(isWalkable(point,PLAYER_RADIUS,communityObstacles)){free=point;break;}
+      for(let radius=.12;radius<=4&&!free;radius+=.12)for(let i=0;i<48;i++) {
+        const angle=i/48*Math.PI*2,point={x:playerPosition.x+Math.cos(angle)*radius,z:playerPosition.z+Math.sin(angle)*radius};
+        if(isWalkable(point,PLAYER_RADIUS,characterObstacles,dynamicNavigation)){free=point;break;}
       }
-      playerPosition=free||{...PLAYER_SPAWN};
+      if(!free)free=[PLAYER_SPAWN,...Object.values(DISTRICT_ENTRANCES)].find(point=>isWalkable(point,PLAYER_RADIUS,characterObstacles,dynamicNavigation));
+      if(free)playerPosition={x:free.x,z:free.z};
       player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);
       playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
     }
-    needsRender=true;updateNearby();
-    return residents;
   }
   function getFollowTarget() {
     followTarget.set(playerPosition.x,WALK_HEIGHT+.85,playerPosition.z);
@@ -908,6 +972,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     controls.enablePan=!next;
     if(next){
       movementEnabled=true;
+      updateNpcLife(0);ensurePlayerSpace();
       controls.stopListenToKeyEvents();
       controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_ROTATE};
       topView=false;selectRing.visible=false;
@@ -936,7 +1001,7 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       if(cameraDown.lengthSq()<.0001)cameraDown.set(-cameraRight.z,0,cameraRight.x);
       else cameraDown.normalize();
       const worldInput={x:cameraRight.x*moveInput.x+cameraDown.x*moveInput.z,z:cameraRight.z*moveInput.x+cameraDown.z*moveInput.z};
-      playerPosition=movePlayer(playerPosition,worldInput,dt,3.8,communityObstacles);
+      playerPosition=movePlayer(playerPosition,worldInput,dt,3.8,characterObstacles,dynamicNavigation);
     }
     const dx=playerPosition.x-beforeX,dz=playerPosition.z-beforeZ;
     const moved=Math.hypot(dx,dz);
@@ -952,14 +1017,6 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     }else if(playerMoving){standStill();needsRender=true;}
     player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);
     playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
-    updateNearby();
-    for(const colleague of people){
-      if(!colleague.fixed||!colleague.object.visible)continue;
-      if(Math.hypot(colleague.home.x-playerPosition.x,colleague.home.z-playerPosition.z)>3.3)continue;
-      const angle=Math.atan2(playerPosition.x-colleague.home.x,playerPosition.z-colleague.home.z);
-      const difference=Math.atan2(Math.sin(angle-colleague.object.rotation.y),Math.cos(angle-colleague.object.rotation.y));
-      if(Math.abs(difference)>.005){colleague.object.rotation.y+=difference*Math.min(1,dt*5);needsRender=true;}
-    }
     const desired=getFollowTarget();
     if(transition){
       const offset=transition.positionTo.clone().sub(transition.targetTo);
@@ -971,6 +1028,38 @@ export async function createIslandScene({ container, districts = [], onSelect = 
         controls.target.add(followDelta);camera.position.add(followDelta);needsRender=true;
       }
     }
+  }
+  function updateNpcLife(dt) {
+    if(contextLost)return;
+    const still=paused||reducedMotion.matches||document.hidden;
+    lifeSnapshot=npcLife.update(dt,{player:playerPosition,roaming,paused,reducedMotion:reducedMotion.matches,hidden:document.hidden});
+    characterObstacles=npcLife.getObstacles();
+    for(const state of lifeSnapshot){
+      const actor=actorsByKey.get(state.key??`${state.kind}:${state.id}`);
+      if(!actor||!actor.object.visible)continue;
+      const moved=Math.hypot(actor.object.position.x-state.position.x,actor.object.position.z-state.position.z);
+      if(moved>.00001||actor.lifeState!==state.state)needsRender=true;
+      actor.object.position.set(state.position.x,state.position.y??WALK_HEIGHT,state.position.z);
+      actor.target.position=state.position;actor.lifeState=state.state;
+      const difference=Math.atan2(Math.sin(state.heading-actor.object.rotation.y),Math.cos(state.heading-actor.object.rotation.y));
+      if(Math.abs(difference)>.001){actor.object.rotation.y+=difference*(still||dt===0?1:Math.min(1,dt*9));needsRender=true;}
+      actor.walkDistance+=moved;
+      const stride=!still&&state.state==='walking'?Math.sin(actor.walkDistance*10+actor.phase)*.4:0;
+      actor.legs[0].rotation.x=stride;actor.legs[1].rotation.x=-stride;
+      actor.arms[0].rotation.x=-stride*.7;actor.arms[1].rotation.x=stride*.7;
+      actor.body.position.y=still?0:state.state==='walking'?Math.abs(Math.sin(actor.walkDistance*10+actor.phase))*.022:Math.sin(elapsed*1.6+actor.phase)*.009;
+      actor.arms[1].rotation.z=!still&&state.state==='greeting'?-.55+Math.sin(elapsed*4+actor.phase)*.09:0;
+    }
+    const now=performance.now();
+    if(now-lastLifePublished>=1000){
+      lastLifePublished=now;
+      const actors=lifeSnapshot.map(({key,kind,id,districtId,position,heading,state,activity})=>Object.freeze({key,kind,id,districtId,position:Object.freeze({...position}),heading,state,activity}));
+      onLifeUpdate(Object.freeze({actors:Object.freeze(actors)}));
+    }
+  }
+  function setConversationTarget(target) {
+    if(destroyed)return;
+    npcLife.setConversationTarget(target);updateNpcLife(0);needsRender=true;updateNearby();
   }
   function positionOverlay(element,position,visible=true,avoidPlayer=false,placements=null) {
     const projected=position.clone().project(camera);
@@ -1013,23 +1102,14 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     for(const material of lampMaterials)material.emissiveIntensity=.05+(1-daylight)*1.8;
   }
   function animate(time){
-    if(destroyed)return;
+    if(destroyed||contextLost)return;
     frameId=requestAnimationFrame(animate);
     const dt=Math.min((time-lastTime)/1000,.06);lastTime=time;
     if(document.hidden)return;
-    if(!paused)elapsed+=dt;
-    if(!paused||!renderedOnce){
+    const ambientPaused=paused||reducedMotion.matches;
+    if(!ambientPaused)elapsed+=dt;
+    if(!ambientPaused||!renderedOnce){
     waterUniforms.uTime.value=elapsed;
-    for(const person of people){
-      if(!person.object.visible)continue;
-      if(person.fixed){person.body.position.y=Math.sin(elapsed*1.6+person.phase)*.012;continue;}
-      const a=person.phase+elapsed*person.speed;
-      // Rounded paths keep miniature colleagues in the pedestrian plaza.
-      person.object.position.set(person.tile.x+Math.cos(a)*person.radius,1.07+Math.abs(Math.sin(elapsed*5+person.phase))*.015,person.tile.z+Math.sin(a)*person.radius*.77+.17);
-      person.object.rotation.y=-a;
-      const swing=Math.sin(elapsed*6+person.phase)*.32;
-      person.legs[0].rotation.x=swing;person.legs[1].rotation.x=-swing;person.arms[0].rotation.x=-swing;person.arms[1].rotation.x=swing;
-    }
     for(const item of moving){
       if(item.type==='boat'){
         item.object.position.y=.08+Math.sin(elapsed*1.2+item.phase)*.045;item.object.rotation.z=Math.sin(elapsed*.8+item.phase)*.025;
@@ -1039,13 +1119,14 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     if(connectionGroup.visible)for(const item of connectionDots)item.dot.position.copy(item.curve.getPoint((elapsed*.12+item.offset)%1));
     }
     updateWalking(dt);
+    updateNpcLife(dt);updateNearby();
     if(transition){
       const linear=Math.min(1,(time-transition.start)/850);const t=1-Math.pow(1-linear,3);
       controls.target.lerpVectors(transition.targetFrom,transition.targetTo,t);camera.position.lerpVectors(transition.positionFrom,transition.positionTo,t);camera.zoom=THREE.MathUtils.lerp(transition.zoomFrom,transition.zoomTo,t);camera.updateProjectionMatrix();
       if(linear===1)transition=null;
     }
     const controlsChanged=controls.update();
-    if(paused&&!needsRender&&!controlsChanged&&!transition)return;
+    if(ambientPaused&&!needsRender&&!controlsChanged&&!transition)return;
     camera.updateMatrixWorld();
     for(const item of labelItems){
       const v=item.position.clone().project(camera);
@@ -1060,9 +1141,9 @@ export async function createIslandScene({ container, districts = [], onSelect = 
       positionOverlay(playerMarker,markerPosition);
       const marker=markerPosition.clone().project(camera),markerX=(marker.x*.5+.5)*width,markerY=(-marker.y*.5+.5)*height;
       const placements=[{left:markerX-18,right:markerX+18,top:markerY-18,bottom:markerY+18}];
-      const distanceToPlayer=person=>Math.hypot(person.home.x-playerPosition.x,person.home.z-playerPosition.z);
+      const distanceToPlayer=person=>Math.hypot(person.object.position.x-playerPosition.x,person.object.position.z-playerPosition.z);
       const namedPeople=people.filter(person=>person.label&&person.object.visible).sort((a,b)=>distanceToPlayer(a)-distanceToPlayer(b));
-      for(const colleague of namedPeople)positionOverlay(colleague.label,new THREE.Vector3(colleague.home.x,(colleague.home.y??WALK_HEIGHT)+1.52,colleague.home.z),distanceToPlayer(colleague)<3.8,true,placements);
+      for(const colleague of namedPeople)positionOverlay(colleague.label,new THREE.Vector3(colleague.object.position.x,colleague.object.position.y+1.52,colleague.object.position.z),distanceToPlayer(colleague)<3.8,true,placements);
     }
     renderer.render(scene,camera);
     renderedOnce=true;needsRender=false;
@@ -1092,12 +1173,13 @@ export async function createIslandScene({ container, districts = [], onSelect = 
     setMoveInput,
     setMovementEnabled,
     setResidents,
+    setConversationTarget,
     interactNearby(){return updateNearby();},
     setHour,
     setConnections(value){connectionGroup.visible=Boolean(value);needsRender=true;for(const item of connectionDots)item.dot.position.copy(item.curve.getPoint((elapsed*.12+item.offset)%1));},
     setPaused(value){paused=Boolean(value);needsRender=true;},
     setTopView(value){topView=Boolean(value);moveCamera(controls.target.clone(),camera.zoom,topView?new THREE.Vector3(0,65,.1):homeOffset);},
     zoom(delta){const value=Number(delta);if(!Number.isFinite(value))return;transition=null;needsRender=true;camera.zoom=THREE.MathUtils.clamp(camera.zoom*Math.exp(value*.17),controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();},
-    destroy(){if(destroyed)return;destroyed=true;cancelAnimationFrame(frameId);resizeObserver.disconnect();controls.dispose();renderer.domElement.removeEventListener('pointerdown',onPointerDown);renderer.domElement.removeEventListener('pointerup',onPointerUp);renderer.domElement.removeEventListener('keydown',onKeyDown);renderer.domElement.removeEventListener('webglcontextlost',onContextLost);for(const g of allGeometries)g.dispose();for(const m of materials.values())m.dispose();for(const t of textures)t.dispose();renderer.dispose();renderer.domElement.remove();overlay.remove();},
+    destroy(){if(destroyed)return;destroyed=true;cancelAnimationFrame(frameId);resizeObserver.disconnect();reducedMotion.removeEventListener('change',onMotionPreference);controls.dispose();renderer.domElement.removeEventListener('pointerdown',onPointerDown);renderer.domElement.removeEventListener('pointerup',onPointerUp);renderer.domElement.removeEventListener('keydown',onKeyDown);renderer.domElement.removeEventListener('webglcontextlost',onContextLost);for(const g of allGeometries)g.dispose();for(const m of materials.values())m.dispose();for(const t of textures)t.dispose();renderer.dispose();renderer.domElement.remove();overlay.remove();},
   };
 }

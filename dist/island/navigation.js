@@ -122,7 +122,7 @@ for (let polygonIndex = 0; polygonIndex < surfaces.length; polygonIndex++) {
 
 // Ground-level main building footprints, matching scene.js. Low decorative
 // planting and street furniture are omitted so narrow public paths stay usable.
-const obstacles = [
+const terrainObstacles = [
   { id: 'lobby', x: -.45, z: -.65, width: 3.1, depth: 2.4 },
   { id: 'lab', x: -.25, z: -.5, width: 3.45, depth: 2.3 },
   { id: 'meeting', x: 0, z: -.55, radius: 2.08 },
@@ -134,7 +134,7 @@ const obstacles = [
   { id: 'harbor', x: 1.65, z: .05, width: 1.45, depth: 1.35, rotation: -.15 },
   ...[-2.15, 2.15].map(x => ({ id: 'court', x: x * Math.cos(-.06), z: -.3 - x * Math.sin(-.06), radius: .055 })),
 ].map(obstacle => ({ ...obstacle, ...world(obstacle.id, obstacle.x, obstacle.z) }));
-for (const position of Object.values(CAST_POSITIONS)) obstacles.push({ ...position, radius: CAST_RADIUS });
+const castObstacles = Object.values(CAST_POSITIONS).map(position => ({ ...position, radius: CAST_RADIUS }));
 
 function segmentDistanceSquared(point, a, b) {
   const dx = b.x - a.x, dz = b.z - a.z;
@@ -151,13 +151,28 @@ function blocked(point, radius, obstacle) {
 }
 function finitePoint(point) { return point && Number.isFinite(point.x) && Number.isFinite(point.z); }
 
-/** Per-scene extra obstacles are circles {x,z,radius}; static geometry is never mutated. */
-export function isWalkable(point, radius = PLAYER_RADIUS, extraObstacles = []) {
+/** Geometry alone, excluding every character's authored or current position. */
+export function isTerrainWalkable(point, radius = PLAYER_RADIUS) {
   if (!finitePoint(point) || !Number.isFinite(radius) || radius < 0) return false;
   if (!surfaces.some(polygon => within(point, polygon))) return false;
   if (boundary.some(([a, b]) => segmentDistanceSquared(point, a, b) < radius * radius - EPSILON)) return false;
+  return !terrainObstacles.some(obstacle => blocked(point, radius, obstacle));
+}
+
+/** Erode a single home island, so autonomous characters never enter bridges. */
+export function isDistrictWalkable(point, districtId, radius = PLAYER_RADIUS) {
+  const index = LAYOUT.findIndex(district => district.id === districtId);
+  if (index < 0 || !isTerrainWalkable(point, radius) || !within(point, surfaces[index])) return false;
+  return edges[index].every(([a, b]) => segmentDistanceSquared(point, a, b) >= radius * radius - EPSILON);
+}
+
+/** Per-scene extra obstacles are circles {x,z,radius}; static geometry is never mutated.
+ * Dynamic scenes explicitly replace the legacy stationary cast footprints.
+ */
+export function isWalkable(point, radius = PLAYER_RADIUS, extraObstacles = [], { dynamicCharacters = false } = {}) {
+  if (!isTerrainWalkable(point, radius)) return false;
   if(!Array.isArray(extraObstacles)) return false;
-  return !obstacles.some(obstacle => blocked(point, radius, obstacle))
+  return (dynamicCharacters || !castObstacles.some(obstacle => blocked(point, radius, obstacle)))
     && !extraObstacles.some(obstacle => !finitePoint(obstacle) || !Number.isFinite(obstacle.radius)
       || obstacle.radius < 0 || blocked(point, radius, obstacle));
 }
@@ -166,7 +181,7 @@ export function isWalkable(point, radius = PLAYER_RADIUS, extraObstacles = []) {
  * Time is in seconds, capped at 100 ms; 6 cm substeps prevent wall tunneling.
  * The returned point is fresh. A blocked diagonal slides along a free axis.
  */
-export function movePlayer(position, input, dt, speed = 4.5, extraObstacles = []) {
+export function movePlayer(position, input, dt, speed = 4.5, extraObstacles = [], options = {}) {
   const result = finitePoint(position) ? { x: position.x, z: position.z } : { ...PLAYER_SPAWN };
   if (!finitePoint(input) || !Number.isFinite(dt) || dt <= 0 || !Number.isFinite(speed) || speed <= 0) return result;
   const magnitude = Math.hypot(input.x, input.z);
@@ -176,9 +191,9 @@ export function movePlayer(position, input, dt, speed = 4.5, extraObstacles = []
   const dx = input.x / magnitude * distance / steps, dz = input.z / magnitude * distance / steps;
   for (let step = 0; step < steps; step++) {
     const next = { x: result.x + dx, z: result.z + dz };
-    if (isWalkable(next, PLAYER_RADIUS, extraObstacles)) { result.x = next.x; result.z = next.z; continue; }
-    if (isWalkable({ x: result.x + dx, z: result.z }, PLAYER_RADIUS, extraObstacles)) result.x += dx;
-    if (isWalkable({ x: result.x, z: result.z + dz }, PLAYER_RADIUS, extraObstacles)) result.z += dz;
+    if (isWalkable(next, PLAYER_RADIUS, extraObstacles, options)) { result.x = next.x; result.z = next.z; continue; }
+    if (isWalkable({ x: result.x + dx, z: result.z }, PLAYER_RADIUS, extraObstacles, options)) result.x += dx;
+    if (isWalkable({ x: result.x, z: result.z + dz }, PLAYER_RADIUS, extraObstacles, options)) result.z += dz;
   }
   return result;
 }
