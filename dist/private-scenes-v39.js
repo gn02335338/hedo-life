@@ -5,6 +5,7 @@ export function isPrivateSceneV39(event){
  return Boolean(event)&&(event.scope==='private'||event.privateContext===true||privateIds.has(event.id)||/^meal-(?:with-|guests-)/.test(event.id||''));
 }
 export function privateReturnEffectV39(source,run){
+ if(source?.kind==='captain-voyage'&&run?.captainVoyageContext)return 'captainVoyageLeave';
  if(['kind-break','kind-workday','self-care'].includes(source?.id))return 'cancelBreak';
  if(source?.id==='banquet-afterparty')return 'banquetFinish';
  if(/^meal-with-/.test(source?.id||''))return 'mealFinish';

@@ -11,7 +11,7 @@ export function energySafetyReturnedBoundaryV54(run,next){
  if(next.turn>run.turn)return true;
  if(run.rageContext||run.verbalContext||run.patronageReplyContext)return false;
  return next.flags.work_gap_open===1||Boolean(
-  ['blockchainContext','treatsContext','recruitmentContext','activityContext','hiddenEncounterContext','companyContext','raiseContext','mealContext','patronageContext',
+  ['captainVoyageContext','blockchainContext','treatsContext','recruitmentContext','activityContext','hiddenEncounterContext','companyContext','raiseContext','mealContext','patronageContext',
    'resumeEventId','meltdownReturnEventId','breakReturnEventId','banquetReturnEventId','wealthReturnEventId','exitReturnEventId']
    .some(key=>run[key]&&!next[key])||
   run.salaryAdvice?.status==='open'&&next.salaryAdvice?.status==='done'

@@ -15,7 +15,7 @@ const uiScenes=Object.freeze({'role-selection':'onboarding','resume-roll':'onboa
 
 export function sceneIllustration(event,{roleId=null,people=[],reality=null}={}){
   const id=typeof event?.id==='string'?event.id:'';
-  let theme=(['activity','activity-invitation','office-treat','event-departure','blockchain'].includes(event?.kind)||typeof event?.kind==='string'&&event.kind.startsWith('shareholder')||event?.hiddenCharacter===true||/^cast6[56]-/.test(id))&&plateIds.has(event.scene)?event.scene:EVENT_SCENES_V38[id]||DYNAMIC_SCENES_V38[id]||uiScenes[id]||'office_day';
+  let theme=(['activity','activity-invitation','office-treat','event-departure','blockchain','captain-voyage'].includes(event?.kind)||typeof event?.kind==='string'&&event.kind.startsWith('shareholder')||event?.hiddenCharacter===true||/^cast6[56]-/.test(id))&&plateIds.has(event.scene)?event.scene:EVENT_SCENES_V38[id]||DYNAMIC_SCENES_V38[id]||uiScenes[id]||'office_day';
   // `reality` must come from the already revealed current history row. A
   // previous imagined/real encounter cannot set this frame's visual mode.
   const mode=['imagined','real'].includes(reality)?reality:null;

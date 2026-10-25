@@ -8,6 +8,7 @@ import {isBlockchainOutcomeV65} from './blockchain-v65.js';
 import {isPatronageProgressV69} from './patronage-progress-v69.js';
 import {isCareerContentV71} from './career-content-v71.js';
 import {isLifeSystemsV72} from './life-systems-v72.js';
+import {isCaptainVoyageOutcomeV73} from './captain-voyage-v73.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
@@ -87,6 +88,11 @@ export function characterHistoryChanges(run){
    const id=row.departureOutcome.target,score=clamp(scores[id]+row.departureOutcome.affinityDelta,0,100),affinityDelta=score-scores[id];scores[id]=score;
    changes.push({historyIndex,id,encounters:1,imaginedHits:0,realHits:0,affinityDelta});
    continue;
+  }
+  if(row.kind==='captain-voyage'||Object.hasOwn(row,'captainVoyageOutcome')){
+   if(!isCaptainVoyageOutcomeV73(run,row)||!known(row.captainVoyageOutcome.target,run))continue;
+   const id=row.captainVoyageOutcome.target,score=clamp(scores[id]+row.captainVoyageOutcome.affinityDelta,0,100),affinityDelta=score-scores[id];scores[id]=score;
+   changes.push({historyIndex,id,encounters:1,imaginedHits:0,realHits:0,affinityDelta});continue;
   }
   if(row.kind==='blockchain'||Object.hasOwn(row,'blockchainOutcome')){
    if(!isBlockchainOutcomeV65(run,row)||!known(row.blockchainOutcome.target,run)||row.speaker!==row.blockchainOutcome.target)continue;

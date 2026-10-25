@@ -1,7 +1,8 @@
+import {isCaptainVoyageV73} from './captain-profile-v73.js';
 import {isParticipationV63} from './participation-profile-v63.js';
 
 export {isParticipationV63} from './participation-profile-v63.js';
-const categories=['blockchain','gap','onboarding','activity','invitation','treats','shareholder','recruitment','hidden','meal','rest','salary','patronage','company','wealth','personnel','pip-review','pip-passed','collapse','chapter','rage','verbal','career','work','private'];
+const categories=['captain-voyage','blockchain','gap','onboarding','activity','invitation','treats','shareholder','recruitment','hidden','meal','rest','salary','patronage','company','wealth','personnel','pip-review','pip-passed','collapse','chapter','rage','verbal','career','work','private'];
 const personnel=new Set(['crisis-boss','paperwork','dismissal-final','labor-claim','labor-mediation','floor-notice','watch-review','watch-future','education-scrutiny']);
 const knownTargets=new Set(['wing','spencer','erich','sonny','jenjen','rick','kind','hope','jack','meimei','helen','sophie','jonathan','owen','sam','cindy','professor','annie_yu','princess','joyce','janet','captain','hidden-visitor','zoe','action','hester','simon','james','johnny']);
 
@@ -17,6 +18,7 @@ export function eventDepartureCategoryV63(run,event){
  if(run?.verbalContext)return 'verbal';
  if(run?.rageContext)return 'rage';
  if(run?.chapterContext)return 'chapter';
+ if(run?.captainVoyageContext)return 'captain-voyage';
  if(event?.id==='onboarding')return 'onboarding';
  if(['mood-collapse','mood-self-destruct'].includes(event?.id))return 'collapse';
  if(event?.id==='pip-review')return 'pip-review';
@@ -42,6 +44,7 @@ export function eventDepartureDescriptorV63(run,event){
  if(!event||run.actions.length>=299)return no('先完成眼前已經開始的收尾。');
  const category=eventDepartureCategoryV63(run,event);
  const words={
+  'captain-voyage':['我先下船，這段先到這裡。','結束自己的私人行程；已付的花費與相處經過保留，原本的工作照常。'],
   blockchain:['這輪我先退出，資料留給原負責人。','離開目前的跨部門計畫，不替尚未確認的工作點頭。'],
   gap:['結束這段空檔，回去上班。','只結束目前的空檔，下一件工作還沒作答。'],
   onboarding:['這份任用我不接受，現在離開。','拒絕這份任用，結束今天的報到。'],
@@ -88,7 +91,8 @@ export function resolveEventDepartureV63(run,event,ticket){
   delta={boss:furious?-22:quiet?-3:-11,trust:furious?-8:-3,mood:2};affinityDelta=target=== 'wing'?(furious?-12:quiet?0:-5):target?-3:0;
   result=quiet?'你直接收起東西，留下今天還沒交付的工作。這次沒有人當場追出來，但缺席還是留在紀錄上；你沒有提出離職，也沒有完成這一天的工作。':furious?'你轉身就走，翅膀隨後收到擅離的消息，當場要求人事記下來。這不是自願離職書，卻也不會被寫成完成交付；後續通知還得面對。':'你說今天不接了，走出工作現場。同事得重新安排眼前的交辦，翅膀也收到消息。這一天沒有工作收入、沒有完成交付，你仍然是這間公司的員工。';
   if(run.pip?.active)result+=' 這也是一個改善日：缺席記零分，期限照樣少一天，評核不會等你回來才開始。';
- }else if(category==='blockchain'){affinityDelta=target?-4:0;result='你明確表示退出這輪區塊鏈計畫，交還已整理的資料，把尚未同意的範圍分開。順哥重新安排剩下的待辦，沒有替你簽下免費兼任；這次離開的是計畫現場，原本的工作與已發生的經過仍保留。';}
+ }else if(category==='captain-voyage'){affinityDelta=target?(ticket<.7?0:-3):0;result='你告訴船長自己先下船，收好手機和隨身物品。已經發生的花費與對話留在這段行程裡，還沒答應的安排不再替你報名；這次離開的是私人行程，你仍在原本的公司工作。';}
+ else if(category==='blockchain'){affinityDelta=target?-4:0;result='你明確表示退出這輪區塊鏈計畫，交還已整理的資料，把尚未同意的範圍分開。順哥重新安排剩下的待辦，沒有替你簽下免費兼任；這次離開的是計畫現場，原本的工作與已發生的經過仍保留。';}
  else if(category==='onboarding'){delta={mood:5};result='你明確表示不接受這份任用，把還沒收下的名片放回桌上。今天的報到到此結束，沒有替自己補簽任何新職稱或新薪資；這是你拒絕任用，並非公司資遣。';}
  else if(category==='gap')result='你結束這段空檔，準備接著處理下一件工作。還沒有新的選擇被作答，也沒有多算一個工作日。';
  else if(category==='activity'){
@@ -127,7 +131,7 @@ export function resolveEventDepartureV63(run,event,ticket){
 
 export function isEventDepartureOutcomeV63(run,row){
  const x=row?.departureOutcome;
- return Boolean(isParticipationV63(run)&&row?.kind==='event-departure'&&row.choiceIndex===0&&x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).sort().join(',')==='affinityDelta,category,completed,sourceEventId,sourceKind,status,target,version,workDaySpent'&&x.version===1&&categories.includes(x.category)&&x.sourceEventId===row.eventId&&typeof x.sourceEventId==='string'&&typeof x.sourceKind==='string'&&(x.target===null||knownTargets.has(x.target))&&Number.isInteger(x.affinityDelta)&&x.affinityDelta>=-20&&x.affinityDelta<=0&&x.status==='left'&&x.completed===false&&x.workDaySpent===(x.category==='work'));
+ return Boolean(isParticipationV63(run)&&row?.kind==='event-departure'&&row.choiceIndex===0&&x&&typeof x==='object'&&!Array.isArray(x)&&Object.keys(x).sort().join(',')==='affinityDelta,category,completed,sourceEventId,sourceKind,status,target,version,workDaySpent'&&x.version===1&&categories.includes(x.category)&&(x.category!=='captain-voyage'||isCaptainVoyageV73(run)&&x.sourceKind==='captain-voyage'&&/^captain73-/.test(x.sourceEventId))&&x.sourceEventId===row.eventId&&typeof x.sourceEventId==='string'&&typeof x.sourceKind==='string'&&(x.target===null||knownTargets.has(x.target))&&Number.isInteger(x.affinityDelta)&&x.affinityDelta>=-20&&x.affinityDelta<=0&&x.status==='left'&&x.completed===false&&x.workDaySpent===(x.category==='work'));
 }
 
 export function withDeparturePipReviewV63(event,run){

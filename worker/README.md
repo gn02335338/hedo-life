@@ -1438,3 +1438,23 @@ borrow, card-order effects, item passives and bounded losses. Deterministic
 fixtures and synthetic accounts stay in isolated tests; no test rankings or
 career proofs are seeded into production. Model balance samples are documented
 in `research/card-redesign-v72.md` and are not population win-rate estimates.
+
+## Captain private voyage (v73)
+
+Fresh exact `e39-r73-[nsd]-[0-9a-f]{22}` career seeds inherit the published
+r72 rules and may open one private captain invitation after a completed work
+scene. Eligibility uses the rolled character gender and canonical captain
+affinity/encounters, not personal data about the anonymous player. A stable
+seeded check chooses whether to offer; acceptance is the player's decision.
+The four-scene context chooses two distinct outings and stores its return
+event. Invitations do not interrupt personnel, PIP, rest or an active activity.
+
+The existing strict `choice`, private conflict and departure action grammar
+replays all decisions. No endpoint, binding, secret, identity or database
+schema is added. `captainVoyageOutcome` is a bounded, typed history projection
+that credits only the actual speaker, once; team trust and weather do not
+become extra affection. Scenes do not increment workday, payroll or PIP, and
+closing them restores the pending work/gap with resource safeguards. Crew
+status has no independent client-submitted reward. Old r72 and earlier proofs
+keep their original results; new career UI starts r73. Raw source research,
+private identifiers and unverified private-life claims are not shipped.

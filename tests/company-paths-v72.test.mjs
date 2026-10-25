@@ -27,9 +27,9 @@ function naturalDesk(){
 }
 const resolve=run=>E.advance(E.applyChoice(run,0));
 
-test('only exact fresh r72 profiles enable emergent company rules',()=>{
- for(const marker of ['n','s','d'])assert.equal(isLifeSystemsV72(`e39-r72-${marker}-`+'0'.repeat(22)),true);
- for(const value of [null,'e39-r71-n-'+'a'.repeat(22),'e39-r73-n-'+'a'.repeat(22),'e39-r72-x-'+'a'.repeat(22),'e39-r72-n-'+'a'.repeat(21),seed+'a',seed.toUpperCase()])assert.equal(isLifeSystemsV72(value),false);
+test('exact r72 and inherited r73 profiles enable emergent company rules',()=>{
+ for(const profile of [72,73])for(const marker of ['n','s','d'])assert.equal(isLifeSystemsV72(`e39-r${profile}-${marker}-`+'0'.repeat(22)),true);
+ for(const value of [null,'e39-r71-n-'+'a'.repeat(22),'e39-r74-n-'+'a'.repeat(22),'e39-r72-x-'+'a'.repeat(22),'e39-r72-n-'+'a'.repeat(21),seed+'a',seed.toUpperCase()])assert.equal(isLifeSystemsV72(value),false);
  const event=FANTASY_EVENTS[3];assert.equal(withCompanyEntryV72(event,{...baseline(),seed:'e39-r71-n-'+'a'.repeat(22)},event.id),event);
 });
 
