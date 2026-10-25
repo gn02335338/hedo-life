@@ -615,10 +615,14 @@ export function createScene({ container } = {}) {
     const fillMat = bossId === 'meimei' ? M.violetMagic : M.warning;
     const edgeMat = bossId === 'meimei' ? M.blueMagic : M.warningEdge;
     const fill = plate(root, fillMat, 0, 0.04, 0, 1);
+    const boundary = plate(root, edgeMat, 0, 0.052, 0, 1, true);
     const edge = plate(root, edgeMat, 0, 0.047, 0, 1, true);
     const line = part(root, G.plane, fillMat, 0, 0.045, -0.5, 1, 1, 1, -Math.PI / 2);
     const lineEdge = part(root, G.box, edgeMat, 0, 0.05, -0.5, 1, 0.018, 1);
-    return { root, fill, edge, line, lineEdge };
+    const sides = [-1, 1].map(side => part(root, G.box, edgeMat, side * 0.5, 0.055, -0.5, 0.035, 0.018, 1));
+    const cap = part(root, G.box, edgeMat, 0, 0.055, -1, 1, 0.018, 0.035);
+    const arrows = [-1, 1].map(side => part(root, G.box, edgeMat, side * 0.16, 0.06, -0.5, 0.045, 0.02, 0.5, 0, side * 0.7));
+    return { root, fill, boundary, edge, line, lineEdge, sides, cap, arrows };
   }
   function rarityColor(rarity) {
     return ({ common: '#c4cec8', normal: '#c4cec8', magic: '#659ddd', rare: '#79bcdf', epic: '#c3a2e4', legendary: '#ef8448', unique: '#efb85a' })[rarity] || '#dfbc6b';
@@ -757,17 +761,23 @@ export function createScene({ container } = {}) {
         if (!warning) { warning = makeWarning(enemy.bossId); warnings.set(warningId, warning); }
         warning.root.position.set(Number.isFinite(tel.x) ? tel.x : enemy.x, 0, Number.isFinite(tel.z) ? tel.z : enemy.z);
         const line = tel.kind === 'line';
-        warning.fill.visible = warning.edge.visible = !line;
-        warning.line.visible = warning.lineEdge.visible = line;
+        warning.fill.visible = warning.edge.visible = warning.boundary.visible = !line;
+        warning.line.visible = warning.lineEdge.visible = warning.cap.visible = line;
+        warning.sides.forEach(mesh => { mesh.visible = line; });
+        warning.arrows.forEach(mesh => { mesh.visible = line; });
         const progress = Number.isFinite(tel.progress) ? tel.progress : 1 - (tel.remaining || 0) / Math.max(0.01, tel.duration || 1);
         if (line) {
           warning.root.rotation.y = -(Number(tel.angle) || 0);
           const length = tel.length || 5, w = tel.width || 1;
           warning.line.scale.set(w, length, 1); warning.line.position.z = -length / 2;
           warning.lineEdge.scale.set(w, 0.018, 0.09); warning.lineEdge.position.z = -length * Math.max(0.04, progress);
+          warning.sides.forEach((mesh, i) => { mesh.position.set((i ? 1 : -1) * w / 2, 0.055, -length / 2); mesh.scale.set(0.035, 0.018, length); });
+          warning.cap.scale.set(w, 0.018, 0.035); warning.cap.position.z = -length;
+          warning.arrows.forEach(mesh => { mesh.position.z = -length * 0.68 + 0.18; });
         } else {
           warning.root.rotation.y = 0;
           warning.fill.scale.setScalar(tel.radius || 1);
+          warning.boundary.scale.setScalar(tel.radius || 1);
           warning.edge.scale.setScalar((tel.radius || 1) * Math.max(0.15, progress));
         }
       }

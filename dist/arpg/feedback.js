@@ -77,6 +77,10 @@ export function createFeedback({ host = globalThis } = {}) {
       voice({ type: 'sine', frequency: 690, end: 840, duration: 0.16, volume: 0.15, when: 0.08 });
     } else if (event.type === 'death' && event.bossId) {
       voice({ frequency: 750, end: 80, duration: 0.55, volume: 0.6, filter: 'lowpass' });
+    } else if (event.type === 'enemy-attack' && event.bossId) {
+      const charge = event.source === 'charge';
+      const spell = event.source === 'volley' || event.source === 'promise';
+      voice({ frequency: spell ? 1900 : charge ? 1000 : 520, end: spell ? 850 : 120, duration: charge ? 0.3 : 0.2, volume: 0.28, filter: spell ? 'bandpass' : 'lowpass' });
     }
   }
   function consume(state) {

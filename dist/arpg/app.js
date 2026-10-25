@@ -220,7 +220,10 @@ function updateHud() {
     $('boss-title').textContent = info.title;
     $('boss-fill').style.width = `${boss.hp / boss.maxHp * 100}%`;
     $('boss-percent').textContent = `${Math.ceil(boss.hp)} / ${boss.maxHp}`;
-    $('boss-skill').textContent = boss.phase === 'windup' ? `即將施放：${boss.attackLabel || boss.telegraph?.label || '蓄力攻擊'}` : boss.enraged ? info.phaseTaunts.enraged : info.phaseTaunts.normal;
+    $('boss-skill').textContent = boss.phase === 'windup' ? `即將施放：${boss.attackLabel || boss.telegraph?.label || '蓄力攻擊'}`
+      : boss.phase === 'charge' ? '衝鋒中・向側邊閃避'
+        : boss.phase === 'recovery' ? boss.comboTotal > 1 && boss.comboStep < boss.comboTotal ? '連招間隙・留意下一招' : '破綻出現・可以反擊'
+          : boss.enraged ? info.phaseTaunts.enraged : info.phaseTaunts.normal;
   }
   document.querySelectorAll('[data-skill]').forEach(button => {
     const skill = button.dataset.skill, cooldown = state.cooldowns[skill] || 0;

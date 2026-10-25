@@ -1,4 +1,5 @@
 import { WORLD, SPAWN, SKILLS, ENEMY_TYPES, ENCOUNTERS, ITEM_BASES, RARITIES, BOSS_PROFILES } from './content.js';
+import { bossDecision, recoveryGoal, steerEnemy, observePlayer, predictedPlayer, navigableSegment } from './boss-ai.js';
 
 export const FIXED_STEP = 1 / 60;
 const COMBAT_EVENT_LIMIT = 96;
@@ -113,7 +114,7 @@ function buildEnemies(state) {
       angle: 0, phase: 'idle', attackKind: null, attackLabel: '', telegraph: null, telegraphs: [],
       title: profile?.title || base.name, taunt: profile?.phaseTaunts.normal || '',
       timer: 0.35 + index * 0.08, turn: 0, elite: spawn.type === 'boss', enraged: false,
-      settled: false, active: false, hitTimer: 0, hitAngle: 0,
+      settled: false, active: false, hitTimer: 0, hitAngle: 0, charge: null, comboStep: 0, comboTotal: 1,
     };
   });
 }
@@ -130,6 +131,7 @@ export function createGame({ seed = 1, progress = null } = {}) {
     skillBuffer: { attack: null, burst: null, dash: null, potion: null }, combatSerial: 0, combatEvents: [],
     difficulty: saved.wins + 1, wins: saved.wins,
     room: 0, time: 0, message: '', messages: [], messageId: 0,
+    playerMotion: { ...SPAWN, vx: 0, vz: 0, speed: 0 },
     roomCleared: { 1: false, 2: false, 3: false }, unlockedRoom: 1,
     defeatedBosses: { sonny: false, meimei: false, wing: false },
     gates: [
@@ -221,9 +223,10 @@ function move(body, dx, dz, state = null) {
     if (isWalkable(body.x + dx / steps, body.z, body.radius)) body.x += dx / steps;
     let nextZ = body.z + dz / steps;
     if (state) for (const gate of state.gates) {
-      const line = gate.z + body.radius;
-      if (gate.locked && body.z >= line - 1e-7 && nextZ < line) {
-        nextZ = line;
+      const front = gate.z + body.radius, back = gate.z - body.radius;
+      if (!gate.locked || Math.abs(body.x - gate.x) > gate.width / 2 + body.radius) continue;
+      if ((body.z >= front - 1e-7 && nextZ < front) || (body.z <= back + 1e-7 && nextZ > back)) {
+        nextZ = body.z >= front - 1e-7 ? front : back;
         if (body === state.player && state.time - gate.noticeAt > 2) {
           gate.noticeAt = state.time;
           say(state, `先清完${WORLD.rooms[gate.fromRoom].name}的領主與雜兵，下一區才會開啟。`);
@@ -253,6 +256,7 @@ function direction(dx, dz) {
   return length > 1e-8 ? { x: dx / length, z: dz / length } : { x: 0, z: -1 };
 }
 function facing(angle) { return { x: Math.sin(angle), z: -Math.cos(angle) }; }
+const navigation = { walkable: isWalkable, line: clearLine, move };
 
 function gainXp(state, amount) {
   const p = state.player;
@@ -444,70 +448,119 @@ function castSkills(state, input, aim, moving) {
   }
 }
 
-function beginAttack(state, e) {
+function beginAttack(state, e, chosen = null) {
   const p = state.player;
   e.turn++;
-  const dir = direction(p.x - e.x, p.z - e.z);
-  e.angle = Math.atan2(dir.x, -dir.z);
   const boss = e.type === 'boss';
+  const target = boss ? predictedPlayer(state, chosen === 'charge' ? 0.18 : 0.22, navigation) : p;
+  const dir = direction(target.x - e.x, target.z - e.z);
+  e.angle = Math.atan2(dir.x, -dir.z);
   const ranged = e.type === 'wraith';
-  const alternate = e.turn % 2 === 0;
   let line = e.type === 'slime';
-  let duration = (boss ? 1.2 : e.type === 'golem' ? 1.05 : ranged ? 0.85 : 0.8) * (e.enraged ? 0.78 : 1);
+  let duration = e.type === 'golem' ? 1.05 : ranged ? 0.85 : 0.8;
   e.attackKind = ranged ? 'bolt' : line ? 'charge' : 'slam';
   let skill = null;
   if (boss) {
     const profile = BOSS_PROFILES[e.bossId];
-    skill = profile.skills[alternate ? 1 : 0];
-    e.attackKind = e.bossId === 'sonny' ? (alternate ? 'charge' : 'slam')
-      : e.bossId === 'meimei' ? (alternate ? 'promise' : 'volley') : (alternate ? 'slam' : 'bombard');
+    e.attackKind = chosen || bossDecision(state, e, navigation).attack || (e.bossId === 'sonny' ? 'slam' : e.bossId === 'meimei' ? 'volley' : 'bombard');
+    const second = ['charge', 'promise'].includes(e.attackKind) || (e.bossId === 'wing' && e.attackKind === 'slam');
+    skill = profile.skills[second ? 1 : 0];
     line = e.attackKind === 'charge' || e.attackKind === 'volley';
     e.attackLabel = skill.label;
     e.taunt = profile.phaseTaunts[e.enraged ? 'enraged' : 'normal'];
+    duration = e.attackKind === 'charge' ? 1.05 : e.attackKind === 'bombard' ? 1.1 : e.attackKind === 'volley' ? 1 : 0.95;
+    e.comboTotal = e.bossId === 'wing' && e.enraged ? 2 : 1;
+    e.comboStep = e.comboTotal === 2 ? e.ai.followUp === e.attackKind ? 2 : 1 : 0;
+    if (e.comboStep === 2) e.ai.followUp = null;
   }
+  e.attackPlan = { recovery: boss ? e.bossId === 'sonny' ? 1.15 : e.bossId === 'meimei' ? 1.15 : 1.3 : e.type === 'golem' ? 1.35 : 1 };
+  if (e.comboStep === 1) { e.attackPlan.recovery = 0.65; e.attackPlan.followUp = e.attackKind === 'bombard' ? 'slam' : 'bombard'; }
   e.phase = 'windup'; e.timer = duration;
   e.telegraph = {
     kind: ranged || line ? 'line' : 'circle', x: e.x, z: e.z,
-    radius: e.bossId === 'wing' ? 4.7 : boss ? 3.3 : 2.8, angle: e.angle,
+    radius: e.bossId === 'wing' ? 4.2 : boss ? 3.1 : 2.8, angle: e.angle,
     length: e.attackKind === 'volley' ? 12 : boss ? 7 : ranged ? 13 : 5,
     width: e.attackKind === 'volley' ? 3.6 : boss ? 2.3 : ranged ? 0.65 : 1.45,
     skillId: skill?.id || e.attackKind, label: skill?.label || '',
     duration, remaining: duration, progress: 0,
   };
-  if (e.attackKind === 'promise') Object.assign(e.telegraph, { x: p.x, z: p.z, radius: 2.6 });
+  if (e.attackKind === 'promise') Object.assign(e.telegraph, { x: target.x, z: target.z, radius: 2.6 });
   if (e.attackKind === 'bombard') {
-    // Locked impact positions leave time to step or dash away; no invisible tracking.
-    const positions = [{ x: p.x, z: p.z }, { x: p.x - 2.8, z: p.z - 1.5 }, { x: p.x + 2.8, z: p.z + 1.5 }];
+    const motion = state.playerMotion, heading = motion.speed > 0.5 ? direction(motion.vx, motion.vz) : dir;
+    // Cover the observed route ahead, leaving the uncommitted side/behind open.
+    const positions = [{ ...target },
+      { x: target.x + heading.x * 2.6 - heading.z * 1.6, z: target.z + heading.z * 2.6 + heading.x * 1.6 },
+      { x: target.x + heading.x * 4 + heading.z * 1.6, z: target.z + heading.z * 4 - heading.x * 1.6 }];
     e.telegraphs = positions.filter((pos) => isWalkable(pos.x, pos.z, 0.1)).map((pos) => ({ ...e.telegraph, ...pos, radius: 1.8 }));
     if (!e.telegraphs.length) e.telegraphs = [{ ...e.telegraph, x: p.x, z: p.z, radius: 1.8 }];
     e.telegraph = e.telegraphs[0];
-  } else e.telegraphs = [e.telegraph];
+  } else if (e.attackKind === 'volley' || e.attackKind === 'bolt') {
+    const count = e.attackKind === 'volley' ? 5 : 1, radius = count > 1 ? 0.28 : 0.22;
+    const speed = count > 1 ? 6.2 : 7, life = 2.6;
+    e.attackPlan.shots = Array.from({ length: count }, (_, index) => {
+      const angle = e.angle + (index - (count - 1) / 2) * 0.18, shot = facing(angle);
+      return { x: e.x, z: e.z, angle, vx: shot.x * speed, vz: shot.z * speed, radius, life };
+    });
+    e.telegraphs = e.attackPlan.shots.map(shot => ({ ...e.telegraph, kind: 'line',
+      x: shot.x - Math.sin(shot.angle) * radius, z: shot.z + Math.cos(shot.angle) * radius,
+      angle: shot.angle, width: radius * 2, length: speed * life + radius * 2 }));
+    e.telegraph = e.telegraphs[Math.floor(count / 2)];
+  } else {
+    if (e.attackKind === 'charge') {
+      const travelDistance = boss ? clamp(distance(e, target) + 1.2, 3.8, 7) : 5;
+      Object.assign(e.telegraph, { x: e.x - dir.x * e.radius, z: e.z - dir.z * e.radius,
+        length: travelDistance + 2 * e.radius, width: 2 * e.radius + 0.12 });
+      e.attackPlan.travelDistance = travelDistance;
+    }
+    e.telegraphs = [e.telegraph];
+  }
+}
+
+function finishAttack(state, e) {
+  e.telegraph = null; e.telegraphs = []; e.phase = 'recovery';
+  e.timer = e.attackPlan?.recovery || (e.type === 'boss' ? 1.2 : 1);
+  e.recoveryDuration = e.timer;
+  if (e.attackPlan?.followUp) { e.ai.followUp = e.attackPlan.followUp; e.ai.followUpUntil = state.time + 5; }
+  if (e.bossId === 'sonny') e.taunt = '剛剛那下不算，我在等披薩。';
+}
+
+function chargeTick(state, e, dt) {
+  const charge = e.charge, p = state.player, dir = facing(charge.angle);
+  const duration = Math.min(dt, Math.max(0, charge.duration - charge.elapsed));
+  const travel = charge.travelDistance / charge.duration * duration;
+  const steps = Math.max(1, Math.ceil(travel / 0.08));
+  for (let i = 0; i < steps && !charge.stopped; i++) {
+    const next = { x: e.x + dir.x * travel / steps, z: e.z + dir.z * travel / steps };
+    if (!navigableSegment(state, e, next, e.radius, navigation)) { charge.stopped = true; charge.stopReason = 'wall'; break; }
+    if (!charge.hit && distance(next, p) <= e.radius + p.radius) {
+      charge.hit = true; charge.stopped = true; charge.stopReason = 'player';
+      hurtPlayer(state, e.attack, e); break;
+    }
+    charge.travelled += distance(e, next); e.x = next.x; e.z = next.z;
+  }
+  charge.elapsed = Math.min(charge.duration, charge.elapsed + duration); e.timer = Math.max(0, charge.duration - charge.elapsed);
+  if (charge.stopped || charge.elapsed + 1e-9 >= charge.duration) {
+    effect(state, 'charge', charge.startX, charge.startZ, charge.travelled, 0.3, e.color, charge.angle);
+    finishAttack(state, e);
+  }
 }
 
 function executeAttack(state, e) {
   const p = state.player, t = e.telegraph;
   if (!t) return;
-  const dir = facing(t.angle);
   combatEvent(state, 'enemy-attack', { actorId: e.id, targetId: 'player', bossId: e.bossId || null,
     x: e.x, z: e.z, angle: t.angle, source: e.attackKind, skill: e.attackLabel || e.attackKind });
   if (e.attackKind === 'bolt' || e.attackKind === 'volley') {
-    const count = e.attackKind === 'volley' ? 5 : 1;
-    for (let i = 0; i < count; i++) {
-      const shot = facing(t.angle + (i - (count - 1) / 2) * 0.18);
-      state.projectiles.push({ id: nextId(state, 'bolt'), owner: e.id, x: e.x, z: e.z,
-        vx: shot.x * (count > 1 ? 6.2 : 7), vz: shot.z * (count > 1 ? 6.2 : 7),
-        kind: count > 1 ? 'speech' : 'bolt', radius: count > 1 ? 0.28 : 0.22, damage: e.attack, life: 2.6, color: e.color });
+    for (const shot of e.attackPlan.shots) {
+      state.projectiles.push({ ...shot, id: nextId(state, 'bolt'), owner: e.id,
+        kind: e.attackKind === 'volley' ? 'speech' : 'bolt', damage: e.attack, color: e.color });
     }
   } else if (e.attackKind === 'charge') {
-    const dx = p.x - t.x, dz = p.z - t.z;
-    const forward = dx * dir.x + dz * dir.z;
-    const side = Math.abs(dx * -dir.z + dz * dir.x);
-    // The charge only hits along the distance actually travelled before a wall.
-    const before = { x: e.x, z: e.z };
-    move(e, dir.x * t.length, dir.z * t.length, state);
-    const traveled = distance(before, e);
-    if (forward >= -p.radius && forward <= traveled + e.radius + p.radius && side <= t.width / 2 + p.radius && clearLine(t, p, state)) hurtPlayer(state, e.attack, e);
-    effect(state, 'charge', t.x, t.z, traveled, 0.3, e.color, t.angle);
+    e.phase = 'charge'; e.timer = 0.36;
+    e.charge = { startX: e.x, startZ: e.z, angle: t.angle, duration: 0.36, elapsed: 0,
+      travelDistance: e.attackPlan.travelDistance, travelled: 0, hit: false, stopped: false };
+    for (const area of e.telegraphs) { area.remaining = 0; area.progress = 1; }
+    return;
   } else if (e.attackKind === 'bombard') {
     for (const area of e.telegraphs) {
       if (distance(p, area) <= area.radius + p.radius && clearLine(area, p, state)) hurtPlayer(state, e.attack, e);
@@ -517,16 +570,14 @@ function executeAttack(state, e) {
     if (distance(p, t) <= t.radius + p.radius && clearLine(t, p, state)) hurtPlayer(state, e.attack * (e.enraged ? 1.15 : 1), e);
     effect(state, e.attackKind === 'promise' ? 'promise' : 'slam', t.x, t.z, t.radius, 0.4, e.color);
   }
-  e.telegraph = null; e.telegraphs = []; e.phase = 'recovery';
-  e.timer = (e.bossId === 'sonny' ? 1.5 : e.type === 'boss' ? 1.2 : e.type === 'golem' ? 1.35 : 1) * (e.enraged ? 0.8 : 1);
-  if (e.bossId === 'sonny') e.taunt = '剛剛那下不算，我在等披薩。';
+  finishAttack(state, e);
 }
 
 function enemyTick(state, e, dt) {
   if (e.hp <= 0 || e.settled || e.room > state.unlockedRoom) return;
   const p = state.player;
   const dist = distance(p, e);
-  if (!e.active && state.room >= e.room && dist < (e.type === 'boss' ? 12 : 9) && clearLine(e, p, state)) {
+  if (!e.active && state.room >= e.room && dist < (e.type === 'boss' ? 12 : 9) && (e.type === 'boss' || clearLine(e, p, state))) {
     e.active = true;
     if (e.bossId) say(state, `${e.name}・${e.title}：${BOSS_PROFILES[e.bossId].intro}`);
   }
@@ -536,6 +587,7 @@ function enemyTick(state, e, dt) {
     say(state, `翅膀暴怒：${e.taunt}`);
     effect(state, 'enrage', e.x, e.z, 3.6, 0.8, '#e48a75');
   }
+  if (e.phase === 'charge') { chargeTick(state, e, dt); return; }
   e.timer = Math.max(0, e.timer - dt);
   if (e.phase === 'windup') {
     for (const area of e.telegraphs) {
@@ -546,11 +598,18 @@ function enemyTick(state, e, dt) {
     return;
   }
   if (e.phase === 'recovery') {
+    if (e.type === 'boss' && e.timer > 0.2) steerEnemy(state, e, recoveryGoal(state, e, navigation), dt, navigation);
     if (e.timer <= 0) e.phase = 'idle';
     return;
   }
   const dir = direction(p.x - e.x, p.z - e.z);
   e.angle = Math.atan2(dir.x, -dir.z);
+  if (e.type === 'boss') {
+    const decision = bossDecision(state, e, navigation);
+    if (e.timer <= 0 && decision.attack) { beginAttack(state, e, decision.attack); return; }
+    steerEnemy(state, e, decision.goal, dt, navigation);
+    return;
+  }
   const range = e.bossId === 'meimei' ? 10 : e.bossId === 'wing' ? 8 : e.type === 'wraith' ? 10 : e.type === 'slime' ? 4.8 : e.type === 'boss' ? 5 : 2.8;
   if (dist <= range && e.timer <= 0 && clearLine(e, p, state)) { beginAttack(state, e); return; }
   const ranged = e.type === 'wraith' || e.bossId === 'meimei';
@@ -627,6 +686,7 @@ function tick(state, input, dt) {
     move(p, moving.x * 5 * dt * Math.min(magnitude, 1) * attackWeight, moving.z * 5 * dt * Math.min(magnitude, 1) * attackWeight, state);
   }
   resolveMelee(state);
+  observePlayer(state, dt);
   state.room = p.z > 4 ? 0 : p.z > -10 ? 1 : p.z > -23 ? 2 : 3;
   for (const enemy of state.enemies) {
     if (state.status !== 'playing') break;
@@ -634,14 +694,16 @@ function tick(state, input, dt) {
     enemyTick(state, enemy, dt);
   }
   state.projectiles = state.projectiles.filter((projectile) => {
-    projectile.life -= dt;
-    const steps = Math.max(1, Math.ceil(Math.hypot(projectile.vx, projectile.vz) * dt / 0.15));
+    const travelTime = Math.min(dt, Math.max(0, projectile.life));
+    if (travelTime <= 1e-9) return false;
+    projectile.life = Math.max(0, projectile.life - travelTime);
+    const steps = Math.max(1, Math.ceil(Math.hypot(projectile.vx, projectile.vz) * travelTime / 0.15));
     for (let i = 0; i < steps; i++) {
-      projectile.x += projectile.vx * dt / steps; projectile.z += projectile.vz * dt / steps;
+      projectile.x += projectile.vx * travelTime / steps; projectile.z += projectile.vz * travelTime / steps;
       if (!isWalkable(projectile.x, projectile.z, projectile.radius)) return false;
       if (distance(projectile, p) <= projectile.radius + p.radius) { hurtPlayer(state, projectile.damage, projectile); return false; }
     }
-    return projectile.life > 0;
+    return projectile.life > 1e-9;
   });
   if (state.status === 'playing') pickupDrops(state);
   if (state.status === 'playing') updateRooms(state);

@@ -254,6 +254,8 @@ export function createArtLayer({ scene, camera, renderer, materials: targets }) 
       lunge = before ? -ratio * 0.06 : Math.sin(ratio * Math.PI / 2) * (action.heavy ? 0.23 : 0.16);
     } else if (action?.kind === 'dash') {
       lean = 0.12; lunge = 0.12;
+    } else if (phase === 'charge') {
+      lean = 0.16; lunge = 0.18;
     } else if (phase === 'windup') {
       lean = -0.04 - windup * 0.035; lunge = -windup * 0.12;
     } else if (art.recovery > 0) {

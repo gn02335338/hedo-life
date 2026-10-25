@@ -104,8 +104,8 @@ test('a short attack tap at 120 Hz survives release before the next tick and hel
   assert.equal(held.stats.damageDealt, held.player.attack * 3);
 });
 
-test('an original starting character can clear all three rooms using only normal controls and loot upgrades', () => {
-  const state = createGame({ seed: 73 });
+for (const [seed, hz] of [[73, 60], [4, 120], [2026, 30]]) test(`a starting character clears three rooms with revealed-warning dodges and earned loot (seed ${seed}, ${hz} Hz)`, (t) => {
+  const state = createGame({ seed });
   startGame(state);
   const dist = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
   const norm = (x, z) => { const length = Math.hypot(x, z) || 1; return { x: x / length, z: z / length }; };
@@ -138,7 +138,9 @@ test('an original starting character can clear all three rooms using only normal
     if (previous[end] < 0) return;
     for (let cursor = end; cursor !== start; cursor = previous[cursor]) route.unshift(nodes[cursor]);
   }
-  for (let i = 0; i < 60 * 90 && state.status === 'playing'; i++) {
+  const seenWarnings = new WeakMap();
+  let reactedWarnings = 0, potionUses = 0, lastCombatSerial = 0;
+  for (let i = 0; i < hz * 180 && state.status === 'playing'; i++) {
     const p = state.player;
     for (const item of state.inventory) if (score(item) > score(state.equipped[item.slot])) equipItem(state, item.id);
     const target = state.enemies.filter((enemy) => enemy.room <= state.unlockedRoom).sort((a, b) => dist(p, a) - dist(p, b))[0];
@@ -148,13 +150,17 @@ test('an original starting character can clear all three rooms using only normal
     let dodge = false;
     const pickup = state.drops.filter((drop) => drop.type !== 'coffee' || p.potions < SKILLS.potion.charges).sort((a, b) => dist(p, a) - dist(p, b))[0];
     if (pickup && dist(p, pickup) < 5 && distance > 3) goal = pickup;
-    if (i % 20 === 0 || !route.length) plan(goal);
+    if (i % Math.max(1, Math.round(hz / 3)) === 0 || !route.length) plan(goal);
     while (route.length && dist(p, route[0]) < 0.35) route.shift();
     if (distance > 2 || goal !== target) {
       const next = route[0] || goal;
       move = norm(next.x - p.x, next.z - p.z);
     }
     for (const enemy of state.enemies) for (const t of enemy.telegraphs || []) {
+      if (!seenWarnings.has(t)) seenWarnings.set(t, state.time);
+      // A player needs time to read a new warning. No future AI intention or
+      // unrevealed attack geometry participates in this movement decision.
+      if (state.time - seenWarnings.get(t) < 0.25) continue;
       if (t.kind === 'circle' && dist(p, t) < t.radius + 0.9) { move = norm(p.x - t.x, p.z - t.z); dodge = true; }
       if (t.kind === 'line') {
         const fx = Math.sin(t.angle), fz = -Math.cos(t.angle), dx = p.x - t.x, dz = p.z - t.z;
@@ -165,6 +171,7 @@ test('an original starting character can clear all three rooms using only normal
         }
       }
     }
+    if (dodge) reactedWarnings++;
     if (!isWalkable(p.x + move.x * 0.6, p.z + move.z * 0.6)) {
       const base = Math.atan2(move.z, move.x);
       move = { x: 0, z: 0 };
@@ -173,7 +180,9 @@ test('an original starting character can clear all three rooms using only normal
         if (isWalkable(p.x + candidate.x * 0.6, p.z + candidate.z * 0.6)) { move = candidate; break; }
       }
     }
-    stepGame(state, { ...move, attack: true, burst: distance < 4.8, dash: dodge && p.energy > 48, potion: p.hp < p.maxHp * 0.45 }, FIXED_STEP);
+    stepGame(state, { ...move, attack: true, burst: distance < 4.8, dash: dodge && p.energy > 48, potion: p.hp < p.maxHp * 0.5 }, 1 / hz);
+    for (const event of state.combatEvents) if (event.serial > lastCombatSerial && event.type === 'cast' && event.skill === 'potion') potionUses++;
+    lastCombatSerial = state.combatSerial;
   }
   assert.equal(state.status, 'won', JSON.stringify({ room: state.room, player: state.player, enemies: state.enemies.map(({ bossId, type, x, z, hp, room }) => ({ bossId, type, x, z, hp, room })) }));
   assert.equal(state.stats.kills, 11);
@@ -181,7 +190,10 @@ test('an original starting character can clear all three rooms using only normal
   assert.deepEqual(state.roomCleared, { 1: true, 2: true, 3: true });
   assert.ok(state.player.level > 1);
   assert.ok(state.stats.itemsFound > 0);
+  assert.ok(reactedWarnings > 0, 'the run includes actual reactions to revealed attacks');
   assert.ok(getProgress(state));
+  t.diagnostic(JSON.stringify({ seed, hz, seconds: Number(state.time.toFixed(2)), damageTaken: state.stats.damageTaken,
+    itemsFound: state.stats.itemsFound, level: state.player.level, potionUses }));
 });
 
 test('coffee has finite charges, does not drink at full health, and respects cooldown', () => {
@@ -272,7 +284,7 @@ test('slime charge, golem slam, and wraith bolt have distinct dodgeable warnings
     const target = { x: enemy.telegraph.x, z: enemy.telegraph.z };
     const hp = state.player.hp;
     state.player.x = 4; state.player.z = 2;
-    advance(state, {}, 1.15);
+    advance(state, {}, 1.3);
     assert.equal(state.player.hp, hp, `${type} can be dodged`);
     assert.equal(enemy.phase, 'recovery');
     assert.ok(Number.isFinite(target.x));
@@ -282,34 +294,36 @@ test('slime charge, golem slam, and wraith bolt have distinct dodgeable warnings
 test('the three public cast bosses expose distinct profiles and two readable attacks each', () => {
   assert.equal(ENCOUNTERS.length, 11);
   assert.deepEqual(ENCOUNTERS.filter((enemy) => enemy.type === 'boss').map((enemy) => enemy.bossId), ['sonny', 'meimei', 'wing']);
-  for (const [bossId, attacks] of [['sonny', ['slam', 'charge']], ['meimei', ['volley', 'promise']], ['wing', ['bombard', 'slam']]]) {
-    const state = arena(bossId), boss = state.enemies[0], center = WORLD.rooms[boss.room].z;
-    Object.assign(state.player, { x: 0, z: center + 1.4 });
-    Object.assign(boss, { x: 0, z: center - 1, timer: 0 });
+  for (const [bossId, situations] of [
+    ['sonny', [['slam', 2], ['charge', 6]]],
+    ['meimei', [['volley', 7], ['promise', 1.5]]],
+    ['wing', [['bombard', 7], ['slam', 2]]],
+  ]) for (const [attackKind, separation] of situations) {
+    const state = arena(bossId), boss = state.enemies[0], z = WORLD.rooms[boss.room].z - 3;
+    Object.assign(state.player, { x: 0, z: z + separation });
+    Object.assign(boss, { x: 0, z, timer: 0, active: true });
     assert.equal(boss.name, BOSS_PROFILES[bossId].displayName);
     assert.equal(boss.title, BOSS_PROFILES[bossId].title);
-    for (let index = 0; index < 2; index++) {
-      Object.assign(boss, { phase: 'idle', timer: 0, telegraph: null, telegraphs: [] });
+    for (let i = 0; i < 180 && !boss.telegraph; i++) stepGame(state, attackKind === 'promise' ? { z: -1 } : {}, FIXED_STEP);
+    assert.equal(boss.phase, 'windup');
+    assert.equal(boss.attackKind, attackKind);
+    const index = situations.findIndex(([kind]) => kind === attackKind);
+    assert.equal(boss.attackLabel, BOSS_PROFILES[bossId].skills[index].label);
+    assert.ok(boss.telegraph.duration >= 0.9);
+    assert.equal(boss.telegraph.progress, 0);
+    if (boss.attackKind === 'volley') {
+      boss.timer = 0;
       stepGame(state, {}, FIXED_STEP);
-      assert.equal(boss.phase, 'windup');
-      assert.equal(boss.attackKind, attacks[index]);
-      assert.equal(boss.attackLabel, BOSS_PROFILES[bossId].skills[index].label);
-      assert.ok(boss.telegraph.duration >= 1);
-      assert.equal(boss.telegraph.progress, 0);
-      if (boss.attackKind === 'volley') {
-        boss.timer = 0;
-        stepGame(state, {}, FIXED_STEP);
-        assert.equal(state.projectiles.length, 5);
-        assert.ok(state.projectiles.every((shot) => shot.kind === 'speech'));
-      }
-      if (boss.attackKind === 'promise' || boss.attackKind === 'bombard') {
-        assert.equal(boss.telegraph.x, state.player.x);
-        assert.equal(boss.telegraph.z, state.player.z);
-        const locked = { x: boss.telegraph.x, z: boss.telegraph.z };
-        stepGame(state, { x: 1 }, FIXED_STEP);
-        assert.equal(boss.telegraph.x, locked.x, 'impact never follows a moving player');
-        assert.equal(boss.telegraph.z, locked.z);
-      }
+      assert.equal(state.projectiles.length, 5);
+      assert.ok(state.projectiles.every((shot) => shot.kind === 'speech'));
+    }
+    if (boss.attackKind === 'promise' || boss.attackKind === 'bombard') {
+      assert.ok(Math.hypot(boss.telegraph.x - state.player.x, boss.telegraph.z - state.player.z) <= 1.3,
+        'any lead is bounded to one quarter-second of normal movement');
+      const locked = { x: boss.telegraph.x, z: boss.telegraph.z };
+      stepGame(state, { x: 1 }, FIXED_STEP);
+      assert.equal(boss.telegraph.x, locked.x, 'impact never follows a moving player');
+      assert.equal(boss.telegraph.z, locked.z);
     }
   }
 });
@@ -376,7 +390,7 @@ test('old version-one progress keeps all gear, bonuses and clears while new enco
   assert.deepEqual(restored.defeatedBosses, { sonny: false, meimei: false, wing: false });
 });
 
-test('final boss alternates bombardment and slam, enrages once, and awards victory once', () => {
+test('final boss uses bombardment at range and slam up close, enrages once, and awards victory once', () => {
   const state = arena('wing'), boss = state.enemies[0];
   state.player.x = 0; state.player.z = -30;
   Object.assign(boss, { x: 0, z: -34, timer: 0 });
@@ -390,6 +404,7 @@ test('final boss alternates bombardment and slam, enrages once, and awards victo
   stepGame(state, {}, FIXED_STEP);
   assert.equal(state.messages.filter((entry) => entry.text.includes('開始加碼')).length, count);
   Object.assign(boss, { phase: 'idle', telegraph: null, timer: 0 });
+  state.player.z = -32;
   stepGame(state, {}, FIXED_STEP);
   assert.equal(boss.attackKind, 'slam');
   boss.hp = 1;
