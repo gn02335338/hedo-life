@@ -1,0 +1,661 @@
+{
+  "method": "Fresh family entries use only public onboarding, work, warning-gap rests, paid meals, real invitation responses and final company choices. The directed search attempts to befriend Kind and accepts the received company destination; it does not edit game state, RNG, affinity or company selection.",
+  "routes": [
+    {
+      "roleId": "hr",
+      "seed": "e39-r72-s-2d7208b1aa0ac7ad8b5b23",
+      "ending": "company_closed-hr",
+      "path": "vietnam_afterdark",
+      "peakKind": 83,
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "recruitment60-rick",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "recruitment60-princess",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-hr-admin-merge",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast66-zoe-travel-receipt",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast66-hester-headcount-myth"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast66-hester-headcount-myth",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-hr-exit-label",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast66-james-leave-balance",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-janet-final-salary-list",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "wealth-plan",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "career71-hr-offer-truth"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-camel",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-hr-offer-truth",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-hr-jd-coffee",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage67-pay-review",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "relationship72-rick-forward",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-spencer-assistant-scope",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wealth-plan",
+          "index": 2
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "career71-hr-pip-proof"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-diet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-hr-pip-proof",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage67-smalltalk",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-hr-privacy",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-company-tea-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sam-leave-calendar",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-attendance-access",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-1",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-2",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-student-work-role",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "hr28-coffee-jd"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-coffee-jd",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-captain-candidate-map",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-onboarding-notice",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "kind-workday",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-with-kind",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "hr28-interview-crowd",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "road",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "runway",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "audit",
+          "index": 1
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "finale",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "company-v32-vietnam",
+          "index": 0
+        }
+      ]
+    },
+    {
+      "roleId": "project",
+      "seed": "e39-r72-d-cabb7c3a7ce1e2f1769b52",
+      "ending": "vietnam_core-project",
+      "path": "vietnam_core",
+      "peakKind": 50,
+      "actions": [
+        {
+          "type": "activity-schedule",
+          "version": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "onboarding",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "recruitment60-rick",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "recruitment60-princess",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-project-triangle",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-jack-drinks-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-project-status",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-princess-pm-bridge",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "career71-project-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-basketball",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-project-timezone",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "shareholder58-offer",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wing-growth-empty-seats",
+          "index": 2
+        },
+        {
+          "type": "break"
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 4
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 6
+        },
+        {
+          "type": "choice",
+          "eventId": "meal-guests-a",
+          "index": 9
+        },
+        {
+          "type": "choice",
+          "eventId": "self-care",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "work-gap-v50",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast35-sophie-reminder-timezone"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-roadshow",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-sophie-reminder-timezone",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wealth-plan",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "relationship72-rick-forward",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "blockchain65-3",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-project-handover",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-0",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-1",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "treats61-birthday-cake-2",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-joyce-handover-sales",
+          "index": 1
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "cast39-annie_yu-status-stage"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-arm",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-status-stage",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "wealth-plan",
+          "index": 2
+        },
+        {
+          "type": "hidden-encounter",
+          "version": 1,
+          "eventId": "career71-project-risk-owner"
+        },
+        {
+          "type": "choice",
+          "eventId": "hidden45-5-0",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-project-risk-owner",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "patronage67-pay-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "career71-project-acceptance",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "job-project-acceptance-drift",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast35-helen-farewell-playlist",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "sonny-printer-language",
+          "index": 0
+        },
+        {
+          "type": "activity-invitation",
+          "version": 1,
+          "eventId": "professor37-dual-calendar"
+        },
+        {
+          "type": "choice",
+          "eventId": "activity46-invite-banquet",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "professor37-dual-calendar",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "crisis-boss",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "paperwork",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "relationship72-jack-backup",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "cast39-annie_yu-assistant-approval",
+          "index": 2
+        },
+        {
+          "type": "choice",
+          "eventId": "cast65-zoe-cold-storage",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-review",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "pip-passed",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "road",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "runway",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "audit",
+          "index": 1
+        },
+        {
+          "type": "choice",
+          "eventId": "finale",
+          "index": 0
+        },
+        {
+          "type": "choice",
+          "eventId": "company-v32-vietnam",
+          "index": 0
+        }
+      ]
+    }
+  ]
+}

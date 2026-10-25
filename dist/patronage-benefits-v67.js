@@ -1,6 +1,6 @@
 // Fresh appointments get new benefits; published salaries and histories stay
 // unchanged. These helpers consume no RNG and never mutate canonical state.
-export const isPatronageBenefitsV67=value=>/^e39-r(?:6[789]|7[01])-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
+export const isPatronageBenefitsV67=value=>/^e39-r(?:6[789]|7[012])-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
 export const PATRONAGE_APPOINTMENT_CASH_V67=24;
 export const PATRONAGE_ALLOWANCE_CASH_V67=6;
 export const PATRONAGE_ALLOWANCE_WORK_V67=2;

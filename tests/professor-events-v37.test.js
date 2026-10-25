@@ -18,7 +18,7 @@ const displayedChoice=choice=>({...choice,text:displayText(choice.text),detail:d
 test('thirty professor stories are distinct ordinary scenes with ninety authored, concealed responses',()=>{
   assert.equal(added.length,30);assert.equal(ids.size,30);
   assert.ok(PERSONAS.professor);
-  assert.deepEqual(new Set(EVENTS.filter(event=>event.speaker==='professor'&&!event.requiresCastV66).map(event=>event.id)),ids);
+  assert.deepEqual(new Set(EVENTS.filter(event=>event.speaker==='professor'&&!event.requiresCastV66&&!event.requiresRelationshipV72).map(event=>event.id)),ids);
   const titles=new Set(),texts=new Set(),results=new Set();
   for(const event of added){
     assert.match(event.id,/^professor37-/);assert.equal(event.speaker,'professor');

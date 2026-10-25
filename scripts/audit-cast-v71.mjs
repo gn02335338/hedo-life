@@ -24,8 +24,8 @@ const eligible=event=>{
 };
 
 export function auditCastV71(){
- const unique=new Map(EVENTS.map(event=>[event.id,event]));
- if(unique.size!==EVENTS.length)throw Error('Duplicate authored event ID');
+ const authored=EVENTS.filter(event=>!event.requiresRelationshipV72),unique=new Map(authored.map(event=>[event.id,event]));
+ if(unique.size!==authored.length)throw Error('Duplicate authored event ID');
  const playable=[...unique.values()].filter(event=>event.choices?.length>=3&&eligible(event));
  const characters=Object.keys(PERSONAS).map(id=>{
   const scenes=playable.filter(event=>event.speaker===id),added=scenes.filter(event=>event.requiresCareerV71),existing=scenes.filter(event=>!event.requiresCareerV71);

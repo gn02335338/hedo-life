@@ -7,6 +7,7 @@ import {CAST_IDS_V65,isCastV65} from './cast-v65.js';
 import {isBlockchainOutcomeV65} from './blockchain-v65.js';
 import {isPatronageProgressV69} from './patronage-progress-v69.js';
 import {isCareerContentV71} from './career-content-v71.js';
+import {isLifeSystemsV72} from './life-systems-v72.js';
 
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
@@ -57,10 +58,30 @@ export function isMealOutcomeV36(run,row){
   &&(evidence.reaction==='warm'?evidence.affinityDelta>0:evidence.reaction==='mine'?evidence.affinityDelta<0:evidence.affinityDelta===0);
 }
 
+// Relationship support is resolved evidence, not a second conversation and
+// not another copy of team trust. Old histories ignore this new projection.
+export function isRelationshipOutcomeV72(run,row){
+ const evidence=row?.relationshipOutcome;
+ if(!isLifeSystemsV72(run)||!evidence||typeof evidence!=='object'||Array.isArray(evidence))return false;
+ if(Object.keys(evidence).sort().join(',')!=='affinityDelta,origin,reaction,target,tier,version')return false;
+ const amounts={help:2,cover:1,refusal:-1,argument:-2,backstab:-3};
+ return evidence.version===1&&known(evidence.target,run)&&row.speaker===evidence.target&&row.kind==='daily'
+  &&Number.isInteger(row.choiceIndex)&&row.choiceIndex>=0
+  &&typeof row.eventId==='string'&&row.eventId.length>0&&row.eventId.length<=100&&evidence.origin===row.eventId
+  &&Object.hasOwn(amounts,evidence.reaction)&&evidence.affinityDelta===amounts[evidence.reaction]
+  &&(['help','cover'].includes(evidence.reaction)?['trusted','close'].includes(evidence.tier):['strained','hostile'].includes(evidence.tier))
+  &&['verbalOutcome','mealOutcome','patronageOutcome','departureOutcome','recruitmentOutcome','activityOutcome','shareholderOutcome','hiddenOutcome','treatsOutcome','blockchainOutcome'].every(key=>row[key]===undefined);
+}
+
 export function characterHistoryChanges(run){
  const scores=Object.fromEntries(CHARACTER_IDS.map(id=>[id,50])),changes=[];
  for(const [historyIndex,row] of (Array.isArray(run?.history)?run.history:[]).entries()){
   if(!row||!Number.isInteger(row.choiceIndex)||row.choiceIndex<0)continue;
+  let relationship=null;
+  if(isLifeSystemsV72(run)&&Object.hasOwn(row,'relationshipOutcome')){
+   if(!isRelationshipOutcomeV72(run,row))continue;
+   relationship=row.relationshipOutcome;
+  }
   if(row.kind==='event-departure'||Object.hasOwn(row,'departureOutcome')){
    if(!isEventDepartureOutcomeV63(run,row)||!known(row.departureOutcome.target,run)||row.speaker!==row.departureOutcome.target)continue;
    const id=row.departureOutcome.target,score=clamp(scores[id]+row.departureOutcome.affinityDelta,0,100),affinityDelta=score-scores[id];scores[id]=score;
@@ -124,7 +145,8 @@ export function characterHistoryChanges(run){
    // Only the already resolved choice contributes. Neither incidental luck nor
    // daily weather is another character's opinion. Historical rows without a
    // choice ledger retain their encounters, without inventing an affinity delta.
-   const requested=treat&&id===treat.target?treat.affinityDelta:recruitment&&id===recruitment.target?recruitment.affinityDelta:application&&id==='rick'?application.affinityDelta:patronage?patronage.affinityDelta:verbal?verbal.affinityDelta:meal?meal.affinityDelta:mode==='real'?-25:mode==='imagined'||row.kind==='rage-world'?0:clamp(Math.round(id==='wing'?delta.boss:delta.trust),-12,12);
+   const baseRequested=treat&&id===treat.target?treat.affinityDelta:recruitment&&id===recruitment.target?recruitment.affinityDelta:application&&id==='rick'?application.affinityDelta:patronage?patronage.affinityDelta:verbal?verbal.affinityDelta:meal?meal.affinityDelta:mode==='real'?-25:mode==='imagined'||row.kind==='rage-world'?0:clamp(Math.round(id==='wing'?delta.boss:delta.trust),-12,12);
+   const requested=baseRequested+(relationship?.target===id?relationship.affinityDelta:0);
    const score=clamp(scores[id]+requested,0,100),affinityDelta=score-scores[id];scores[id]=score;
    changes.push({historyIndex,id,encounters:1,imaginedHits:mode==='imagined'?1:0,realHits:mode==='real'?1:0,affinityDelta});
   }

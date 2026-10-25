@@ -1326,10 +1326,11 @@ their own published results from both current-week and all-time boards.
 
 ## Moving Cards anonymous game
 
-`/cards/` is the standalone card collection and turn-based campaign. It reuses
-the existing `hedo-anonymous-v1` identity and `ARCHIVE` / `global-v3`; no new
-binding, service, external API or secret is required. It has no purchases or
-cash redemption. The public catalog and rules live under `dist/cards/`.
+`/cards/` combines the existing collection with the v72 deck-building adventure.
+It reuses `hedo-anonymous-v1` and `ARCHIVE` / `global-v3`; no new binding,
+service, external API, secret or database table is required by the adventure.
+There are no purchases or cash redemption. The public catalog and rules live
+under `dist/cards/`; `expedition.js` owns the new pure adventure model.
 
 | Method | Path | Authenticated input / response |
 | --- | --- | --- |
@@ -1337,15 +1338,61 @@ cash redemption. The public catalog and rules live under `dist/cards/`.
 | POST | `/api/cards/action` | `{requestId,revision,action}`; `{duplicate,appliedRevision,state}` |
 | POST | `/api/cards/claim-life` | Exact career proof `{runId,roleId,seed,actions}`; `{ticketsAwarded,duplicate,score,workTurns,state}` |
 
-Card state is stored in lazily created, separate SQLite tables. The Worker
-generates a private 256-bit seed with `crypto.getRandomValues`; clients never
-receive the seed, RNG counter or future draws. Draws and battle effects run on
-the server through the shared pure card rules. Actions accept only intentions:
-draw a single card or ten, change a three-character deck and two equipped cards,
-upgrade/craft, start an unlocked stage, choose a battle move, or abandon a battle.
-Balances, damage, random results and additional action fields are rejected.
-First-clear rewards are part of canonical card state and cannot be farmed by
-repeating a cleared stage. The client catalog is not an authoritative balance.
+The stored envelope remains `state.version === 1`. New runs add an optional
+`state.expedition` with its own `version:2`, status, current room, borrowed deck,
+run-only coins and relics. Its phases are `route`, `battle`, `reward`, `rest`,
+`event` and terminal `finished`; status distinguishes `won`, `lost` and
+`abandoned`. Existing collection, levels, balances, pity counter, campaign
+clears, receipts and private RNG are not reset. Legacy `start-battle`,
+`battle-turn` and `abandon-battle` intentions retain their rules. An active
+legacy battle must be finished or explicitly abandoned before starting an
+adventure. Active adventures also block permanent drawing, crafting, upgrading
+and deck replacement until the run ends.
+
+The existing action endpoint additionally accepts these exact intentions:
+
+| Action type | Additional fields |
+| --- | --- |
+| `start-expedition` | `stage` integer 1–10; `archetype`: `evidence`, `slack` or `lick` |
+| `expedition-room` | `choice` 0 or 1, checked against the currently offered routes |
+| `expedition-play` | `handIndex` integer 0–9, checked against the current hand |
+| `expedition-end-turn` | None |
+| `expedition-reward` | `choice` 0–2 for the offered cards, or 3 to skip |
+| `expedition-rest` | `choice:'heal'`; or `choice:'upgrade'` plus current deck `cardIndex` |
+| `expedition-event` | `choice` 0 or 1 |
+| `abandon-expedition` | None |
+
+The API bounds a rest upgrade index to 0–99; the model further checks the actual
+run deck, available coins, phase and maximum level. Unknown fields, invented
+cards, damage, energy, health, rewards and client-provided outcomes are rejected.
+The server decides draw order, reshuffles, drafts, room alternatives and event
+results using the existing private seed/counter stream.
+
+Each chapter has five rooms and ends at its final meeting. A starting deck has
+13 cards derived from the saved three-character lineup, archetype and equipped
+event. Players draw five cards and normally receive three energy per turn; they
+may play several cards before ending the turn. Current enemy intent is public,
+block expires after the enemy action, and combat is bounded to 20 turns and
+20 card plays per turn. The model applies card-order combinations, item passives
+and character-specific effects. `getExpeditionCardMeta` and
+`getExpeditionItemPassive` supply the current adventure descriptions; legacy
+cooldowns and item/event numbers are not adventure tooltips.
+
+Draw order stays private. The public projection removes `battle.drawPile` and
+the run's next-instance counter, exposes only sorted draw-pile composition and
+counts, and includes the current hand, discard, exhausted cards and current
+choices. It never sends future room selections or future drafts. The top-level
+private seed/counter remain omitted as before. Card art and catalogs are public;
+the browser is not authoritative for combat or rewards.
+
+Borrowed cards, upgrades, relics and coins belong only to the current adventure.
+Only the final boss can award permanent tickets/shards, using the existing
+stage reward schedule and shared `campaign.completed` first-clear check. A
+legacy clear therefore remains cleared in the adventure; repeats, intermediate
+wins, drafts, rests and abandonment cannot mint another first-clear reward.
+Defeat never removes permanent collection cards. New adventure state is saved
+in the existing JSON column and existing practice storage key, so anonymous
+ownership and domain migration continue without a new browser key.
 
 Every card mutation requires a UUID request ID and exact current revision.
 SQLite transactions serialize concurrent tabs; a different request based on an
@@ -1356,9 +1403,9 @@ Reusing an ID with different content receives 409. Receipts are owner-scoped and
 persist independently of page memory. Failed mutations roll back state and receipt
 together. Existing same-origin checks, no-store headers, streaming JSON limits
 and anonymous request throttling apply. Card endpoints permit 30 requests per
-10 seconds for ordinary battle pacing; the separate career/feedback guard remains
-at its published 10 requests per 10 seconds. A 429 retains all committed progress
-and sends `Retry-After: 10`.
+10 seconds; the separate career/feedback guard remains at its published
+10 requests per 10 seconds. A 429 retains all committed progress and sends
+`Retry-After: 10`.
 
 Career rewards are computed from `replayRun` and the current leaderboard score,
 never from client-posted scores, stats or workday cursors. At least three actual,
@@ -1385,3 +1432,9 @@ proof queues, character counters and anonymous identity are preserved.
 
 Focused verification uses actual SQLite storage, restart and concurrent-request
 tests: `node --test tests/api-cards.test.mjs tests/cards-*.test.mjs`.
+`tests/cards-expedition.test.mjs` also checks a public-state-only policy,
+all-three-archetype chapter witnesses, an all-N lineup that refuses every SSR
+borrow, card-order effects, item passives and bounded losses. Deterministic
+fixtures and synthetic accounts stay in isolated tests; no test rankings or
+career proofs are seeded into production. Model balance samples are documented
+in `research/card-redesign-v72.md` and are not population win-rate estimates.

@@ -68,7 +68,7 @@ test('Alice has 33 distinct original daily stories, a neutral public portrait, w
 
 test('strict fresh cohort gates keep historical event access, dinner pages and character evidence unchanged',()=>{
  assert.equal(isCareerContentV71(seedFor(0)),true);
- for(const suffix of ['e39-r70-n-'+ 'a'.repeat(22),'e39-r72-n-'+ 'a'.repeat(22),'e39-r71-n-'+ 'A'.repeat(22),'e39-r71-x-'+ 'a'.repeat(22),seedFor(0)+'x'])assert.equal(isCareerContentV71(suffix),false);
+ for(const suffix of ['e39-r70-n-'+ 'a'.repeat(22),'e39-r73-n-'+ 'a'.repeat(22),'e39-r71-n-'+ 'A'.repeat(22),'e39-r71-x-'+ 'a'.repeat(22),seedFor(0)+'x'])assert.equal(isCareerContentV71(suffix),false);
  for(const profile of [64,65,66,67,68,69,70])for(const page of [0,1,2,3]){
   const run=meal(profile,page);
   if(profile<65&&page===3){assert.throws(()=>getMealEventV71(run));assert.throws(()=>getMealEventV65(run));}
@@ -164,9 +164,10 @@ test('naturally appointed godsons and goddaughters can answer Alice once without
  }
 });
 
-test('Alice appointment voices are gated to r71 and private reactions remain around the dinner table',()=>{
+test('Alice appointment voices start at r71, inherit r72 and keep private reactions around the dinner table',()=>{
  const work={id:'alice71-first-pull',kind:'daily',speaker:'alice'},privateScene={id:'meal-with-alice',kind:'self-care',privateContext:true,speaker:'alice'};
- for(const profile of [65,67,70,72]){const run=meal(profile);assert.equal(patronageReplyLineV43(run,work,'alice'),'');assert.deepEqual(patronageReplyOutcomesV43(run,work,'alice'),[]);}
+ for(const profile of [65,67,70,73]){const run=meal(profile);assert.equal(patronageReplyLineV43(run,work,'alice'),'');assert.deepEqual(patronageReplyOutcomesV43(run,work,'alice'),[]);}
+ assert.match(patronageReplyLineV43(meal(72),work,'alice'),/愛麗絲/);
  const run=meal(),line=patronageReplyLineV43(run,privateScene,'alice'),outcomes=patronageReplyOutcomesV43(run,privateScene,'alice');
  assert.ok(line.length>15);assert.match(line,/愛麗絲/);assert.equal(outcomes.length,4);assert.equal(new Set(outcomes.map(row=>row.result)).size,4);
  for(const row of outcomes){assert.ok(row.weight>0);assert.equal(row.delta.boss,undefined);assert.equal(row.effect,undefined);assert.ok(row.result.length>30);}

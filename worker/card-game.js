@@ -15,6 +15,24 @@ export function validateCardActionRequest(body) {
       || !Number.isSafeInteger(body.revision) || body.revision < 0 || !plain(body.action)) throw invalid();
   const action = body.action;
   switch (action.type) {
+    case 'start-expedition':
+      if (!keys(action,'type,stage,archetype') || !Number.isInteger(action.stage) || action.stage<1 || action.stage>10 || !['evidence','slack','lick'].includes(action.archetype)) throw invalid();
+      break;
+    case 'expedition-room': case 'expedition-event':
+      if (!keys(action,'type,choice') || !Number.isInteger(action.choice) || action.choice<0 || action.choice>1) throw invalid();
+      break;
+    case 'expedition-play':
+      if (!keys(action,'type,handIndex') || !Number.isInteger(action.handIndex) || action.handIndex<0 || action.handIndex>9) throw invalid();
+      break;
+    case 'expedition-end-turn': case 'abandon-expedition':
+      if (!keys(action,'type')) throw invalid();
+      break;
+    case 'expedition-reward':
+      if (!keys(action,'type,choice') || !Number.isInteger(action.choice) || action.choice<0 || action.choice>3) throw invalid();
+      break;
+    case 'expedition-rest':
+      if (action.choice==='heal' ? !keys(action,'type,choice') : action.choice!=='upgrade' || !keys(action,'type,choice,cardIndex') || !Number.isInteger(action.cardIndex) || action.cardIndex<0 || action.cardIndex>99) throw invalid();
+      break;
     case 'draw':
       if (!keys(action, 'type,count,banner') || ![1, 10].includes(action.count)
           || !['all', 'character', 'item', 'event'].includes(action.banner)) throw invalid();

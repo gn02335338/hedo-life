@@ -1,3 +1,4 @@
+import {RELATIONSHIP_EVENTS_V72} from './events-relationships-v72.js';
 import {CAST_EVENTS_V65} from './events-cast-v65.js';
 import {CAST_EVENTS_V66} from './events-cast-v66.js';
 import {ALICE_EVENTS_V71} from './events-alice-v71.js';
@@ -1318,3 +1319,5 @@ EVENTS.push(...CAST_EVENTS_V65);
 EVENTS.push(...CAST_EVENTS_V66);
 EVENTS.push(...ALICE_EVENTS_V71);
 EVENTS.push(...CAREER_EVENTS_V71);
+
+EVENTS.push(...RELATIONSHIP_EVENTS_V72);

@@ -3,15 +3,17 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 import {CARD_CATALOG,CARD_MAP,STAGES,CARD_KINDS,RARITY_ODDS} from '../dist/cards/catalog.js';
+import {getExpeditionCardMeta,getExpeditionItemPassive} from '../dist/cards/expedition.js';
+import {renderExpeditionV72} from '../dist/cards/expedition-ui.js';
 import {createCardState,projectCardState,applyCardAction,upgradeCost,craftCost,itemPower,eventPower,eventDescription} from '../dist/cards/rules.js';
 
 const initial=()=>createCardState('cards-ui-feedback-test');
 function ui(client){
  const root={innerHTML:'',querySelectorAll:()=>[],querySelector:()=>null};
  const document={querySelector:()=>root,addEventListener(){}};
- const scope=vm.createContext({document,window:{scrollTo(){}},matchMedia:()=>({matches:true}),CARD_CATALOG,CARD_MAP,STAGES,CARD_KINDS,RARITY_ODDS,upgradeCost,craftCost,itemPower,eventPower,eventDescription,cardClient:client});
+ const scope=vm.createContext({document,window:{scrollTo(){}},matchMedia:()=>({matches:true}),CARD_CATALOG,CARD_MAP,STAGES,CARD_KINDS,RARITY_ODDS,upgradeCost,craftCost,itemPower,eventPower,eventDescription,cardClient:client,renderExpeditionV72,getExpeditionCardMeta,getExpeditionItemPassive});
  const source=readFileSync(new URL('../dist/cards/app.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');
- vm.runInContext(`${source}\nglobalThis.testUI={connect,render,setState(value){state=value;},setTab(value){tab=value;},getReveal(){return reveal;},clearReveal(){reveal=null;}};`,scope);
+ vm.runInContext(`${source}\nglobalThis.testUI={connect,render,setState(value){state=value;},setTab(value){tab=value;},setLobby(value){expeditionLobby=value;},getReveal(){return reveal;},clearReveal(){reveal=null;}};`,scope);
  return{root,...scope.testUI};
 }
 
@@ -23,7 +25,7 @@ test('upgraded event descriptions show their current effect in cards, loadout an
  }
  const state=initial();state.collection['event-drink'].level=3;
  const app=ui({mode:'online',hasPending:false});app.setState(projectCardState(state));app.setTab('deck');app.render();
- assert.match(app.root.innerHTML,/全隊各恢復最多 20 生命/);
+ assert.ok(app.root.innerHTML.includes(getExpeditionCardMeta('event-drink',3).text));
  const battle=applyCardAction(state,{type:'start-battle',stage:1});app.setState(projectCardState(battle));app.setTab('campaign');app.render();
  assert.match(app.root.innerHTML,/全隊各恢復最多 20 生命/);
 });
@@ -61,4 +63,11 @@ test('a recovered later non-draw state does not invent or replay a draw result',
  const state=applyCardAction(initial(),{type:'start-battle',stage:1});
  const app=ui({mode:'online',hasPending:true,async connect(){return projectCardState(state);}});
  await app.connect();assert.equal(app.getReveal(),null);
+});
+
+test('reconnect resumes an adventure started elsewhere even when the old tab was showing chapter selection',async()=>{
+ const before=initial(),after=applyCardAction(before,{type:'start-expedition',stage:1,archetype:'slack'});
+ let connects=0;const app=ui({mode:'online',hasPending:true,async connect(){connects++;return projectCardState(after);},action(){throw Error('reconnect must not restart');}});
+ app.setState(projectCardState(after));app.setTab('campaign');app.setLobby(true);app.render();assert.match(app.root.innerHTML,/data-exp-room="0"/,'an active practice or cross-tab adventure must remain reachable');app.setState(projectCardState(before));await app.connect();
+ assert.equal(connects,1);assert.match(app.root.innerHTML,/data-exp-room="0"/);assert.doesNotMatch(app.root.innerHTML,/data-exp-start=/);
 });

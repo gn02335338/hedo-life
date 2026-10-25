@@ -50,7 +50,7 @@ test('new work cadence gives every actual occupation recurring dilemmas without 
    let sinceFocus=0;
    for(let index=0;index<16;index++){
     run.turn=index;
-    const pool=EVENTS.filter(event=>!event.context&&(!event.roles||event.roles.includes(role))&&(event.minTurn??0)<=index&&(event.maxTurn??99)>=index&&(event.minRank??0)===0&&calendarDailyAllowedV46(run,event)&&officeTreatDailyAllowedV61(run,event)&&!run.seen.includes(event.id));
+    const pool=EVENTS.filter(event=>!event.requiresRelationshipV72&&!event.context&&(!event.roles||event.roles.includes(role))&&(event.minTurn??0)<=index&&(event.maxTurn??99)>=index&&(event.minRank??0)===0&&calendarDailyAllowedV46(run,event)&&officeTreatDailyAllowedV61(run,event)&&!run.seen.includes(event.id));
     const snapshot=structuredClone(run),selected=selectWorkEventV71(run,pool,draw,EVENTS),event=EVENTS.find(event=>event.id===selected);
     assert.deepEqual(run,snapshot,'selecting an event does not mutate evidence or stats');
     assert.ok(event);assert.ok(!event.roles||event.roles.includes(role));assert.ok(!ids.includes(selected),'same-life work does not repeat while fresh eligible scenes remain');
@@ -69,5 +69,5 @@ test('new work cadence gives every actual occupation recurring dilemmas without 
 
 test('the strict new profile does not adopt unsupported or malformed future seeds',()=>{
  for(const marker of ['n','s','d'])assert.equal(isCareerContentV71(`e39-r71-${marker}-${'a'.repeat(22)}`),true);
- for(const seed of ['e39-r70-n-'+'a'.repeat(22),'e39-r72-n-'+'a'.repeat(22),'e39-r71-x-'+'a'.repeat(22),'e39-r71-n-'+'a'.repeat(21),'e39-r71-n-'+'A'.repeat(22)])assert.equal(isCareerContentV71(seed),false);
+ for(const seed of ['e39-r70-n-'+'a'.repeat(22),'e39-r73-n-'+'a'.repeat(22),'e39-r71-x-'+'a'.repeat(22),'e39-r71-n-'+'a'.repeat(21),'e39-r71-n-'+'A'.repeat(22)])assert.equal(isCareerContentV71(seed),false);
 });

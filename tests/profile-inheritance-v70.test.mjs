@@ -28,9 +28,9 @@ test('r70 and r71 inherit current cast, work-gap safety, activities, finances an
   assert.equal(seed.length,32);
   for(const gate of gates){assert.equal(gate(seed),true,gate.name);assert.equal(gate({seed}),true,gate.name);}
  }
- const invalid=['e39-r72-s-'+'a'.repeat(22),'e39-r70-x-'+'a'.repeat(22),'e39-r70-s-'+'a'.repeat(21),'e39-r70-s-'+'a'.repeat(23),'e39-r70-s-'+'A'.repeat(22),'e39-r70-s-'+'a'.repeat(22)+'-extra'];
+ const invalid=['e39-r73-s-'+'a'.repeat(22),'e39-r70-x-'+'a'.repeat(22),'e39-r70-s-'+'a'.repeat(21),'e39-r70-s-'+'a'.repeat(23),'e39-r70-s-'+'A'.repeat(22),'e39-r70-s-'+'a'.repeat(22)+'-extra'];
  for(const seed of invalid)for(const gate of gates)assert.equal(gate(seed),false,gate.name+'/'+seed);
- assert.throws(()=>recruitmentSeedV60('abcd'.repeat(8),'normal',72));
+ assert.throws(()=>recruitmentSeedV60('abcd'.repeat(8),'normal',73));
 });
 
 test('both natural r70 family entries answer a work scene once and submit version 2 proof to the Worker',()=>{

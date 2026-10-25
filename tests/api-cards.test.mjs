@@ -343,3 +343,36 @@ test('pure server validators preserve optional battle actor selection and reject
   assert.equal(validateCardActionRequest({ ...draw(0), action: { type: 'battle-turn', move: 'skill', target: 2 } }).action.target, 2);
   assert.throws(() => validateCardLifeClaim({ ...proof(completion()), consent: true }), error => error.status === 400);
 });
+
+test('new expedition API preserves private draw order, revisions and idempotent continuation after a restart',async t=>{
+ const h=harness();t.after(()=>h.db.close());const p=await h.register();const action=async(current,move,id=randomUUID())=>act(h,p,{requestId:id,revision:current.revision,action:move});
+ let view=(await h.call('/api/cards',{token:p.token})).body.state;
+ const startId=randomUUID(),started=await action(view,{type:'start-expedition',stage:1,archetype:'evidence'},startId);assert.equal(started.status,200);view=started.body.state;assert.equal(view.expedition.deck.length,13);assert.equal(view.expedition.phase,'route');
+ const duplicate=await act(h,p,{requestId:startId,revision:0,action:{type:'start-expedition',stage:1,archetype:'evidence'}});assert.equal(duplicate.status,200);assert.equal(duplicate.body.duplicate,true);assert.equal(duplicate.body.state.revision,1);
+ const entered=await action(view,{type:'expedition-room',choice:0});assert.equal(entered.status,200);view=entered.body.state;assert.equal(view.expedition.battle.hand.length,5);assert.equal(view.expedition.battle.drawPile,undefined);assert.equal(view.expedition.battle.drawComposition.length,view.expedition.battle.drawCount);
+ const handIndex=view.expedition.battle.hand.findIndex(row=>row.cost<=view.expedition.battle.energy),payload={requestId:randomUUID(),revision:view.revision,action:{type:'expedition-play',handIndex}};
+ const played=await act(h,p,payload);assert.equal(played.status,200);view=played.body.state;const next=await action(view,{type:'expedition-end-turn'});assert.equal(next.status,200);view=next.body.state;
+ h.restart();const retry=await act(h,p,payload);assert.equal(retry.status,200);assert.equal(retry.body.duplicate,true);assert.equal(retry.body.state.revision,view.revision);assert.equal(retry.body.state.expedition.battle.turn,2);assert.equal(retry.body.state.tickets,15);assert.equal(Object.keys(retry.body.state.collection).length,9);
+ const privateState=storedState(h,p);assert.ok(Array.isArray(privateState.expedition.battle.drawPile));assert.ok(!JSON.stringify(retry.body).includes(privateState.seed));assert.ok(!JSON.stringify(retry.body).includes('drawPile'));
+});
+
+test('new expedition API rejects invented damage, forged routes and unsafe indices without touching stored state',async t=>{
+ const h=harness();t.after(()=>h.db.close());const p=await h.register();await h.call('/api/cards',{token:p.token});
+ for(const action of [{type:'start-expedition',stage:1,archetype:'constructor'},{type:'start-expedition',stage:1,archetype:'evidence',cards:['person-wing']},{type:'expedition-play',handIndex:10},{type:'expedition-play',handIndex:0,damage:999},{type:'expedition-room',choice:2},{type:'expedition-rest',choice:'heal',cardIndex:0},{type:'expedition-reward',choice:4}]){
+  const before=storedState(h,p),response=await act(h,p,{requestId:randomUUID(),revision:before.revision,action});assert.equal(response.status,400);assert.deepEqual(storedState(h,p),before);
+ }
+});
+
+test('an isolated deterministic expedition finishes through the API, awards one boss clear and retains legacy inventory',async t=>{
+ const h=harness();t.after(()=>h.db.close());const p=await h.register();
+ // A private synthetic fixture inside this test's own SQLite database makes
+ // combat repeatable. No fixture or test evidence is sent to production.
+ h.archive.cardStore().save(p.id,createCardState('visible-adventure-evidence-0'));
+ const {expeditionPolicy}=await import('./cards-expedition-policy.mjs');let view=(await h.call('/api/cards',{token:p.token})).body.state;
+ let response=await act(h,p,{requestId:randomUUID(),revision:view.revision,action:{type:'start-expedition',stage:1,archetype:'evidence'}});assert.equal(response.status,200);let lastPayload;
+ for(let actions=0;response.body.state.expedition.status==='active'&&actions<500;actions++){
+  view=response.body.state;lastPayload={requestId:randomUUID(),revision:view.revision,action:expeditionPolicy(storedState(h,p))};response=await act(h,p,lastPayload);assert.equal(response.status,200);
+ }
+ const finished=response.body.state;assert.equal(finished.expedition.status,'won');assert.equal(finished.tickets,18);assert.equal(finished.shards,10);assert.deepEqual(finished.campaign.completed,[1]);assert.equal(Object.keys(finished.collection).length,9);assert.equal(finished.totalDraws,0);
+ h.restart();const repeated=await act(h,p,lastPayload);assert.equal(repeated.status,200);assert.equal(repeated.body.duplicate,true);assert.equal(repeated.body.state.tickets,18);assert.equal(repeated.body.state.shards,10);assert.deepEqual(repeated.body.state.collection,finished.collection);
+});
