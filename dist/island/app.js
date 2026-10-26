@@ -7,10 +7,10 @@ import { bindApplications, residentAvatar } from './applications.js';
 import { ISLAND_CAST } from './cast.js';
 import { createIslandAdminSummary } from './admin-summary.js';
 import { PLACES, PLACE_BY_ID } from './places.js';
+import { getPersonRoutine, getIslandRoutine, MYSTERY_TRIP } from './routines.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
-const castByDistrict = new Map(DISTRICTS.map(d => [d.id, ISLAND_CAST.filter(person => person.districtId === d.id)]));
 const placesByDistrict = new Map(DISTRICTS.map(d => [d.id, PLACES.filter(place => place.districtId === d.id)]));
 const categoryNames = { department: '部門園區', shared: '共享空間', afterwork: '下班生活' };
 const personaImage = id => displayPersona(id).image.replace(/^\.\//, '/');
@@ -25,7 +25,9 @@ let filter = 'all';
 let zoneFilter = 'all';
 let focusedPlaceId = null;
 let tourIndex = -1;
-let hour = 12;
+let hour = 10;
+let clockRunning = !reducedMotion.matches;
+let lastRoutinePhase = null;
 let paused = reducedMotion.matches;
 let topView = false;
 let connections = false;
@@ -36,6 +38,7 @@ let roaming = false;
 let nearby = null;
 let walkControls;
 const encounterChoices = new Map();
+const routineChoices = new Map();
 // Revised stories never reinterpret a response index saved for the old map.
 // Keep the original v1 record intact; new memories belong to this visit.
 const districtChoices = new Map();
@@ -48,6 +51,19 @@ let lifeActors = new Map();
 let lifeAvailable = false;
 let sceneUnavailable = false;
 const encounterById = new Map(ENCOUNTERS.map(item => [item.id, item]));
+
+function currentDistrict(id) {
+  return lifeAvailable ? lifeActors.get(`person:${id}`)?.districtId || getPersonRoutine(id, hour)?.districtId
+    : getPersonRoutine(id, hour)?.districtId;
+}
+function peopleInDistrict(id) { return ISLAND_CAST.filter(person => currentDistrict(person.id) === id); }
+function personLocation(id) {
+  const actor = lifeAvailable ? lifeActors.get(`person:${id}`) : null, routine = getPersonRoutine(id, hour);
+  const destination = PLACE_BY_ID.get(actor?.destinationPlaceId || routine?.placeId)?.name;
+  if (!lifeAvailable) return `今日行程 · ${destination}`;
+  const district = byId.get(currentDistrict(id))?.name;
+  return actor?.traveling ? `${district} → ${destination}` : `現在在 · ${district}`;
+}
 
 function element(tag, className = '', text) {
   const node = document.createElement(tag);
@@ -119,7 +135,7 @@ function renderList() {
   const matches = DISTRICTS.filter(d => {
     if (filter === 'visited' && !progress.visited.includes(d.id)) return false;
     if (zoneFilter !== 'all' && d.category !== zoneFilter) return false;
-    const text = [d.name, d.summary, ...d.tags, ...placesByDistrict.get(d.id).flatMap(place => [place.name, ...place.tags]), ...castByDistrict.get(d.id).map(({ id }) => {
+    const text = [d.name, d.summary, ...d.tags, ...placesByDistrict.get(d.id).flatMap(place => [place.name, ...place.tags]), ...peopleInDistrict(d.id).map(({ id }) => {
       const p = displayPersona(id); return `${id} ${p.name} ${p.title}`;
     })].join(' ').toLocaleLowerCase();
     return !query || text.includes(query);
@@ -170,7 +186,7 @@ function canWalk() {
 function updateWalking() {
   walkControls?.clear();
   scene?.setMovementEnabled(canWalk());
-  scene?.setConversationTarget($('#encounter-dialog').open ? activeEncounter : null);
+  scene?.setConversationTarget($('#encounter-dialog').open ? activeEncounter?.kind === 'routine' ? { kind: 'person', id: MYSTERY_TRIP.hostId } : activeEncounter : null);
   document.body.classList.toggle('walking-blocked', roaming && !canWalk());
   $('#walk-hint').textContent = mobile.matches ? '按住左下方向鍵移動 · 靠近後點「聊聊」' : 'W A S D／方向鍵移動 · 靠近後按 E 或空白鍵';
 }
@@ -207,7 +223,7 @@ function updateNearby(target) {
   } else if (target.kind === 'person') {
     const encounter = encounterById.get(target.id);
     $('#nearby-name').textContent = displayPersona(target.id).name;
-    $('#nearby-greeting').textContent = encounter?.greeting || '一起聊聊島上的日常。';
+    $('#nearby-greeting').textContent = target.id === MYSTERY_TRIP.hostId && getIslandRoutine(hour).trip ? MYSTERY_TRIP.invitation : actorActivity(lifeActors.get(`person:${target.id}`)) || encounter?.greeting;
     $('#interact-label').textContent = '聊聊';
   } else if (target.kind === 'place') {
     const place = PLACE_BY_ID.get(target.id);
@@ -225,26 +241,37 @@ function renderEncounter(target) {
   activeEncounter = target;
   if (target.kind === 'resident') return renderResidentEncounter(target);
   const district = byId.get(target.districtId);
+  const isRoutine = target.kind === 'routine';
   const isPerson = target.kind === 'person';
   const place = target.kind === 'place' ? PLACE_BY_ID.get(target.id) : null;
-  const story = isPerson ? encounterById.get(target.id) : place?.story || district.story;
+  const story = isRoutine ? MYSTERY_TRIP.story : isPerson ? encounterById.get(target.id) : place?.story || district.story;
   const content = $('#encounter-content'); content.replaceChildren();
-  $('#encounter-place').textContent = `${district.number} / ${district.name} · ${isPerson ? '島上偶遇' : place?.name || '園區日常'}`;
-  if (isPerson) {
+  $('#encounter-place').textContent = `${district.number} / ${district.name} · ${isRoutine ? '阿良的邀約' : isPerson ? '島上偶遇' : place?.name || '園區日常'}`;
+  if (isPerson || isRoutine) {
+    const speakerId = isRoutine ? MYSTERY_TRIP.hostId : target.id;
     const speaker = element('div', 'encounter-speaker');
-    const portrait = element('img'); portrait.src = personaImage(target.id); portrait.alt = '';
-    speaker.append(portrait, element('strong', '', displayPersona(target.id).name)); content.append(speaker);
+    const portrait = element('img'); portrait.src = personaImage(speakerId); portrait.alt = '';
+    speaker.append(portrait, element('strong', '', displayPersona(speakerId).name)); content.append(speaker);
+    if (isPerson) {
+      content.append(element('p', 'encounter-routine', `${personLocation(target.id)} · ${actorActivity(lifeActors.get(`person:${target.id}`))}`));
+      if (target.id === MYSTERY_TRIP.hostId) content.append(button('mystery-inline', '聽聽阿良的晚間邀約 →', () => { renderEncounter({ kind: 'routine', id: MYSTERY_TRIP.placeId, districtId: currentDistrict(MYSTERY_TRIP.hostId) }); updateWalking(); $('#encounter-title').tabIndex = -1; $('#encounter-title').focus(); }));
+      content.append(element('p', 'encounter-memory-label', '聊起一段島上回憶'));
+    } else content.append(element('p', 'encounter-routine', getIslandRoutine(hour).trip ? '今晚的集合正在進行，夥伴會從各處慢慢走來。' : '每日 19:00–20:00，在夜色碼頭集合。現在可以先聊聊晚上的安排。'));
   }
   const title = element('h2', '', story.title); title.id = 'encounter-title';
   content.append(title, element('p', 'encounter-opening', story.opening));
-  const choicesMap = isPerson ? encounterChoices : place ? placeChoices : districtChoices;
-  const choiceKey = isPerson || place ? target.id : district.id;
+  const choicesMap = isRoutine ? routineChoices : isPerson ? encounterChoices : place ? placeChoices : districtChoices;
+  const choiceKey = isRoutine || isPerson || place ? target.id : district.id;
   const selected = choicesMap.get(choiceKey);
   if (Number.isInteger(selected)) {
     const result = element('div', 'story-response'); result.id = 'encounter-response'; result.tabIndex = -1;
     result.append(element('b', '', `你說：${story.choices[selected].label}`), element('p', '', story.choices[selected].response));
     content.append(result);
     $('#encounter-leave').textContent = '把這段日常收好，繼續散步 →';
+    if (isRoutine) content.append(button('mystery-inline', getIslandRoutine(hour).trip ? '去集合處看看 →' : '切到 19:15，看大家集合 →', () => {
+      closeDialog($('#encounter-dialog')); clockRunning = false; if (!getIslandRoutine(hour).trip) setHour(19.25);
+      selectDistrict('harbor'); scene?.focusPlace(MYSTERY_TRIP.placeId);
+    }));
   } else {
     const choices = element('div', 'story-choices');
     story.choices.forEach((choice, index) => {
@@ -290,7 +317,8 @@ function meetColleague(id) {
   const person = encounterById.get(id);
   if (!person) return;
   stopTour();
-  renderEncounter({ kind: 'person', id, districtId: person.districtId, key: `person:${id}` });
+  if (id === MYSTERY_TRIP.hostId && getIslandRoutine(hour).trip) { openMysteryInvitation(); return; }
+  renderEncounter({ kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` });
   openDialog($('#encounter-dialog'));
 }
 function visitPlace(id) {
@@ -310,8 +338,41 @@ function actorActivity(actor) {
   if (actor?.state === 'talking') return '正在聊天';
   if (actor?.state === 'greeting') return '停下來打招呼';
   if (paused) return '歇腳中';
-  if (actor?.state === 'walking') return '沿著小路散步';
+  if (actor?.traveling && actor.activity === actor.routine?.activity && PLACE_BY_ID.has(actor.destinationPlaceId)) return `準備前往${PLACE_BY_ID.get(actor.destinationPlaceId).name}`;
   return actor?.activity || '歇腳中';
+}
+function renderRoutineStatus() {
+  const routine = getIslandRoutine(hour);
+  $('#island-routine-title').textContent = routine.title;
+  $('#island-routine-description').textContent = routine.description;
+  $('#mystery-status').textContent = routine.trip ? routine.trip.stage === 'stroll' ? '碼頭小旅行 · 跟阿良走一段' : '阿良正在揪團 · 夥伴陸續集合' : hour >= 20 ? '今晚已散場 · 下次 19:00 再約' : '晚間預告 · 19:00 夜色碼頭集合';
+  $('#mystery-open').textContent = routine.trip ? '聽聽阿良的邀約 ↗' : '看看今晚的邀約 ↗';
+  $('#time-flow').setAttribute('aria-pressed', String(clockRunning));
+  $('#time-flow').disabled = reducedMotion.matches;
+  $('#time-flow').textContent = reducedMotion.matches ? '減少動態 · 時間已停' : clockRunning && !paused ? '時間流動中 · 暫停' : '時間已停 · 播放';
+}
+function openMysteryInvitation() {
+  stopTour();
+  renderEncounter({ kind: 'routine', id: MYSTERY_TRIP.placeId, districtId: currentDistrict(MYSTERY_TRIP.hostId), key: `person:${MYSTERY_TRIP.hostId}` });
+  openDialog($('#encounter-dialog'));
+}
+function renderDistrictPeople() {
+  if (!activeId) return;
+  const list = $('#detail-people'); if (!list) return;
+  const people = peopleInDistrict(activeId), signature = people.map(person => person.id).join(',');
+  $('#detail-people-title').textContent = lifeAvailable ? '此刻，在這個園區' : '這個時段的行程';
+  if (list.dataset.roster === signature) return;
+  const focusedId = document.activeElement?.dataset?.personId;
+  list.dataset.roster = signature; list.replaceChildren();
+  for (const { id } of people) {
+    const persona = displayPersona(id);
+    const chip = button('person-chip', '', () => meetColleague(id)); chip.title = persona.title; chip.dataset.personId = id;
+    chip.setAttribute('aria-label', `和${persona.name}聊聊`);
+    const portrait = element('img'); portrait.src = personaImage(id); portrait.alt = ''; portrait.loading = 'lazy';
+    chip.append(portrait, element('span', '', persona.name)); list.append(chip);
+    if (id === focusedId) chip.focus({ preventScroll: true });
+  }
+  if (!people.length) list.append(element('p', 'people-empty', '大家暫時到別處走走了，從人物名冊看看他們在哪裡。'));
 }
 function renderLifeStatus() {
   const actors = [...lifeActors.values()];
@@ -326,38 +387,53 @@ function renderLifeStatus() {
     label.textContent = actorActivity(actor);
     label.dataset.state = paused ? 'resting' : actor?.state || 'resting';
   }
+  for (const label of document.querySelectorAll('[data-person-location]')) label.textContent = personLocation(label.dataset.personLocation);
+  for (const locate of document.querySelectorAll('[data-locate-person]')) locate.setAttribute('aria-label', `看看${displayPersona(locate.dataset.locatePerson).name}的位置：${personLocation(locate.dataset.locatePerson)}`);
+  renderDistrictPeople();
+  renderRoutineStatus();
 }
 function updateIslandLife({ actors = [] } = {}) {
   if (sceneUnavailable) return;
+  const signature = rows => [...rows].filter(actor => actor.kind === 'person').map(actor => `${actor.id}:${actor.districtId}:${actor.destinationPlaceId}`).join('|');
+  const changed = signature(lifeActors.values()) !== signature(actors);
   lifeActors = new Map(actors.map(actor => [`${actor.kind}:${actor.id}`, actor]));
   lifeAvailable = actors.length > 0;
+  if (changed && $('#search').value.trim()) renderList();
+  if (changed && $('#cast-dialog').open && $('#cast-search').value.trim()) {
+    const focused = document.activeElement, personId = focused?.dataset?.locatePerson;
+    const wasInList = $('#cast-list').contains(focused);
+    renderCastDirectory();
+    if (personId) document.querySelector(`[data-locate-person="${personId}"]`)?.focus({ preventScroll: true });
+    if (wasInList && !document.activeElement?.isConnected) $('#cast-search').focus({ preventScroll: true });
+  }
   renderLifeStatus();
 }
 function renderCastDirectory() {
   const query = $('#cast-search').value.trim().toLocaleLowerCase();
   const matches = ISLAND_CAST.filter(({ id, districtId, workplaceId }) => {
     const p = displayPersona(id);
-    return [id, p.name, p.title, byId.get(districtId).name, PLACE_BY_ID.get(workplaceId)?.name].join(' ').toLocaleLowerCase().includes(query);
+    return [id, p.name, p.title, byId.get(currentDistrict(id))?.name, personLocation(id), PLACE_BY_ID.get(workplaceId)?.name].join(' ').toLocaleLowerCase().includes(query);
   });
   $('#cast-results').textContent = query ? `找到 ${matches.length} 位同事` : `${ISLAND_CAST.length} 位同事，在各園區工作，也在島上走走。`;
   $('#cast-empty').hidden = matches.length !== 0;
   const list = $('#cast-list'); list.replaceChildren();
   for (const { id, districtId, workplaceId } of matches) {
-    const p = displayPersona(id), district = byId.get(districtId);
+    const p = displayPersona(id);
     const card = element('article', 'cast-card'); card.dataset.characterId = id;
     const portrait = element('img'); portrait.src = personaImage(id); portrait.alt = ''; portrait.loading = 'lazy';
     const copy = element('div', 'cast-copy');
     copy.append(element('h3', '', p.name), element('p', '', p.title));
     if (PLACE_BY_ID.has(workplaceId)) copy.append(element('span', 'cast-workplace', `工作據點 · ${PLACE_BY_ID.get(workplaceId).name}`));
-    copy.append(element('span', 'cast-place', `現在在 · ${district.name}`));
+    const location = element('span', 'cast-place', personLocation(id)); location.dataset.personLocation = id; copy.append(location);
     const activity = element('span', 'cast-activity', actorActivity(lifeActors.get(`person:${id}`)));
     activity.dataset.personActivity = id;
     copy.append(activity);
     const actions = element('div', 'cast-actions');
     const talk = button('', '聊聊 →', () => { closeDialog($('#cast-dialog')); meetColleague(id); });
     talk.setAttribute('aria-label', `和${p.name}聊聊`);
-    const locate = button('', '看看位置', () => { closeDialog($('#cast-dialog')); selectDistrict(districtId); });
-    locate.setAttribute('aria-label', `看看${p.name}在${district.name}的位置`);
+    const locate = button('', '看看位置', () => { closeDialog($('#cast-dialog')); selectDistrict(currentDistrict(id)); scene?.focusPerson(id); });
+    locate.dataset.locatePerson = id;
+    locate.setAttribute('aria-label', `看看${p.name}的位置：${personLocation(id)}`);
     actions.append(talk, locate); card.append(portrait, copy, actions); list.append(card);
   }
 }
@@ -376,6 +452,7 @@ function interactNearby() {
   if (target.kind === 'resident' && !residentById.has(target.id)) return;
   if (target.kind === 'place') { visitPlace(target.id); return; }
   if (!progress.visited.includes(target.districtId)) { progress.visited.push(target.districtId); save(); syncProgress(); }
+  if (target.kind === 'person') { meetColleague(target.id); return; }
   renderEncounter(target); openDialog($('#encounter-dialog'));
 }
 function browse({ reset = true } = {}) {
@@ -415,14 +492,8 @@ function renderDetail(d) {
     card.append(element('span', 'place-number', `${d.number}.${index + 1}`), copy, element('span', 'place-arrow', placeVisits.has(place.id) ? '✓' : '↗'));
     units.append(card);
   }
-  const people = element('div', 'people-list');
-  for (const { id } of castByDistrict.get(d.id)) {
-    const persona = displayPersona(id);
-    const chip = button('person-chip', '', () => meetColleague(id)); chip.title = persona.title;
-    chip.setAttribute('aria-label', `和${persona.name}聊聊`);
-    const portrait = element('img'); portrait.src = personaImage(id); portrait.alt = ''; portrait.loading = 'lazy';
-    chip.append(portrait, element('span', '', persona.name)); people.append(chip);
-  }
+  const people = element('div', 'people-list'); people.id = 'detail-people';
+  const peopleTitle = element('h3', 'people-title', '此刻，在這個園區'); peopleTitle.id = 'detail-people-title';
   const story = element('section', 'story-card');
   story.append(element('span', 'eyebrow', 'A LITTLE ISLAND STORY'), element('h3', '', d.story.title), element('p', 'story-opening', d.story.opening));
   const choice = districtChoices.get(d.id);
@@ -449,7 +520,8 @@ function renderDetail(d) {
   }
   const related = element('div', 'related-list');
   d.related.forEach(id => related.append(button('', `${byId.get(id).name} ↗`, () => selectDistrict(id))));
-  detail.append(back, hero, element('p', 'detail-summary', d.summary), units, element('h3', 'people-title', '在這裡可能遇見'), people, story, element('h3', 'related-title', '順路，再去看看'), related, element('p', 'detail-stamp', `✓ ${d.number} 號島章已蓋進小島護照`));
+  detail.append(back, hero, element('p', 'detail-summary', d.summary), units, peopleTitle, people, story, element('h3', 'related-title', '順路，再去看看'), related, element('p', 'detail-stamp', `✓ ${d.number} 號島章已蓋進小島護照`));
+  renderDistrictPeople();
 }
 function selectDistrict(id, { touring = false, moveFocus = true } = {}) {
   const d = byId.get(id); if (!d) return;
@@ -477,7 +549,10 @@ function wander() {
 }
 function setHour(value) {
   hour = Math.min(23, Math.max(6, Number(value) || 12));
-  const h = Math.floor(hour), m = Math.round((hour % 1) * 60);
+  const routine = getIslandRoutine(hour);
+  if (routine.phase === 'mystery' && lastRoutinePhase && lastRoutinePhase !== 'mystery') toast('阿良揪團了：到夜色碼頭集合，一起走一段！');
+  lastRoutinePhase = routine.phase;
+  const minutes = Math.floor(hour * 60 + 1e-6), h = Math.floor(minutes / 60), m = minutes % 60;
   $('#time-output').textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
   $('#time-range').value = hour;
   const night = hour >= 19;
@@ -491,7 +566,9 @@ function setHour(value) {
   const dimSea = Math.sin((hour - 6) / 12 * Math.PI) < .28;
   document.body.classList.toggle('night', dimSea);
   scene?.setHour(hour);
-  document.querySelectorAll('[data-time-preset]').forEach(node => node.setAttribute('aria-pressed', String(Number(node.dataset.timePreset) === hour)));
+  renderLifeStatus();
+  if (!lifeAvailable) renderList();
+  document.querySelectorAll('[data-time-preset]').forEach(node => node.setAttribute('aria-pressed', String(Math.abs(Number(node.dataset.timePreset) - hour) < .04)));
 }
 function showTour(index) {
   if (roaming) setRoaming(false);
@@ -566,8 +643,13 @@ $('#connections-toggle').addEventListener('click', () => { connections = !connec
 $('#top-toggle').addEventListener('click', () => { topView = !topView; scene?.setTopView(topView); $('#top-toggle').setAttribute('aria-pressed', String(topView)); });
 function updatePause() { scene?.setPaused(paused); $('#pause-toggle').setAttribute('aria-pressed', String(paused)); $('#pause-label').textContent = paused ? '播放' : '暫停'; renderLifeStatus(); }
 $('#pause-toggle').addEventListener('click', () => { paused = !paused; updatePause(); });
-$('#time-range').addEventListener('input', event => { stopTour(); setHour(event.target.value); });
-document.querySelectorAll('[data-time-preset]').forEach(node => node.addEventListener('click', () => { stopTour(); setHour(Number(node.dataset.timePreset)); }));
+$('#time-range').addEventListener('input', event => { stopTour(); clockRunning = false; setHour(event.target.value); });
+document.querySelectorAll('[data-time-preset]').forEach(node => node.addEventListener('click', () => { stopTour(); clockRunning = false; setHour(Number(node.dataset.timePreset)); }));
+$('#time-flow').addEventListener('click', () => {
+  if (paused) { clockRunning = true; paused = false; updatePause(); } else clockRunning = !clockRunning;
+  renderRoutineStatus();
+});
+$('#mystery-open').addEventListener('click', openMysteryInvitation);
 $('#tour-start').addEventListener('click', () => showTour(0));
 $('#tour-next').addEventListener('click', () => {
   if (tourIndex < TOUR.length - 1) showTour(tourIndex + 1);
@@ -606,13 +688,19 @@ window.addEventListener('hashchange', () => {
   if (PLACE_BY_ID.has(id)) visitPlace(id);
   else if (byId.has(id)) selectDistrict(id); else browse();
 });
-window.addEventListener('pagehide', () => { walkControls.destroy(); scene?.destroy(); }, { once: true });
+let lastClockTick = performance.now();
+const clockTimer = setInterval(() => {
+  const now = performance.now(), seconds = Math.min(1, Math.max(0, (now - lastClockTick) / 1000)); lastClockTick = now;
+  if (!clockRunning || paused || reducedMotion.matches || document.hidden || tourIndex >= 0 || document.querySelector('dialog[open]')) return;
+  setHour(6 + ((hour - 6 + seconds / 240) % 17));
+}, 1000);
+window.addEventListener('pagehide', () => { clearInterval(clockTimer); walkControls.destroy(); scene?.destroy(); }, { once: true });
 // A bfcache restoration needs a fresh renderer after pagehide teardown.
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 
 const adminSummary = createIslandAdminSummary({ badge: $('#island-admin-pending') });
 const applications = bindApplications({ storage, openDialog, closeDialog, onResidents: updateResidents, onMeet: meetResident, stopTour, onChange: () => { void adminSummary.refresh(); } });
-renderList(); syncProgress(); updatePause(); setSidebar(!mobile.matches);
+renderList(); syncProgress(); updatePause(); setHour(hour); setSidebar(!mobile.matches);
 // Test storage availability without touching the career game's keys.
 save();
 const initialId = location.hash.slice(1);
@@ -620,7 +708,7 @@ if (byId.has(initialId)) selectDistrict(initialId, { moveFocus: false });
 else if (PLACE_BY_ID.has(initialId)) visitPlace(initialId);
 try {
   const { createIslandScene } = await import('./scene.js');
-  scene = await createIslandScene({ container: $('#scene'), districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
+  scene = await createIslandScene({ container: $('#scene'), initialHour: hour, districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
   scene.setResidents(applications.getResidents());
   $('#loading').hidden = true;
   $('#roam-toggle').disabled = false;

@@ -4,6 +4,7 @@ import { createNpcLife, NPC_STOP_DISTANCE, NPC_RESUME_DISTANCE } from '../dist/i
 import { ISLAND_CAST } from '../dist/island/cast.js';
 import { LAYOUT, BRIDGES, CAST_POSITIONS, PLAYER_SPAWN, isDistrictWalkable, isTerrainWalkable, isWalkable, movePlayer } from '../dist/island/navigation.js';
 import { RESIDENT_POSITIONS } from '../dist/island/residents.js';
+import { npcGroundHeight } from '../dist/island/npc-routing.js';
 
 const fullRoster = (suffix = '') => LAYOUT.flatMap(({ id: districtId }) => [0, 1, 2].map(slot => ({ id: `${districtId}-${slot}${suffix}`, districtId, slot })));
 const gap = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
@@ -32,7 +33,7 @@ test('all 61 actors move and rest within their own safe ground, with swept colli
       const row = state[i]; assert.ok(Number.isFinite(row.heading));
       assert.ok(isDistrictWalkable(row.position, row.districtId, .21), `${row.key}: water or building collision`);
       assert.ok(gap(row.position, prior[i].position) <= .056 + 1e-8, `${row.key}: a frame must not teleport`);
-      assert.equal(row.position.y, initial.get(row.key).position.y, 'ground/deck actors never step off their elevation');
+      assert.equal(row.position.y, npcGroundHeight(row.position), 'actors follow the ground and the gently raised court surface');
       if (gap(row.position, initial.get(row.key).position) > .15) moved.add(row.key);
       if (row.state === 'resting') rested.add(row.key);
     }

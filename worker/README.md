@@ -1046,23 +1046,39 @@ departments, shared spaces and after-work areas. There are 23 independently
 explorable places (69 choices), nine district stories (27 choices), a six-stop
 day tour, and all 34 current public colleagues (102 encounter choices).
 Walking uses connected bridges, reachable place entries and a controllable visitor.
-The roster matches `PERSONAS`, includes Alice, and gives each colleague a reachable home and a bounded neighborhood walking route. The searchable character directory and district character
-buttons also support conversations without WebGL. Hidden anonymous character-book
+The roster matches `PERSONAS`, includes Alice, and assigns each colleague a department,
+staggered pantry breaks and a court or izakaya destination after 18:00. At 19:00,
+Aliang (`kind`) invites Jack, Cindy, James and Johnny to the harbor; they stroll
+there from 19:30 to 20:00. These authored schedules describe fictional island
+characters, not real people's availability. The searchable character directory
+and district character buttons also support conversations without WebGL. Hidden anonymous character-book
 cards are not revealed by the island roster.
 Keyboard and touch controls release movement when interrupted; conversations and
 the open district list stop walking. Public resident profiles are loaded from the
 approved-only island API described below. Career saved games, collections and
 replay validation remain unchanged.
 
-NPC motion is a renderer-independent, bounded local simulation. Official characters
-and approved residents walk and rest within their district, avoid terrain and
-other actors, stop near the roaming visitor, and remain pinned during their own
-conversation (including one opened from the directory). Interaction targets,
-name labels and player collision follow current positions rather than old homes.
-Pause/reduced-motion and hidden tabs stop movement without elapsed-time catch-up.
-Life snapshots drive public activity counts and character status once per second;
-positions, routes, timers and activities are never uploaded or stored. Changing
-the displayed time of day does not advance or reset a career run.
+NPC motion is a renderer-independent, bounded local simulation. Changing the island
+clock retargets official characters without relocating established bodies; they
+walk between districts along terrain-safe routes and wait for occupied paths or
+bridges. Approved residents retain their chosen districts and existing slots. All
+actors avoid terrain and other bodies, stop near the roaming visitor, and remain
+pinned during their own conversation (including one opened from the directory).
+The invitation dialogue pins Aliang and has its own response memory. Interaction
+targets, name labels and player collision follow current positions rather than
+old homes. Directory search, location buttons and district rosters use live
+locations, with destinations shown separately during travel. Existing encounter
+prose is framed as a recalled island story. Without WebGL, the UI shows planned
+activities without claiming live whereabouts.
+
+The island starts at 10:00 and its playback clock advances one game hour per four
+real minutes. Manual presets or slider changes pause automatic time; the player
+can resume it explicitly. Pause/reduced-motion and hidden tabs stop movement and
+the clock without elapsed-time catch-up; open dialogues and guided tours also
+hold the automatic clock. Life snapshots drive public activity counts and
+character status once per second; positions, schedules, routes, timers and
+activities are never uploaded or stored. Changing the displayed time of day does
+not advance or reset a career run.
 
 Island exploration reads and writes the browser-local `hedo-island-v1` key. Its version 1
 record contains visited district IDs and selected choice indexes (0–2), with no
@@ -1076,7 +1092,8 @@ schema. Exploring a district/place or meeting a colleague can mark its district
 visited. Old `progress.choices` values remain stored without being reinterpreted
 as a response to a rewritten story. New district responses (`districtChoices`),
 place responses (`placeChoices`), place visits (`placeVisits`) and NPC responses
-(`encounterChoices`) live only in page memory. Reloading clears these new visit
+(`encounterChoices`), plus the separate invitation responses (`routineChoices`),
+live only in page memory. Reloading clears these new visit
 memories; no new storage key, identity, server table or domain-migration key is
 introduced. Legacy `#court`-style links keep working; place hashes such as
 `#mis-service` open the matching place without selecting a response. Public
