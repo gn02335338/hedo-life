@@ -1,3 +1,5 @@
+import { REGIONS } from '../dist/island/archipelago.js';
+import { walkRegionTargets } from './island-region-walking.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createNpcLife, NPC_STOP_DISTANCE, NPC_RESUME_DISTANCE } from '../dist/island/npc-life.js';
@@ -141,23 +143,9 @@ test('dynamic player collision follows current bodies and vacated homes lose the
   assert.ok(gap(moved, approach.start) <= .38, 'the player stops before crossing the body, rather than exiting on its far side');
 });
 
-test('all moving colleagues and residents remain approachable from the connected island paths', () => {
-  const life = createNpcLife({ residents: fullRoster() }); tick(life, 35);
-  const actors = life.getState(), obstacles = life.getObstacles(), reached = new Set(), step = .2;
-  let start = { ...PLAYER_SPAWN };
-  if (!isWalkable(start, .22, obstacles, { dynamicCharacters: true })) start = { x: -.6, z: 3.1 };
-  assert.ok(isWalkable(start, .22, obstacles, { dynamicCharacters: true }));
-  const queue = [[0, 0]], seen = new Set(['0,0']);
-  for (let head = 0; head < queue.length; head++) {
-    const [x, z] = queue[head], point = { x: start.x + x * step, z: start.z + z * step };
-    for (const actor of actors) if (gap(point, actor.position) < 1.1) reached.add(actor.key);
-    if (reached.size === actors.length) break;
-    for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-      const nx = x + dx, nz = z + dz, key = `${nx},${nz}`;
-      if (seen.has(key) || Math.abs(nx) > 90 || Math.abs(nz) > 100) continue;
-      seen.add(key);
-      if (isWalkable({ x: start.x + nx * step, z: start.z + nz * step }, .22, obstacles, { dynamicCharacters: true })) queue.push([nx, nz]);
-    }
-  }
-  assert.equal(reached.size, 61, `unreachable: ${actors.filter(row => !reached.has(row.key)).map(row => row.key)}`);
+test('all moving colleagues and residents remain approachable from their own island ports', () => {
+  const life=createNpcLife({residents:fullRoster()});tick(life,35);
+  const actors=life.getState(),obstacles=life.getObstacles();
+  const targets=actors.map(actor=>({...actor,radius:actor.kind==='person'?1.4:1.15,exitRadius:actor.kind==='person'?1.8:1.4}));
+  for(const regionId of Object.keys(REGIONS))walkRegionTargets(regionId,targets,{obstacles,dynamic:{dynamicCharacters:true},threshold:1.1,replay:false,step:.2});
 });

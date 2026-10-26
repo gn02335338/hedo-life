@@ -278,6 +278,26 @@ export const BRAWL_ROSTER = Object.freeze({
   ]),
 });
 
+// This optional final encounter remains separate from the 34 public colleagues.
+// Only the story-challenge controller decides when its identity may be shown.
+export const HIDDEN_BRAWL_ID = 'hidden-visitor';
+export const HIDDEN_BRAWL_PROFILE = profile(HIDDEN_BRAWL_ID, '辦公室支援角色', '大家的最後一版我都收到了。現在，輪到你說清楚這一場的範圍。', [
+  skill('punctuation-boundary', '標點責任切割', 'strike', '魚酥姐把逗點與新增保證分開，紅色校訂筆正在近身畫線。', '一個逗點，不能替整個產品多簽一張保證。', '離開校訂筆的扇形，等她收筆後再靠近。', { damage: 19, range: 138, windup: 1.05, cooldown: 10, color: '#bd7680' }),
+  skill('final-new-volley', 'Final New 連投', 'projectile', '一疊 final、new、最新版的紙稿排成直線，魚酥姐正對齊最後一份。', '檔名排得再長，也要先指定真的要發布哪一版。', '往側面移動躲稿件，別沿著版本直線往後退。', { damage: 14, range: 420, windup: 1.1, cooldown: 10, color: '#7d93b0' }),
+  skill('scope-outside-frame', '鏡頭外的工作圈', 'zone', '鏡頭沒拍到的工單一張張落向地面，真正的工作範圍開始發亮。', '畫面拍不到的修改，還是得算進交付。', '在工單落地前走出標記圈，不要站著等鏡頭轉過來。', { damage: 20, radius: 84, windup: 1.4, cooldown: 15, color: '#b4917e' }),
+  skill('snack-state-table', '魚酥狀態分類表', 'slow', '已開封、未開封與待確認三張標籤，在你腳邊排出分類範圍。', '開過就是開過，這一格不能再靠大家都沒說。', '離開分類圈；被拖慢時仍可閃避，不必留在原地替標籤作答。', { damage: 6, radius: 76, duration: 2.3, windup: 1.25, cooldown: 14, color: '#a39d70' }),
+  skill('shelf-restock', '零食櫃續航補給', 'heal', '魚酥姐打開已標好日期的補給盒，準備趁整理空檔吃一口。', '補給有記錄，下一輪也要有停止條件。', '在補給讀條結束前近身打斷；每場只補給一次。', { trigger: 'hurt', once: true, heal: 22, windup: 1.5, cooldown: 18, pose: 'heal', color: '#8ba17e' }),
+  skill('confirmed-scope-shield', '已確認範圍護盾', 'guard', '原文、改寫與未確認承諾分成三欄，紙張正在魚酥姐面前組成護盾。', '支援到哪裡，先照已確認的範圍算。', '讀條時打斷，或等護盾消退再交連段；別把大招全打在盾上。', { shield: 20, duration: 2.4, windup: 1.1, cooldown: 17, color: '#8798ad' }),
+], [
+  incident('eight-final-meeting', '八份最後版同時開會', 'zone', '八張都寫著最後版的紙稿一起攤開，真正有效的那一圈即將蓋章。', '今天先指定一份，其餘七份請好好封存。', '走出蓋章圈，等八份文件落定再反擊。', { at: 28, damage: 22, radius: 88, windup: 1.5, color: '#b68e83' }),
+  incident('three-access-cards', '同一人的三張門禁卡', 'rush', '翻譯、行銷與零食管理三張門禁卡排成一線，魚酥姐準備把排程推回原窗口。', '同一個人，不能同時坐在三個位置。', '往排程箭頭的側邊閃，利用障礙物讓衝刺停下。', { trigger: 'pressure', at: 4, damage: 20, range: 220, radius: 42, windup: 1.3, color: '#8a9f9d' }),
+], [
+  'dist/hidden-encounter-v45.js#HIDDEN_PERSONAS_V45',
+  'dist/hidden-encounter-v45.js#getHiddenEncounterEventV45',
+  'dist/hidden-stories-v66.js#HIDDEN_STORIES_V66',
+]);
+
 export function getBrawlProfile(id) {
+  if (id === HIDDEN_BRAWL_ID) return HIDDEN_BRAWL_PROFILE;
   return Object.hasOwn(BRAWL_ROSTER, id) ? BRAWL_ROSTER[id] : null;
 }

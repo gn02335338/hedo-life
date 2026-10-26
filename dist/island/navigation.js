@@ -9,18 +9,18 @@ export const LAYOUT = [
   { id: 'finance', x: 9.2, z: -7.5, color: '#6d8896', label: [0, 1.7, 3.45] },
   { id: 'cafe', x: -8.5, z: 9.5, color: '#ce7956', label: [0, 1.7, 3.5] },
   { id: 'plaza', x: 9.7, z: 1.3, color: '#c88b75', label: [0, 1.7, 3.5] },
-  { id: 'court', x: .7, z: 10, color: '#729988', label: [0, 1.7, 3.4] },
-  { id: 'harbor', x: 10.8, z: 10.5, color: '#d2af72', label: [0, 1.7, 3.5] },
-  { id: 'exile', x: -7.4, z: -18, color: '#9a9db8', label: [0, 1.7, 3.4] },
-  { id: 'hospital', x: 1.7, z: -18.5, color: '#d28483', label: [0, 1.7, 3.4] },
-  { id: 'police', x: 10.6, z: -17.8, color: '#738fae', label: [0, 1.7, 3.4] },
+  { id: 'court', x: 46, z: 5, color: '#729988', label: [0, 1.7, 3.4] },
+  { id: 'harbor', x: 57, z: 5, color: '#d2af72', label: [0, 1.7, 3.5] },
+  { id: 'exile', x: -50, z: -28, color: '#9a9db8', label: [0, 1.7, 3.4] },
+  { id: 'hospital', x: 46, z: -4, color: '#d28483', label: [0, 1.7, 3.4] },
+  { id: 'police', x: 57, z: -4, color: '#738fae', label: [0, 1.7, 3.4] },
 ];
 export const LINKS = [
   ['lab', 'meeting'], ['meeting', 'finance'], ['lab', 'hr'],
   ['lab', 'lobby'], ['meeting', 'lobby'], ['finance', 'plaza'],
   ['hr', 'lobby'], ['hr', 'cafe'], ['lobby', 'plaza'],
-  ['lobby', 'court'], ['cafe', 'court'], ['court', 'harbor'], ['plaza', 'harbor'],
-  ['lab', 'exile'], ['meeting', 'hospital'], ['finance', 'police'], ['exile', 'hospital'], ['hospital', 'police'],
+  ['lobby', 'cafe'],
+  ['court', 'harbor'], ['court', 'hospital'], ['hospital', 'police'], ['police', 'harbor'],
 ];
 export const WALK_HEIGHT = 1.07;
 export const PLAYER_SPAWN = Object.freeze({ x: 0, z: 3.1 });

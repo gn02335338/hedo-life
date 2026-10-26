@@ -1,10 +1,10 @@
 import { ISLAND_CAST } from './cast.js';
-import { getBrawlProfile } from './brawl-roster.js';
+import { getBrawlProfile, HIDDEN_BRAWL_ID } from './brawl-roster.js';
 
 // Original island courtyard duel. This simulation has no DOM, persistence,
 // network, career-game state, or preselected winner.
 export const BRAWL_ARENA = Object.freeze({ width: 960, height: 540, margin: 24, duration: 75 });
-const PEOPLE = new Set(ISLAND_CAST.map(person => person.id));
+const PEOPLE = new Set([...ISLAND_CAST.map(person => person.id), HIDDEN_BRAWL_ID]);
 const MAX_HP = 160, MAX_ENERGY = 100, RADIUS = 18, STEP = 1 / 120;
 const OBSTACLES = Object.freeze([
   Object.freeze({ id: 'north-planter', type: 'planter', x: 480, y: 124, radius: 31 }),
@@ -34,6 +34,7 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
   const signatureSkills = character.skills.map(skill => ({ skill, remaining: 0, uses: 0 }));
   const signatureEvents = character.events.map(skill => ({ skill, remaining: 0, uses: 0 }));
   const player = actor('player', 250, 270, 0), opponent = actor(opponentId, 710, 270, Math.PI);
+  if (opponentId === HIDDEN_BRAWL_ID) { opponent.hp = 240; opponent.maxHp = 240; opponent.energy = 40; }
   const stats = { damageDealt: 0, damageTaken: 0, maxCombo: 0, specialsUsed: 0, throwsUsed: 0, dodgesUsed: 0 };
   const pickups = [{ id: 'paper-left', type: 'paper', x: 210, y: 150, radius: 16, available: true, respawnIn: 0 },
     { id: 'paper-right', type: 'paper', x: 750, y: 390, radius: 16, available: true, respawnIn: 0 }];

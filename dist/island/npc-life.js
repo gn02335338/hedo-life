@@ -1,9 +1,10 @@
+import { DOCKS, REGIONS, FERRY_SPEED, getRegionForDistrict, getFerryRoute, ferryRouteLength, ferryPoint } from './archipelago.js';
 import { ISLAND_CAST } from './cast.js';
-import { LAYOUT, PLACE_ENTRANCES, CAST_RADIUS, PLAYER_RADIUS, WALK_HEIGHT } from './navigation.js';
+import { LAYOUT, PLACE_ENTRANCES, CAST_RADIUS, PLAYER_RADIUS, WALK_HEIGHT, isDistrictWalkable } from './navigation.js';
 import { RESIDENT_POSITIONS, RESIDENT_RADIUS } from './residents.js';
 import { getPersonRoutine } from './routines.js';
 import { PLACE_BY_ID } from './places.js';
-import { ROUTE_GAP, bridgeAt, landAt, routeWalkable, restingGround, sweptRoute, findNpcRoute, districtGround, npcGroundHeight } from './npc-routing.js';
+import { ROUTE_GAP, ROUTE_BRIDGES, bridgeAt, landAt, routeWalkable, restingGround, sweptRoute, findNpcRoute, districtGround, npcGroundHeight } from './npc-routing.js';
 
 export const NPC_STOP_DISTANCE = 2.1;
 export const NPC_RESUME_DISTANCE = 2.7;
@@ -26,8 +27,11 @@ function scheduledRoutine(id, hour, dispositions) {
 const finite = p => p && Number.isFinite(p.x) && Number.isFinite(p.z);
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const seedOf = text => { let value = 2166136261; for (const char of text) value = Math.imul(value ^ char.codePointAt(0), 16777619); return value >>> 0; };
-const publicEntrances = Object.values(PLACE_ENTRANCES);
-const patrolGround = (point, districtId) => restingGround(point, districtId) && publicEntrances.every(entrance => distance(point, entrance) > .72);
+const publicEntrances = [...Object.values(PLACE_ENTRANCES),...Object.values(DOCKS).map(port=>port.position)];
+// Removing the old overseas bridge leaves the lab's rear office on a narrow
+// alley. Keep that public approach clear rather than letting a patrol seal it.
+const publicLane = (point, districtId) => districtId === 'lab' && point.z < districts.get('lab').z - 1.8 && Math.abs(point.x - districts.get('lab').x - .4) < .65;
+const patrolGround = (point, districtId) => restingGround(point, districtId) && !publicLane(point,districtId) && publicEntrances.every(entrance => distance(point, entrance) > .72);
 function patrolPoints(home, districtId) {
   const result = [{ x: home.x, z: home.z }], allowed = point => patrolGround(point, districtId);
   for (const radius of [.3, .55, .85]) for (let i = 0; i < 12; i++) {
@@ -41,7 +45,7 @@ function makeAgent(kind, id, districtId, home, slot = null) {
   return { key, kind, id, districtId, slot, home: { ...home }, position: { ...home, y: npcGroundHeight(home) }, radius: kind === 'person' ? CAST_RADIUS : RESIDENT_RADIUS, seed,
     heading: (seed % 628) / 100, state: 'resting', activity: activities[districtId], greeting: false, target: null,
     wait: .35 + (seed % 3000) / 1000, blocked: 0, visits: 0, speed: .34 + (seed % 220) / 1000,
-    points: patrolPoints(home, districtId), routine: null, disposition: null, destination: { ...home }, traveling: false, commuting: false, path: [], routeDelay: 0, yieldTarget: null };
+    points: patrolPoints(home, districtId), routine: null, disposition: null, destination: { ...home }, traveling: false, commuting: false, path: [], routeDelay: 0, yieldTarget: null, yieldPath: [], ferry: null };
 }
 const residentHomes = Object.entries(RESIDENT_POSITIONS).flatMap(([districtId, points]) => points.map(point => ({ ...point, districtId })));
 /** Assign separate resting spots before a trip; reserve public entrances and
@@ -51,8 +55,8 @@ function assignDestinations(hour, fixed = new Map(), dispositions = new Map()) {
   for (const person of ISLAND_CAST) {
     const routine = scheduledRoutine(person.id, hour, dispositions), target = PLACE_ENTRANCES[routine.placeId];
     if (fixed.has(person.id)) { assignments.set(person.id, { routine, position: fixed.get(person.id) }); continue; }
-    const points = districtGround(routine.districtId).filter(point => residentHomes.every(home => distance(point, home) > .95)
-      && Object.values(PLACE_ENTRANCES).every(entrance => distance(point, entrance) > .9));
+    const points = districtGround(routine.districtId).filter(point => !publicLane(point,routine.districtId) && residentHomes.every(home => distance(point, home) > .95)
+      && publicEntrances.every(entrance => distance(point, entrance) > .9));
     const candidates = [...points].sort((a, b) => distance(a, target) - distance(b, target));
     let point;
     for (const separation of [1.3, 1.15, 1, .9, .75, .6, .48]) {
@@ -72,11 +76,14 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     const { routine, position } = destinations.get(id), agent = makeAgent('person', id, routine.districtId, position);
     agent.routine = routine; agents.set(agent.key, agent);
   }
-  let conversation = null, frame = 0, visitor = null, visitorVisible = false;
+  let conversation = null, frame = 0, visitor = null, visitorVisible = false, yieldPlansLeft = 0;
   let dispositions = new Map();
   const bridgeLocks = new Map();
   const free = (point, agent, player = null) => {
-    for (const other of agents.values()) if (other !== agent && distance(point, other.position) < agent.radius + other.radius + ROUTE_GAP - 1e-8) return false;
+    for (const other of agents.values()) if (other !== agent) {
+      if (!other.ferry && distance(point, other.position) < agent.radius + other.radius + ROUTE_GAP - 1e-8) return false;
+      if (other.ferry && distance(point, other.ferry.points.at(-1)) < agent.radius + other.radius + ROUTE_GAP - 1e-8) return false;
+    }
     return !finite(player) || distance(point, player) >= agent.radius + PLAYER_RADIUS + ROUTE_GAP - 1e-8;
   };
   const state = () => [...agents.values()].map(agent => ({ key: agent.key, kind: agent.kind, id: agent.id, districtId: agent.districtId,
@@ -84,7 +91,8 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     routine: agent.routine ? { ...agent.routine } : null,
     disposition: agent.disposition ? { ...agent.disposition } : null,
     destinationDistrictId: agent.routine?.districtId ?? agent.districtId,
-    destinationPlaceId: agent.routine?.placeId ?? null, traveling: agent.traveling }));
+    destinationPlaceId: agent.routine?.placeId ?? null, traveling: agent.traveling,
+    regionId: getRegionForDistrict(agent.districtId), ferry: agent.ferry ? { from:agent.ferry.from,to:agent.ferry.to,progress:Math.min(1,agent.ferry.distance/agent.ferry.length),emergency:agent.ferry.emergency } : null }));
   function setHour(value) {
     if (!Number.isFinite(Number(value))) return state();
     currentHour = ((Number(value) % 24) + 24) % 24;
@@ -144,11 +152,19 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
       agent.routine = routine; agent.destination = { ...position }; agent.target = null; agent.path = [];
       agent.yieldTarget = null; agent.greeting = false; agent.blocked = 0; agent.routeDelay = 0; agent.wait = 0;
       for (const [bridge, owner] of bridgeLocks) if (owner === agent.key) bridgeLocks.delete(bridge);
-      if (disposition) {
-        agent.position = { ...position, y: npcGroundHeight(position) }; agent.home = { ...position };
-        agent.districtId = disposition.districtId; agent.points = patrolPoints(position, disposition.districtId);
-        agent.traveling = false; agent.commuting = false; agent.state = 'resting'; agent.activity = routine.activity;
-        agent.wait = 1.4;
+      if (agent.ferry) {
+        // A new case or release may retarget the trip, but never disembarks a
+        // passenger in open water. Finish this crossing before changing boats.
+        agent.traveling = true; agent.commuting = true;
+      } else if (disposition) {
+        const from=getRegionForDistrict(agent.districtId), to=getRegionForDistrict(disposition.districtId);
+        if(from!==to) {
+          agent.traveling=true; agent.commuting=false; agent.state='resting'; agent.activity='前往應急船碼頭';
+        } else {
+          agent.position = { ...position, y: npcGroundHeight(position) }; agent.home = { ...position };
+          agent.districtId = disposition.districtId; agent.points = patrolPoints(position, disposition.districtId);
+          agent.traveling = false; agent.commuting = false; agent.state = 'resting'; agent.activity = routine.activity; agent.wait = 1.4;
+        }
       } else {
         // Released colleagues resume the current routine from their real position.
         agent.traveling = true; agent.commuting = false; agent.state = 'resting';
@@ -190,12 +206,15 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     agent.visits++; return null;
   }
   function plan(agent, player) {
-    const bodies = [...agents.values()].filter(other => other !== agent).map(other => ({ ...other.position, radius: other.radius }));
+    const crossing=getRegionForDistrict(agent.districtId)!==getRegionForDistrict(agent.routine.districtId);
+    const dock=crossing?DOCKS[getRegionForDistrict(agent.districtId)]:null;
+    const destination=dock?.position||agent.destination, targetDistrict=dock?.districtId||agent.routine.districtId;
+    const bodies = [...agents.values()].filter(other => other !== agent&&!other.ferry).map(other => ({ ...other.position, radius: other.radius }));
     if (player) bodies.push({ ...player, radius: PLAYER_RADIUS });
     const blockedBridges = new Set([...bridgeLocks].filter(([, key]) => key !== agent.key).map(([bridge]) => bridge));
-    const radius = agent.routine.districtId === 'court' ? 3 : 1.1;
-    const alternatives = [agent.destination, ...districtGround(agent.routine.districtId).filter(point => distance(point, agent.destination) < radius)
-      .sort((a, b) => distance(a, agent.destination) - distance(b, agent.destination))];
+    const radius = crossing ? .95 : agent.routine.districtId === 'court' ? 3 : 1.1;
+    const alternatives = [destination, ...districtGround(targetDistrict).filter(point => distance(point, destination) < radius)
+      .sort((a, b) => distance(a, destination) - distance(b, destination))];
     const goals = [];
     for (const point of alternatives) if (free(point, agent, player) && Object.values(PLACE_ENTRANCES).every(entrance => distance(point, entrance) > .72)
       && goals.every(goal => distance(point, goal) > .35)) { goals.push(point); if (goals.length >= 12) break; }
@@ -211,20 +230,61 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     const direction = { x: agent.target.x - agent.position.x, z: agent.target.z - agent.position.z };
     const length = Math.hypot(direction.x, direction.z);
     if (!length) return;
-    const blockers = [...agents.values()].filter(other => other !== agent && other.key !== conversation && !other.greeting && !other.yieldTarget
+    const blockers = [...agents.values()].filter(other => other !== agent && !other.ferry && other.key !== conversation && !other.greeting && !other.yieldTarget
       && bridgeAt(other.position) < 0 && distance(other.position, agent.position) < .85
       && ((other.position.x - agent.position.x) * direction.x + (other.position.z - agent.position.z) * direction.z) > 0);
     for (const other of blockers) {
       if (other.commuting && bridgeAt(agent.position) < 0 && other.key < agent.key) continue;
-      const options = [];
+      const options = [], candidates=[];
       for (const radius of [.5, .8, 1.1]) for (let i = 0; i < 16; i++) {
         const angle = i * Math.PI / 8, point = { x: other.position.x + Math.sin(angle) * radius, z: other.position.z + Math.cos(angle) * radius };
         const side = Math.abs((point.x - agent.position.x) * direction.z - (point.z - agent.position.z) * direction.x) / length;
         if (side < .6 || !patrolGround(point, other.districtId) || !free(point, other, player)) continue;
-        if (sweptRoute(other.position, point, p => routeWalkable(p) && free(p, other, player))) options.push(point);
+        candidates.push(point);
+        if (sweptRoute(other.position, point, p => routeWalkable(p) && free(p, other, player) && bridgeAt(p) < 0)) options.push(point);
       }
       options.sort((a, b) => distance(a, other.position) - distance(b, other.position));
-      if (options.length) { other.yieldTarget = options[0]; other.target = null; other.wait = 0; other.path = []; other.routeDelay = 0; }
+      if (options.length) { other.yieldTarget = options[0]; other.yieldPath=[options[0]]; other.target = null; other.wait = 0; other.path = []; other.routeDelay = 0; }
+      else if(candidates.length) planYield(other,player,candidates);
+    }
+  }
+  function planYield(agent,player,goals=null) {
+    if(yieldPlansLeft<=0)return false;yieldPlansLeft--;
+    const candidates=(goals||[agent.yieldTarget,...districtGround(agent.districtId).filter(point=>distance(point,agent.position)<3.2)])
+      .filter(point=>point&&patrolGround(point,agent.districtId)&&free(point,agent,player))
+      .sort((a,b)=>distance(a,agent.position)-distance(b,agent.position));
+    if(!candidates.length)return false;
+    const bodies=[...agents.values()].filter(other=>other!==agent&&!other.ferry).map(other=>({...other.position,radius:other.radius}));
+    if(player)bodies.push({...player,radius:PLAYER_RADIUS});
+    const path=findNpcRoute(agent.position,candidates[0],{obstacles:bodies,blockedBridges:new Set(ROUTE_BRIDGES.map(bridge=>bridge.index)),alternativeGoals:candidates.slice(1,12)});
+    if(!path?.length)return false;
+    const allowed=point=>isDistrictWalkable(point,agent.districtId,agent.radius+ROUTE_GAP)&&routeWalkable(point)&&free(point,agent,player)&&bridgeAt(point)<0;
+    let prior=agent.position;for(const point of path){if(!sweptRoute(prior,point,allowed))return false;prior=point;}
+    agent.yieldTarget={...path.at(-1)};agent.yieldPath=path;agent.target=null;agent.wait=0;agent.routeDelay=0;return true;
+  }
+  function startFerry(agent, from, to, emergency = false) {
+    const points=getFerryRoute(from,to); if(!points)return false;
+    const port=DOCKS[to], candidates=[port.position,...districtGround(port.districtId).filter(p=>distance(p,port.position)<1.7)]
+      .filter(p=>routeWalkable(p)&&publicEntrances.every(e=>distance(p,e)>.72));
+    const landing=candidates.find(p=>free(p,agent,visitorVisible?visitor:null)); if(!landing)return false;
+    points[0]={x:agent.position.x,z:agent.position.z};points[points.length-1]={...landing};
+    const length=ferryRouteLength(points),last=points.at(-1),sea=points.at(-2);
+    agent.ferry={from,to,points,length,distance:0,seaLength:length-distance(last,sea),emergency};
+    agent.path=[];agent.target=null;agent.greeting=false;agent.state='boarding';agent.activity=emergency?'搭乘應急接駁船':'在碼頭登船';
+    for(const [bridge,owner]of bridgeLocks)if(owner===agent.key)bridgeLocks.delete(bridge);
+    return true;
+  }
+  function sail(agent, dt) {
+    const trip=agent.ferry, port=DOCKS[trip.to];
+    const landing=trip.points.at(-1), clear=free(landing,agent,visitorVisible?visitor:null);
+    const limit=clear?trip.length:Math.max(trip.seaLength,trip.distance);
+    trip.distance=Math.min(limit,trip.distance+FERRY_SPEED*dt);
+    const point=ferryPoint(trip.points,trip.distance);
+    agent.position={x:point.x,z:point.z,y:.58};agent.heading=point.heading;
+    agent.state='sailing';agent.activity=trip.distance>=limit&&!clear?'在海上等候靠港':`${trip.emergency?'應急接駁':'搭船'}前往${REGIONS[trip.to].name}`;
+    if(trip.distance>=trip.length-1e-8&&clear) {
+      agent.position={...landing,y:npcGroundHeight(landing)};agent.districtId=port.districtId;agent.ferry=null;agent.state='resting';
+      agent.path=[];agent.target=null;agent.routeDelay=0;agent.wait=0;agent.traveling=true;agent.commuting=true;
     }
   }
   function arrive(agent) {
@@ -235,13 +295,13 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
   function update(dt, { player = null, roaming = false, paused = false, reducedMotion = false, hidden = false } = {}) {
     visitor = finite(player) ? { x: player.x, z: player.z } : null; visitorVisible = Boolean(roaming && visitor);
     const frozen = paused || reducedMotion || hidden, elapsed = Number.isFinite(dt) && dt > 0 ? Math.min(dt, .1) : 0;
-    const rows = [...agents.values()]; let plansLeft = 2;
+    const rows = [...agents.values()]; let plansLeft = 2;yieldPlansLeft=2;
     if (!frozen && elapsed) {
       frame++;
       // Limit cross-island departures, not the search for a resting spot after
       // landing. A crowded destination must not hold every departure slot while
       // the last colleague is still waiting at their department.
-      let capacity = 6 - rows.filter(agent => agent.traveling && agent.commuting && agent.districtId !== agent.routine.districtId).length;
+      let capacity = 8 - rows.filter(agent => agent.traveling && agent.commuting && agent.districtId !== agent.routine.districtId).length;
       for (const agent of rows) if (agent.traveling && !agent.commuting && (capacity > 0 || agent.districtId === agent.routine.districtId)) {
         agent.commuting = true; agent.target = null; agent.path = []; agent.wait = 0;
         if (agent.districtId !== agent.routine.districtId) capacity--;
@@ -249,6 +309,7 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     }
     for (let i = 0; i < rows.length; i++) {
       const agent = rows[(i + frame) % rows.length], pinned = conversation === agent.key;
+      if(agent.ferry) {if(!frozen&&elapsed)sail(agent,elapsed);else {agent.state='sailing';agent.activity='船班暫停於海上';}continue;}
       if (pinned) {
         agent.state = 'talking'; agent.activity = '聊聊島上日常';
         if (!frozen && visitor && distance(agent.position, visitor) > .01) agent.heading = Math.atan2(visitor.x - agent.position.x, visitor.z - agent.position.z);
@@ -266,19 +327,21 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
       if (!elapsed) continue;
       if (agent.wait > 0) { agent.wait = Math.max(0, agent.wait - elapsed); continue; }
       const playerObstacle = visitorVisible ? visitor : null;
-      if (agent.yieldTarget) agent.target = agent.yieldTarget;
+      if (agent.yieldTarget) agent.target = agent.yieldPath[0]||agent.yieldTarget;
       else if (agent.commuting) {
+        const from=getRegionForDistrict(agent.districtId),to=getRegionForDistrict(agent.routine.districtId);
+        if(from!==to&&distance(agent.position,DOCKS[from].position)<1.05&&startFerry(agent,from,to,Boolean(agent.disposition)))continue;
         const arrivalRadius = agent.routine.districtId === 'court' ? 3.2 : 1.15;
         if (agent.districtId === agent.routine.districtId && distance(agent.position, agent.destination) < arrivalRadius
-          && restingGround(agent.position, agent.routine.districtId) && Object.values(PLACE_ENTRANCES).every(point => distance(agent.position, point) > .72)) { arrive(agent); continue; }
+          && restingGround(agent.position, agent.routine.districtId) && publicEntrances.every(point => distance(agent.position, point) > .72)) { arrive(agent); continue; }
         if (agent.routeDelay > 0) { agent.routeDelay = Math.max(0, agent.routeDelay - elapsed); agent.activity = '等前面的路空一點'; continue; }
         if (!agent.path.length && plansLeft > 0) { plan(agent, playerObstacle); plansLeft--; }
         agent.target = agent.path[0] ?? null;
       } else if (!agent.target) agent.target = waypoint(agent, playerObstacle);
       if (!agent.target) { if (!agent.traveling) agent.wait = .7; continue; }
       const remaining = distance(agent.position, agent.target), travel = Math.min(remaining, (agent.commuting ? NPC_COMMUTE_SPEED : agent.speed) * elapsed);
-      if (remaining < .025) {
-        if (agent.yieldTarget) { agent.yieldTarget = null; agent.path = []; }
+      if (remaining < .025 && (!agent.yieldTarget || agent.yieldPath.length > 1 || patrolGround(agent.position,agent.districtId))) {
+        if (agent.yieldTarget) { agent.yieldPath.shift();if(!agent.yieldPath.length){agent.yieldTarget = null;agent.path = [];} }
         else if (agent.commuting) agent.path.shift(); else agent.wait = 1.4 + ((agent.seed + agent.visits * 331) % 3300) / 1000;
         agent.target = null; continue;
       }
@@ -287,7 +350,7 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
       let moved = 0;
       for (let n = 0; n < steps; n++) {
         const next = { x: agent.position.x + dx * step, z: agent.position.z + dz * step };
-        if (!(agent.commuting ? routeWalkable(next) : patrolGround(next, agent.districtId)) || !free(next, agent, playerObstacle)) break;
+        if (!(agent.commuting || agent.yieldTarget ? routeWalkable(next) : patrolGround(next, agent.districtId)) || !free(next, agent, playerObstacle)) break;
         const nextBridge = bridgeAt(next), previousBridge = bridgeAt(agent.position);
         if (nextBridge >= 0 && bridgeLocks.has(nextBridge) && bridgeLocks.get(nextBridge) !== agent.key) break;
         if (nextBridge >= 0) bridgeLocks.set(nextBridge, agent.key);
@@ -300,12 +363,18 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
         agent.heading = Math.atan2(dx, dz); agent.blocked = 0;
       } else {
         agent.activity = '讓路，等一下'; agent.blocked += elapsed;
-        if (agent.blocked >= .8) { if (agent.commuting) yieldWay(agent, playerObstacle); agent.yieldTarget = null; agent.target = null; agent.path = []; agent.routeDelay = .1; agent.wait = agent.commuting ? 0 : .25; agent.blocked = 0; }
+        if (agent.blocked >= .8) {
+          if (agent.commuting || agent.yieldTarget) yieldWay(agent, playerObstacle);
+          // Keep a temporary lane crossing alive until it reaches safe resting
+          // ground, rather than abandoning its walker inside a public passage.
+          if(agent.yieldTarget&&!planYield(agent,playerObstacle)&&(agent.commuting||patrolGround(agent.position,agent.districtId))){agent.yieldTarget=null;agent.yieldPath=[];}
+          agent.target = null; agent.path = []; agent.routeDelay = .1; agent.wait = agent.commuting ? 0 : .25; agent.blocked = 0;
+        }
       }
     }
     return state();
   }
   setResidents(residents);
   return { update, getState: state, setResidents, setConversationTarget, setHour, setDispositions,
-    getObstacles: () => [...agents.values()].map(agent => ({ ...agent.position, radius: agent.radius, key: agent.key })) };
+    getObstacles: () => [...agents.values()].filter(agent=>!agent.ferry).map(agent => ({ ...agent.position, radius: agent.radius, key: agent.key })) };
 }

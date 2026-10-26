@@ -1,5 +1,6 @@
 // This protocol copies browser-owned data without changing game/replay formats.
 // Credentials stay in POST bodies and browser storage, never URLs or logs.
+import { CHALLENGE_STORAGE_KEYS, CHALLENGE_STORAGE_KEY, CHALLENGE_RECEIPT_KEYS, CHALLENGE_INVITATION_KEY } from './island/challenge-storage.js';
 export const SOURCE_ORIGIN = 'https://hedo-life.bvstudio.workers.dev';
 export const TARGET_ORIGIN = 'https://hodo.bvivify.com';
 export const MAX_PAYLOAD_BYTES = 12 * 1024 * 1024;
@@ -9,6 +10,7 @@ export const LOCAL_KEYS = Object.freeze([
   'hedo-character-cache-v1', 'hedo-character-public-v1',
   'hedo-island-v1', 'hedo-gta-v1', 'hedo-gta-ranking-pending-v1', 'hedo-arpg-v1',
   'hodo-cards-practice-v1', 'hodo-cards-pending-v1',
+  ...CHALLENGE_STORAGE_KEYS,
 ]);
 export const SESSION_KEYS = Object.freeze(['hedo-feedback-draft-v1']);
 export const SOURCE_STATE_KEY = 'hodo-domain-migration-source-v1';
@@ -62,7 +64,11 @@ export function snapshotJSON(snapshot) {
 }
 
 export async function snapshotDigest(snapshot, cryptoApi = globalThis.crypto) {
-  const bytes = new TextEncoder().encode(snapshotJSON(snapshot));
+  const compatible = JSON.parse(snapshotJSON(snapshot));
+  // Optional new records must not invalidate receipts for already-migrated
+  // browsers which have never played this challenge.
+  for (const key of CHALLENGE_STORAGE_KEYS) if (compatible.local[key] === null) delete compatible.local[key];
+  const bytes = new TextEncoder().encode(JSON.stringify(compatible));
   const hash = new Uint8Array(await cryptoApi.subtle.digest('SHA-256', bytes));
   return Array.from(hash, byte => byte.toString(16).padStart(2, '0')).join('');
 }
@@ -139,6 +145,32 @@ export function migrationConflict(source, destination) {
 
 function union(left, right) { return [...new Set([...(Array.isArray(left) ? left : []), ...(Array.isArray(right) ? right : [])])]; }
 
+function mergeChallengeRecords(result, source, destination) {
+  // Each winning receipt is monotonic and independent. Do not let an older
+  // aggregate or a false/malformed receipt mask the other origin's real win.
+  for (const [id, key] of Object.entries(CHALLENGE_RECEIPT_KEYS)) {
+    const valid = raw => {
+      const value = parseRecord(raw);
+      return value && Object.hasOwn(value, 'version') && value.version === 1 && Object.hasOwn(value, 'opponentId')
+        && value.opponentId === id && Object.hasOwn(value, 'won') && value.won === true;
+    };
+    if (!valid(source.local[key]) && valid(destination.local[key])) result.local[key] = destination.local[key];
+  }
+  const invitation = raw => { const value = parseRecord(raw); return value && Object.hasOwn(value, 'version') && value.version === 1
+    && Object.hasOwn(value, 'opened') && value.opened === true; };
+  if (!invitation(source.local[CHALLENGE_INVITATION_KEY]) && invitation(destination.local[CHALLENGE_INVITATION_KEY])) {
+    result.local[CHALLENGE_INVITATION_KEY] = destination.local[CHALLENGE_INVITATION_KEY];
+  }
+  const left = parseRecord(source.local[CHALLENGE_STORAGE_KEY]), right = parseRecord(destination.local[CHALLENGE_STORAGE_KEY]);
+  if (left && right && Object.hasOwn(left, 'version') && Object.hasOwn(right, 'version') && left.version === 1 && right.version === 1
+    && Object.hasOwn(left, 'wins') && Object.hasOwn(right, 'wins') && Array.isArray(left.wins) && Array.isArray(right.wins)) {
+    const wins = new Set([...left.wins, ...right.wins]);
+    result.local[CHALLENGE_STORAGE_KEY] = JSON.stringify({ version: 1,
+      wins: Object.keys(CHALLENGE_RECEIPT_KEYS).filter(id => wins.has(id)),
+      invitationOpened: left.invitationOpened === true || right.invitationOpened === true });
+  }
+}
+
 // Only merge compatible identities. Complete conflicting copies stay separate.
 function mergeCompatible(source, destination) {
   const result = { local: {}, session: {} };
@@ -175,6 +207,7 @@ function mergeCompatible(source, destination) {
     }
     result.local[key] = JSON.stringify([...rows.values()]);
   }
+  mergeChallengeRecords(result, source, destination);
   return result;
 }
 
@@ -209,7 +242,8 @@ function readReceipts(local) {
 }
 
 export function writeSnapshot(snapshot, local, session) {
-  for (const [storage, keys, values] of [[local, LOCAL_KEYS, snapshot.local], [session, SESSION_KEYS, snapshot.session]]) {
+  const checked = { local: validateStorage(snapshot.local, LOCAL_KEYS), session: validateStorage(snapshot.session, SESSION_KEYS) };
+  for (const [storage, keys, values] of [[local, LOCAL_KEYS, checked.local], [session, SESSION_KEYS, checked.session]]) {
     for (const key of keys) {
       if (values[key] === null) storage.removeItem(key);
       else storage.setItem(key, values[key]);
@@ -270,5 +304,5 @@ export async function restoreBackup(local, session, id, side, cryptoApi = global
 }
 
 export function snapshotHasData(snapshot) {
-  return LOCAL_KEYS.some(key => snapshot.local[key] !== null) || SESSION_KEYS.some(key => snapshot.session[key] !== null);
+  return LOCAL_KEYS.some(key => snapshot.local[key] != null) || SESSION_KEYS.some(key => snapshot.session[key] != null);
 }

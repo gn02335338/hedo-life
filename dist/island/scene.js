@@ -7,6 +7,7 @@ import * as THREE from './vendor/three.module.js';
 import { OrbitControls } from './vendor/OrbitControls.js';
 import { mergeGeometries } from './vendor/BufferGeometryUtils.js';
 
+import { REGIONS, DOCKS, PLAYER_SAIL_SECONDS, getRegionForDistrict, getFerryRoute, ferryRouteLength, ferryPoint } from './archipelago.js';
 import { displayPersona } from '../persona.js';
 import { getIslandCharacterLook } from './character-looks.js';
 import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, PLACE_ENTRANCES, CAST_POSITIONS, PLAYER_RADIUS, isWalkable, movePlayer, nearestInteraction, findPlaceLanding } from './navigation.js';
@@ -48,7 +49,8 @@ export async function createIslandScene({ container, districts = [], initialHour
   container.append(overlay);
 
   const camera = new THREE.OrthographicCamera(-24, 24, 24, -24, .1, 250);
-  const homeTarget = new THREE.Vector3(.4, 1, -3.5);
+  const homeTarget = new THREE.Vector3(0, 1, 0);
+  let currentRegion='company', voyage=null;
   const homeOffset = new THREE.Vector3(34, 42, 42);
   camera.position.copy(homeTarget).add(homeOffset);
   camera.lookAt(homeTarget);
@@ -96,6 +98,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   const labelItems = [];
   const placeLabels = [];
   let focusedDistrict = null, focusedPerson = null;
+  const ferryBoats=new Map();
   const people = [];
   const colleagues = [];
   const interactionTargets = [];
@@ -798,6 +801,22 @@ export async function createIslandScene({ container, districts = [], initialHour
   // Bridge geometry is decorative and should not select an unrelated district.
   for (let i = rayTargets.length-1; i >= 0; i--) if (!rayTargets[i].userData.district) rayTargets.splice(i,1);
 
+  function makeFerryBoat(small=false) {
+    const boat=group(scene);boat.visible=false;
+    box(boat,palette.woodDark,0,.17,0,small?.76:1.4,.22,small?1.2:2.25);
+    box(boat,palette.cream,0,.31,0,small?.62:1.18,.1,small?1.02:1.96);
+    if(!small){box(boat,palette.white,0,.65,-.3,.85,.62,.85);box(boat,palette.teal,0,.99,-.3,1.04,.1,1.04);box(boat,palette.glass,0,.75,.135,.58,.25,.025);}
+    return boat;
+  }
+  for(const port of Object.values(DOCKS)) {
+    const dx=port.sea.x-port.position.x,dz=port.sea.z-port.position.z,length=Math.hypot(dx,dz),pier=group(scene,(port.position.x+port.sea.x)/2,.82,(port.position.z+port.sea.z)/2,Math.atan2(dx,dz));
+    box(pier,palette.woodDark,0,0,0,1.1,.17,length);
+    for(let i=0;i<Math.ceil(length/.28);i++)box(pier,palette.woodLight,0,.11,-length/2+(i+.5)*length/Math.ceil(length/.28),1.2,.08,.24);
+    textSign(pier,port.name,0,1.2,-length/2+.4,2.3,.52);
+    interactionTargets.push({kind:'dock',id:port.regionId,regionId:port.regionId,districtId:port.districtId,key:`dock:${port.regionId}`,position:port.position,radius:1.6,exitRadius:2});
+  }
+  const passengerBoat=makeFerryBoat();
+
   const waterMaterial = mat('#8fc6c2', { roughness: .48, metalness: .05 });
   const waterUniforms = { uTime: { value: 0 } };
   waterMaterial.onBeforeCompile = (shader) => {
@@ -1000,7 +1019,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   renderer.domElement.addEventListener('pointercancel',()=>{pointerDown=null;});
   const onContextLost=(event)=>{
     event.preventDefault();
-    contextLost=true;cancelAnimationFrame(frameId);
+    endVoyage(false);contextLost=true;cancelAnimationFrame(frameId);
     container.dispatchEvent(new CustomEvent('island-context-lost',{bubbles:true}));
   };
   renderer.domElement.addEventListener('webglcontextlost',onContextLost);
@@ -1040,7 +1059,8 @@ export async function createIslandScene({ container, districts = [], initialHour
     transition={start:performance.now(),targetFrom:controls.target.clone(),targetTo:target.clone(),positionFrom:camera.position.clone(),positionTo:toPosition,zoomFrom:camera.zoom,zoomTo:zoom};
   }
   function updateNearby() {
-    const next=roaming?nearestInteraction(playerPosition,interactionTargets,nearby?.key):null;
+    const targets=interactionTargets.filter(target=>getRegionForDistrict(target.districtId)===currentRegion&&!['sailing','boarding'].includes(actorsByKey.get(target.key)?.lifeState));
+    const next=roaming&&!voyage?nearestInteraction(playerPosition,targets,nearby?.key):null;
     const previous=nearby;nearby=next;
     if(next?.key!==previous?.key || next&&previous&&next!==previous){needsRender=true;onNearby(next);}
     return nearby;
@@ -1086,7 +1106,7 @@ export async function createIslandScene({ container, districts = [], initialHour
         const angle=i/48*Math.PI*2,point={x:playerPosition.x+Math.cos(angle)*radius,z:playerPosition.z+Math.sin(angle)*radius};
         if(isWalkable(point,PLAYER_RADIUS,characterObstacles,dynamicNavigation)){free=point;break;}
       }
-      if(!free)free=[PLAYER_SPAWN,...Object.values(DISTRICT_ENTRANCES)].find(point=>isWalkable(point,PLAYER_RADIUS,characterObstacles,dynamicNavigation));
+      if(!free)free=[DOCKS[currentRegion].landing,...LAYOUT.filter(row=>getRegionForDistrict(row.id)===currentRegion).map(row=>DISTRICT_ENTRANCES[row.id])].find(point=>isWalkable(point,PLAYER_RADIUS,characterObstacles,dynamicNavigation));
       if(free)playerPosition={x:free.x,z:free.z};
       player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);
       playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
@@ -1115,6 +1135,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     if(!movementEnabled){moveInput={x:0,z:0};standStill();}
   }
   function setRoaming(value) {
+    if(voyage)return false;
     const next=Boolean(value);if(next===roaming)return;
     roaming=next;moveInput={x:0,z:0};standStill();needsRender=true;resize();
     renderer.domElement.setAttribute('aria-label',next?'移動島散步地圖。以 W A S D、方向鍵或畫面方向按鈕移動，靠近入口或同事後按 E 或空白鍵互動。可拖曳旋轉、捲動縮放，Home 回到全島。':'移動島互動立體地圖，可拖曳旋轉、捲動縮放，或用地點按鈕探索。');
@@ -1138,7 +1159,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     updateNearby();onRoamChange(next);
   }
   function sendPlayerToPlace(placeId) {
-    if (destroyed || contextLost) return false;
+    if (destroyed || contextLost || voyage || getRegionForDistrict(PLACES.find(place=>place.id===placeId)?.districtId)!==currentRegion) return false;
     const landing=findPlaceLanding(placeId,characterObstacles,dynamicNavigation);
     if (!landing) return false;
     playerPosition=landing;moveInput={x:0,z:0};nearby=null;focusedPerson=null;
@@ -1155,13 +1176,14 @@ export async function createIslandScene({ container, districts = [], initialHour
     return lifeSnapshot.map(actor=>({...actor,position:{...actor.position}}));
   }
   function resetView() {
+    if(voyage)return false;
     if(roaming)setRoaming(false);
     focusedDistrict=null;focusedPerson=null;
     for(const item of labelItems)item.element.setAttribute('aria-pressed','false');
     selectRing.visible=false;topView=false;moveCamera(homeTarget,1,homeOffset);
   }
   function updateWalking(dt) {
-    if(!roaming)return;
+    if(!roaming||voyage)return;
     const beforeX=playerPosition.x,beforeZ=playerPosition.z;
     if(movementEnabled&&(moveInput.x||moveInput.z)){
       camera.updateMatrixWorld();
@@ -1206,6 +1228,9 @@ export async function createIslandScene({ container, districts = [], initialHour
     for(const state of lifeSnapshot){
       const actor=actorsByKey.get(state.key??`${state.kind}:${state.id}`);
       if(!actor||!actor.object.visible)continue;
+      let boat=ferryBoats.get(state.key);
+      if(state.ferry&&!boat){boat=makeFerryBoat(true);ferryBoats.set(state.key,boat);}
+      if(boat){boat.visible=Boolean(state.ferry);if(state.ferry){boat.position.set(state.position.x,.05,state.position.z);boat.rotation.y=state.heading;needsRender=true;}}
       const moved=Math.hypot(actor.object.position.x-state.position.x,actor.object.position.z-state.position.z);
       if(moved>.00001||actor.lifeState!==state.state)needsRender=true;
       actor.object.position.set(state.position.x,state.position.y??WALK_HEIGHT,state.position.z);
@@ -1271,6 +1296,40 @@ export async function createIslandScene({ container, districts = [], initialHour
     for(const material of windowMaterials){material.emissive.set('#f6bc67');material.emissiveIntensity=(1-daylight)*.7;}
     for(const material of lampMaterials)material.emissiveIntensity=.05+(1-daylight)*1.8;
   }
+  function focusRegion(regionId) {
+    if(destroyed||contextLost||voyage||regionId!==currentRegion||!Object.hasOwn(REGIONS,regionId))return false;
+    const region=REGIONS[regionId];homeTarget.set(region.center.x,1,region.center.z);
+    focusedDistrict=null;focusedPerson=null;selectRing.visible=false;
+    moveCamera(homeTarget,regionId==='exile'?2.15:regionId==='life'?1.35:1,homeOffset);return true;
+  }
+  function endVoyage(success) {
+    const trip=voyage;if(!trip)return;voyage=null;passengerBoat.visible=false;
+    if(success){currentRegion=trip.to;const region=REGIONS[currentRegion];homeTarget.set(region.center.x,1,region.center.z);playerPosition={...DOCKS[currentRegion].landing};ensurePlayerSpace();}
+    player.object.visible=roaming;playerRing.visible=roaming;playerMarker.style.display=roaming?'':'none';
+    player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
+    if(success){if(roaming)moveCamera(getFollowTarget().clone(),window.innerWidth<=780?3.15:2.65,homeOffset);else focusRegion(currentRegion);try{trip.onProgress?.(1);}catch{}}
+    needsRender=true;updateNearby();trip.resolve(success);
+  }
+  function sailToRegion(regionId,{onProgress}={}) {
+    if(destroyed||contextLost||voyage||!Object.hasOwn(REGIONS,regionId))return Promise.resolve(false);
+    if(regionId===currentRegion){try{onProgress?.(1);}catch{}return Promise.resolve(true);}
+    const points=getFerryRoute(currentRegion,regionId);moveInput={x:0,z:0};standStill();transition=null;nearby=null;onNearby(null);
+    return new Promise(resolve=>{
+      voyage={from:currentRegion,to:regionId,points,length:ferryRouteLength(points),start:performance.now(),onProgress,resolve};
+      player.object.visible=false;playerRing.visible=false;playerMarker.style.display='none';passengerBoat.visible=true;needsRender=true;
+      try{onProgress?.(0);}catch{}
+      if(reducedMotion.matches)endVoyage(true);
+    });
+  }
+  function updateVoyage(time) {
+    if(!voyage)return;
+    const progress=Math.min(1,Math.max(0,(time-voyage.start)/(PLAYER_SAIL_SECONDS*1000))),point=ferryPoint(voyage.points,voyage.length*progress);
+    passengerBoat.position.set(point.x,.05,point.z);passengerBoat.rotation.y=point.heading;
+    const target=new THREE.Vector3(point.x,1,point.z);controls.target.copy(target);camera.position.copy(target).add(homeOffset);
+    camera.zoom=1.3;camera.updateProjectionMatrix();needsRender=true;
+    try{voyage.onProgress?.(progress);}catch{}
+    if(progress===1)endVoyage(true);
+  }
   function animate(time){
     if(destroyed||contextLost)return;
     frameId=requestAnimationFrame(animate);
@@ -1289,7 +1348,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     if(connectionGroup.visible)for(const item of connectionDots)item.dot.position.copy(item.curve.getPoint((elapsed*.12+item.offset)%1));
     }
     updateWalking(dt);
-    updateNpcLife(dt);updateNearby();
+    updateNpcLife(dt);updateVoyage(time);updateNearby();
     if(transition){
       const linear=Math.min(1,(time-transition.start)/850);const t=1-Math.pow(1-linear,3);
       controls.target.lerpVectors(transition.targetFrom,transition.targetTo,t);camera.position.lerpVectors(transition.positionFrom,transition.positionTo,t);camera.zoom=THREE.MathUtils.lerp(transition.zoomFrom,transition.zoomTo,t);camera.updateProjectionMatrix();
@@ -1300,7 +1359,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     camera.updateMatrixWorld();
     for(const item of labelItems){
       const v=item.position.clone().project(camera);
-      const closeEnough=!roaming&&focusedDistrict!==item.id;
+      const closeEnough=!roaming&&!voyage&&getRegionForDistrict(item.id)===currentRegion&&focusedDistrict!==item.id;
       const visible=closeEnough&&v.z>-1&&v.z<1&&v.x> -1.15&&v.x<1.15&&v.y> -1.1&&v.y<1.1;
       item.element.disabled=roaming&&!(nearby?.kind==='building'&&nearby.districtId===item.id);
       item.element.style.display=visible?'':'none';
@@ -1332,7 +1391,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   onReady({ reducedMotion:reducedMotion.matches });
   return {
     focus(id){
-      if(roaming)return;
+      if(roaming||voyage||getRegionForDistrict(id)!==currentRegion)return false;
       const config=LAYOUT.find((d)=>d.id===id);if(!config)return;
       focusedDistrict=id;focusedPerson=null;
       for(const item of labelItems)item.element.setAttribute('aria-pressed',String(item.id===id));
@@ -1348,7 +1407,7 @@ export async function createIslandScene({ container, districts = [], initialHour
       moveCamera(target,zoom);
     },
     focusPlace(id){
-      const place=PLACES.find(place=>place.id===id);if(!place||roaming)return;
+      const place=PLACES.find(place=>place.id===id);if(!place||roaming||voyage||getRegionForDistrict(place.districtId)!==currentRegion)return false;
       focusedDistrict=place.districtId;focusedPerson=null;
       const config=LAYOUT.find(district=>district.id===place.districtId),isMobile=window.innerWidth<=780,zoom=isMobile?2.2:1.8;
       const target=new THREE.Vector3(config.x,1.5,config.z);
@@ -1358,12 +1417,15 @@ export async function createIslandScene({ container, districts = [], initialHour
       selectRing.position.set(config.x,1.08,config.z);selectRing.visible=true;moveCamera(target,zoom);
     },
     focusPerson(id){
-      const actor=actorsByKey.get(`person:${id}`);if(!actor||roaming)return;
+      const actor=actorsByKey.get(`person:${id}`);if(!actor||roaming||voyage||actor.lifeState==='sailing'||getRegionForDistrict(actor.target.districtId)!==currentRegion)return false;
       focusedPerson=id;focusedDistrict=actor.target.districtId;
       const target=new THREE.Vector3(actor.object.position.x,1.5,actor.object.position.z),isMobile=window.innerWidth<=780,zoom=isMobile?2.2:1.8;
       if(isMobile){const up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion);target.addScaledVector(up,-(camera.top-camera.bottom)/zoom*.28);}
       moveCamera(target,zoom);needsRender=true;
     },
+    focusRegion, sailToRegion,
+    getRegion:()=>currentRegion,
+    getPlayerPosition:()=>({...playerPosition}),
     reset:resetView,
     setRoaming,
     setMoveInput,
@@ -1378,6 +1440,6 @@ export async function createIslandScene({ container, districts = [], initialHour
     setPaused(value){paused=Boolean(value);needsRender=true;},
     setTopView(value){topView=Boolean(value);moveCamera(controls.target.clone(),camera.zoom,topView?new THREE.Vector3(0,65,.1):homeOffset);},
     zoom(delta){const value=Number(delta);if(!Number.isFinite(value))return;transition=null;needsRender=true;camera.zoom=THREE.MathUtils.clamp(camera.zoom*Math.exp(value*.17),controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix();},
-    destroy(){if(destroyed)return;destroyed=true;cancelAnimationFrame(frameId);resizeObserver.disconnect();reducedMotion.removeEventListener('change',onMotionPreference);controls.dispose();renderer.domElement.removeEventListener('pointerdown',onPointerDown);renderer.domElement.removeEventListener('pointerup',onPointerUp);renderer.domElement.removeEventListener('keydown',onKeyDown);renderer.domElement.removeEventListener('webglcontextlost',onContextLost);for(const g of allGeometries)g.dispose();for(const m of materials.values())m.dispose();for(const t of textures)t.dispose();renderer.dispose();renderer.domElement.remove();overlay.remove();},
+    destroy(){if(destroyed)return;endVoyage(false);destroyed=true;cancelAnimationFrame(frameId);resizeObserver.disconnect();reducedMotion.removeEventListener('change',onMotionPreference);controls.dispose();renderer.domElement.removeEventListener('pointerdown',onPointerDown);renderer.domElement.removeEventListener('pointerup',onPointerUp);renderer.domElement.removeEventListener('keydown',onKeyDown);renderer.domElement.removeEventListener('webglcontextlost',onContextLost);for(const g of allGeometries)g.dispose();for(const m of materials.values())m.dispose();for(const t of textures)t.dispose();renderer.dispose();renderer.domElement.remove();overlay.remove();},
   };
 }

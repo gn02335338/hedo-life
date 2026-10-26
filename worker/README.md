@@ -1041,12 +1041,20 @@ credential, personal-data field or database migration.
 ## The Moving Island static experience
 
 `/island/` is served from `dist/island/` through the existing static asset binding.
-It is a standalone original 3D miniature with the original nine stable districts plus three special
-districts: exile, hospital and police. The original departments, shared spaces
-and after-work areas remain. There are 27 independently
+It is a standalone original 3D archipelago with three sea regions: the company
+island, after-work life island and remote exile island. The company region has
+seven department/shared districts; the court, harbor, hospital and police are
+on the life island, while exile has its own distant shore. All original nine
+district identities plus the three special districts remain stable. There are 27 independently
 explorable places (81 choices), twelve district stories (36 choices), a six-stop
 day tour, and all 34 current public colleagues (102 encounter choices).
-Walking uses connected bridges, reachable place entries and a controllable visitor.
+Walking uses connected paths and bridges within each island, reachable place
+entries and a controllable visitor. No inter-island walking surface exists.
+The header ferry control and three dock interactions share the same departure,
+voyage and arrival flow. District/place hashes, directory locations, tours and
+incident destinations require arrival before opening remote content; the
+non-WebGL list retains this flow. A failed voyage leaves the visitor on the
+original island. Region and transit state are session-only.
 The roster matches `PERSONAS`, includes Alice, and assigns each colleague a department,
 staggered pantry breaks and a court or izakaya destination after 18:00. At 19:00,
 Aliang (`kind`) invites Jack, Cindy, James and Johnny to the harbor; they stroll
@@ -1062,7 +1070,10 @@ replay validation remain unchanged.
 NPC motion is a renderer-independent, bounded local simulation. Changing the island
 clock retargets official characters without relocating established bodies; they
 walk between districts along terrain-safe routes and wait for occupied paths or
-bridges. Approved residents retain their chosen districts and existing slots. All
+bridges. Cross-island schedules route to a dock, use a bounded ferry transit,
+then continue from the destination dock. Characters in transit cannot be
+conversed with or located on land; their directory status shows the route.
+Approved residents retain their chosen districts and existing slots. All
 actors avoid terrain and other bodies, stop near the roaming visitor, and remain
 pinned during their own conversation (including one opened from the directory).
 The invitation dialogue pins Aliang and has its own response memory. Interaction
@@ -1095,9 +1106,10 @@ as a response to a rewritten story. New district responses (`districtChoices`),
 place responses (`placeChoices`), place visits (`placeVisits`) and NPC responses
 (`encounterChoices`), plus the separate invitation responses (`routineChoices`),
 live only in page memory. Reloading clears these new visit
-memories; no new storage key, identity, server table or domain-migration key is
-introduced. Legacy `#court`-style links keep working; place hashes such as
-`#mis-service` open the matching place without selecting a response. Public
+memories. Story-challenge victories use the separate local records described
+below. No identity or server table is added. Legacy `#court`-style links keep
+working through the ferry gate; place hashes such as `#mis-service` open the
+matching place without selecting a response. Public
 place IDs never enter the application/review API's district-ID schema.
 
 Three.js 0.180.0 and its helpers are bundled locally under MIT; see
@@ -1136,8 +1148,9 @@ Health and actual inputs decide win/loss; an equal-health timeout is a draw with
 no holds. An opaque single-use begin/settle/cancel token binds the active opponent,
 rejects stale or duplicate completion, and never rerolls the played outcome.
 Bounded numerical combat summaries are projected into the session history.
-The loser is transferred
-to `hospital-er`, and the winner to `police-desk`. Arguments with the two fictional
+In an ordinary free fight, the loser is assigned
+to `hospital-er`, and the winner to `police-desk`. Remote visitor recovery uses
+the same ferry gate as exploration. Arguments with the two fictional
 bosses may transfer the visitor to `exile-gate` or `cold-palace`. Explicit incident
 transfers use collision-safe landings; ordinary schedules still move by walking.
 Active NPC dispositions override daily routines and cannot be cleared by changing
@@ -1160,6 +1173,42 @@ district IDs and saved choices remain intact. Applications, review and approved
 resident slots stay limited to the original nine districts and 27 total slots;
 medical/police/exile locations are not available as community residences. The
 non-WebGL list also provides all incident choices, status and recovery actions.
+
+## Island story challenge
+
+The header and colleague dialogues offer a separate story challenge. Five
+authored chapters cover all 31 ordinary colleagues. Only actual wins in this
+mode unlock the headquarters sequence: Rick, Spencer, then Wing. Every battle
+entry, including a headquarters character's ordinary fight button, uses the
+same gate and forces the headquarters fight into story mode. Completing that
+sequence unlocks an anonymous invitation; its visitor identity, portrait and
+abilities stay out of the player interface until the invitation is opened.
+The final result has an authored ending. Story bouts are formal sparring and
+do not apply the ordinary hospital/police dispositions. An unresolved visitor
+or opponent disposition must be handled before beginning another story bout.
+
+`dist/island/challenge.js` owns prerequisite projection, readable openings,
+chapter/result stories, next targets and a detached progress snapshot. Opaque
+single-use begin/settle/cancel tokens reject stale, foreign and duplicate
+callbacks. Loss, draw, cancellation, loading failure and ordinary free-fight
+history cannot award story victories. A rematch never counts twice. Reloading
+keeps victories but drops any incomplete bout; retrying does not reset the
+completed chapters.
+
+This progress is browser-local: `hedo-island-challenge-v1` is a version-1
+aggregate, with fixed append-only victory and invitation receipts. The 37
+allowlisted storage names live in `dist/island/challenge-storage.js`, which
+imports only public roster data, avoiding story or hidden-character imports
+in the domain-migration module. Receipts preserve completed wins when a stale
+tab writes an older aggregate, and storage events refresh the visible progress.
+Storage denial shows a warning while allowing the current in-memory session.
+Clearing browser storage removes this challenge progress. The existing
+`hedo-island-v1` passport, anonymous bearer, application ownership, career
+proofs, collections and server replay are untouched. No challenge endpoint,
+server reward, account, database table, binding or deployment secret is added.
+
+Focused checks include `tests/island-challenge.test.mjs` and
+`tests/island-challenge-migration.test.mjs`, alongside the regular island tests.
 
 ## Island applications and approved residents
 
@@ -1279,6 +1328,17 @@ flow without acknowledging success; rollback is attempted and source data stays
 available. The committed revision refreshes other open new-origin game tabs
 before they can continue from an earlier in-memory identity/save.
 
+The island story challenge's 37 local records participate in the same
+allowlist. Compatible copies union valid append-only victory and opened
+invitation receipts, plus aggregate victories, without changing anonymous
+identity or the existing conflict-choice rules. Different identities are never
+combined. Older snapshots and retained backups may omit these optional keys;
+they project to null and remain restorable. Null challenge keys are omitted
+only from digest calculation, retaining acknowledgement/receipt compatibility
+for pre-challenge snapshots. Existing non-null records still affect the digest,
+so genuinely new story progress can migrate. Passport records retain their
+original bytes and schema.
+
 New-origin first visits also pass through the old origin, before `cloud.js` can
 create an anonymous credential. A successful cookie marker skips this round trip
 on future visits. An explicit `/_hodo/export` check can reissue a cleared marker
@@ -1291,7 +1351,7 @@ copy. Clearing browser data also clears these browser-local backups.
 Verification:
 
 ```sh
-node --test tests/domain-migration-client.test.mjs tests/domain-migration-server.test.mjs tests/domain-session-guard.test.mjs
+node --test tests/domain-migration-client.test.mjs tests/domain-migration-server.test.mjs tests/domain-session-guard.test.mjs tests/island-challenge-migration.test.mjs
 npm test
 npm run build:check
 ```

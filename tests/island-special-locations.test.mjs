@@ -1,3 +1,4 @@
+import { DOCKS, getRegionForDistrict } from '../dist/island/archipelago.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DISTRICTS } from '../dist/island/content.js';
@@ -38,12 +39,15 @@ test('special districts have their own four facilities while original community 
   }
 });
 
-test('all four new facilities are reachable by actual visitor movement from the original spawn with every old character body present', () => {
+test('all four new facilities require a sea crossing before walking from the arrival port with every old body present', () => {
   for(const placeId of specialPlaces) {
     const goal=findPlaceLanding(placeId,fullCampusBodies,dynamic);
-    const path=findNpcRoute(PLAYER_SPAWN,goal,{obstacles:fullCampusBodies});
-    assert.ok(path?.length, `${placeId}: connected safe bridge route`);
-    let position={...PLAYER_SPAWN};
+    assert.equal(findNpcRoute(PLAYER_SPAWN,goal,{obstacles:fullCampusBodies}),null,`${placeId}: no walking shortcut across the sea`);
+    const districtId=PLACES.find(place=>place.id===placeId).districtId;
+    const landing=DOCKS[getRegionForDistrict(districtId)].landing;
+    const path=findNpcRoute(landing,goal,{obstacles:fullCampusBodies});
+    assert.ok(path?.length, `${placeId}: local route after disembarking`);
+    let position={...landing};
     for(const waypoint of path) {
       let steps=0;
       while(distance(position,waypoint)>1e-7 && steps++<200) {

@@ -1,6 +1,6 @@
 import { DISTRICTS, TOUR } from './content.js';
 import { readProgress, writeProgress } from './progress.js';
-import { displayIslandPersona as displayPersona } from './persona.js';
+import { displayIslandPersona } from './persona.js';
 import { ENCOUNTERS } from './encounters.js';
 import { bindWalkControls } from './walk-controls.js';
 import { bindApplications, residentAvatar } from './applications.js';
@@ -9,6 +9,8 @@ import { createIslandAdminSummary } from './admin-summary.js';
 import { PLACES, PLACE_BY_ID } from './places.js';
 import { getPersonRoutine, getIslandRoutine, MYSTERY_TRIP } from './routines.js';
 import { createIslandConflicts } from './conflicts.js';
+import { createIslandChallenge } from './challenge.js';
+import { REGIONS, DOCKS, getRegionForDistrict } from './archipelago.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
@@ -24,6 +26,13 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let storage;
 try { storage = window.localStorage; } catch { /* Browsing remains available. */ }
 let progress = readProgress(storage);
+const challenge = createIslandChallenge({ storage });
+const displayPersona = id => displayIslandPersona(id, { revealHidden: !!challenge.getState().hidden });
+let currentRegion = 'company';
+let pendingTravel = null;
+let activeVoyage = null;
+let sceneReady = false;
+let pageGone = false;
 let scene = null;
 let activeId = null;
 let filter = 'all';
@@ -59,16 +68,22 @@ let sceneUnavailable = false;
 const encounterById = new Map(ENCOUNTERS.map(item => [item.id, item]));
 
 function currentDistrict(id) {
+  if (id === 'hidden-visitor') return DOCKS[currentRegion].districtId;
+  const actor = lifeAvailable ? lifeActors.get(`person:${id}`) : null;
+  if (actor?.districtId) return actor.districtId;
   const disposition = dispositionOf(id);
   if (disposition) return disposition.districtId;
-  return lifeAvailable ? lifeActors.get(`person:${id}`)?.districtId || getPersonRoutine(id, hour)?.districtId
-    : getPersonRoutine(id, hour)?.districtId;
+  return (lifeAvailable ? lifeActors.get(`person:${id}`)?.districtId || getPersonRoutine(id, hour)?.districtId
+    : getPersonRoutine(id, hour)?.districtId) || 'lobby';
 }
 function peopleInDistrict(id) { return ISLAND_CAST.filter(person => currentDistrict(person.id) === id); }
 function personLocation(id) {
+  const actor = lifeAvailable ? lifeActors.get(`person:${id}`) : null;
+  if (actor?.ferry) return `搭船中 · ${REGIONS[actor.ferry.from].name} → ${REGIONS[actor.ferry.to].name}`;
   const disposition = dispositionOf(id);
+  if (disposition && actor?.traveling) return `接駁前往 · ${PLACE_BY_ID.get(disposition.placeId)?.name}`;
   if (disposition) return `${dispositionNames[disposition.status]} · ${PLACE_BY_ID.get(disposition.placeId)?.name}`;
-  const actor = lifeAvailable ? lifeActors.get(`person:${id}`) : null, routine = getPersonRoutine(id, hour);
+  const routine = getPersonRoutine(id, hour);
   const destination = PLACE_BY_ID.get(actor?.destinationPlaceId || routine?.placeId)?.name;
   if (!lifeAvailable) return `今日行程 · ${destination}`;
   const district = byId.get(currentDistrict(id))?.name;
@@ -92,6 +107,132 @@ function toast(text) {
   $('#toast').textContent = text;
   $('#toast').classList.add('show');
   toastTimer = setTimeout(() => $('#toast').classList.remove('show'), 3200);
+}
+function syncRegion() {
+  $('#current-region').textContent = REGIONS[currentRegion].name;
+  $('#ferry-open').setAttribute('aria-label', `搭船旅行，目前在${REGIONS[currentRegion].name}`);
+}
+// Every remote entry uses this gate before visits, conversations or camera focus.
+function requireRegion(regionId, continuation) {
+  if (!regionId) return false;
+  if (activeBrawl || activeVoyage || pageGone) { toast('先完成眼前這段旅程。'); return false; }
+  if (regionId === currentRegion) return true;
+  openFerry(regionId, continuation);
+  return false;
+}
+function openFerry(destination = null, continuation = null) {
+  if (activeBrawl || activeVoyage || pageGone) return;
+  stopTour();
+  document.querySelectorAll('dialog[open]').forEach(dialog => closeDialog(dialog));
+  pendingTravel = destination ? { regionId: destination, continuation } : null;
+  // An unvisited remote hash must not claim arrival while boarding is pending.
+  history.replaceState(null, '', location.pathname + location.search + (focusedPlaceId ? `#${focusedPlaceId}` : activeId ? `#${activeId}` : ''));
+  renderFerry(); openDialog($('#ferry-dialog'));
+}
+function renderFerry() {
+  const root = $('#ferry-destinations'); root.replaceChildren();
+  $('#ferry-description').textContent = `目前在${REGIONS[currentRegion].name}。先到${DOCKS[currentRegion].name}登船，靠岸後再繼續探索。`;
+  for (const region of Object.values(REGIONS)) {
+    const here = region.id === currentRegion;
+    const option = button('ferry-destination', '', () => sailTo(region.id));
+    option.dataset.sailRegion = region.id;
+    option.disabled = here || !sceneReady;
+    option.append(element('small', '', here ? '目前所在' : pendingTravel?.regionId === region.id ? '你的目的地' : '渡輪航線'), element('strong', '', region.name), element('span', '', region.subtitle), element('b', '', here ? '已靠岸' : '搭船前往 →'));
+    root.append(option);
+  }
+  if (!sceneReady) root.append(element('p', '', '正在準備碼頭，稍等一下就能出發。'));
+}
+async function sailTo(regionId) {
+  if (!sceneReady || activeVoyage || activeBrawl || pageGone || regionId === currentRegion || !REGIONS[regionId]) return false;
+  const continuation = pendingTravel?.regionId === regionId ? pendingTravel.continuation : null;
+  pendingTravel = null;
+  const voyage = { from: currentRegion, to: regionId };
+  activeVoyage = voyage;
+  document.body.classList.add('voyaging');
+  closeDialog($('#ferry-dialog')); setSidebar(false);
+  $('#voyage-overlay').hidden = false;
+  $('#voyage-from').textContent = REGIONS[voyage.from].name;
+  $('#voyage-to').textContent = REGIONS[regionId].name;
+  $('#voyage-title').textContent = `航向${REGIONS[regionId].name}`;
+  const onProgress = value => {
+    if (activeVoyage !== voyage) return;
+    $('#voyage-progress').value = Math.round(value * 100);
+    $('#voyage-status').textContent = value > .85 ? '準備靠岸' : value > .15 ? '渡輪航行中' : '登船，離港啟航';
+  };
+  onProgress(0); updateWalking();
+  let arrived = false;
+  try {
+    arrived = sceneUnavailable ? true : await scene.sailToRegion(regionId, { onProgress });
+  } catch { arrived = false; }
+  if (activeVoyage !== voyage || pageGone) return false;
+  activeVoyage = null; document.body.classList.remove('voyaging'); $('#voyage-overlay').hidden = true;
+  if (!arrived) { updateWalking(); toast('渡輪暫時未能靠岸，仍留在原島。請再試一次。'); return false; }
+  currentRegion = regionId; syncRegion(); browse({ reset: false });
+  updateNearby(null); updateWalking();
+  toast(`已抵達${REGIONS[regionId].name}，可以下船走走了。`);
+  if (continuation) continuation();
+  else selectDistrict(DOCKS[regionId].districtId);
+  return true;
+}
+function syncChallenge() {
+  const state = challenge.getState();
+  $('#challenge-count').textContent = state.completed ? '通關' : state.next.kind === 'invitation' ? '新邀請' : state.next.kind === 'ordinary' ? `${state.ordinary.won.length}/${state.ordinary.total}` : `${state.wins.length}/${state.hidden ? 35 : 34}`;
+  if ($('#challenge-dialog').open) renderChallenge();
+}
+function openChallenge() {
+  if (activeBrawl || activeVoyage) return;
+  if ($('#encounter-dialog').open) closeDialog($('#encounter-dialog'));
+  stopTour(); challenge.sync(); renderChallenge(); openDialog($('#challenge-dialog'));
+}
+function challengeButton(id, label) {
+  const gate = challenge.canChallenge(id);
+  const action = button('challenge-opponent', label, () => {
+    closeDialog($('#challenge-dialog')); startBrawl(id, { story: true });
+  });
+  action.dataset.challengeOpponent = id; action.disabled = !gate.ok;
+  if (!gate.ok) action.title = gate.message;
+  return action;
+}
+function renderChallenge() {
+  const state = challenge.getState(), root = $('#challenge-content'); root.replaceChildren();
+  root.append(element('h3', '', state.currentStory.title), element('p', 'challenge-intro', state.currentStory.body), element('strong', 'challenge-total', `同事切磋 ${state.ordinary.won.length} / ${state.ordinary.total}`));
+  root.append(element('p', 'challenge-next', state.completed ? '整冊故事已完成。可以回島上散步，或重溫每一場切磋。' : `下一頁 · ${state.next.name || state.next.label}`));
+  root.append(element('p', 'storage-note', '故事挑戰是正式切磋，勝場會保存；日常「打架」另有醫院與警局的後續，不計入故事戰績。'));
+  if (!state.storageAvailable) root.append(element('p', 'storage-note', '瀏覽器目前無法保存；本次仍能挑戰，關閉後可能失去戰績。'));
+  for (const chapter of state.chapters) {
+    const section = element('details', 'challenge-chapter');
+    section.open = !chapter.complete;
+    section.append(element('summary', '', `${chapter.title} · ${chapter.won}/${chapter.total}`), element('p', '', chapter.opening));
+    const list = element('div', 'challenge-opponents');
+    for (const id of chapter.opponentIds) list.append(challengeButton(id, `${state.wins.includes(id) ? '✓ ' : ''}${displayPersona(id).name} →`));
+    section.append(list);
+    if (chapter.complete && chapter.completion) section.append(element('p', 'challenge-earned', chapter.completion));
+    root.append(section);
+  }
+  const finale = element('section', 'challenge-finale'); finale.append(element('h3', '', '終章 · 辦公室的最高處'));
+  finale.append(element('p', '', '完成全部同事後，依序接受乾兒子、董事長與翅膀的邀請。'));
+  const bossRoles = { rick: '乾兒子', spencer: '董事長', wing: '翅膀' };
+  for (const boss of state.bosses) finale.append(challengeButton(boss.id, `${boss.won ? '✓' : boss.available ? '可挑戰' : '未解鎖'} · ${bossRoles[boss.id]}`));
+  root.append(finale);
+  if (state.invitation.available && !state.invitation.opened) {
+    root.append(button('primary-button', '拆開碼頭留下的神秘邀請 →', () => { const result = challenge.openInvitation(); if (result.ok) { syncChallenge(); renderChallenge(); } }));
+  }
+  if (state.hidden) root.append(challengeButton(state.hidden.id, `${state.hidden.won ? '✓ ' : ''}隱藏挑戰 · ${state.hidden.name} →`));
+  if (state.completed && state.completion) root.append(element('h3', '', state.completion.title), element('p', 'challenge-earned', state.completion.body));
+}
+function renderStoryResult(result, id) {
+  activeEncounter = null; syncChallenge();
+  const root = $('#encounter-content'); root.replaceChildren();
+  $('#encounter-place').textContent = '移動島大亂鬥 · 故事挑戰';
+  const title = element('h2', '', result.story.title); title.id = 'encounter-title'; title.tabIndex = -1;
+  root.append(title, element('div', 'conflict-result-stamp', result.outcome === 'win' ? '挑戰成功' : result.outcome === 'draw' ? '這回平手，故事等你再來' : '先喘口氣，還能再挑戰'), element('p', 'encounter-opening', result.story.body));
+  root.append(button('primary-button', result.outcome === 'win' ? '回到章節，繼續下一關 →' : '再次挑戰 →', () => {
+    if (result.outcome === 'win') openChallenge(); else startBrawl(id, { story: true });
+  }));
+  if (result.outcome !== 'win') root.append(button('mystery-inline', '看看故事進度', openChallenge));
+  $('#encounter-leave').textContent = '先回島上走走 →';
+  if (!$('#encounter-dialog').open) openDialog($('#encounter-dialog'));
+  updateWalking(); title.focus({ preventScroll: true });
 }
 function save() {
   storageAvailable = writeProgress(storage, progress);
@@ -194,7 +335,7 @@ function setSidebar(open) {
 }
 function canWalk() {
   const sidebarOpen = mobile.matches ? document.body.classList.contains('mobile-sheet-open') : !document.body.classList.contains('sidebar-collapsed');
-  return roaming && !activeBrawl && !sidebarOpen && !document.querySelector('dialog[open]');
+  return roaming && !activeBrawl && !activeVoyage && !sidebarOpen && !document.querySelector('dialog[open]');
 }
 function updateWalking() {
   walkControls?.clear();
@@ -227,7 +368,11 @@ function updateNearby(target) {
   $('#nearby-prompt').hidden = !target || !roaming;
   if (!target) return;
   const district = byId.get(target.districtId);
-  if (target.kind === 'resident') {
+  if (target.kind === 'dock') {
+    $('#nearby-name').textContent = DOCKS[target.regionId].name;
+    $('#nearby-greeting').textContent = '下一站想去哪座島？從這裡搭船出發。';
+    $('#interact-label').textContent = '搭船';
+  } else if (target.kind === 'resident') {
     const resident = residentById.get(target.id);
     if (!resident) { $('#nearby-prompt').hidden = true; return; }
     $('#nearby-name').textContent = resident.nickname;
@@ -281,6 +426,8 @@ function syncConflicts() {
   renderRoutineStatus();
 }
 function goToConflictPlace(placeId) {
+  const place = PLACE_BY_ID.get(placeId); if (!place) return;
+  if (!requireRegion(getRegionForDistrict(place.districtId), () => goToConflictPlace(placeId))) return;
   if ($('#encounter-dialog').open) closeDialog($('#encounter-dialog'));
   stopTour();
   if (scene && !sceneUnavailable) {
@@ -294,7 +441,7 @@ function renderConflictResult(result) {
   activeEncounter = null;
   syncConflicts();
   const player = conflictState.player;
-  if (player.status !== 'free' && scene && !sceneUnavailable) {
+  if (player.status !== 'free' && getRegionForDistrict(player.districtId) === currentRegion && scene && !sceneUnavailable) {
     stopTour();
     if (!roaming) setRoaming(true);
     setSidebar(false);
@@ -318,7 +465,8 @@ function renderConflictResult(result) {
   if (player.status !== 'free') {
     const place = PLACE_BY_ID.get(player.placeId);
     content.append(element('p', 'conflict-outcome', `你：${dispositionNames[player.status]} · ${place.name}`));
-    const proceed = button('primary-button', `查看${place.name}，處理接下來的事 →`, () => goToConflictPlace(place.id));
+    const remote = getRegionForDistrict(place.districtId) !== currentRegion;
+    const proceed = button('primary-button', `${remote ? '搭接駁船前往' : '查看'}${place.name}，處理接下來的事 →`, () => goToConflictPlace(place.id));
     proceed.dataset.conflictProceed = place.id; content.append(proceed);
   }
   for (const person of conflictState.people.filter(person => person.id === result.participantId)) {
@@ -333,24 +481,34 @@ function disposeBrawl({ cancel = true } = {}) {
   // Clear ownership first: late renderer callbacks must never finish a new bout.
   activeBrawl = null;
   match.handle?.destroy();
-  if (cancel) conflicts.cancelFight(match.token);
+  if (cancel) { if (match.story) challenge.cancel(match.token); else conflicts.cancelFight(match.token); }
   conflictState = conflicts.getState();
   $('#encounter-dialog').classList.remove('brawl-dialog');
   $('#encounter-dialog [data-close-dialog]').setAttribute('aria-label', '結束對話，繼續散步');
 }
-async function startBrawl(id) {
-  if (activeBrawl) return;
-  const reservation = conflicts.beginFight(id);
+async function startBrawl(id, { story = false } = {}) {
+  if (activeBrawl || activeVoyage || pageGone) return;
+  if (['rick', 'spencer', 'wing', 'hidden-visitor'].includes(id)) story = true;
+  if (story) {
+    const gate = challenge.canChallenge(id);
+    if (!gate.ok) { toast(gate.message); openChallenge(); return; }
+  }
+  if (conflictState.player.status !== 'free' || dispositionOf(id)) { toast('先到對應場所完成這段插曲，再來挑戰。'); return; }
+  if (lifeActors.get(`person:${id}`)?.ferry) { toast('對方正在搭船，等靠岸後再約。'); return; }
+  if (!requireRegion(getRegionForDistrict(currentDistrict(id)), () => startBrawl(id, { story }))) return;
+  if (!displayPersona(id)) return;
+  if ($('#challenge-dialog').open) closeDialog($('#challenge-dialog'));
+  const reservation = story ? challenge.begin(id) : conflicts.beginFight(id);
   if (!reservation.ok) { toast(reservation.message); return; }
   stopTour();
   const target = { kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` };
   activeEncounter = target;
-  const match = { token: reservation.token, handle: null, returnHash: location.hash };
+  const match = { token: reservation.token, handle: null, returnHash: location.hash, story };
   activeBrawl = match; conflictState = conflicts.getState();
   const dialog = $('#encounter-dialog'), content = $('#encounter-content');
   content.replaceChildren(); dialog.classList.add('brawl-dialog');
   $('#encounter-dialog [data-close-dialog]').setAttribute('aria-label', '暫停或離開對戰');
-  $('#encounter-place').textContent = `島上插曲 · 和${displayPersona(id).name}對戰`;
+  $('#encounter-place').textContent = `${story ? '故事挑戰' : '島上插曲'} · 和${displayPersona(id).name}對戰`;
   const loadingTitle = element('h2', '', '移動島大亂鬥'); loadingTitle.id = 'encounter-title';
   content.append(loadingTitle, element('p', 'encounter-opening', '正在準備場地…'), button('primary-button', '先回到小島', () => closeDialog(dialog)));
   if (!dialog.open) openDialog(dialog);
@@ -360,13 +518,13 @@ async function startBrawl(id) {
     if (activeBrawl !== match) return;
     content.replaceChildren();
     match.handle = mountIslandBrawl({
-      container: content, opponent: { id, name: displayPersona(id).name, image: personaImage(id) }, reducedMotion: reducedMotion.matches,
+      container: content, opponent: { id, name: displayPersona(id).name, image: personaImage(id) }, story: story ? reservation.story : null, reducedMotion: reducedMotion.matches,
       onFinish(outcome, summary) {
         if (activeBrawl !== match) return;
-        const result = conflicts.settleFight(match.token, outcome, summary);
+        const result = story ? challenge.settle(match.token, outcome) : conflicts.settleFight(match.token, outcome, summary);
         disposeBrawl({ cancel: !result.ok });
-        if (!result.ok) { renderEncounter(target); updateWalking(); toast(result.message); return; }
-        renderConflictResult(result);
+        if (!result.ok) { if (story) openChallenge(); else renderEncounter(target); updateWalking(); toast(result.message); return; }
+        if (story) renderStoryResult(result, id); else renderConflictResult(result);
       },
     });
   } catch (error) {
@@ -374,7 +532,7 @@ async function startBrawl(id) {
     disposeBrawl(); content.replaceChildren();
     const title = element('h2', '', '場地暫時沒有準備好'); title.id = 'encounter-title';
     content.append(title, element('p', 'encounter-opening', '這台裝置暫時無法開啟對戰畫面。可以重試，或先回去聊天。這場尚未開始。'));
-    content.append(button('primary-button', '重新準備對戰 →', () => startBrawl(id)), button('mystery-inline', '回到對話', () => { renderEncounter(target); updateWalking(); }));
+    content.append(button('primary-button', '重新準備對戰 →', () => startBrawl(id, { story })), button('mystery-inline', story ? '回到故事章節' : '回到對話', () => { if (story) openChallenge(); else { renderEncounter(target); updateWalking(); } }));
     $('#encounter-leave').textContent = '先回到小島 →';
     updateWalking();
     console.warn('Island brawl unavailable:', error instanceof Error ? error.message : 'battle initialization failed');
@@ -400,7 +558,8 @@ function appendConflictActions(content, id) {
   const disposition = dispositionOf(id), player = conflictState.player;
   const area = element('section', 'conflict-actions');
   if (disposition) {
-    area.append(element('p', '', `${displayPersona(id).name}正在${PLACE_BY_ID.get(disposition.placeId).name}，先把這段插曲收好。`));
+    const traveling = lifeAvailable && lifeActors.get(`person:${id}`)?.traveling;
+    area.append(element('p', '', `${displayPersona(id).name}${traveling ? '正在前往' : '正在'}${PLACE_BY_ID.get(disposition.placeId).name}，先把這段插曲收好。`));
     area.append(button('', `去${PLACE_BY_ID.get(disposition.placeId).name}看看 →`, () => goToConflictPlace(disposition.placeId)));
   } else if (player.status !== 'free') {
     area.append(element('p', '', `你還有${dispositionNames[player.status]}的後續要處理。`));
@@ -408,8 +567,12 @@ function appendConflictActions(content, id) {
   } else {
     area.append(element('span', 'eyebrow', '話不投機，也有下一段'));
     const argue = button('', '吵架', () => renderConflictMenu(id, 'argument')); argue.dataset.conflictAction = 'argue';
-    const fight = button('', '打架', () => renderConflictMenu(id, 'fight')); fight.dataset.conflictAction = 'fight';
+    const isBoss = ['rick', 'spencer', 'wing'].includes(id);
+    const fight = button('', isBoss ? '故事首領戰' : '打架', () => renderConflictMenu(id, 'fight')); fight.dataset.conflictAction = 'fight';
     area.append(argue, fight);
+    const gate = challenge.canChallenge(id);
+    const storyButton = button('', gate.ok ? '故事挑戰 →' : '查看故事解鎖條件 →', () => gate.ok ? startBrawl(id, { story: true }) : openChallenge());
+    storyButton.dataset.storyChallenge = id; if (!isBoss) area.append(storyButton);
   }
   content.append(area);
 }
@@ -426,6 +589,13 @@ function appendFacilityActions(content, placeId) {
     complete.dataset.conflictRecover = placeId; area.append(complete);
   }
   for (const person of people) {
+    const actor = lifeAvailable ? lifeActors.get(`person:${person.id}`) : null;
+    if (lifeAvailable && (!actor || actor.traveling || actor.ferry || actor.districtId !== person.districtId)) {
+      area.append(element('p', '', `${displayPersona(person.id).name}還在接駁途中，抵達後就能辦理後續。`));
+      const refresh = button('', '更新抵達狀態 ↻', () => renderEncounter({ kind: 'place', id: placeId, districtId: PLACE_BY_ID.get(placeId).districtId, key: `place:${placeId}` }));
+      refresh.dataset.conflictAwait = person.id; area.append(refresh);
+      continue;
+    }
     const label = person.status === 'hospital' ? '辦理出院' : person.status === 'police' ? '完成筆錄' : '解除冷凍';
     const complete = button('', `陪${displayPersona(person.id).name}${label} →`, () => renderConflictResult(conflicts.releasePerson(person.id, placeId)));
     complete.dataset.conflictRelease = person.id; area.append(complete);
@@ -465,7 +635,8 @@ function renderEncounter(target) {
     $('#encounter-leave').textContent = '把這段日常收好，繼續散步 →';
     if (isRoutine) content.append(button('mystery-inline', getIslandRoutine(hour).trip ? '去集合處看看 →' : '切到 19:15，看大家集合 →', () => {
       closeDialog($('#encounter-dialog')); clockRunning = false; if (!getIslandRoutine(hour).trip) setHour(19.25);
-      selectDistrict('harbor'); scene?.focusPlace(MYSTERY_TRIP.placeId);
+      const arrive = () => { selectDistrict('harbor'); scene?.focusPlace(MYSTERY_TRIP.placeId); };
+      if (requireRegion('life', arrive)) arrive();
     }));
   } else {
     const choices = element('div', 'story-choices');
@@ -507,12 +678,15 @@ function renderResidentEncounter(target) {
 }
 function meetResident(resident) {
   if (!residentById.has(resident.id)) return;
+  if (!requireRegion(getRegionForDistrict(resident.districtId), () => meetResident(resident))) return;
   renderEncounter({ kind: 'resident', id: resident.id, districtId: resident.districtId, key: `resident:${resident.id}` });
   openDialog($('#encounter-dialog'));
 }
 function meetColleague(id) {
   const person = encounterById.get(id);
   if (!person) return;
+  if (lifeActors.get(`person:${id}`)?.ferry) { toast('對方正在搭船，等靠岸後再聊。'); return; }
+  if (!requireRegion(getRegionForDistrict(currentDistrict(id)), () => meetColleague(id))) return;
   stopTour();
   if (id === MYSTERY_TRIP.hostId && getIslandRoutine(hour).trip && !dispositionOf(id)) { openMysteryInvitation(); return; }
   renderEncounter({ kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` });
@@ -520,6 +694,7 @@ function meetColleague(id) {
 }
 function visitPlace(id) {
   const place = PLACE_BY_ID.get(id); if (!place) return;
+  if (!requireRegion(getRegionForDistrict(place.districtId), () => visitPlace(id))) return;
   stopTour();
   placeVisits.add(id);
   if (!roaming) selectDistrict(place.districtId, { moveFocus: false });
@@ -531,7 +706,9 @@ function visitPlace(id) {
   openDialog($('#encounter-dialog'));
 }
 function actorActivity(actor) {
+  if (actor?.ferry) return `搭船前往${REGIONS[actor.ferry.to].name}`;
   const disposition = dispositionOf(actor?.id);
+  if (disposition && actor?.traveling) return `接駁前往${PLACE_BY_ID.get(disposition.placeId)?.name}`;
   if (disposition) return dispositionNames[disposition.status];
   if (!lifeAvailable) return '在島上等你';
   if (actor?.state === 'talking') return '正在聊天';
@@ -561,6 +738,8 @@ function renderRoutineStatus() {
 }
 function openMysteryInvitation() {
   if (dispositionOf(MYSTERY_TRIP.hostId)) { meetColleague(MYSTERY_TRIP.hostId); return; }
+  if (lifeActors.get(`person:${MYSTERY_TRIP.hostId}`)?.ferry) { toast('阿良正在搭船，等靠岸後再聽邀約。'); return; }
+  if (!requireRegion(getRegionForDistrict(currentDistrict(MYSTERY_TRIP.hostId)), openMysteryInvitation)) return;
   stopTour();
   renderEncounter({ kind: 'routine', id: MYSTERY_TRIP.placeId, districtId: currentDistrict(MYSTERY_TRIP.hostId), key: `person:${MYSTERY_TRIP.hostId}` });
   openDialog($('#encounter-dialog'));
@@ -640,7 +819,12 @@ function renderCastDirectory() {
     const actions = element('div', 'cast-actions');
     const talk = button('', '聊聊 →', () => { closeDialog($('#cast-dialog')); meetColleague(id); });
     talk.setAttribute('aria-label', `和${p.name}聊聊`);
-    const locate = button('', '看看位置', () => { closeDialog($('#cast-dialog')); selectDistrict(currentDistrict(id)); scene?.focusPerson(id); });
+    const locate = button('', '看看位置', () => {
+      closeDialog($('#cast-dialog'));
+      const locatePerson = () => { selectDistrict(currentDistrict(id)); scene?.focusPerson(id); };
+      if (lifeActors.get(`person:${id}`)?.ferry) { toast('對方正在海上，靠岸後就能定位。'); return; }
+      if (requireRegion(getRegionForDistrict(currentDistrict(id)), locatePerson)) locatePerson();
+    });
     locate.dataset.locatePerson = id;
     locate.setAttribute('aria-label', `看看${p.name}的位置：${personLocation(id)}`);
     actions.append(talk, locate); card.append(portrait, copy, actions); list.append(card);
@@ -657,6 +841,7 @@ function interactNearby() {
   if (!canWalk()) return;
   const target = scene?.interactNearby();
   if (!target) return;
+  if (target.kind === 'dock') { openFerry(); return; }
   if (target.kind === 'person' && !encounterById.has(target.id)) return;
   if (target.kind === 'resident' && !residentById.has(target.id)) return;
   if (target.kind === 'place') { visitPlace(target.id); return; }
@@ -734,6 +919,7 @@ function renderDetail(d) {
 }
 function selectDistrict(id, { touring = false, moveFocus = true } = {}) {
   const d = byId.get(id); if (!d) return;
+  if (!requireRegion(getRegionForDistrict(id), () => selectDistrict(id, { touring, moveFocus }))) return;
   if (roaming) setRoaming(false);
   if (!touring) stopTour();
   activeId = id;
@@ -780,6 +966,8 @@ function setHour(value) {
   document.querySelectorAll('[data-time-preset]').forEach(node => node.setAttribute('aria-pressed', String(Math.abs(Number(node.dataset.timePreset) - hour) < .04)));
 }
 function showTour(index) {
+  const destination = TOUR[index]; if (!destination) return;
+  if (!requireRegion(getRegionForDistrict(destination.districtId), () => showTour(index))) return;
   if (roaming) setRoaming(false);
   tourIndex = index;
   const stop = TOUR[index];
@@ -824,6 +1012,9 @@ function closeDialog(dialog) {
 }
 
 walkControls = bindWalkControls({ pad: $('#walk-pad'), canMove: canWalk, onMove: input => scene?.setMoveInput(input), onInteract: interactNearby, onHome: () => setRoaming(false) });
+$('#ferry-open').addEventListener('click', () => openFerry());
+$('#challenge-open').addEventListener('click', openChallenge);
+window.addEventListener('storage', () => { challenge.sync(); syncChallenge(); });
 $('#roam-toggle').addEventListener('click', () => setRoaming(!roaming));
 $('#interact-button').addEventListener('click', interactNearby);
 $('#encounter-leave').addEventListener('click', () => closeDialog($('#encounter-dialog')));
@@ -904,6 +1095,7 @@ document.addEventListener('keydown', event => {
 });
 mobile.addEventListener('change', () => { document.body.classList.remove('mobile-sheet-open', 'sidebar-collapsed'); setSidebar(!mobile.matches && !roaming); });
 window.addEventListener('hashchange', () => {
+  if (activeVoyage) { history.replaceState(null, '', location.pathname + location.search + (activeId ? `#${activeId}` : '')); return; }
   const id = location.hash.slice(1);
   if ($('#encounter-dialog').open && closeDialog($('#encounter-dialog')) === false) {
     history.replaceState(null, '', location.pathname + location.search + activeBrawl.returnHash); return;
@@ -914,16 +1106,16 @@ window.addEventListener('hashchange', () => {
 let lastClockTick = performance.now();
 const clockTimer = setInterval(() => {
   const now = performance.now(), seconds = Math.min(1, Math.max(0, (now - lastClockTick) / 1000)); lastClockTick = now;
-  if (!clockRunning || paused || reducedMotion.matches || document.hidden || tourIndex >= 0 || document.querySelector('dialog[open]')) return;
+  if (!clockRunning || paused || reducedMotion.matches || activeVoyage || document.hidden || tourIndex >= 0 || document.querySelector('dialog[open]')) return;
   setHour(6 + ((hour - 6 + seconds / 240) % 17));
 }, 1000);
-window.addEventListener('pagehide', () => { disposeBrawl(); clearInterval(clockTimer); walkControls.destroy(); scene?.destroy(); }, { once: true });
+window.addEventListener('pagehide', () => { pageGone = true; activeVoyage = null; pendingTravel = null; disposeBrawl(); clearInterval(clockTimer); walkControls.destroy(); scene?.destroy(); }, { once: true });
 // A bfcache restoration needs a fresh renderer after pagehide teardown.
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 
 const adminSummary = createIslandAdminSummary({ badge: $('#island-admin-pending') });
 const applications = bindApplications({ storage, openDialog, closeDialog, onResidents: updateResidents, onMeet: meetResident, stopTour, onChange: () => { void adminSummary.refresh(); } });
-renderList(); syncProgress(); renderConflictStatus(); updatePause(); setHour(hour); setSidebar(!mobile.matches);
+renderList(); syncProgress(); syncRegion(); syncChallenge(); renderConflictStatus(); updatePause(); setHour(hour); setSidebar(!mobile.matches);
 // Test storage availability without touching the career game's keys.
 save();
 const initialId = location.hash.slice(1);
@@ -932,6 +1124,8 @@ else if (PLACE_BY_ID.has(initialId)) visitPlace(initialId);
 try {
   const { createIslandScene } = await import('./scene.js');
   scene = await createIslandScene({ container: $('#scene'), initialHour: hour, districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
+  sceneReady = true;
+  if ($('#ferry-dialog').open) renderFerry();
   scene.setResidents(applications.getResidents());
   scene.setDispositions?.(conflictState.people);
   $('#loading').hidden = true;
@@ -947,7 +1141,9 @@ try {
     toast('地圖暫時休息中，仍可從清單探索。');
   }, true);
 } catch (error) {
+  sceneReady = true;
   sceneUnavailable = true; lifeAvailable = false; renderLifeStatus();
+  if ($('#ferry-dialog').open) renderFerry();
   $('#loading').hidden = true; $('#map-fallback').hidden = false;
   $('#roam-toggle').disabled = true; $('#explore-start').disabled = true;
   document.querySelectorAll('.map-controls button,.zoom-controls button').forEach(node => { node.disabled = true; });

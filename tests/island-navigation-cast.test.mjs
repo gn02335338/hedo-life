@@ -7,14 +7,17 @@ import {
 } from '../dist/island/navigation.js';
 import { RESIDENT_POSITIONS, RESIDENT_RADIUS } from '../dist/island/residents.js';
 
+import { REGIONS } from '../dist/island/archipelago.js';
+import { walkRegionTargets } from './island-region-walking.mjs';
+
 const distance = (a,b) => Math.hypot(a.x-b.x,a.z-b.z);
 const castTargets = ISLAND_CAST.map(({id,districtId}) => ({kind:'person',id,districtId,
   key:`person:${id}`,position:CAST_POSITIONS[id],radius:1.4}));
 const residentTargets = LAYOUT.flatMap(({id}) => (RESIDENT_POSITIONS[id]||[]).map((position,slot) => ({
-  kind:'resident',key:`resident:${id}:${slot}`,position,radius:1.15,exitRadius:1.4,
+  kind:'resident',districtId:id,key:`resident:${id}:${slot}`,position,radius:1.15,exitRadius:1.4,
 })));
 const occupied = residentTargets.map(({position}) => ({...position,radius:RESIDENT_RADIUS}));
-const targets = [...LAYOUT.map(({id}) => ({kind:'building',key:`building:${id}`,
+const targets = [...LAYOUT.map(({id}) => ({kind:'building',districtId:id,key:`building:${id}`,
   position:DISTRICT_ENTRANCES[id],radius:1.25})),...castTargets,...residentTargets];
 
 test('every public colleague has a distinct campus home without displacing community slots',()=>{
@@ -39,42 +42,6 @@ test('every public colleague has a distinct campus home without displacing commu
   }
 });
 
-test('all34 colleague conversations and all27 community conversations are reachable by actual walking at full capacity',()=>{
-  // Each flood node carries its real proximity selection from the parent path.
-  // This proves conversations can be selected after walking past other people,
-  // rather than only checking geometry or resetting interaction hysteresis.
-  const step=.16,key=(x,z)=>`${x},${z}`;
-  const point=(x,z)=>({x:PLAYER_SPAWN.x+x*step,z:PLAYER_SPAWN.z+z*step});
-  const start={x:0,z:0,current:nearestInteraction(PLAYER_SPAWN,targets)?.key??null};
-  const queue=[start],parents=new Map([[key(0,0),null]]),usable=new Map(),approaches=new Map(),entrances=new Set();
-  for(let head=0;head<queue.length;head++){
-    const cell=queue[head],position=point(cell.x,cell.z),selected=targets.find(target=>target.key===cell.current);
-    if(selected&&selected.kind!=='building'&&distance(position,selected.position)<.9&&!approaches.has(selected.key))approaches.set(selected.key,cell);
-    for(const district of LAYOUT)if(distance(position,DISTRICT_ENTRANCES[district.id])<.2)entrances.add(district.id);
-    if(approaches.size===castTargets.length+residentTargets.length&&entrances.size===LAYOUT.length)break;
-    for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
-      const x=cell.x+dx,z=cell.z+dz,k=key(x,z);
-      if(parents.has(k)||Math.abs(x)>100||Math.abs(z)>165)continue;
-      const destination=point(x,z);
-      if(!usable.has(k))usable.set(k,isWalkable(destination,PLAYER_RADIUS,occupied));
-      if(!usable.get(k))continue;
-      const current=nearestInteraction(destination,targets,cell.current)?.key??null;
-      parents.set(k,cell);queue.push({x,z,current});
-    }
-  }
-  const missing=[...castTargets,...residentTargets].filter(target=>!approaches.has(target.key)).map(target=>target.key);
-  assert.deepEqual(missing,[],'all named conversations own the proximity prompt on a reachable walking path');
-  assert.equal(entrances.size,LAYOUT.length,'the complete cast does not close any district entrance');
-  for(const target of [...castTargets,...residentTargets]){
-    const route=[];
-    for(let cell=approaches.get(target.key);cell;cell=parents.get(key(cell.x,cell.z)))route.push(point(cell.x,cell.z));
-    route.reverse();
-    let position={...PLAYER_SPAWN},current=nearestInteraction(position,targets)?.key??null;
-    for(const destination of route.slice(1)){
-      position=movePlayer(position,{x:destination.x-position.x,z:destination.z-position.z},.1,10,occupied);
-      assert.ok(distance(position,destination)<1e-7,`${target.key}: movement cannot traverse a blocked path`);
-      current=nearestInteraction(position,targets,current)?.key??null;
-    }
-    assert.equal(current,target.key,`${target.key}: arriving selects this conversation`);
-  }
+test('all34 colleague conversations and all27 community conversations are reachable after landing on each island',()=>{
+  for(const regionId of Object.keys(REGIONS))walkRegionTargets(regionId,targets,{obstacles:occupied});
 });

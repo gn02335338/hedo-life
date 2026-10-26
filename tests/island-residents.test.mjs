@@ -1,3 +1,5 @@
+import { REGIONS } from '../dist/island/archipelago.js';
+import { walkRegionTargets } from './island-region-walking.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { OUTFITS, RESIDENT_POSITIONS, RESIDENT_RADIUS, normalizeResidents, residentObstacles } from '../dist/island/residents.js';
@@ -52,40 +54,11 @@ test('all27 resident slots, built-in colleagues and every bridge remain approach
   const residents=normalizeResidents(payload(roster())),extra=residentObstacles(residents);
   assert.ok(isWalkable(PLAYER_SPAWN,PLAYER_RADIUS,extra));
   const targets=residents.map(row=>({...row,kind:'resident',key:`resident:${row.id}`,position:RESIDENT_POSITIONS[row.districtId][row.slot],radius:1.15,exitRadius:1.4}));
-  const builtin=LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITIONS, district.id)).flatMap(d=>[{key:`building:${d.id}`,position:DISTRICT_ENTRANCES[d.id],radius:1.25},{key:`person:${d.id}`,position:NPC_POSITIONS[d.id],radius:1.4}]);
+  const builtin=LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITIONS, district.id)).flatMap(d=>[{districtId:d.id,key:`building:${d.id}`,position:DISTRICT_ENTRANCES[d.id],radius:1.25},{districtId:d.id,key:`person:${d.id}`,position:NPC_POSITIONS[d.id],radius:1.4}]);
   for(const target of targets){assert.ok(isWalkable(target.position),`${target.districtId}/${target.slot}: exterior ground`);assert.equal(isWalkable(target.position,PLAYER_RADIUS,extra),false);}
   for(const bridge of BRIDGES)for(let i=0;i<=40;i++){
     const along=(i/40-.5)*(bridge.length+.8),point={x:bridge.x+Math.sin(bridge.rotation)*along,z:bridge.z+Math.cos(bridge.rotation)*along};
     assert.ok(isWalkable(point,PLAYER_RADIUS,extra),`${bridge.fromId}-${bridge.toId}: resident does not block deck or seam`);
   }
-  const step=.16,key=(x,z)=>`${x},${z}`,point=(x,z)=>({x:PLAYER_SPAWN.x+x*step,z:PLAYER_SPAWN.z+z*step});
-  const queue=[{x:0,z:0}],parents=new Map([[key(0,0),null]]),usable=new Map(),approaches=new Map(),colleagues=new Set(),entrances=new Set();
-  for(let head=0;head<queue.length;head++){
-    const cell=queue[head],position=point(cell.x,cell.z);
-    const selected=nearestInteraction(position,[...builtin,...targets]);
-    if(selected?.kind==='resident'&&distance(position,selected.position)<.85)approaches.set(selected.key,cell);
-    for(const district of LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITIONS, district.id))){
-      if(distance(position,NPC_POSITIONS[district.id])<.8)colleagues.add(district.id);
-      if(distance(position,DISTRICT_ENTRANCES[district.id])<.2)entrances.add(district.id);
-    }
-    if(approaches.size===27&&colleagues.size===9&&entrances.size===9)break;
-    for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
-      const x=cell.x+dx,z=cell.z+dz,k=key(x,z);
-      if(parents.has(k)||Math.abs(x)>100||Math.abs(z)>110)continue;
-      if(!usable.has(k))usable.set(k,isWalkable(point(x,z),PLAYER_RADIUS,extra));
-      if(!usable.get(k))continue;parents.set(k,cell);queue.push({x,z});
-    }
-  }
-  assert.equal(approaches.size,27,`reachable residents: ${[...approaches.keys()].join(',')}`);
-  assert.equal(colleagues.size,9,'all original colleagues stay reachable');
-  assert.equal(entrances.size,9,'all entrances stay reachable');
-  for(const target of targets){
-    const route=[];for(let cell=approaches.get(target.key);cell;cell=parents.get(key(cell.x,cell.z)))route.push(point(cell.x,cell.z));route.reverse();
-    let position={...PLAYER_SPAWN};
-    for(const destination of route.slice(1)){
-      position=movePlayer(position,{x:destination.x-position.x,z:destination.z-position.z},.1,10,extra);
-      assert.ok(distance(position,destination)<1e-7,`${target.districtId}/${target.slot}: movement reaches approach`);
-    }
-    assert.equal(nearestInteraction(position,[...builtin,...targets])?.key,target.key,'resident can own the proximity prompt');
-  }
+  for(const regionId of Object.keys(REGIONS))walkRegionTargets(regionId,[...builtin,...targets],{obstacles:extra});
 });

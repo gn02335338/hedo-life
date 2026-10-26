@@ -51,6 +51,15 @@ export const ISLAND_CHARACTER_LOOKS = Object.freeze({
   mia: look({ hair: '#70513e', hairStyle: 'bob', shirt: '#53617d', clothing: 'shirt', trousers: '#dccdaf', accessories: ['clipboard'], skin: '#edb993' }),
 });
 
+// Public visitor artwork translated into the same island doll proportions.
+// Keep this optional encounter out of the ordinary cast/resident roster.
+export const HIDDEN_CHARACTER_LOOK = look({
+  skin: '#eab58f', hair: '#3e3741', hairStyle: 'long',
+  shirt: '#405473', clothing: 'tee', inner: '#c76877',
+  trousers: '#4e515b', glasses: 'square', accessories: ['cap', 'phone', 'bowl'],
+});
+
 export function getIslandCharacterLook(id) {
+  if (id === 'hidden-visitor') return HIDDEN_CHARACTER_LOOK;
   return Object.hasOwn(ISLAND_CHARACTER_LOOKS, id) ? ISLAND_CHARACTER_LOOKS[id] : ISLAND_VISITOR_LOOK;
 }

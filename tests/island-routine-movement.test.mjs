@@ -1,3 +1,4 @@
+import { FERRY_SPEED } from '../dist/island/archipelago.js';
 import { RESIDENT_POSITIONS } from '../dist/island/residents.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -11,18 +12,19 @@ const fullRoster = () => LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITI
 const gap = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const positions = life => life.getState().map(row => [row.key, row.position]);
 function assertSeparated(rows) {
+  rows=rows.filter(row=>!row.ferry);
   for (let i = 0; i < rows.length; i++) for (let j = i + 1; j < rows.length; j++) assert.ok(gap(rows[i].position, rows[j].position) >= .445 - 1e-7, `${rows[i].key} overlaps ${rows[j].key}`);
 }
-function settle(life, seconds = 240) {
+function settle(life, seconds = 360) {
   let previous = life.getState(), frames = 0;
   for (; frames < seconds * 10; frames++) {
     const rows = life.update(.1);
     for (let i = 0; i < rows.length; i++) {
-      assert.ok(gap(rows[i].position, previous[i].position) <= NPC_COMMUTE_SPEED * .1 + 1e-8, `${rows[i].key}: teleported`);
-      assert.equal(rows[i].position.y, npcGroundHeight(rows[i].position));
+      assert.ok(gap(rows[i].position, previous[i].position) <= (rows[i].ferry||previous[i].ferry?FERRY_SPEED:NPC_COMMUTE_SPEED) * .1 + 1e-8, `${rows[i].key}: teleported`);
+      if(rows[i].state==='sailing')assert.equal(rows[i].position.y,.58);else assert.equal(rows[i].position.y, npcGroundHeight(rows[i].position));
     }
     assertSeparated(rows);
-    if (frames % 10 === 0) for (const row of rows) assert.ok(isTerrainWalkable(row.position, .21), `${row.key}: off island or inside building`);
+    if (frames % 10 === 0) for (const row of rows.filter(row=>!row.ferry)) assert.ok(isTerrainWalkable(row.position, .21), `${row.key}: off island or inside building`);
     previous = rows;
     if (frames > 10 && !rows.some(row => row.traveling)) break;
   }
@@ -45,7 +47,7 @@ test('all 61 actors remain solid while colleagues complete tea, work, after-work
   const life = createNpcLife({ hour: 10, residents: fullRoster() });
   for (const hour of [12.6, 13.5, 15.6, 18, 19.25, 19.75, 20.25, 10]) {
     const before = positions(life); life.setHour(hour); assert.deepEqual(positions(life), before, 'changing time retargets without moving bodies');
-    const duration = settle(life); assert.ok(duration <= 240);
+    const duration = settle(life); assert.ok(duration <= 360);
     for (const row of life.getState()) {
       assert.equal(row.districtId, row.destinationDistrictId, `${row.id}: wrong venue at ${hour}`);
       if (row.kind === 'resident') assert.equal(row.districtId, row.id.split('-')[0], 'approved residents keep their assigned homes');
@@ -77,7 +79,7 @@ test('rapid clock scrubbing during a crossing releases bridge traffic and retain
   const life = createNpcLife({ hour: 12.6, residents: fullRoster() }); life.setHour(18);
   for (let i = 0; i < 150; i++) life.update(.1);
   for (const hour of [10, 19.25, 12.6, 18]) { const before = positions(life); life.setHour(hour); assert.deepEqual(positions(life), before); for (let i = 0; i < 10; i++) life.update(.1); }
-  settle(life, 300);
+  settle(life, 360);
   const snapshot = life.getState()[0]; snapshot.position.x = Infinity; snapshot.routine.placeId = 'broken';
   assert.ok(Number.isFinite(life.getState()[0].position.x)); assert.ok(PLACE_ENTRANCES[life.getState()[0].routine.placeId]);
 });

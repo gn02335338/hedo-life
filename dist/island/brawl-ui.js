@@ -187,7 +187,7 @@ function drawSignatureWarning(ctx, actor, skill) {
   ctx.restore();
 }
 
-export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion = false }) {
+export function mountIslandBrawl({ container, opponent, onFinish, story = null, reducedMotion = false }) {
   const doc = container.ownerDocument || document, view = doc.defaultView || window;
   const node = (tag, className = '', value) => { const item = doc.createElement(tag); if (className) item.className = className; if (value !== undefined) item.textContent = value; return item; };
   const button = (className, label, action) => { const item = node('button', className, label); item.type = 'button'; if (action) item.addEventListener('click', action); return item; };
@@ -228,6 +228,12 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
   const resumeButton = button('brawl-primary', '繼續對戰 →', () => resume()); resumeButton.dataset.brawlResume = ''; resumeButton.hidden = true;
   const forfeitButton = button('brawl-secondary', '認輸離場', () => { controls.clear(); model.forfeit(); update(); complete(); }); forfeitButton.dataset.brawlForfeit = ''; forfeitButton.hidden = true;
   panel.append(panelKicker, panelTitle, panelCopy, readyRules, startButton, resumeButton, forfeitButton); overlay.append(panel); stage.append(overlay); root.append(stage);
+  const storyPrelude = story ? node('details', 'brawl-story-prelude') : null;
+  if (storyPrelude) {
+    storyPrelude.open = false;
+    storyPrelude.append(node('summary', '', `${story.title} · 開場故事`), node('p', '', story.body));
+    root.insertBefore(storyPrelude, stage);
+  }
   const abilityToast = node('div', 'brawl-ability-toast'); abilityToast.setAttribute('aria-hidden', 'true'); abilityToast.hidden = true;
   const abilityName = node('strong'), abilityLine = node('span'); abilityToast.append(abilityName, abilityLine); stage.append(abilityToast);
   const status = node('p', 'brawl-status', '準備好再開始；右上角可以先離開。'); status.dataset.brawlStatus = ''; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite'); root.append(status);
@@ -338,13 +344,15 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
   }
   function start() {
     if (disposed || model.getState().phase !== 'ready') return;
+    if (storyPrelude) storyPrelude.hidden = true;
     controls.clear(); model.start(); previousTime = null; update(); canvas.focus({ preventScroll: true });
   }
   function pause(focus = true) {
     if (disposed || model.getState().phase !== 'playing') return;
     controls.clear(); model.pause(); previousTime = null;
-    panelKicker.textContent = '先停一下，也沒關係'; panelTitle.textContent = '這場對戰，等你回來'; panelCopy.textContent = '準備好再繼續；認輸離場會依敗方送醫收尾。';
+    panelKicker.textContent = '先停一下，也沒關係'; panelTitle.textContent = '這場對戰，等你回來'; panelCopy.textContent = story ? '準備好再繼續；認輸只結束這場切磋，可以再來挑戰。' : '準備好再繼續；認輸離場會依敗方送醫收尾。';
     readyRules.hidden = true; startButton.hidden = true; resumeButton.hidden = false; forfeitButton.hidden = false;
+    if (storyPrelude) storyPrelude.hidden = true;
     update(); if (focus) resumeButton.focus({ preventScroll: true });
   }
   function resume() {

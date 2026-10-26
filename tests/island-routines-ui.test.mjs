@@ -6,10 +6,12 @@ import { DISTRICTS, TOUR } from '../dist/island/content.js';
 import { PLACES, PLACE_BY_ID } from '../dist/island/places.js';
 import { ISLAND_CAST } from '../dist/island/cast.js';
 import { ENCOUNTERS } from '../dist/island/encounters.js';
-import { displayIslandPersona as displayPersona } from '../dist/island/persona.js';
+import { displayIslandPersona, displayIslandPersona as displayPersona } from '../dist/island/persona.js';
 import { readProgress, writeProgress } from '../dist/island/progress.js';
 import * as routines from '../dist/island/routines.js';
 import { createIslandConflicts } from '../dist/island/conflicts.js';
+import { createIslandChallenge, CHALLENGE_STORAGE_KEY } from '../dist/island/challenge.js';
+import { getRegionForDistrict, REGIONS, DOCKS } from '../dist/island/archipelago.js';
 
 // Execute the real app controller against a small DOM, replacing only renderer,
 // network and timers. This exercises user-visible controls and event handlers;
@@ -107,7 +109,14 @@ function makeDocument(html) {
   document.createTextNode = text => { const node = document.createElement('#text'); node.text = text; return node; };
   document.root = document.createElement('root');
   document.querySelectorAll = selector => query(document.root, selector);
-  document.querySelector = selector => document.querySelectorAll(selector)[0] || null;
+  document.querySelector = selector => {
+    const found = document.querySelectorAll(selector)[0];
+    if (found || !/^#[\w-]+$/.test(selector)) return found || null;
+    // New controller panels can be exercised before the page's HTML lands.
+    // Only root ID lookups are stubbed; missing dynamic controls stay missing.
+    const node = document.createElement('div'); node.id = selector.slice(1);
+    (document.body || document.root).append(node); return node;
+  };
   const stack = [document.root], voids = new Set(['meta', 'link', 'input', 'img', 'br', 'hr']);
   for (const token of html.matchAll(/<!--[\s\S]*?-->|<![^>]*>|<\/?[^>]+>|[^<]+/g)) {
     const text = token[0];
@@ -123,11 +132,13 @@ function makeDocument(html) {
   document.hidden = false; document.visibilityState = 'visible';
   return document;
 }
-async function fixture({ fallback = false, reducedMotion = false, conflictRandom = () => .01, brawlFails = false, brawlDeferred = false } = {}) {
+async function fixture({ fallback = false, reducedMotion = false, conflictRandom = () => .01, brawlFails = false, brawlDeferred = false,
+  challengeProgress, initialHash = '', sailDeferred = false, sailFails = false } = {}) {
   const [source, html] = await Promise.all(['app.js', 'index.html'].map(name => readFile(new URL(`../dist/island/${name}`, import.meta.url), 'utf8')));
   const document = makeDocument(html), window = new Surface(), calls = [], timers = new Map(); let nextTimer = 0, onLifeUpdate, now = 0;
   const bytes = new Map([['hedo-island-v1', JSON.stringify({ version: 1, visited: ['lobby'], choices: { lobby: 2 } })], ['hedo-anonymous-v1', 'TEST_IDENTITY'], ['hedo-life-v1', 'UNCHANGED_CAREER']]);
-  const writes = [], brawls = [];
+  if (challengeProgress) bytes.set(CHALLENGE_STORAGE_KEY, JSON.stringify(challengeProgress));
+  const writes = [], brawls = [], voyages = []; let sceneRegion = 'company';
   let resolveBrawlImport;
   const brawlImportWait = brawlDeferred ? new Promise(resolve => { resolveBrawlImport = resolve; }) : Promise.resolve();
   const mountIslandBrawl = config => {
@@ -138,13 +149,27 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
   };
   window.localStorage = { getItem: key => bytes.get(key) ?? null, setItem: (key, value) => { writes.push(key); bytes.set(key, value); } };
   const scene = Object.fromEntries(['setResidents', 'setDispositions', 'sendPlayerToPlace', 'setRoaming', 'setHour', 'setPaused', 'setMovementEnabled', 'setConversationTarget', 'setConnections', 'setTopView', 'focus', 'focusPlace', 'focusPerson', 'reset', 'destroy', 'setMoveInput', 'zoom'].map(method => [method, (...args) => { calls.push({ method, args }); }]));
+  scene.getRegion = () => sceneRegion;
+  scene.focusRegion = (...args) => { calls.push({ method: 'focusRegion', args }); };
+  scene.sailToRegion = (regionId, options = {}) => {
+    calls.push({ method: 'sailToRegion', args: [regionId, options] });
+    return new Promise((resolve, reject) => {
+      const voyage = { regionId, options, settled: false,
+        settle(success) { if (this.settled) return; this.settled = true; if (success) { sceneRegion = regionId; options.onProgress?.(1); } resolve(success); },
+        reject() { if (this.settled) return; this.settled = true; reject(new Error('intentional interrupted sailing')); } };
+      voyages.push(voyage); options.onProgress?.(0);
+      if (!sailDeferred) voyage.settle(!sailFails);
+    });
+  };
+  scene.destroy = () => { calls.push({ method: 'destroy', args: [] }); for (const voyage of voyages) voyage.settle(false); };
   const createIslandScene = async config => { if (fallback) throw new Error('intentional renderer unavailable'); onLifeUpdate = config.onLifeUpdate; document.querySelector('#scene').append(document.createElement('canvas')); return scene; };
   const media = query => Object.assign(new Surface(), { matches: query.includes('reduced-motion') && reducedMotion });
-  const location = { pathname: '/island/', search: '', hash: '', reload() {} };
+  const location = { pathname: '/island/', search: '', hash: initialHash, reload() {} };
   const history = { replaceState: (_state, _unused, path) => { location.hash = path.includes('#') ? path.slice(path.indexOf('#')) : ''; } };
   const context = vm.createContext({
     createIslandConflicts: () => createIslandConflicts({ random: conflictRandom }),
-    ...routines, DISTRICTS, TOUR, PLACES, PLACE_BY_ID, ISLAND_CAST, ENCOUNTERS, displayPersona, readProgress, writeProgress,
+    ...routines, DISTRICTS, TOUR, PLACES, PLACE_BY_ID, ISLAND_CAST, ENCOUNTERS, displayPersona, displayIslandPersona, readProgress, writeProgress,
+    createIslandChallenge, getRegionForDistrict, REGIONS, DOCKS,
     document, window, matchMedia: media, history, location, createIslandScene, mountIslandBrawl, brawlImportWait,
     bindWalkControls: () => ({ clear() {}, destroy() {} }), bindApplications: () => ({ getResidents: () => [] }),
     createIslandAdminSummary: () => ({ refresh: async () => {} }), residentAvatar: () => document.createElement('span'),
@@ -153,8 +178,10 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
     performance: { now: () => now }, requestAnimationFrame: callback => { timers.set(++nextTimer, callback); return nextTimer; }, cancelAnimationFrame: id => timers.delete(id),
   });
   const script = source.replace(/^import\s[\s\S]*?;\r?\n/gm, '').replace("const { createIslandScene } = await import('./scene.js');", '').replace("const { mountIslandBrawl } = await import('./brawl-ui.js');", 'await brawlImportWait;');
-  const api = await new vm.Script(`(async () => { ${script}\n return { setHour, renderCastDirectory, renderDetail, renderEncounter, meetColleague, updateIslandLife, renderLifeStatus, closeDialog, getHour: () => hour, renderConflictMenu, visitPlace, getConflictState: () => conflicts.getState() }; })()`, { filename: 'dist/island/app.js' }).runInContext(context);
-  return { api, document, window, calls, scene, timers, bytes, writes, brawls, location, resolveBrawlImport, startBattle: () => { brawls.at(-1).phase = 'playing'; }, finishBattle: (outcome, summary = {}) => brawls.at(-1).config.onFinish(outcome, { duration: 25, maxCombo: 5, damageDealt: 110, damageTaken: 35, specialsUsed: 1, reason: 'knockout', ...summary }), advanceClock: seconds => { now += seconds * 1000; for (const timer of timers.values()) if (timer.kind === 'interval') timer.callback(); }, life: rows => onLifeUpdate?.({ actors: rows }), node: selector => document.querySelector(selector) };
+  const api = await new vm.Script(`(async () => { ${script}\n return { setHour, renderCastDirectory, renderDetail, renderEncounter, meetColleague, updateIslandLife, renderLifeStatus, closeDialog, getHour: () => hour, renderConflictMenu, visitPlace, selectDistrict, startBrawl, openChallenge, openFerry, sailTo, getConflictState: () => conflicts.getState(), getChallengeState: () => challenge.getState(), getTravelState: () => ({ currentRegion, pendingTravel, activeVoyage: !!activeVoyage }), getVisited: () => [...progress.visited], getPlaceVisits: () => [...placeVisits] }; })()`, { filename: 'dist/island/app.js' }).runInContext(context);
+  return { api, document, window, calls, scene, timers, bytes, writes, brawls, voyages, location, resolveBrawlImport,
+    resolveSail: success => voyages.at(-1)?.settle(success), rejectSail: () => voyages.at(-1)?.reject(),
+    startBattle: () => { brawls.at(-1).phase = 'playing'; }, finishBattle: (outcome, summary = {}) => brawls.at(-1).config.onFinish(outcome, { duration: 25, maxCombo: 5, damageDealt: 110, damageTaken: 35, specialsUsed: 1, reason: 'knockout', ...summary }), advanceClock: seconds => { now += seconds * 1000; for (const timer of timers.values()) if (timer.kind === 'interval') timer.callback(); }, life: rows => onLifeUpdate?.({ actors: rows }), node: selector => document.querySelector(selector) };
 }
 
 test('routine controls retain the legacy island passport, career bytes and anonymous identity', async () => {
@@ -253,6 +280,8 @@ test('fallback and reduced motion retain schedules and invitation choices withou
   assert.ok(!f.node('[data-character-id="kind"]').textContent.includes('現在在 ·'));
   f.api.closeDialog(f.node('#cast-dialog'));
   await f.node('#mystery-open').dispatch('click');
+  assert.equal(f.node('#ferry-dialog').open, true);
+  await f.node('[data-sail-region="life"]').dispatch('click');
   assert.equal(f.node('#encounter-title').textContent, routines.MYSTERY_TRIP.story.title);
   assert.equal(f.document.querySelectorAll('[data-encounter-choice]').length, 3);
   const hour = f.api.getHour(); f.advanceClock(1); assert.equal(f.api.getHour(), hour);
@@ -317,11 +346,15 @@ test('fight choices resolve only after selection, transfer both sides, and recov
     assert.equal(state.player.status, playerStatus);
     assert.equal(state.people[0].status, otherStatus);
     assert.equal(f.node('#island-conflict-panel').dataset.status, playerStatus);
-    assert.equal(f.calls.filter(call => call.method === 'sendPlayerToPlace').at(-1).args[0], placeId);
+    assert.equal(f.calls.filter(call => call.method === 'sendPlayerToPlace').length, 0, 'a remote consequence does not teleport the player');
+    assert.ok(!f.api.getVisited().includes(playerStatus));
     assert.equal(f.calls.filter(call => call.method === 'setDispositions').at(-1).args[0][0].id, 'jack');
     f.api.visitPlace('pantry');
     assert.equal(f.node('[data-conflict-recover]'), null, 'an unrelated facility cannot complete treatment or a police statement');
-    f.api.visitPlace(placeId);
+    await f.node(`[data-conflict-player-place="${placeId}"]`).dispatch('click');
+    assert.equal(f.node('#ferry-dialog').open, true);
+    await f.node('[data-sail-region="life"]').dispatch('click');
+    assert.equal(f.calls.filter(call => call.method === 'sendPlayerToPlace').at(-1).args[0], placeId);
     await f.node('[data-conflict-recover]').dispatch('click');
     assert.equal(f.api.getConflictState().player.status, 'free');
     assert.equal(f.api.getConflictState().people.length, 1, 'the opponent is not implicitly released');
@@ -348,6 +381,7 @@ test('boss arguments can exile the visitor, clock changes retain the hold, and e
   f.api.meetColleague('jack');
   assert.equal(f.node('[data-conflict-action="fight"]'), null, 'an unresolved hold blocks further fights');
   f.api.visitPlace('exile-gate');
+  await f.node('[data-sail-region="exile"]').dispatch('click');
   await f.node('[data-conflict-recover]').dispatch('click');
   assert.equal(f.api.getConflictState().player.status, 'free');
 });
@@ -363,6 +397,7 @@ test('fallback exposes incident recovery and a held Aliang does not pretend to l
   assert.ok(f.node('#island-routine-title').textContent.includes('先等阿良一下'));
   assert.ok(!f.node('#island-routine-description').textContent.includes('阿良與夥伴正前往'));
   await f.node('#mystery-open').dispatch('click');
+  await f.node('[data-sail-region="life"]').dispatch('click');
   assert.notEqual(f.node('#encounter-title').textContent, routines.MYSTERY_TRIP.story.title);
   assert.ok(f.node('#encounter-content').textContent.includes('警局做筆錄'));
   assert.ok(!f.node('#encounter-content').textContent.includes('今晚的集合正在進行'));
@@ -375,6 +410,7 @@ test('Aliang still supports conflict choices while hosting the evening invitatio
   const f = await fixture();
   f.api.setHour(19.25);
   f.api.meetColleague('kind');
+  await f.node('[data-sail-region="life"]').dispatch('click');
   assert.equal(f.node('#encounter-title').textContent, routines.MYSTERY_TRIP.story.title);
   assert.ok(f.node('[data-conflict-action="argue"]'));
   await f.node('[data-conflict-action="fight"]').dispatch('click');
@@ -403,7 +439,7 @@ test('a pending bout pins the opponent and clock, while closing before start can
 
 test('closing or native Escape during a started bout pauses instead of silently escaping, and forfeit settles once', async () => {
   const f = await fixture();
-  f.api.meetColleague('wing');
+  f.api.meetColleague('jack');
   await f.node('[data-conflict-action="fight"]').dispatch('click'); f.startBattle();
   assert.equal(f.api.closeDialog(f.node('#encounter-dialog')), false);
   assert.equal(f.node('#encounter-dialog').open, true);
@@ -479,4 +515,278 @@ test('a hash navigation during combat pauses the owned match without replacing i
   assert.equal(f.brawls[0].destroyed, 0);
   assert.equal(f.api.getConflictState().activeFight.opponentId, 'jack');
   assert.equal(f.api.getConflictState().history.length, 0);
+});
+
+test('locked bosses cannot bypass story progression through the legacy fight controller', async () => {
+  for (const id of ['rick', 'spencer', 'wing', 'hidden-visitor']) {
+    const f = await fixture();
+    await f.api.renderConflictMenu(id, 'fight');
+    assert.equal(f.brawls.length, 0, `${id}: no renderer is mounted before its invitation`);
+    assert.equal(f.api.getConflictState().activeFight, null, `${id}: no free-fight reservation`);
+    assert.equal(f.api.getChallengeState().active, null, `${id}: no story token is issued`);
+    assert.deepEqual(f.api.getChallengeState().wins, []);
+    if (id === 'hidden-visitor') {
+      assert.ok(!f.document.body.textContent.includes('魚酥姐'), 'the locked visitor is not named by a forged legacy entry');
+      assert.ok(!f.document.querySelectorAll('img').some(node => (node.src || node.getAttribute('src') || '').includes('hidden-visitor.png')));
+    }
+  }
+});
+
+test('story results count only a win and never apply hospital or police consequences', async () => {
+  for (const outcome of ['win', 'lose', 'draw']) {
+    const f = await fixture();
+    f.api.meetColleague('jack');
+    await f.node('[data-story-challenge="jack"]').dispatch('click');
+    assert.equal(f.api.getChallengeState().active.opponentId, 'jack');
+    assert.equal(f.api.getConflictState().activeFight, null);
+    assert.deepEqual(f.api.getChallengeState().wins, []);
+    f.startBattle(); f.finishBattle(outcome);
+    assert.deepEqual(f.api.getChallengeState().wins, outcome === 'win' ? ['jack'] : []);
+    assert.equal(f.api.getChallengeState().active, null);
+    assert.equal(f.api.getConflictState().history.length, 0);
+    assert.equal(f.api.getConflictState().player.status, 'free');
+    assert.equal(f.api.getConflictState().people.length, 0);
+    assert.equal(f.calls.filter(call => call.method === 'sendPlayerToPlace').length, 0);
+    assert.equal(f.node('[data-conflict-proceed]'), null);
+    assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+    assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+  }
+});
+
+test('canceled or stale story callbacks cannot add a win or settle a newer story battle', async () => {
+  const f = await fixture();
+  await f.api.startBrawl('jack', { story: true });
+  const oldFinish = f.brawls[0].config.onFinish;
+  assert.equal(f.api.closeDialog(f.node('#encounter-dialog')), true);
+  assert.equal(f.api.getChallengeState().active, null);
+  assert.deepEqual(f.api.getChallengeState().wins, []);
+  await f.api.startBrawl('kind', { story: true }); f.startBattle();
+  oldFinish('win', { duration: 20 });
+  assert.equal(f.api.getChallengeState().active.opponentId, 'kind');
+  assert.deepEqual(f.api.getChallengeState().wins, []);
+  f.finishBattle('lose', { reason: 'forfeit' });
+  oldFinish('win', { duration: 20 });
+  assert.deepEqual(f.api.getChallengeState().wins, []);
+  await f.api.startBrawl('jack', { story: true }); f.startBattle(); f.finishBattle('win');
+  assert.deepEqual(f.api.getChallengeState().wins, ['jack']);
+  oldFinish('win', { duration: 20 });
+  assert.deepEqual(f.api.getChallengeState().wins, ['jack']);
+  assert.equal(f.api.getConflictState().history.length, 0);
+});
+
+test('story cancellation during lazy import, canvas failure and page teardown never create victory receipts', async () => {
+  const deferred = await fixture({ brawlDeferred: true });
+  const pending = deferred.api.startBrawl('jack', { story: true });
+  assert.equal(deferred.api.getChallengeState().active.opponentId, 'jack');
+  deferred.api.closeDialog(deferred.node('#encounter-dialog'));
+  deferred.resolveBrawlImport(); await pending;
+  assert.equal(deferred.brawls.length, 0);
+  assert.equal(deferred.api.getChallengeState().active, null);
+  const failed = await fixture({ brawlFails: true });
+  await failed.api.startBrawl('jack', { story: true });
+  assert.equal(failed.api.getChallengeState().active, null);
+  const ended = await fixture();
+  await ended.api.startBrawl('jack', { story: true }); ended.startBattle();
+  const finishAfterTeardown = ended.brawls[0].config.onFinish;
+  await ended.window.dispatch('pagehide'); finishAfterTeardown('win', { duration: 20 });
+  for (const f of [deferred, failed, ended]) {
+    assert.deepEqual(f.api.getChallengeState().wins, []);
+    assert.ok(!f.writes.some(key => key.startsWith(CHALLENGE_STORAGE_KEY)));
+    assert.equal(f.api.getConflictState().history.length, 0);
+  }
+});
+
+test('the unlocked legacy boss route enforces boss order and reveals the final visitor only after opening its invitation', async () => {
+  const ordinary = ISLAND_CAST.map(person => person.id).filter(id => !['rick', 'spencer', 'wing'].includes(id));
+  const f = await fixture({ challengeProgress: { version: 1, wins: ordinary, invitationOpened: false } });
+  await f.api.startBrawl('spencer'); assert.equal(f.brawls.length, 0);
+  for (const id of ['rick', 'spencer', 'wing']) {
+    await f.api.renderConflictMenu(id, 'fight');
+    assert.equal(f.api.getChallengeState().active.opponentId, id);
+    assert.equal(f.api.getConflictState().activeFight, null, 'the legacy boss entry becomes a story battle');
+    f.startBattle(); f.finishBattle('win');
+  }
+  f.api.openChallenge();
+  assert.equal(f.api.getChallengeState().hidden, null);
+  assert.equal(f.node('[data-challenge-opponent="hidden-visitor"]'), null);
+  assert.ok(!f.node('#challenge-content').textContent.includes('魚酥姐'));
+  const brawlsBefore = f.brawls.length;
+  await f.api.startBrawl('hidden-visitor'); assert.equal(f.brawls.length, brawlsBefore);
+  const invitation = f.node('#challenge-content').querySelectorAll('button').find(node => node.textContent.includes('拆開碼頭'));
+  assert.ok(invitation); await invitation.dispatch('click');
+  assert.equal(f.api.getChallengeState().hidden.name, '魚酥姐');
+  await f.node('[data-challenge-opponent="hidden-visitor"]').dispatch('click');
+  await Promise.resolve();
+  assert.equal(f.api.getChallengeState().active?.opponentId, 'hidden-visitor');
+  assert.equal(f.brawls.at(-1).config.opponent.image, '/assets/hidden-visitor.png');
+  f.startBattle(); f.finishBattle('win');
+  assert.equal(f.api.getChallengeState().completed, true);
+  assert.equal(f.api.getChallengeState().wins.length, 35);
+  assert.equal(f.api.getConflictState().history.length, 0);
+  assert.equal(f.api.getConflictState().player.status, 'free');
+});
+
+test('a free ordinary fight keeps its consequences separate from the story win list', async () => {
+  const f = await fixture();
+  await f.api.startBrawl('jack'); f.startBattle(); f.finishBattle('win');
+  assert.equal(f.api.getConflictState().player.status, 'police');
+  assert.equal(f.api.getConflictState().people[0].status, 'hospital');
+  assert.deepEqual(f.api.getChallengeState().wins, []);
+  assert.ok(!f.writes.some(key => key.startsWith(CHALLENGE_STORAGE_KEY)));
+});
+
+test('district, place, colleague and hash navigation all wait for an actual ferry arrival', async () => {
+  const cases = [
+    { name: 'district', region: 'exile', district: 'exile', open: false, enter: f => f.api.selectDistrict('exile') },
+    { name: 'place', region: 'life', district: 'harbor', place: 'izakaya', open: true, enter: f => f.api.visitPlace('izakaya') },
+    { name: 'colleague', region: 'life', open: true, enter: f => { f.life([actor('kind', 'harbor')]); f.api.meetColleague('kind'); } },
+    { name: 'district hash', region: 'life', district: 'court', open: false, enter: f => { f.location.hash = '#court'; return f.window.dispatch('hashchange'); } },
+    { name: 'place hash', region: 'life', district: 'hospital', place: 'hospital-er', open: true, enter: f => { f.location.hash = '#hospital-er'; return f.window.dispatch('hashchange'); } },
+  ];
+  for (const entry of cases) {
+    const f = await fixture({ sailDeferred: true });
+    const passport = f.bytes.get('hedo-island-v1');
+    await entry.enter(f);
+    assert.equal(f.node('#ferry-dialog').open, true, `${entry.name}: boarding is offered first`);
+    assert.equal(f.api.getTravelState().pendingTravel.regionId, entry.region);
+    assert.equal(f.api.getTravelState().currentRegion, 'company');
+    assert.equal(f.node('#encounter-dialog').open, false, `${entry.name}: no remote conversation before boarding`);
+    assert.equal(f.bytes.get('hedo-island-v1'), passport);
+    assert.equal(f.api.getPlaceVisits().length, 0);
+    assert.equal(f.calls.filter(call => call.method === 'sailToRegion').length, 0, 'selecting a destination does not auto-board');
+    assert.equal(f.location.hash, '', 'the pending remote URL does not claim arrival');
+    const sailing = f.node(`[data-sail-region="${entry.region}"]`).dispatch('click');
+    assert.equal(f.api.getTravelState().activeVoyage, true);
+    assert.equal(f.node('#voyage-overlay').hidden, false);
+    assert.equal(f.node('#encounter-dialog').open, false, `${entry.name}: no conversation while at sea`);
+    assert.equal(f.bytes.get('hedo-island-v1'), passport);
+    assert.equal(f.api.getPlaceVisits().length, 0);
+    f.api.visitPlace('cold-palace');
+    assert.equal(f.node('#ferry-dialog').open, false, 'another request cannot replace the voyage in progress');
+    assert.equal(f.calls.filter(call => call.method === 'sailToRegion').length, 1);
+    f.resolveSail(true); await sailing;
+    assert.equal(f.api.getTravelState().currentRegion, entry.region);
+    assert.equal(f.api.getTravelState().activeVoyage, false);
+    assert.equal(f.node('#voyage-overlay').hidden, true);
+    assert.equal(f.node('#encounter-dialog').open, entry.open);
+    if (entry.district) assert.ok(f.api.getVisited().includes(entry.district));
+    if (entry.place) assert.ok(f.api.getPlaceVisits().includes(entry.place));
+  }
+});
+
+test('failed, interrupted or torn-down ferries never grant remote visits or conversations', async () => {
+  for (const stop of ['false', 'reject', 'pagehide']) {
+    const f = await fixture({ sailDeferred: true });
+    const passport = f.bytes.get('hedo-island-v1');
+    f.api.visitPlace('hospital-er');
+    const sailing = f.api.sailTo('life');
+    assert.equal(f.api.getTravelState().activeVoyage, true);
+    if (stop === 'false') f.resolveSail(false);
+    else if (stop === 'reject') f.rejectSail();
+    else await f.window.dispatch('pagehide');
+    assert.equal(await sailing, false);
+    assert.equal(f.api.getTravelState().currentRegion, 'company');
+    assert.equal(f.node('#encounter-dialog').open, false);
+    assert.equal(f.bytes.get('hedo-island-v1'), passport);
+    assert.ok(!f.api.getVisited().includes('hospital'));
+    assert.equal(f.api.getPlaceVisits().length, 0);
+    assert.equal(f.calls.filter(call => call.method === 'focusPlace').length, 0);
+  }
+});
+
+test('initial remote links and WebGL fallback preserve the ferry UI gate', async () => {
+  for (const fallback of [false, true]) {
+    const f = await fixture({ fallback, reducedMotion: true, initialHash: '#hospital-er' });
+    assert.equal(f.node('#ferry-dialog').open, true);
+    assert.equal(f.node('#encounter-dialog').open, false);
+    assert.equal(f.location.hash, '');
+    assert.ok(!f.api.getVisited().includes('hospital'));
+    assert.equal(f.node('[data-sail-region="life"]').disabled, false, 'a prepared fallback dock remains usable');
+    await f.node('[data-sail-region="life"]').dispatch('click');
+    assert.equal(f.api.getTravelState().currentRegion, 'life');
+    assert.equal(f.node('#encounter-dialog').open, true);
+    assert.ok(f.api.getVisited().includes('hospital'));
+    assert.ok(f.api.getPlaceVisits().includes('hospital-er'));
+    assert.equal(f.calls.filter(call => call.method === 'sailToRegion').length, fallback ? 0 : 1, 'fallback arrival follows an explicit boat choice');
+  }
+});
+
+test('colleagues on a ferry cannot be remotely chatted with or reserved for combat', async () => {
+  const f = await fixture();
+  f.life([actor('kind', 'cafe', { state: 'sailing', traveling: true, ferry: { from: 'company', to: 'life' }, destinationDistrictId: 'harbor' })]);
+  f.api.meetColleague('kind');
+  await f.node('#mystery-open').dispatch('click');
+  await f.api.startBrawl('kind', { story: true });
+  assert.equal(f.node('#encounter-dialog').open, false);
+  assert.equal(f.node('#ferry-dialog').open, false);
+  assert.equal(f.brawls.length, 0);
+  assert.equal(f.api.getChallengeState().active, null);
+  assert.equal(f.api.getConflictState().activeFight, null);
+});
+
+test('a hospital hold follows the actual body through departure, ferry and arrival without clearing the hold', async () => {
+  const f = await fixture();
+  f.life([actor('jack', 'lab')]);
+  await f.api.startBrawl('jack'); f.startBattle(); f.finishBattle('win');
+  f.api.closeDialog(f.node('#encounter-dialog'));
+  const transfer = { traveling: true, destinationDistrictId: 'hospital', destinationPlaceId: 'hospital-er' };
+  f.life([actor('jack', 'lab', { ...transfer, state: 'walking', activity: '前往應急船碼頭' })]);
+  f.node('#cast-search').value = DISTRICTS.find(district => district.id === 'lab').name;
+  await f.node('#cast-open').dispatch('click');
+  const departing = f.node('[data-character-id="jack"]');
+  assert.ok(departing, 'the department location filter follows the body before boarding');
+  assert.match(departing.querySelector('[data-person-location]').textContent, /接駁前往.*急診室/);
+  assert.ok(!departing.textContent.includes('醫院留觀'), 'the intended hold is not presented as an already-arrived body');
+  await departing.querySelector('[data-locate-person]').dispatch('click');
+  assert.equal(f.calls.filter(call => call.method === 'focus').at(-1).args[0], 'lab');
+  assert.equal(f.node('#ferry-dialog').open, false, 'a colleague still on the company island can be located locally');
+  f.api.meetColleague('jack');
+  assert.equal(f.node('#encounter-dialog').open, true);
+  assert.ok(f.node('#encounter-place').textContent.includes(DISTRICTS.find(district => district.id === 'lab').name));
+  assert.ok(f.node('#encounter-content').textContent.includes('正在前往急診室'));
+  assert.equal(f.node('[data-conflict-action="fight"]'), null);
+  assert.equal(f.node('[data-story-challenge="jack"]'), null);
+  f.api.closeDialog(f.node('#encounter-dialog'));
+
+  f.life([actor('jack', 'cafe', { ...transfer, state: 'sailing', ferry: { from: 'company', to: 'life' } })]);
+  f.api.meetColleague('jack');
+  assert.equal(f.node('#encounter-dialog').open, false, 'a held passenger is not available for conversation at sea');
+  f.node('#cast-search').value = ''; await f.node('#cast-open').dispatch('click');
+  const aboard = f.node('[data-character-id="jack"]');
+  assert.match(aboard.querySelector('[data-person-location]').textContent, /搭船中.*公司本島.*下班生活島/);
+  const focusedBefore = f.calls.filter(call => call.method === 'focusPerson').length;
+  await aboard.querySelector('[data-locate-person]').dispatch('click');
+  assert.equal(f.calls.filter(call => call.method === 'focusPerson').length, focusedBefore, 'the sea does not become a remote location shortcut');
+  assert.equal(f.node('#ferry-dialog').open, false);
+
+  f.api.visitPlace('hospital-er');
+  await f.node('[data-sail-region="life"]').dispatch('click');
+  assert.equal(f.node('[data-conflict-release="jack"]'), null, 'the facility cannot discharge a passenger who is still at sea');
+  const awaitingArrival = f.node('[data-conflict-await="jack"]');
+  assert.ok(awaitingArrival);
+  await awaitingArrival.dispatch('click');
+  assert.equal(f.node('[data-conflict-release="jack"]'), null, 'refreshing cannot clear an in-transit hold');
+  assert.equal(f.api.getConflictState().people.find(person => person.id === 'jack').status, 'hospital');
+  f.life([actor('jack', 'hospital', { destinationDistrictId: 'hospital', destinationPlaceId: 'hospital-er', traveling: false })]);
+  await f.node('[data-conflict-await="jack"]').dispatch('click');
+  assert.ok(f.node('[data-conflict-release="jack"]'), 'the discharge action appears only after a real arrival is refreshed');
+  f.api.closeDialog(f.node('#encounter-dialog'));
+  f.api.openFerry('company'); await f.node('[data-sail-region="company"]').dispatch('click');
+  await f.node('#cast-open').dispatch('click');
+  const arrived = f.node('[data-character-id="jack"]');
+  assert.match(arrived.querySelector('[data-person-location]').textContent, /醫院留觀.*急診室/);
+  await arrived.querySelector('[data-locate-person]').dispatch('click');
+  assert.equal(f.node('#ferry-dialog').open, true, 'locating the arrived body now requires a trip to the life island');
+  assert.equal(f.calls.filter(call => call.method === 'focusPerson').length, focusedBefore);
+  await f.node('[data-sail-region="life"]').dispatch('click');
+  assert.equal(f.calls.filter(call => call.method === 'focus').at(-1).args[0], 'hospital');
+  assert.equal(f.calls.filter(call => call.method === 'focusPerson').at(-1).args[0], 'jack');
+  f.api.meetColleague('jack');
+  assert.ok(f.node('#encounter-place').textContent.includes(DISTRICTS.find(district => district.id === 'hospital').name));
+  await f.api.startBrawl('jack', { story: true });
+  assert.equal(f.brawls.length, 1, 'arrival does not remove the hold or permit another battle');
+  assert.equal(f.api.getConflictState().people.find(person => person.id === 'jack').status, 'hospital');
+  assert.equal(f.api.getConflictState().player.status, 'police');
+  assert.equal(f.api.getChallengeState().active, null);
+  assert.deepEqual(f.api.getChallengeState().wins, []);
 });

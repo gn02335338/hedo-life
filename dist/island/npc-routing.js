@@ -1,3 +1,4 @@
+import { getRegionForDistrict } from './archipelago.js';
 import { LAYOUT, BRIDGES, CAST_RADIUS, PLAYER_RADIUS, WALK_HEIGHT, isTerrainWalkable, isDistrictWalkable } from './navigation.js';
 
 export const ROUTE_GAP = .025;
@@ -37,9 +38,14 @@ let graph;
 function routeGraph() {
   if (graph) return graph;
   const nodes = new Map();
-  for (let z = 0; z < HEIGHT; z++) for (let x = 0; x < WIDTH; x++) {
-    const point = { x: MIN_X + x * STEP, z: MIN_Z + z * STEP };
-    if (routeWalkable(point, PLANNING_RADIUS)) nodes.set(z * WIDTH + x, { ...point, key: z * WIDTH + x, bridge: bridgeAt(point), edges: [] });
+  const windows = [...LAYOUT.map(point=>({x:point.x,z:point.z,halfX:5,halfZ:5})), ...BRIDGES.map(bridge=>({x:bridge.x,z:bridge.z,halfX:Math.abs(Math.sin(bridge.rotation))*bridge.length/2+1,halfZ:Math.abs(Math.cos(bridge.rotation))*bridge.length/2+1}))];
+  for (const area of windows) {
+    const x0=Math.floor((area.x-area.halfX-MIN_X)/STEP),x1=Math.ceil((area.x+area.halfX-MIN_X)/STEP),z0=Math.floor((area.z-area.halfZ-MIN_Z)/STEP),z1=Math.ceil((area.z+area.halfZ-MIN_Z)/STEP);
+    for(let z=z0;z<=z1;z++)for(let x=x0;x<=x1;x++) {
+      const key=z*WIDTH+x;if(nodes.has(key))continue;
+      const point={x:MIN_X+x*STEP,z:MIN_Z+z*STEP};
+      if(routeWalkable(point,PLANNING_RADIUS))nodes.set(key,{...point,key,bridge:bridgeAt(point),edges:[]});
+    }
   }
   for (const [key, node] of nodes) for (const [dx, dz] of [[1, 0], [0, 1], [1, 1], [-1, 1]]) {
     const next = nodes.get(key + dz * WIDTH + dx);
@@ -63,6 +69,8 @@ class Heap {
 /** Static graph is built once; dynamic bodies are sampled only for a new route.
  * Search is bounded, and no graph work happens for an unobstructed walking step. */
 export function findNpcRoute(start, goal, { obstacles = [], blockedBridges = new Set(), alternativeGoals = [] } = {}) {
+  const from=landAt(start),to=landAt(goal);
+  if(from&&to&&getRegionForDistrict(from)!==getRegionForDistrict(to))return null;
   const blockedCells = new Set();
   for (const body of obstacles) {
     const reach = CAST_RADIUS + body.radius + ROUTE_GAP - 1e-8, cells = Math.ceil(reach / STEP), cx = Math.round((body.x - MIN_X) / STEP), cz = Math.round((body.z - MIN_Z) / STEP);

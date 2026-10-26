@@ -5,12 +5,15 @@ import {
   DISTRICT_ENTRANCES, NPC_POSITIONS, isWalkable, movePlayer, nearestInteraction,
 } from '../dist/island/navigation.js';
 
+import { REGIONS } from '../dist/island/archipelago.js';
+import { walkRegionTargets } from './island-region-walking.mjs';
+
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const close = (actual, expected, message) => assert.ok(Math.abs(actual - expected) < 1e-8, `${message}: ${actual} != ${expected}`);
 
 test('walking world has twelve districts, safe entrances and connected physical bridges', () => {
   assert.equal(LAYOUT.length, 12);
-  assert.equal(LINKS.length, 18);
+  assert.equal(LINKS.length, 14);
   assert.equal(WALK_HEIGHT, 1.07);
   assert.equal(PLAYER_RADIUS, .22);
   assert.ok(isWalkable(PLAYER_SPAWN));
@@ -36,14 +39,14 @@ test('water, grass edges and main building footprints block walking while the co
     { x: 9.7, z: .5 }, { x: 9.85, z: 9.7 }, { x: 12.45, z: 10.55 }]) {
     assert.equal(isWalkable(point), false, `solid/water point ${JSON.stringify(point)}`);
   }
-  assert.ok(isWalkable({ x: .7, z: 9.7 }), 'players can enter the open basketball court');
+  assert.ok(isWalkable({ x: 46, z: 4.7 }), 'players can enter the open basketball court');
   assert.ok(isWalkable({ x: -2, z: 3.5 }), 'the interior of the southern grass edge stays open');
   for (const point of [null, {}, { x: NaN, z: 0 }, { x: 0, z: Infinity }]) assert.equal(isWalkable(point), false);
   assert.equal(isWalkable(PLAYER_SPAWN, -1), false);
 });
 
 test('movement is frame-rate consistent, normalizes diagonals and preserves analog input', () => {
-  const start = { x: .7, z: 9.7 };
+  const start = { x: 46, z: 4.7 };
   const straight = movePlayer(start, { x: 1, z: 0 }, .1);
   const diagonal = movePlayer(start, { x: 1, z: 1 }, .1);
   const analog = movePlayer(start, { x: .5, z: 0 }, .1);
@@ -53,7 +56,7 @@ test('movement is frame-rate consistent, normalizes diagonals and preserves anal
   let smallFrames = start;
   for (let i = 0; i < 6; i++) smallFrames = movePlayer(smallFrames, { x: 1, z: 0 }, 1 / 60);
   close(distance(straight, smallFrames), 0, 'six short frames match one 100 ms frame');
-  assert.deepEqual(start, { x: .7, z: 9.7 }, 'input position is not mutated');
+  assert.deepEqual(start, { x: 46, z: 4.7 }, 'input position is not mutated');
   close(distance(start, movePlayer(start, { x: 1, z: 0 }, 50)), .45, 'stalled frame is capped');
   for (const dt of [0, -1, Infinity, NaN]) assert.deepEqual(movePlayer(start, { x: 1, z: 0 }, dt), start);
 });
@@ -72,43 +75,12 @@ test('fast movement cannot tunnel through buildings, colleagues or the shore and
   assert.ok(sliding.x > .3 && sliding.z >= .77 - 1e-8 && sliding.z < 1, 'blocked diagonal continues along wall');
 });
 
-test('every entrance and colleague can be reached from spawn through walkable routes', () => {
-  // Flood a small world-space grid, then replay the resulting paths using the
-  // actual movement function. This catches disconnected bridges and obstacles
-  // that accidentally seal the only route, not merely connected district IDs.
-  const step = .18, key = (x, z) => `${x},${z}`;
-  const point = (x, z) => ({ x: PLAYER_SPAWN.x + x * step, z: PLAYER_SPAWN.z + z * step });
-  const start = { x: 0, z: 0 }, queue = [start], parents = new Map([[key(0, 0), null]]), usable = new Map();
-  const nearest = new Map(), npcApproaches = new Set();
-  for (let head = 0; head < queue.length; head++) {
-    const cell = queue[head], position = point(cell.x, cell.z);
-    for (const district of LAYOUT) {
-      if (!nearest.has(district.id) && distance(position, DISTRICT_ENTRANCES[district.id]) < .15) nearest.set(district.id, cell);
-      const gap = NPC_POSITIONS[district.id] ? distance(position, NPC_POSITIONS[district.id]) : Infinity;
-      if (gap > .43 && gap < .8) npcApproaches.add(district.id);
-    }
-    if (nearest.size === LAYOUT.length && npcApproaches.size === Object.keys(NPC_POSITIONS).length) break;
-    for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-      const nx = cell.x + dx, nz = cell.z + dz, nextKey = key(nx, nz);
-      if (parents.has(nextKey) || Math.abs(nx) > 90 || Math.abs(nz) > 155) continue;
-      if (!usable.has(nextKey)) usable.set(nextKey, isWalkable(point(nx, nz)));
-      if (!usable.get(nextKey)) continue;
-      parents.set(nextKey, cell); queue.push({ x: nx, z: nz });
-    }
-  }
-  assert.equal(nearest.size, LAYOUT.length, `reachable entrances: ${[...nearest.keys()].join(', ')}`);
-  assert.equal(npcApproaches.size, Object.keys(NPC_POSITIONS).length, `reachable colleagues: ${[...npcApproaches].join(', ')}`);
-  for (const [id, end] of nearest) {
-    const route = [];
-    for (let cell = end; cell; cell = parents.get(key(cell.x, cell.z))) route.push(point(cell.x, cell.z));
-    route.reverse();
-    let position = { ...PLAYER_SPAWN };
-    for (const target of route.slice(1)) {
-      position = movePlayer(position, { x: target.x - position.x, z: target.z - position.z }, .1, 10);
-      assert.ok(distance(position, target) < 1e-7, `${id}: route blocked at ${JSON.stringify(target)}`);
-    }
-    assert.ok(distance(position, DISTRICT_ENTRANCES[id]) < .15, `${id}: arrived at entrance`);
-  }
+test('every entrance and colleague can be reached from its own island port', () => {
+  const targets=LAYOUT.flatMap(({id})=>[
+    {key:`building:${id}`,districtId:id,position:DISTRICT_ENTRANCES[id],radius:1.25,approachDistance:.2},
+    ...(NPC_POSITIONS[id]?[{key:`person:${id}`,districtId:id,position:NPC_POSITIONS[id],radius:1.4,approachDistance:.8}]:[]),
+  ]);
+  for(const regionId of Object.keys(REGIONS))walkRegionTargets(regionId,targets);
 });
 
 test('interaction uses nearest target, stable unique keys and separate entry/exit thresholds', () => {
