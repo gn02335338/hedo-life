@@ -1115,6 +1115,11 @@ the repository checks with `npm test` and `npm run build:check`.
 The island-only conflict model lets visitors argue or fight with the 34 authored
 colleagues. Fighting opens an original, browser-local 75-second realtime duel:
 movement, combo attacks, invulnerable dodges, charged specials and paper pickups.
+The arena reuses the current opponent’s full transparent character-book artwork
+without cropping or regenerating their face, clothing or signature props. Only
+that opponent’s portrait is loaded and shared with the HUD. Walk, facing, attack
+and hit poses transform the illustration; the visitor keeps the map’s hiking
+hat, gold jacket and red backpack. Portrait failure falls back to a name badge.
 Health and actual inputs decide win/loss; an equal-health timeout is a draw with
 no holds. An opaque single-use begin/settle/cancel token binds the active opponent,
 rejects stale or duplicate completion, and never rerolls the played outcome.

@@ -1,4 +1,5 @@
 import { BRAWL_ARENA, createIslandBrawl } from './brawl.js';
+import { drawBrawlCharacter } from './brawl-characters.js';
 
 // Original island artwork and controls. The arena never reads or writes saves.
 const keyDirections = { KeyW: [0, -1], ArrowUp: [0, -1], KeyS: [0, 1], ArrowDown: [0, 1], KeyA: [-1, 0], ArrowLeft: [-1, 0], KeyD: [1, 0], ArrowRight: [1, 0] };
@@ -141,39 +142,6 @@ function drawObstacle(ctx, obstacle) {
   ctx.fillStyle = '#f7f0dc'; ctx.fillRect(x - r * .13, y - r * 1.12, r * .26, r * 1.3);
   text(ctx, '文件', x, y - r * .17, 14, '#8c7553', 500);
 }
-function drawActor(ctx, actor, isPlayer, name, palette, elapsed, reducedMotion) {
-  const { x, y } = actor, active = actor.action;
-  if (active === 'windup' || actor.telegraphRemaining > 0) {
-    ctx.save(); ctx.translate(x, y); ctx.rotate(actor.facing);
-    ctx.fillStyle = '#d4824c36'; ctx.strokeStyle = '#bc6d3d'; ctx.lineWidth = 2;
-    const reach = actor.telegraphRadius || (actor.telegraphDuration >= .9 ? 128 : 110), halfAngle = actor.telegraphHalfAngle || Math.acos(.35);
-    ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, reach, -halfAngle, halfAngle); ctx.closePath(); ctx.fill(); ctx.stroke();
-    ctx.restore();
-  }
-  ellipse(ctx, x, y + 3, 24, 10, '#25483d29');
-  ctx.save(); ctx.translate(x, y);
-  if (active === 'defeated') ctx.rotate(isPlayer ? -.9 : .9);
-  if (actor.invulnerable && !reducedMotion) ctx.globalAlpha = .58 + Math.sin(elapsed * 35) * .16;
-  const step = active === 'walk' && !reducedMotion ? Math.sin(elapsed * 15) * 5 : 0;
-  // A compact original paper-doll silhouette, with a clear coloured side.
-  ctx.strokeStyle = '#42564e'; ctx.lineWidth = 8; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(-8, -17); ctx.lineTo(-9 - step * .3, -1 + step); ctx.moveTo(8, -17); ctx.lineTo(10 + step * .3, -1 - step); ctx.stroke();
-  ctx.fillStyle = isPlayer ? '#527e68' : palette;
-  roundRect(ctx, -17, -43, 34, 30, 10); ctx.fill();
-  ctx.fillStyle = '#faf2df'; ctx.fillRect(-3, -41, 6, 26);
-  const direction = Math.cos(actor.facing) < 0 ? -1 : 1, arm = active === 'attack' ? direction * 35 : direction * 18;
-  ctx.strokeStyle = isPlayer ? '#527e68' : palette; ctx.lineWidth = 9;
-  ctx.beginPath(); ctx.moveTo(direction * 13, -37); ctx.lineTo(arm, active === 'attack' ? -35 : -21); ctx.stroke();
-  ellipse(ctx, arm, active === 'attack' ? -35 : -21, 6, 6, '#e7bd96');
-  ellipse(ctx, 0, -57, 19, 21, '#e7bd96');
-  ctx.fillStyle = isPlayer ? '#3c4842' : '#50453f'; ctx.beginPath(); ctx.arc(0, -61, 20, Math.PI, 0); ctx.lineTo(19, -56); ctx.lineTo(10, -60); ctx.lineTo(-13, -58); ctx.lineTo(-19, -51); ctx.closePath(); ctx.fill();
-  ellipse(ctx, direction * 8, -57, 2, 2.3, '#3b4942');
-  ctx.strokeStyle = '#aa795a'; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(direction * 6, -48); ctx.lineTo(direction * 12, -48); ctx.stroke();
-  if (actor.paper) { ctx.save(); ctx.translate(-direction * 22, -31); ctx.rotate(.22); ctx.fillStyle = '#fff8e5'; ctx.fillRect(-6, -8, 12, 16); ctx.strokeStyle = '#b3aa91'; ctx.strokeRect(-6, -8, 12, 16); ctx.restore(); }
-  if (isPlayer) { ctx.fillStyle = '#f8f2dc'; ctx.beginPath(); ctx.moveTo(-5, -93); ctx.lineTo(5, -93); ctx.lineTo(0, -85); ctx.fill(); }
-  text(ctx, name, 0, -99, 18, isPlayer ? '#244e3d' : '#805b46', 700);
-  ctx.restore();
-}
 function drawEffect(ctx, effect, reducedMotion) {
   const ratio = Math.max(0, Math.min(1, effect.life / effect.maxLife)), progress = reducedMotion ? .4 : 1 - ratio;
   ctx.save(); ctx.globalAlpha = reducedMotion ? ratio * .65 : ratio; ctx.translate(effect.x, effect.y);
@@ -208,11 +176,12 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
   const pauseButton = button('brawl-pause-button', '暫停 Ⅱ', () => model.getState().phase === 'paused' ? resume() : pause()); pauseButton.dataset.brawlPause = '';
   head.append(titles, pauseButton); root.append(head);
   const hud = node('div', 'brawl-hud');
+  let opponentPortrait;
   const health = (name, isPlayer) => {
     const card = node('div', `brawl-fighter-hud ${isPlayer ? 'is-player' : 'is-opponent'}`), line = node('div', 'brawl-fighter-line');
     const identity = node('div', 'brawl-fighter-identity');
     if (isPlayer) identity.append(node('span', 'brawl-avatar', '我'));
-    else { const image = node('img', 'brawl-avatar'); image.src = opponent.image; image.alt = ''; identity.append(image); }
+    else { opponentPortrait = node('img', 'brawl-avatar'); opponentPortrait.src = opponent.image; opponentPortrait.alt = ''; identity.append(opponentPortrait); }
     const label = node('b', '', name), hp = node('span', 'brawl-health-number', '100'); hp.dataset[isPlayer ? 'brawlPlayerHp' : 'brawlOpponentHp'] = '';
     identity.append(label); line.append(identity, hp);
     const track = node('div', 'brawl-health-track'); track.setAttribute('role', 'progressbar'); track.setAttribute('aria-label', `${name}的體力`); track.setAttribute('aria-valuemin', '0'); track.setAttribute('aria-valuemax', '100');
@@ -256,7 +225,6 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
   try { ctx = canvas.getContext('2d', { alpha: false }); } catch { /* Explicit fallback below; never substitutes a random win. */ }
   if (!ctx) { root.remove(); throw new Error('這台裝置暫時無法顯示對戰畫面，請換個瀏覽器再試；這次不會結算勝敗。'); }
   model = createIslandBrawl({ opponentId: opponent.id });
-  const palette = ['#b77b61', '#738b9b', '#9a819b', '#a99058'][String(opponent.id).split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 4];
   controls = bindIslandBrawlInput({ document: doc, window: view, pad, buttons, directionButtons, getPhase: () => model.getState().phase, onPause: pause, onStart: start });
   let width = 960, height = 540, dpr = 1, lastStatus = '';
   const resize = () => {
@@ -265,8 +233,15 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
   };
   function draw(state) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = '#b7cbbb'; ctx.fillRect(0, 0, width, height);
-    const scale = Math.min(width / BRAWL_ARENA.width, height / BRAWL_ARENA.height);
-    ctx.save(); ctx.translate((width - BRAWL_ARENA.width * scale) / 2, (height - BRAWL_ARENA.height * scale) / 2); ctx.scale(scale, scale);
+    // Expand only near an edge: keep faces large and the whole portrait in view.
+    const actors = [state.player, state.opponent];
+    const left = Math.min(0, ...actors.map(actor => actor.x - 96));
+    const top = Math.min(0, ...actors.map(actor => actor.y - 212));
+    const right = Math.max(BRAWL_ARENA.width, ...actors.map(actor => actor.x + 96));
+    const bottom = Math.max(BRAWL_ARENA.height, ...actors.map(actor => actor.y + 38));
+    const viewWidth = right - left, viewHeight = bottom - top;
+    const scale = Math.min(width / viewWidth, height / viewHeight);
+    ctx.save(); ctx.translate((width - viewWidth * scale) / 2 - left * scale, (height - viewHeight * scale) / 2 - top * scale); ctx.scale(scale, scale);
     const recentImpact = state.effects?.find(effect => effect.type === 'impact' && effect.life / effect.maxLife > .7);
     if (recentImpact && !reducedMotion) ctx.translate(Math.sin(state.elapsed * 150) * 2.5, Math.cos(state.elapsed * 120) * 1.5);
     ctx.fillStyle = '#b7cbbb'; ctx.fillRect(0, 0, 960, 540);
@@ -283,8 +258,8 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
       text(ctx, '紙團', pickup.x, pickup.y + 27, 13, '#859173', 500);
     }
     const sorted = [...(state.obstacles || []).map(obstacle => ({ y: obstacle.y, draw: () => drawObstacle(ctx, obstacle) })),
-      { y: state.player.y, draw: () => drawActor(ctx, state.player, true, '我', palette, state.elapsed, reducedMotion) },
-      { y: state.opponent.y, draw: () => drawActor(ctx, state.opponent, false, opponent.name, palette, state.elapsed, reducedMotion) }].sort((a, b) => a.y - b.y);
+      { y: state.player.y, draw: () => drawBrawlCharacter(ctx, state.player, { isPlayer: true, name: '我', elapsed: state.elapsed, reducedMotion }) },
+      { y: state.opponent.y, draw: () => drawBrawlCharacter(ctx, state.opponent, { isPlayer: false, name: opponent.name, portrait: opponentPortrait, elapsed: state.elapsed, reducedMotion }) }].sort((a, b) => a.y - b.y);
     for (const item of sorted) item.draw();
     for (const projectile of state.projectiles || []) { ellipse(ctx, projectile.x + 2, projectile.y + 5, 8, 4, '#5b6a5626'); ellipse(ctx, projectile.x, projectile.y - 8, 9, 8, '#fffae6'); text(ctx, '⌁', projectile.x, projectile.y - 4, 15, '#b4a484'); }
     for (const effect of state.effects || []) drawEffect(ctx, effect, reducedMotion);
