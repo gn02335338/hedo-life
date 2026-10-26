@@ -78,7 +78,7 @@ for(const mobile of [false,true]){
    const app=await harness(mobile),{run,index,choice}=invitation(route),event=engine.getEvent(run);
    assert.equal(engine.validRun(run),true);assert.equal(choice.available!==false,true);
    const before=plain(run),html=app.render(run);secretOutcomesStayHidden(html,event);
-   assert.ok(html.includes(`src="${persona.PERSONAS[guest].image}"`));
+   assert.ok(html.includes(`src="${persona.displayPersona(guest).image}"`));
    assert.equal(JSON.stringify(app.state()),JSON.stringify(run),'rendering does not draw an answer');
    const expected=engine.applyChoice(run,index);await app.doubleChoice(index);const pending=app.state();
    assert.deepEqual(plain(pending),plain(expected));assert.equal(pending.pending,true,`${guest}/${outcome}`);
@@ -93,7 +93,7 @@ for(const mobile of [false,true]){
    assert.deepEqual(plain(engine.replayRun(after.roleId,after.seed,after.actions)),plain(after));
    if(outcome==='accepted'){
     assert.equal(after.eventId,`meal-with-${guest}`);assert.equal(engine.getEvent(after).speaker,guest);
-    assert.ok(app.html().includes(`src="${persona.PERSONAS[guest].image}"`));secretOutcomesStayHidden(app.html(),engine.getEvent(after));
+    assert.ok(app.html().includes(`src="${persona.displayPersona(guest).image}"`));secretOutcomesStayHidden(app.html(),engine.getEvent(after));
     const paid=engine.getEvent(after).choices.findIndex(row=>row.effect==='mealFinish');assert.ok(paid>=0);
     const paidExpected=engine.applyChoice(after,paid);await app.doubleChoice(paid);
     assert.deepEqual(plain(app.state()),plain(paidExpected));assert.ok(app.state().stats.cash<after.stats.cash);

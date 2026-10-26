@@ -42,7 +42,7 @@ test('real input can win against all 34 colleagues, while passive play loses ins
   for (const { id } of ISLAND_CAST) {
     const win = play(createIslandBrawl({ opponentId: id }), counterplay);
     assert.equal(win.phase, 'finished', id); assert.equal(win.outcome, 'win', id); assert.equal(win.opponent.hp, 0, id);
-    assert.ok(win.player.hp > 0 && win.summary.damageDealt === win.opponent.maxHp, id);
+    assert.ok(win.player.hp > 0 && win.summary.damageDealt >= win.opponent.maxHp, `${id}: actual damage also accounts for any stamina the opponent recovered`);
     assert.ok(win.summary.specialsUsed >= 1 && win.summary.dodgesUsed >= 1, `${id}: active combat uses charged specials and dodge windows`);
     assert.equal(win.summary.reason, 'knockout'); assert.ok(win.elapsed < 75); checkGeometry(win);
   }
@@ -130,7 +130,10 @@ test('pause, resume and terminal outcomes release time/input ownership without r
 test('timeout compares remaining stamina and can end a fully dodged match as a draw', () => {
   const state = play(createIslandBrawl({ opponentId: 'wing' }), state => {
     const evade = state.opponent.telegraphRemaining > 0 && state.opponent.telegraphRemaining < .28;
-    return { ...(evade ? inputToward(state) : {}), dodge: evade };
+    const toward = inputToward(state);
+    // Projectile/rush warnings mark a line: move across it rather than into it.
+    const direction = state.opponent.telegraphKind === 'line' ? { x: -toward.y, y: toward.x } : toward;
+    return { ...(evade ? direction : {}), dodge: evade && state.player.cooldowns.dodge === 0 };
   });
   assert.equal(state.elapsed, 75); assert.equal(state.summary.reason, 'timeout'); assert.equal(state.outcome, 'draw');
   assert.equal(state.player.hp, state.opponent.hp); assert.equal(state.summary.damageDealt, 0);

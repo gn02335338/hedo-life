@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { drawBrawlCharacter } from '../dist/island/brawl-characters.js';
-import { createIslandBrawl } from '../dist/island/brawl.js';
 import { ISLAND_CAST } from '../dist/island/cast.js';
 import { ISLAND_CHARACTER_LOOKS, ISLAND_VISITOR_LOOK, getIslandCharacterLook } from '../dist/island/character-looks.js';
 
@@ -13,7 +12,7 @@ function canvas() {
     get(target, key) {
       if (key in target) return target[key];
       return (...args) => {
-        calls.push({ method: key, args });
+        calls.push({ method: key, args, strokeStyle: target.strokeStyle, lineWidth: target.lineWidth });
         if (key === 'save') depth++;
         if (key === 'restore') { depth--; assert.ok(depth >= 0, 'canvas state cannot be restored before being saved'); }
         for (const value of args) if (typeof value === 'number') assert.ok(Number.isFinite(value), `${key} receives finite drawing coordinates`);
@@ -34,7 +33,7 @@ function canvas() {
     visualSignature() { return JSON.stringify({ paint, calls: calls.filter(call => !['fillText', 'strokeText'].includes(call.method)) }); },
   };
 }
-const originalActor = createIslandBrawl({ opponentId: 'jack' }).getState().opponent;
+const originalActor = { x: 710, y: 270, radius: 18, action: 'idle', facing: Math.PI, invulnerable: false, telegraphRemaining: 0, paper: false };
 const actor = id => ({ ...originalActor, id });
 const drawingOptions = (id, extra = {}) => ({ isPlayer: id === 'player', name: id === 'player' ? '我' : '島民', elapsed: 1.25, reducedMotion: false, ...extra });
 
@@ -88,19 +87,46 @@ test('the arena never reads or pastes the previous portrait even if one is passe
 });
 
 test('recognisable illustration details remain in the authored chibi appearances', () => {
-  assert.equal(getIslandCharacterLook('jack').clothing, 'vest');
-  assert.equal(getIslandCharacterLook('jack').glasses, 'none');
-  assert.ok(getIslandCharacterLook('jack').accessories.includes('book'));
+  const jack = getIslandCharacterLook('jack'), wing = getIslandCharacterLook('wing');
+  assert.equal(jack.clothing, 'tee');
+  assert.equal(jack.shirt, '#303640');
+  assert.equal(jack.glasses, 'none');
+  assert.ok(!jack.accessories.includes('book'), 'Jack wears the supplied sport outfit rather than the old office vest and book');
+  assert.equal(jack.sportShoes, true);
+  assert.equal(wing.leftLegRatio, .5, 'Wing’s own left leg is visibly shorter');
+  assert.ok(wing.accessories.includes('cane'));
   assert.ok(getIslandCharacterLook('tony').accessories.includes('cigarette'));
   assert.ok(getIslandCharacterLook('owen').accessories.includes('sunglasses'));
 });
 
+test('Wing’s shorter left leg mirrors with facing, keeps both soles grounded and does not change combat coordinates', () => {
+  for (const facing of [0, Math.PI]) {
+    const drawing = canvas(), body = { ...actor('wing'), facing }, before = structuredClone(body);
+    drawBrawlCharacter(drawing.ctx, body, drawingOptions('wing', { reducedMotion: true }));
+    let point, segments = [], legs;
+    for (const call of drawing.calls) {
+      if (call.method === 'beginPath') { point = null; segments = []; }
+      if (call.method === 'moveTo') point = call.args;
+      if (call.method === 'lineTo') { if (point) segments.push({ from: point, to: call.args }); point = call.args; }
+      if (call.method === 'stroke' && call.strokeStyle === getIslandCharacterLook('wing').trousers && call.lineWidth === 12 && segments.length === 2) legs ||= segments;
+    }
+    assert.ok(legs, 'the actual two leg strokes are drawn');
+    const length = leg => Math.hypot(leg.to[0] - leg.from[0], leg.to[1] - leg.from[1]);
+    const ownLeft = legs.find(leg => Math.sign(leg.from[0]) === (Math.cos(facing) < 0 ? -1 : 1));
+    const ownRight = legs.find(leg => leg !== ownLeft);
+    assert.ok(Math.abs(length(ownLeft) / length(ownRight) - .5) < .03, 'the visible left leg is about half the right leg');
+    assert.equal(ownLeft.to[1], ownRight.to[1], 'both soles rest at the same ground level');
+    assert.deepEqual(body, before, 'visual leg differences do not move the collision body or alter stamina');
+    drawing.check();
+  }
+});
+
 test('all colleagues and the visitor preserve finite, balanced canvas state through combat poses and directions', () => {
   for (const id of ['player', ...ISLAND_CAST.map(person => person.id)]) {
-    for (const reducedMotion of [false, true]) for (const action of ['idle', 'walk', 'attack', 'hit', 'defeated', 'windup', 'recover', 'dodge']) {
+    for (const reducedMotion of [false, true]) for (const action of ['idle', 'walk', 'attack', 'hit', 'defeated', 'windup', 'recover', 'dodge', 'skill', 'heal', 'guard', 'down', 'kick']) {
       for (const facing of [0, Math.PI, -Math.PI / 2, Math.PI / 2]) {
         const drawing = canvas();
-        const body = { ...actor(id), action, facing, paper: true, invulnerable: action === 'hit', telegraphRemaining: action === 'windup' ? .4 : 0 };
+        const body = { ...actor(id), action, pose: ['skill', 'heal', 'guard', 'down', 'kick'].includes(action) ? action : null, facing, paper: true, invulnerable: action === 'hit', telegraphRemaining: action === 'windup' ? .4 : 0 };
         assert.doesNotThrow(() => drawBrawlCharacter(drawing.ctx, body, drawingOptions(id, { elapsed: 3.75, reducedMotion })));
         drawing.check();
         assert.ok(drawing.calls.length > 0, `${id}/${action}: the character is drawn`);

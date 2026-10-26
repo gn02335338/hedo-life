@@ -1118,9 +1118,20 @@ movement, combo attacks, invulnerable dodges, charged specials and paper pickups
 The visitor and all 34 colleagues use the same rounded-head, dot-eye, short-limb
 canvas character renderer. Public character-book illustrations inform a frozen
 per-person trait profile: hair, clothing, glasses and signature props. Combat
-poses and HUD avatars share this drawing style; no portrait bitmap is placed
-in the arena or requested by the duel. The visitor retains the hiking hat,
-gold jacket and red backpack. Character traits do not change combat geometry.
+poses share this drawing style, while the HUD shows the original portraits
+again. Jack uses a new sport-clothing portrait at presentation time; the original
+PNG and historical art manifest remain intact. Wing has a half-length left leg
+and a cane; Jack wears a black sport T-shirt, grey trousers and trainers in both
+island and duel views. These traits do not change collision geometry.
+
+The roster supplies 119 skills, 34 one-use incidents and 34 opening lines, based
+on already-public adapted stories and the creator brief. Shared mechanisms are
+cone strikes, obstacle-stopped rushes, bounded projectiles, locked circular
+targets, slows, interruptible heals and expiring shields. Low-health reactions
+take priority. Cooldown and one-use ownership are consumed at windup, including
+interrupted recovery. Warnings use the same cast geometry as resolution. Opening
+the dossier pauses without stealing focus. Bounded cloned signature history
+is session-only and does not enter career proofs or server storage.
 Health and actual inputs decide win/loss; an equal-health timeout is a draw with
 no holds. An opaque single-use begin/settle/cancel token binds the active opponent,
 rejects stale or duplicate completion, and never rerolls the played outcome.

@@ -74,7 +74,7 @@ export function displayName(id){return Object.hasOwn(PERSONAS,id)?displayText(PE
 export function displayPersona(id){
  if(!Object.hasOwn(PERSONAS,id))return null;
  const person=PERSONAS[id];
- return {...person,name:displayName(id),title:id==='professor'?'電機領域教授／產學顧問':person.title};
+ return {...person,name:displayName(id),image:id==='jack'?'./assets/jack-sport.webp':person.image,title:id==='professor'?'電機領域教授／產學顧問':person.title};
 }
 
 function renameCopy(value){

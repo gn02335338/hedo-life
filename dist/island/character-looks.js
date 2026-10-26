@@ -15,7 +15,7 @@ export const ISLAND_VISITOR_LOOK = look({
 });
 
 export const ISLAND_CHARACTER_LOOKS = Object.freeze({
-  wing: look({ hair: '#493a38', hairStyle: 'swept', shirt: '#bd718b', clothing: 'polo', skin: '#e9b48c' }),
+  wing: look({ hair: '#493a38', hairStyle: 'swept', shirt: '#bd718b', clothing: 'polo', skin: '#e9b48c', leftLegRatio: .5, accessories: ['cane'] }),
   spencer: look({ hair: '#385761', hairStyle: 'swept', shirt: '#c27996', clothing: 'polo', glasses: 'round', skin: '#efbf9c' }),
   erich: look({ hair: '#3d3d42', hairStyle: 'swept', shirt: '#465671', clothing: 'blazer', inner: '#c9bdd6', glasses: 'round', tie: '#99576e', accessories: ['book'] }),
   sonny: look({ hair: '#3e3b40', hairStyle: 'short', shirt: '#ab8c71', clothing: 'tee', glasses: 'square', accessories: ['bowl'], skin: '#e5ad83' }),
@@ -23,7 +23,7 @@ export const ISLAND_CHARACTER_LOOKS = Object.freeze({
   rick: look({ hair: '#674943', hairStyle: 'short', shirt: '#bc6f90', clothing: 'polo', glasses: 'square', accessories: ['phone', 'crown'] }),
   kind: look({ hair: '#443d42', hairStyle: 'short', shirt: '#985b7c', clothing: 'shirt', glasses: 'square', accessories: ['card'], skin: '#e7b28e' }),
   hope: look({ hair: '#654744', hairStyle: 'bob', shirt: '#627daf', clothing: 'blazer', inner: '#45434b', glasses: 'round', accessories: ['clipboard'] }),
-  jack: look({ hair: '#3b3c43', hairStyle: 'swept', shirt: '#4c7883', clothing: 'vest', inner: '#f4ead8', accessories: ['book'], skin: '#eab68c' }),
+  jack: look({ hair: '#303038', hairStyle: 'short', shirt: '#303640', clothing: 'tee', inner: '#deb9ba', trousers: '#747b80', accessories: ['sport-emblem'], sportShoes: true, skin: '#eab68c' }),
   meimei: look({ hair: '#6a4a41', hairStyle: 'bob', shirt: '#eee1cf', clothing: 'shirt', inner: '#e8c8c2', trousers: '#46434f', accessories: ['mic', 'book'] }),
   helen: look({ hair: '#463b41', hairStyle: 'long', shirt: '#bd7196', clothing: 'polo', inner: '#f3eadf', glasses: 'square', accessories: ['mask', 'book'] }),
   sophie: look({ hair: '#795441', hairStyle: 'long', shirt: '#c7ae86', clothing: 'blazer', inner: '#eee1bc', accessories: ['coffee', 'clipboard'] }),

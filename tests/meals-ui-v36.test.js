@@ -84,7 +84,7 @@ for(const mobile of [false,true]){
    const before=engine.replayRun(route.roleId,route.seed,route.actions.slice(0,-1)),event=engine.getEvent(before),beforeScore=characterStats.characterAffinity(before,route.guest).score;
    assert.equal(engine.validRun(before),true);assert.equal(before.eventId,`meal-with-${route.guest}`);
    const source=plain(before),html=app.render(before);hidden(html,event);
-   assert.ok(html.includes(`src="${persona.PERSONAS[route.guest].image}"`));assert.deepEqual(plain(app.state()),source,'display does not roll table reactions');
+   assert.ok(html.includes(`src="${persona.displayPersona(route.guest).image}"`));assert.deepEqual(plain(app.state()),source,'display does not roll table reactions');
    const expected=engine.applyChoice(before,route.replyIndex),savedBefore=app.calls.save;
    await app.doubleChoice(route.replyIndex);let paid=app.state();
    assert.deepEqual(plain(paid),plain(expected));assert.equal(paid.pending,true);assert.equal(paid.actions.length,before.actions.length+1);

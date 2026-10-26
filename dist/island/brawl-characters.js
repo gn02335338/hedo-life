@@ -109,26 +109,55 @@ function prop(ctx, type, x, y, look) {
     box(ctx, -13, -17, 26, 5, 2, '#987b5f'); box(ctx, -13, 13, 26, 5, 2, '#987b5f');
   } else if (type === 'boat') {
     path(ctx, [[-21,5],[21,5],[12,16],[-11,16]], '#6d8e9d'); path(ctx, [[-1,-21],[-1,3],[-16,3]], '#f3edda'); path(ctx, [[3,-16],[17,2],[3,2]], '#c28c7e');
+  } else if (type === 'cane') {
+    ctx.strokeStyle = '#927959'; ctx.lineWidth = 4.5; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-8, -1); ctx.quadraticCurveTo(10, -14, 10, 0); ctx.lineTo(10, 45); ctx.stroke();
+    ellipse(ctx, 10, 45, 4.5, 2.5, '#46554c');
   }
   ctx.restore();
 }
-function doll(ctx, look, active, direction, step) {
+function doll(ctx, look, active, direction, step, pose) {
   const props = look.accessories;
   if (['long', 'bob', 'bun'].includes(look.hairStyle)) box(ctx, -27, -126, 54, look.hairStyle === 'long' ? 82 : 52, 22, look.hair);
   if (look.hairStyle === 'bun') ellipse(ctx, -17, -141, 14, 14, look.hair);
   if (props.includes('backpack')) box(ctx, -31, -86, 23, 49, 8, '#ad6657');
   // All bodies share the same head size, short limbs and soft unoutlined clothes.
   ctx.strokeStyle = look.trousers; ctx.lineWidth = 12; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(-12, -29); ctx.lineTo(-13, -5 + step); ctx.moveTo(12, -29); ctx.lineTo(13, -5 - step); ctx.stroke();
-  ellipse(ctx, -15, -3 + step, 10, 5, '#f5edda'); ellipse(ctx, 15, -3 - step, 10, 5, '#f5edda');
+  const leftRatio = Math.max(.25, Math.min(1, look.leftLegRatio || 1));
+  const shortSide = direction, feet = [];
+  ctx.beginPath();
+  for (const side of [-1, 1]) {
+    const isShort = leftRatio < 1 && side === shortSide, stride = side < 0 ? step : -step;
+    const legLength = 24 * (isShort ? leftRatio : 1), hipY = -5 - legLength;
+    const kicking = isShort && pose === 'kick';
+    const footX = side * 13 + (kicking ? direction * 9 : 0);
+    const footY = -5 + stride * (isShort ? leftRatio * .5 : 1) - (kicking ? 20 : 0);
+    ctx.moveTo(side * 12, hipY); ctx.lineTo(footX, footY);
+    feet.push({ x: footX + side * 2, y: footY + 2, kicking });
+  }
+  ctx.stroke();
+  for (const foot of feet) {
+    if (foot.kicking) ellipse(ctx, foot.x + direction * 3, foot.y, 14, 9, '#d5b76666');
+    ellipse(ctx, foot.x, foot.y, 10, 5, foot.kicking ? '#d7b04d' : look.sportShoes ? '#e6e9e1' : '#f5edda');
+    if (look.sportShoes) { box(ctx, foot.x - 8, foot.y - 3, 16, 3, 1, '#8c9b96'); box(ctx, foot.x - 10, foot.y + 2, 20, 3, 1, '#f5f3e9'); }
+  }
   const isLayered = ['vest', 'blazer', 'cardigan'].includes(look.clothing);
   const sleeve = look.clothing === 'vest' ? look.inner : look.shirt;
-  const frontX = direction * (active === 'attack' ? 58 : 32), frontY = active === 'attack' ? -79 : -43;
-  const backX = -direction * 31, backY = -43 + step * .4;
+  const attacking = active === 'attack' || pose === 'skill';
+  const healing = ['heal', 'bath', 'pizza'].includes(pose);
+  const restingHands = healing || pose === 'guard';
+  const frontX = direction * (attacking ? 58 : restingHands && !props.includes('cane') ? 12 : 32), frontY = attacking ? -79 : restingHands && !props.includes('cane') ? -65 : -43;
+  const backX = -direction * (restingHands ? 14 : 31), backY = restingHands ? -65 : -43 + step * .4;
   ctx.strokeStyle = sleeve; ctx.lineWidth = 13;
   ctx.beginPath(); ctx.moveTo(-direction * 22, -75); ctx.lineTo(backX, backY); ctx.stroke();
   ellipse(ctx, backX, backY, 8, 8, look.skin);
   box(ctx, -25, -87, 50, look.clothing === 'dress' ? 72 : 60, 12, look.shirt);
+  if (leftRatio < 1) {
+    // A lower left hip/hem lets both soles rest on the ground while the visible
+    // left leg remains half as long. Facing mirrors the person's own left side.
+    const hemY = -5 - 24 * leftRatio;
+    path(ctx, [[0,-34],[direction*25,-31],[direction*24,hemY],[direction*7,hemY],[0,-27]], look.shirt);
+  }
   if (look.clothing === 'vest') {
     path(ctx, [[-14,-87],[14,-87],[0,-64]], look.inner);
     path(ctx, [[-13,-87],[0,-80],[-7,-72]], look.inner); path(ctx, [[13,-87],[0,-80],[7,-72]], look.inner);
@@ -148,13 +177,35 @@ function doll(ctx, look, active, direction, step) {
   if (props.includes('badge')) { ctx.strokeStyle = '#b2c1b8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-10, -86); ctx.lineTo(0, -64); ctx.lineTo(10, -86); ctx.stroke(); prop(ctx, 'badge', 0, -56, look); }
   if (props.includes('necklace')) { ctx.strokeStyle = '#cbb477'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-13,-86); ctx.lineTo(0,-68); ctx.lineTo(13,-86); ctx.stroke(); ellipse(ctx,0,-68,3,4,'#cbb477'); }
   if (props.includes('pin')) { ellipse(ctx,16,-73,5,5,'#c9ac69'); ellipse(ctx,16,-73,2,2,'#e5dfbb'); }
+  if (props.includes('sport-emblem')) {
+    box(ctx, -10, -68, 20, 3, 1, look.inner); box(ctx, -12, -72, 4, 11, 1, look.inner); box(ctx, 8, -72, 4, 11, 1, look.inner);
+    box(ctx, -16, -70, 3, 7, 1, '#eee7df'); box(ctx, 13, -70, 3, 7, 1, '#eee7df');
+  }
   const held = props.filter(item => ['book','clipboard','coffee','bag','phone','gamepad','cigarette','keys','mic','bowl','tablet','laptop','calculator','card','cards','envelope','can','snack','hourglass','boat'].includes(item));
   if (held.indexOf('bag') >= 2) prop(ctx, 'bag', -direction * 43, -24, look);
   if (held[0]) prop(ctx, held[0], backX, backY, look);
   ctx.strokeStyle = sleeve; ctx.lineWidth = 13; ctx.beginPath(); ctx.moveTo(direction * 22, -76); ctx.lineTo(frontX, frontY); ctx.stroke();
   ellipse(ctx, frontX, frontY, 8, 8, look.skin);
+  if (props.includes('cane')) { ctx.save(); ctx.translate(frontX + direction * 2, frontY); ctx.scale(direction, 1); prop(ctx, 'cane', 0, 0, look); ctx.restore(); }
   if (held.length > 1) prop(ctx, held[1], frontX, frontY - 4, look);
   head(ctx, look, direction);
+  if (pose === 'bath') {
+    // A soap-and-sandalwood cloud remains a fully clothed cartoon recovery pose.
+    for (const [x,y,r] of [[-30,-49,13],[-13,-37,15],[9,-39,16],[28,-47,12],[-20,-20,11],[17,-21,13]]) ellipse(ctx,x,y,r,r*.8,'#eaf0dfdf');
+    for (const [x,y,r] of [[-34,-106,5],[37,-124,6],[26,-153,4]]) { ctx.strokeStyle = '#d9e7cc'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.stroke(); }
+    box(ctx, -9, -53, 19, 13, 4, '#d8c49d');
+    ctx.strokeStyle = '#b79d78'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-4,-48); ctx.lineTo(5,-48); ctx.stroke();
+  } else if (pose === 'pizza') {
+    const pizzaX = direction * 13, pizzaY = -86;
+    path(ctx, [[pizzaX-13,pizzaY-13],[pizzaX+15,pizzaY-9],[pizzaX+2,pizzaY+16]], '#dfbf78');
+    ctx.strokeStyle = '#bd8b5b'; ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(pizzaX-13,pizzaY-13); ctx.lineTo(pizzaX+15,pizzaY-9); ctx.stroke();
+    for (const [dx,dy] of [[-3,-4],[6,-1],[1,6]]) ellipse(ctx,pizzaX+dx,pizzaY+dy,3,3,'#b96e58');
+  }
+  if (healing) {
+    for (const [x,y] of [[-43,-109],[39,-93]]) { box(ctx,x-6,y-2,12,4,1,'#8caf79'); box(ctx,x-2,y-6,4,12,1,'#8caf79'); }
+  } else if (pose === 'guard') {
+    ctx.strokeStyle = '#a7bfb8'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(0,-66,34,44,0,0,Math.PI*2); ctx.stroke();
+  }
 }
 
 export function drawBrawlAvatar(ctx, { id, isPlayer = false }) {
@@ -167,9 +218,10 @@ export function drawBrawlAvatar(ctx, { id, isPlayer = false }) {
 
 export function drawBrawlCharacter(ctx, actor, { isPlayer, name, elapsed = 0, reducedMotion = false }) {
   const { x, y } = actor, active = actor.action;
+  const pose = actor.pose || active;
   const look = isPlayer ? ISLAND_VISITOR_LOOK : getIslandCharacterLook(actor.id);
   const direction = Math.cos(actor.facing) < 0 ? -1 : 1;
-  if (active === 'windup' || actor.telegraphRemaining > 0) {
+  if ((active === 'windup' || actor.telegraphRemaining > 0) && (!actor.telegraphKind || actor.telegraphKind === 'cone')) {
     ctx.save(); ctx.translate(x, y); ctx.rotate(actor.facing);
     ctx.fillStyle = '#d4824c36'; ctx.strokeStyle = '#bc6d3d'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, actor.telegraphRadius || 110, -(actor.telegraphHalfAngle || Math.acos(.35)), actor.telegraphHalfAngle || Math.acos(.35)); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
@@ -180,12 +232,13 @@ export function drawBrawlCharacter(ctx, actor, { isPlayer, name, elapsed = 0, re
   ctx.beginPath(); ctx.ellipse(0, 0, actor.radius + 8, 10, 0, 0, Math.PI * 2); ctx.stroke();
   ctx.save();
   if (active === 'defeated') ctx.rotate(isPlayer ? -.95 : .95);
+  else if (pose === 'down') { ctx.translate(-direction * 73, -23); ctx.rotate(direction * Math.PI / 2); }
   if (actor.invulnerable && !reducedMotion) ctx.globalAlpha = .65 + Math.sin(elapsed * 35) * .12;
   const step = active === 'walk' && !reducedMotion ? Math.sin(elapsed * 15) * 5 : 0;
-  if (!reducedMotion) { ctx.translate(active === 'attack' ? direction * 10 : 0, active === 'walk' ? -Math.abs(step) : 0); ctx.rotate(active === 'hit' ? -direction * .08 : active === 'attack' ? direction * .06 : step * .005); }
-  doll(ctx, look, active, direction, step);
+  if (!reducedMotion) { ctx.translate(active === 'attack' || pose === 'skill' || pose === 'kick' ? direction * 10 : 0, active === 'walk' ? -Math.abs(step) : 0); ctx.rotate(active === 'hit' ? -direction * .08 : active === 'attack' ? direction * .06 : step * .005); }
+  doll(ctx, look, active, direction, step, pose);
   if (actor.paper) { ctx.save(); ctx.translate(-direction * 34, -55); ctx.rotate(.22); ctx.fillStyle = '#fff8e5'; ctx.fillRect(-7, -9, 14, 18); ctx.strokeStyle = '#b3aa91'; ctx.strokeRect(-7, -9, 14, 18); ctx.restore(); }
   ctx.restore();
   if (isPlayer) { ctx.fillStyle = '#426b50'; ctx.beginPath(); ctx.moveTo(-6, -173); ctx.lineTo(6, -173); ctx.lineTo(0, -165); ctx.fill(); }
-  label(ctx, name, 0, -186, isPlayer ? '#244e3d' : '#805b46'); ctx.restore();
+  label(ctx, name, 0, pose === 'down' ? -68 : -186, isPlayer ? '#244e3d' : '#805b46'); ctx.restore();
 }

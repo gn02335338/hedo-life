@@ -1,4 +1,5 @@
 import { ISLAND_CAST } from './cast.js';
+import { getBrawlProfile } from './brawl-roster.js';
 
 // Original island courtyard duel. This simulation has no DOM, persistence,
 // network, career-game state, or preselected winner.
@@ -20,7 +21,8 @@ function actor(id, x, y, facing) {
   return { id, x, y, radius: RADIUS, hp: MAX_HP, maxHp: MAX_HP, energy: 25, maxEnergy: MAX_ENERGY, facing,
     action: 'idle', actionRemaining: 0, invulnerability: 0, cooldowns: { attack: 0, dodge: 0, special: 0, throw: 0 },
     paper: false, telegraphRemaining: 0, telegraphDuration: 0, dashRemaining: 0, dashX: 0, dashY: 0,
-    chain: 0, chainRemaining: 0, recovering: 0, heavy: false };
+    chain: 0, chainRemaining: 0, recovering: 0, heavy: false,
+    shield: 0, shieldRemaining: 0, slowRemaining: 0, activeSkillId: null, skillName: null, castKind: null, pose: null };
 }
 
 export function createIslandBrawl({ opponentId, seed } = {}) {
@@ -28,23 +30,39 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
   let randomState = hash(seed === undefined ? `island-brawl:${opponentId}` : seed) || 1;
   const random = () => { randomState ^= randomState << 13; randomState ^= randomState >>> 17; randomState ^= randomState << 5; return (randomState >>> 0) / 4294967296; };
   const profile = hash(opponentId) % 3;
+  const character = getBrawlProfile(opponentId);
+  const signatureSkills = character.skills.map(skill => ({ skill, remaining: 0, uses: 0 }));
+  const signatureEvents = character.events.map(skill => ({ skill, remaining: 0, uses: 0 }));
   const player = actor('player', 250, 270, 0), opponent = actor(opponentId, 710, 270, Math.PI);
   const stats = { damageDealt: 0, damageTaken: 0, maxCombo: 0, specialsUsed: 0, throwsUsed: 0, dodgesUsed: 0 };
   const pickups = [{ id: 'paper-left', type: 'paper', x: 210, y: 150, radius: 16, available: true, respawnIn: 0 },
     { id: 'paper-right', type: 'paper', x: 750, y: 390, radius: 16, available: true, respawnIn: 0 }];
   let phase = 'ready', outcome = null, elapsed = 0, combo = 0, comboRemaining = 0, summary = null;
   let effects = [], projectiles = [], nextEffect = 0, nextProjectile = 0, aiWait = .7;
+  let cast = null, rush = null, signatureWait = 2.8, skillCursor = 0, sequence = 0;
+  const skillHistory = [];
   let previous = { dodge: false, special: false, throw: false };
   const publicActor = body => ({ id: body.id, x: body.x, y: body.y, radius: body.radius, hp: body.hp, maxHp: body.maxHp,
     energy: body.energy, maxEnergy: body.maxEnergy, facing: body.facing, action: body.action, actionRemaining: body.actionRemaining,
     invulnerable: body.invulnerability > 0, cooldowns: { ...body.cooldowns }, paper: body.paper,
     telegraphRemaining: body.telegraphRemaining, telegraphDuration: body.telegraphDuration,
-    telegraphRadius: body.heavy ? 128 : 110, telegraphHalfAngle: Math.acos(.35), attackRadius: body === player ? 82 : body.heavy ? 128 : 110, attackHalfAngle: Math.acos(body === player ? .2 : .35) });
+    telegraphRadius: body === opponent && cast ? cast.skill.range : body.heavy ? 128 : 110,
+    telegraphHalfAngle: Math.acos(.35), attackRadius: body === player ? 82 : body.heavy ? 128 : 110, attackHalfAngle: Math.acos(body === player ? .2 : .35),
+    telegraphKind: body === opponent && cast ? cast.shape : 'cone', telegraphRange: body === opponent && cast ? cast.range : body.heavy ? 128 : 110,
+    telegraphWidth: body === opponent && cast ? cast.radius : 0, telegraphTarget: body === opponent && cast ? { ...cast.target } : null,
+    activeSkillId: body.activeSkillId, skillName: body.skillName, castKind: body.castKind, pose: body.pose,
+    shield: body.shield, shieldRemaining: body.shieldRemaining, slowRemaining: body.slowRemaining });
   function state() {
     return { phase, outcome, opponentId, aiStyle: ['steady', 'swift', 'bold'][profile],
       elapsed, duration: BRAWL_ARENA.duration, remaining: Math.max(0, BRAWL_ARENA.duration - elapsed),
       player: publicActor(player), opponent: publicActor(opponent), combo, maxCombo: stats.maxCombo,
-      obstacles: copy(OBSTACLES), pickups: copy(pickups), projectiles: copy(projectiles), effects: copy(effects), summary: summary ? { ...summary } : null };
+      obstacles: copy(OBSTACLES), pickups: copy(pickups), projectiles: copy(projectiles), effects: copy(effects), summary: summary ? { ...summary } : null,
+      signature: { skills: signatureSkills.map(item => ({ id: item.skill.id, name: item.skill.name, kind: item.skill.kind, cooldownRemaining: item.remaining, uses: item.uses })),
+        events: signatureEvents.map(item => ({ id: item.skill.id, uses: item.uses })), history: skillHistory.map(item => ({ ...item })) } };
+  }
+  function announce(type, skill, text) {
+    skillHistory.push({ seq: ++sequence, time: elapsed, type, id: skill?.id || opponentId, name: skill?.name || character.title, text });
+    if (skillHistory.length > 24) skillHistory.shift();
   }
   function effect(type, body, extra = {}) {
     effects.push({ id: ++nextEffect, type, x: body.x, y: body.y, radius: 30, angle: body.facing || 0,
@@ -55,6 +73,7 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
   function finish(result, reason) {
     if (phase === 'finished') return;
     phase = 'finished'; outcome = result; clearInputs();
+    cast = null; rush = null; opponent.telegraphRemaining = 0; opponent.activeSkillId = null; opponent.castKind = null; opponent.pose = null;
     player.action = player.hp <= 0 ? 'defeated' : 'idle'; opponent.action = opponent.hp <= 0 ? 'defeated' : 'idle';
     summary = { duration: elapsed, ...stats, reason, outcome };
   }
@@ -79,10 +98,12 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
     }
   }
   function hit(from, target, damage, push = 12, breaksGuard = false) {
-    if ((target.invulnerability > 0 && !breaksGuard) || target.hp <= 0) return false;
+    if (phase !== 'playing' || (target.invulnerability > 0 && !breaksGuard) || target.hp <= 0) return false;
     const approach = Math.atan2(from.y - target.y, from.x - target.x);
-    const guarded = !breaksGuard && target === opponent && target.telegraphRemaining > 0 && Math.cos(approach - target.facing) > .3;
+    const guarded = !breaksGuard && target === opponent && !cast && target.telegraphRemaining > 0 && Math.cos(approach - target.facing) > .3;
     if (guarded) { damage = Math.max(1, Math.ceil(damage * .3)); push *= .2; }
+    if (target === opponent && cast && ['heal', 'guard'].includes(cast.skill.kind)) cancelCast();
+    const absorbed = Math.min(target.shield, damage); target.shield -= absorbed; damage -= absorbed;
     const actual = Math.min(target.hp, damage);
     target.hp = Math.max(0, target.hp - damage); target.invulnerability = .16;
     target.action = 'hit'; target.actionRemaining = .16;
@@ -92,7 +113,7 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
       stats.damageDealt += actual; combo = comboRemaining > 0 ? combo + 1 : 1; comboRemaining = 1.7;
       stats.maxCombo = Math.max(stats.maxCombo, combo);
     } else { stats.damageTaken += actual; combo = 0; comboRemaining = 0; }
-    effect('impact', target, { radius: 34, text: guarded ? `架住 −${actual}` : `−${actual}`, owner: from === player ? 'player' : 'opponent' });
+    effect('impact', target, { radius: 34, text: absorbed ? `護盾 −${absorbed}${actual ? ` · −${actual}` : ''}` : guarded ? `架住 −${actual}` : `−${actual}`, owner: from === player ? 'player' : 'opponent' });
     knock(target, from, push);
     if (target.hp <= 0) finish(target === opponent ? 'win' : 'lose', 'knockout');
     return true;
@@ -134,9 +155,111 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
     for (const key of Object.keys(body.cooldowns)) body.cooldowns[key] = Math.max(0, body.cooldowns[key] - dt);
     body.invulnerability = Math.max(0, body.invulnerability - dt); body.chainRemaining = Math.max(0, body.chainRemaining - dt);
     body.actionRemaining = Math.max(0, body.actionRemaining - dt);
+    body.slowRemaining = Math.max(0, body.slowRemaining - dt);
+    body.shieldRemaining = Math.max(0, body.shieldRemaining - dt);
+    if (body.shieldRemaining === 0) body.shield = 0;
     if (body.actionRemaining === 0 && body.telegraphRemaining === 0) body.action = 'idle';
+    if (body === opponent && !cast && !rush && body.actionRemaining === 0) {
+      if (body.shield > 0 && body.shieldRemaining > 0) body.action = 'guard';
+      else { body.activeSkillId = null; body.skillName = null; body.castKind = null; body.pose = null; }
+    }
+  }
+  function cancelCast() {
+    if (!cast) return;
+    announce('skill-cancel', cast.skill, `${cast.skill.name}被打斷了。`);
+    cast = null; opponent.telegraphRemaining = 0; opponent.activeSkillId = null; opponent.castKind = null; opponent.pose = null;
+    opponent.recovering = .75; signatureWait = 3; aiWait = .4;
+  }
+  function eligible(entry, isEvent = false) {
+    if (entry.remaining > 0 || (entry.skill.once && entry.uses > 0)) return false;
+    const skill = entry.skill, ratio = opponent.hp / opponent.maxHp;
+    if (isEvent) {
+      if (skill.trigger === 'time') return elapsed >= skill.at;
+      if (skill.trigger === 'pressure') return combo >= skill.at;
+      return ratio <= skill.at;
+    }
+    if (skill.trigger === 'lowHp') return ratio < .4;
+    if (skill.trigger === 'hurt') return ratio < .75;
+    if (skill.trigger === 'far') return distance(player, opponent) > 190;
+    return skill.kind !== 'heal' || ratio < .88;
+  }
+  function beginCast(entry, isEvent) {
+    const skill = entry.skill;
+    entry.uses++; entry.remaining = skill.cooldown;
+    const shape = ['zone', 'slow'].includes(skill.kind) ? 'circle' : ['heal', 'guard'].includes(skill.kind) ? 'self' : ['rush', 'projectile'].includes(skill.kind) ? 'line' : 'cone';
+    const range = skill.kind === 'rush' ? clamp(skill.range, 80, 220) : skill.range;
+    cast = { skill, isEvent, shape, range, radius: skill.radius, target: shape === 'self' ? { x: opponent.x, y: opponent.y } : { x: player.x, y: player.y } };
+    opponent.facing = Math.atan2(player.y - opponent.y, player.x - opponent.x);
+    opponent.telegraphDuration = skill.windup; opponent.telegraphRemaining = skill.windup;
+    opponent.activeSkillId = skill.id; opponent.skillName = skill.name; opponent.castKind = skill.kind; opponent.pose = skill.pose || null;
+    opponent.action = 'windup'; opponent.actionRemaining = 0;
+    announce(isEvent ? 'event-start' : 'skill-start', skill, skill.tell);
+  }
+  function resolveCast() {
+    const current = cast; if (!current) return;
+    const { skill, range, radius, target } = current;
+    cast = null; opponent.telegraphRemaining = 0;
+    opponent.action = ['heal', 'guard'].includes(skill.kind) ? skill.kind : 'skill';
+    opponent.actionRemaining = .5; opponent.recovering = .8;
+    opponent.pose = skill.pose || (['heal', 'guard'].includes(skill.kind) ? skill.kind : null);
+    signatureWait = 3.2; aiWait = .35;
+    let extra = '';
+    if (skill.kind === 'heal') {
+      const restored = Math.min(skill.heal || 0, opponent.maxHp - opponent.hp); opponent.hp += restored;
+      extra = ` 回復 ${restored} 體力。`;
+      effect('heal', opponent, { radius: 56, color: skill.color, text: `+${restored}`, life: .7, maxLife: .7 });
+    } else if (skill.kind === 'guard') {
+      opponent.shield = Math.min(30, opponent.shield + (skill.shield || 14)); opponent.shieldRemaining = skill.duration || 1.8;
+      opponent.actionRemaining = opponent.shieldRemaining; opponent.recovering = opponent.shieldRemaining;
+      effect('guard', opponent, { radius: 45, color: skill.color, text: '護盾', life: .6, maxLife: .6 });
+    } else if (skill.kind === 'projectile') {
+      projectiles.push({ id: ++nextProjectile, owner: 'opponent', x: opponent.x + Math.cos(opponent.facing) * 25,
+        y: opponent.y + Math.sin(opponent.facing) * 25, vx: Math.cos(opponent.facing) * 340, vy: Math.sin(opponent.facing) * 340,
+        radius: 8, ttl: Math.max(.1, (range - 25) / 340), damage: skill.damage || 10, skillId: skill.id, color: skill.color, label: skill.name.slice(0, 2) });
+    } else if (skill.kind === 'rush') {
+      rush = { remaining: range / 400, dx: Math.cos(opponent.facing), dy: Math.sin(opponent.facing), radius, damage: skill.damage || 16, hit: false };
+      opponent.actionRemaining = rush.remaining; opponent.recovering = rush.remaining + .65;
+      effect('dash', opponent, { radius: 40, color: skill.color, life: .4, maxLife: .4 });
+    } else if (skill.kind === 'zone' || skill.kind === 'slow') {
+      if (distance(player, target) <= radius + player.radius) {
+        const landed = hit(opponent, player, skill.damage || 4, 10);
+        if (landed && skill.kind === 'slow') player.slowRemaining = skill.duration || 1.5;
+      }
+      effect('zone', target, { radius, color: skill.color, text: skill.name, life: .5, maxLife: .5, owner: 'opponent' });
+    } else {
+      if (inArc(opponent, player, range, .35)) hit(opponent, player, skill.damage || 14, 18);
+      effect('skill', opponent, { radius: range, color: skill.color, text: skill.name, life: .35, maxLife: .35, owner: 'opponent' });
+    }
+    announce(current.isEvent ? 'event-end' : 'skill-end', skill, `${skill.line}${extra}`);
+  }
+  function trySignature() {
+    // A once-per-fight low-health reaction must not wait behind routine casts.
+    const urgent = signatureSkills.find(entry => entry.skill.trigger === 'lowHp' && eligible(entry));
+    if (urgent) { beginCast(urgent, false); return true; }
+    if (signatureWait > 0) return false;
+    const event = signatureEvents.find(entry => eligible(entry, true));
+    if (event) { beginCast(event, true); return true; }
+    const recovery = signatureSkills.find(entry => entry.skill.trigger === 'hurt' && eligible(entry));
+    if (recovery) { beginCast(recovery, false); return true; }
+    for (let offset = 0; offset < signatureSkills.length; offset++) {
+      const index = (skillCursor + offset) % signatureSkills.length, entry = signatureSkills[index];
+      if (!eligible(entry)) continue;
+      if (entry.skill.kind === 'strike' && distance(player, opponent) > entry.skill.range * .9) continue;
+      skillCursor = (index + 1) % signatureSkills.length; beginCast(entry, false); return true;
+    }
+    return false;
   }
   function ai(dt) {
+    if (cast) { opponent.telegraphRemaining = Math.max(0, opponent.telegraphRemaining - dt); if (opponent.telegraphRemaining === 0) resolveCast(); return; }
+    if (rush) {
+      const moving = Math.min(dt, rush.remaining), dx = rush.dx * 400 * moving, dy = rush.dy * 400 * moving;
+      // Stop at an obstacle rather than sliding out of the advertised lane.
+      if (allowed({ x: opponent.x + dx, y: opponent.y + dy }, opponent, player)) move(opponent, dx, dy, player);
+      else rush.remaining = 0;
+      if (!rush.hit && distance(opponent, player) <= rush.radius + player.radius) { rush.hit = true; hit(opponent, player, rush.damage, 24); }
+      if (rush) { rush.remaining -= dt; if (rush.remaining <= 0) rush = null; }
+      return;
+    }
     if (opponent.telegraphRemaining > 0) {
       opponent.telegraphRemaining = Math.max(0, opponent.telegraphRemaining - dt);
       if (opponent.telegraphRemaining === 0) {
@@ -150,6 +273,7 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
       return;
     }
     if (opponent.recovering > 0) { opponent.recovering = Math.max(0, opponent.recovering - dt); if (opponent.actionRemaining === 0) opponent.action = 'recover'; return; }
+    if (trySignature()) return;
     aiWait = Math.max(0, aiWait - dt);
     const gap = distance(opponent, player);
     if (gap < 83 && aiWait === 0) {
@@ -176,6 +300,8 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
     elapsed = Math.min(BRAWL_ARENA.duration, elapsed + dt);
     effects = effects.map(item => ({ ...item, life: item.life - dt })).filter(item => item.life > 0);
     advanceActor(player, dt); advanceActor(opponent, dt);
+    signatureWait = Math.max(0, signatureWait - dt);
+    for (const entry of [...signatureSkills, ...signatureEvents]) entry.remaining = Math.max(0, entry.remaining - dt);
     comboRemaining = Math.max(0, comboRemaining - dt); if (comboRemaining === 0) combo = 0;
     const vector = normal(input.x, input.y);
     if (Math.hypot(input.x, input.y) > .01) player.facing = Math.atan2(input.y, input.x);
@@ -188,7 +314,7 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
     if (player.dashRemaining > 0) {
       const moving = Math.min(dt, player.dashRemaining); move(player, player.dashX * 620 * moving, player.dashY * 620 * moving, opponent);
       player.dashRemaining = Math.max(0, player.dashRemaining - dt);
-    } else if (Math.hypot(vector.x, vector.y) > 0 && move(player, vector.x * 210 * dt, vector.y * 210 * dt, opponent) > 0) {
+    } else if (Math.hypot(vector.x, vector.y) > 0 && move(player, vector.x * 210 * (player.slowRemaining > 0 ? .55 : 1) * dt, vector.y * 210 * (player.slowRemaining > 0 ? .55 : 1) * dt, opponent) > 0) {
       if (player.actionRemaining === 0) player.action = 'walk';
     }
     for (const pickup of pickups) {
@@ -202,8 +328,9 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
       projectile.x += projectile.vx * dt; projectile.y += projectile.vy * dt; projectile.ttl -= dt;
       if (OBSTACLES.some(item => distance(projectile, item) < item.radius + projectile.radius)
         || projectile.x < 24 || projectile.x > 936 || projectile.y < 24 || projectile.y > 516) projectile.ttl = 0;
-      if (projectile.ttl > 0 && distance(projectile, opponent) < RADIUS + projectile.radius) {
-        projectile.ttl = 0; hit(player, opponent, 12, 15); effect('projectile-hit', projectile, { radius: 25, owner: 'player' });
+      const target = projectile.owner === 'player' ? opponent : player, source = projectile.owner === 'player' ? player : opponent;
+      if (projectile.ttl > 0 && distance(projectile, target) < RADIUS + projectile.radius) {
+        projectile.ttl = 0; hit(source, target, projectile.damage || 12, 15); effect('projectile-hit', projectile, { radius: 25, owner: projectile.owner, color: projectile.color });
       }
     }
     projectiles = projectiles.filter(item => item.ttl > 0);
@@ -228,7 +355,7 @@ export function createIslandBrawl({ opponentId, seed } = {}) {
   }
   return Object.freeze({
     getState: state,
-    start() { if (phase === 'ready') phase = 'playing'; return state(); },
+    start() { if (phase === 'ready') { phase = 'playing'; announce('opening', null, character.opening); } return state(); },
     step,
     pause() { if (phase === 'playing') { phase = 'paused'; clearInputs(); } return state(); },
     resume() { if (phase === 'paused') { phase = 'playing'; clearInputs(); } return state(); },

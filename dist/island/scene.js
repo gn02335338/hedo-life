@@ -8,6 +8,7 @@ import { OrbitControls } from './vendor/OrbitControls.js';
 import { mergeGeometries } from './vendor/BufferGeometryUtils.js';
 
 import { displayPersona } from '../persona.js';
+import { getIslandCharacterLook } from './character-looks.js';
 import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, PLACE_ENTRANCES, CAST_POSITIONS, PLAYER_RADIUS, isWalkable, movePlayer, nearestInteraction, findPlaceLanding } from './navigation.js';
 
 import { OUTFITS, RESIDENT_POSITIONS, normalizeResidents } from './residents.js';
@@ -825,17 +826,36 @@ export async function createIslandScene({ container, districts = [], initialHour
     mesh(body, sphereG, mat(options.hair || '#5c4337'), 0, .85, -.02, .15,.09,.15);
     for(const x of [-.049,.049]) ball(body,palette.navy,x,.77,.145,.012);
     const legs = [], arms = [];
+    const leftLegRatio = Math.max(.25, Math.min(1, options.leftLegRatio || 1));
     for (const x of [-.07,.07]) {
-      const leg = group(g, x, .29, 0);
-      cylinder(leg, palette.navy, 0, -.11, 0, .055, .24, 6);
-      box(leg, palette.cream, 0, -.245, .035, .11, .08, .18);
+      // Local +X is the person's own left when facing +Z. Shorten the visible
+      // leg from its hip while keeping its sole at the same island floor.
+      const legLength = .24 * (x > 0 ? leftLegRatio : 1);
+      const leg = group(g, x, .05 + legLength, 0);
+      cylinder(leg, options.trousers || palette.navy, 0, -legLength / 2 + .01, 0, .055, legLength, 6);
+      box(leg, options.shoes || palette.cream, 0, -legLength - .005, .035, .11, .08, .18);
+      if (options.sportShoes) box(leg, palette.white, 0, -legLength - .032, .038, .12, .025, .19);
       legs.push(leg);
       const arm = group(body, Math.sign(x)*.19, .57, 0);
-      uniform.push(cylinder(arm, shirt, 0, -.08, 0, .045, .19, 6));
+      if (options.clothing === 'tee') {
+        uniform.push(cylinder(arm, shirt, 0, -.045, 0, .05, .11, 6));
+        cylinder(arm, skin, 0, -.15, 0, .041, .12, 6);
+      } else uniform.push(cylinder(arm, shirt, 0, -.08, 0, .045, .19, 6));
       ball(arm, skin, 0, -.21, 0, .052);
       arms.push(arm);
     }
     const accessories=options.accessories||[options.accessory];
+    if (leftLegRatio < 1) uniform.push(cylinder(body, shirt, .06, .245, 0, .095, .17, 7));
+    if (accessories.includes('cane')) {
+      cylinder(g, palette.woodDark, .25, .18, .08, .017, .34, 7);
+      box(g, palette.woodDark, .215, .365, .08, .11, .035, .04);
+      cylinder(g, palette.charcoal, .25, .015, .08, .023, .025, 7);
+    }
+    if (accessories.includes('sport-emblem')) {
+      const emblem = mat('#deb9ba');
+      box(body, emblem, 0, .47, .145, .11, .016, .02);
+      for (const x of [-.05, .05]) box(body, emblem, x, .47, .145, .022, .06, .022);
+    }
     if(options.hairStyle==='long')ball(body,mat(options.hair||'#5c4337'),0,.69,-.09,.15,1,1.3,.65);
     if(accessories.includes('bag')) box(body,palette.wood,.25,.28,0,.17,.22,.08);
     if(accessories.includes('coffee')) { cylinder(body,palette.cream,.22,.39,.12,.055,.15,8); cylinder(body,palette.woodDark,.22,.47,.12,.046,.012,8); }
@@ -852,15 +872,16 @@ export async function createIslandScene({ container, districts = [], initialHour
       for(const x of [-.095,.095]) box(body,palette.brick,x,.5,.12,.026,.29,.035);
       box(body,palette.white,0,.53,.15,.09,.1,.018);
     }
-    const person = { object:g, body, uniform, legs, arms, tile, phase:index*1.74, speed:.07+random()*.035, radius:2.65+random()*.15, index };
+    const person = { object:g, body, uniform, legs, arms, leftLegRatio, hasCane:accessories.includes('cane'), tile, phase:index*1.74, speed:.07+random()*.035, radius:2.65+random()*.15, index };
     if(!options.player) people.push(person);
     return person;
   }
+  const wingLook = getIslandCharacterLook('wing'), jackLook = getIslandCharacterLook('jack');
   const colleagueLooks = {
-    wing:{shirt:palette.navy,accessory:'bag',hair:'#4a4540'},
+    wing:{shirt:mat(wingLook.shirt),accessories:wingLook.accessories,hair:wingLook.hair,leftLegRatio:wingLook.leftLegRatio},
     spencer:{shirt:palette.charcoal,accessory:'glasses',hair:'#b7b0a3'},
     rick:{shirt:palette.red,accessory:'cap',hair:'#4c403b'},
-    jack:{shirt:palette.teal,accessory:'glasses',hair:'#3d4142'},
+    jack:{shirt:mat(jackLook.shirt),accessories:jackLook.accessories,hair:jackLook.hair,trousers:mat(jackLook.trousers),shoes:mat('#e6e9e1'),sportShoes:true,clothing:'tee'},
     sam:{shirt:palette.blue,accessory:'bag',hair:'#3c4746'},
     professor:{shirt:palette.cream,accessories:['clipboard','glasses'],hair:'#c1b6a0'},
     princess:{shirt:palette.lilac,accessories:['coffee','ribbon'],hair:'#6d4838',hairStyle:'long'},
@@ -1193,10 +1214,10 @@ export async function createIslandScene({ container, districts = [], initialHour
       if(Math.abs(difference)>.001){actor.object.rotation.y+=difference*(still||dt===0?1:Math.min(1,dt*9));needsRender=true;}
       actor.walkDistance+=moved;
       const stride=!still&&state.state==='walking'?Math.sin(actor.walkDistance*10+actor.phase)*.4:0;
-      actor.legs[0].rotation.x=stride;actor.legs[1].rotation.x=-stride;
-      actor.arms[0].rotation.x=-stride*.7;actor.arms[1].rotation.x=stride*.7;
+      actor.legs[0].rotation.x=stride;actor.legs[1].rotation.x=-stride*(actor.leftLegRatio||1);
+      actor.arms[0].rotation.x=-stride*.7;actor.arms[1].rotation.x=actor.hasCane?0:stride*.7;
       actor.body.position.y=still?0:state.state==='walking'?Math.abs(Math.sin(actor.walkDistance*10+actor.phase))*.022:Math.sin(elapsed*1.6+actor.phase)*.009;
-      actor.arms[1].rotation.z=!still&&state.state==='greeting'?-.55+Math.sin(elapsed*4+actor.phase)*.09:0;
+      actor.arms[1].rotation.z=!actor.hasCane&&!still&&state.state==='greeting'?-.55+Math.sin(elapsed*4+actor.phase)*.09:0;
     }
     const now=performance.now();
     if(now-lastLifePublished>=1000){

@@ -113,3 +113,27 @@ test('Escape before the first frame can cancel the native dialog without startin
   assert.deepEqual(f.controls.read(), { x: 0, y: 0, dodge: false, special: false, throw: false, attack: false });
   f.controls.destroy();
 });
+
+test('the skill dossier keeps native Enter and Space disclosure keys without starting or attacking', () => {
+  for (const phase of ['ready', 'playing', 'paused']) {
+    const f = fixture(); f.setPhase(phase);
+    const summary = { closest: selector => selector === 'summary, [data-brawl-dossier]' ? summary : null };
+    for (const code of ['Enter', 'Space', 'KeyJ', 'KeyD']) {
+      for (const type of ['keydown', 'keyup']) {
+        const event = keyboard(f.document, type, code, { target: summary });
+        assert.equal(event.prevented, false, `${phase}/${type}/${code}: native dossier interaction stays available`);
+        assert.equal(event.stopped, false);
+      }
+      assert.deepEqual(f.controls.read(), { x: 0, y: 0, dodge: false, special: false, throw: false, attack: false });
+    }
+    assert.equal(f.getStarts(), 0); assert.equal(f.getPauses(), 0);
+    if (phase === 'playing') {
+      keyboard(f.document, 'keydown', 'KeyJ'); assert.equal(f.controls.read().attack, true);
+      keyboard(f.document, 'keyup', 'KeyJ', { target: summary });
+      assert.equal(f.controls.read().attack, false, 'releasing a held attack over the dossier still clears it');
+      const escape = keyboard(f.document, 'keydown', 'Escape', { target: summary });
+      assert.equal(escape.prevented, true); assert.equal(f.getPauses(), 1, 'Escape still pauses from inside the dossier');
+    }
+    f.controls.destroy();
+  }
+});

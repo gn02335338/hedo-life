@@ -360,7 +360,7 @@ async function startBrawl(id) {
     if (activeBrawl !== match) return;
     content.replaceChildren();
     match.handle = mountIslandBrawl({
-      container: content, opponent: { id, name: displayPersona(id).name }, reducedMotion: reducedMotion.matches,
+      container: content, opponent: { id, name: displayPersona(id).name, image: personaImage(id) }, reducedMotion: reducedMotion.matches,
       onFinish(outcome, summary) {
         if (activeBrawl !== match) return;
         const result = conflicts.settleFight(match.token, outcome, summary);
