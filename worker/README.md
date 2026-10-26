@@ -1648,8 +1648,13 @@ A server restart or failed simulation/storage tick cancels an interrupted match
 rather than inventing a result. Explicitly leaving a running match forfeits;
 leaving a waiting/countdown seat frees it. Both players must request a rematch,
 then ready again; a new match ID rejects old-round packets. The room expires
-after ten minutes. Waiting/terminal sockets use the hibernation API; simulation
-timers run only during active countdown/play and stop on every terminal path.
+after ten minutes. Waiting/terminal rooms can hibernate. Countdown, active play
+and the bounded 15-second reconnect grace retain one interval. During grace,
+its callbacks only check deadlines and never advance physics, health or the
+battle clock. This preserves the in-memory match through the platform's normal
+10-second idle hibernation window; reconnect reuses the interval, and every
+terminal path clears it. A true runtime restart still cancels without a winner.
+See the [Durable Object lifecycle](https://developers.cloudflare.com/durable-objects/concepts/durable-object-lifecycle/).
 
 The player interface uses fixed blue/coral visitor appearances and authoritative
 HP/results, with interpolation only for visual movement. Blur clears all held
@@ -1661,8 +1666,9 @@ saves and removed when the room expires; no public match history is retained.
 
 `node scripts/island-pvp-smoke.mjs --base http://127.0.0.1:4196` exercises real
 HTTP admission and two real WebSockets, including third-player rejection,
-countdown, input authority, stale-input release, forfeit agreement and public
-state privacy. It uses temporary anonymous credentials only in memory and
+countdown, input authority, stale-input release, a twelve-second disconnect
+and same-match resume with unchanged HP/position/time, forfeit agreement and
+public state privacy. It uses temporary anonymous credentials only in memory and
 closes both test sockets. Unit tests cover the pure combat model, room/session
 lifecycle, request validation, client ownership, keyboard/touch cleanup and the
 island modal integration. The standard `npm test` and `npm run build:check`

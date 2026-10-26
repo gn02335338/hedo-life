@@ -47,7 +47,13 @@ export class IslandPvpRoom extends DurableObject {
     } catch (error) { return errorResponse(error); }
   }
   async webSocketMessage(socket, message) { await this.ready; await this.session.message(socket, message); }
-  async webSocketClose(socket) { await this.ready; await this.session.closed(socket); }
-  async webSocketError(socket) { await this.ready; await this.session.closed(socket); }
+  async webSocketClose(socket) {
+    try { await this.ready; await this.session.closed(socket); }
+    finally { try { socket.close(1000, 'closed'); } catch {} }
+  }
+  async webSocketError(socket) {
+    try { await this.ready; await this.session.closed(socket); }
+    finally { try { socket.close(1011, 'unavailable'); } catch {} }
+  }
   async alarm() { await this.ready; await this.session.alarm(); }
 }

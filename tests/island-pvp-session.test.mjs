@@ -85,9 +85,13 @@ test('short dodge/special/throw packets are queued until one server step and the
 test('disconnect pauses both clocks and neutralizes inputs; resume uses a fresh socket sequence without charging grace as battle time', async () => {
   const h = harness(), a = await h.seat('owner-a', '甲', true), b = await h.seat('owner-b', '乙'); await h.start(a.socket, b.socket);
   await h.input(a.socket, { x: 1 }); await h.advance(100); const before = h.session.model.getState();
-  await h.session.closed(a.socket); assert.equal(h.session.publicRoom().phase, 'paused'); assert.equal(h.timers.size, 0);
-  await h.advance(5000); assert.equal(h.session.model.getState().elapsed, before.elapsed); assert.equal(h.session.model.getState().fighters[1].hp, 160);
+  const timer = h.session.timer;
+  await h.session.closed(a.socket); assert.equal(h.session.publicRoom().phase, 'paused'); assert.equal(h.timers.size, 1); assert.equal(h.session.timer, timer);
+  await h.advance(12000);
+  assert.equal(h.timers.size, 1, 'the grace interval prevents ordinary 10-second hibernation');
+  assert.deepEqual(h.session.model.getState(), before, 'twelve seconds of grace change no HP, clock, position or cooldown');
   const resumed = await h.seat('owner-a', '改名'); assert.equal(resumed.claim.seat, 0); assert.equal(h.session.publicRoom().phase, 'playing');
+  assert.equal(h.timers.size, 1); assert.equal(h.session.timer, timer, 'resuming reuses the same interval rather than duplicating it');
   assert.equal(h.session.publicRoom().players[0].nickname, '甲', 'reconnect preserves room identity');
   await h.input(resumed.socket, { x: -1 }); await h.advance(50); assert.ok(h.session.model.getState().fighters[0].x < before.fighters[0].x);
   assert.ok(Math.abs(h.session.model.getState().elapsed - before.elapsed - .05) < 1e-8); h.session.dispose();
@@ -96,8 +100,11 @@ test('disconnect pauses both clocks and neutralizes inputs; resume uses a fresh 
 test('a missing opponent forfeits only after the grace deadline, while both missing cancel with no winner', async () => {
   for (const both of [false, true]) {
     const h = harness(), a = await h.seat('owner-a', '甲', true), b = await h.seat('owner-b', '乙'); await h.start(a.socket, b.socket);
+    const timer = h.session.timer;
     await h.session.closed(a.socket); if (both) await h.session.closed(b.socket);
+    assert.equal(h.timers.size, 1); assert.equal(h.session.timer, timer);
     await h.advance(PVP_GRACE_MS - 50); assert.equal(h.session.publicRoom().phase, 'paused');
+    assert.equal(h.timers.size, 1, 'one interval remains alive until the grace deadline');
     await h.advance(50); assert.equal(h.session.publicRoom().phase, both ? 'cancelled' : 'finished');
     assert.equal(h.session._snapshot().winner, both ? null : 1); assert.equal(h.session.publicRoom().reason, both ? 'both_disconnected' : 'disconnect');
     assert.equal(h.timers.size, 0);
@@ -206,4 +213,17 @@ test('pending handshakes and authenticated message floods are bounded without ex
   assert.equal(a.socket.closes.at(-1).code, 1008); assert.equal(a.socket.messages.at(-1).code, 'pvp_message_rate');
   assert.equal(h.session.publicRoom().players[0].connected, false); assert.equal(h.session.publicRoom().phase, 'waiting');
   assert.ok(pending.every(socket => socket.messages.length === 0));
+});
+
+test('a true runtime restart during reconnect grace still cancels fairly, while waiting/countdown cancellation keeps no timer', async () => {
+  const h = harness(), a = await h.seat('owner-a', '甲', true), b = await h.seat('owner-b', '乙');
+  await h.action(a.socket, 'ready', { ready: true }); await h.action(b.socket, 'ready', { ready: true });
+  assert.equal(h.timers.size, 1); await h.session.closed(a.socket);
+  assert.equal(h.session.publicRoom().phase, 'waiting'); assert.equal(h.timers.size, 0, 'an unstarted countdown can hibernate normally');
+  const back = await h.seat('owner-a', '甲'); await h.start(back.socket, b.socket); await h.advance(100); await h.session.closed(back.socket);
+  assert.equal(h.session.publicRoom().phase, 'paused'); assert.equal(h.timers.size, 1);
+  const saved = h.persisted; h.session.dispose(); assert.equal(h.timers.size, 0);
+  const restarted = new IslandPvpSession({ ...h.dependencies, persisted: saved, sockets: [b.socket] }); await restarted.restore();
+  assert.equal(restarted.publicRoom().phase, 'cancelled'); assert.equal(restarted.publicRoom().reason, 'server_restart'); assert.equal(restarted._snapshot(), null);
+  assert.equal(h.timers.size, 0, 'a cancelled restarted bout keeps no interval');
 });

@@ -226,7 +226,12 @@ export class IslandPvpSession {
     const seat = info.seat; if (seat === null || this.owners[seat] !== socket || !this.meta) { await this._planAlarm(); return; }
     this.owners[seat] = null; this.inputs[seat] = neutral(); this.meta.missingSince[seat] = this.now();
     if (this.meta.phase === 'playing') {
-      this.meta.phase = 'paused'; this.meta.reason = 'disconnected'; this.pausedAt = this.now(); this._resetInputs(); this._stopTimer();
+      this.meta.phase = 'paused'; this.meta.reason = 'disconnected'; this.pausedAt = this.now(); this._resetInputs();
+      // Keep the one bounded interval through the 15-second reconnect grace.
+      // With hibernating sockets, clearing it would allow a normal 10-second
+      // hibernation to discard the live model. Paused ticks check deadlines
+      // only; _tick never advances physics until both owners reconnect.
+      this._startTimer();
     } else if (this.meta.phase === 'countdown') {
       this.meta.phase = 'waiting'; this.meta.countdownEndsAt = null; this.meta.seats[seat].ready = false; this._resetInputs(); this._stopTimer();
     }

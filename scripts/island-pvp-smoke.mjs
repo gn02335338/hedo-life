@@ -147,13 +147,44 @@ try {
   expect(later && later.state.fighters.every((body, seat) => gapBetween(body, stopped.state.fighters[seat]) < 1e-7), 'Stale input continued moving a disconnected controller');
   console.log('Authority: real movement works; forged fields cannot win or teleport; stale inputs stop.');
 
+  // Cross the platform's normal ten-second hibernation threshold while still
+  // inside the advertised fifteen-second reconnect grace. The paused room
+  // must retain its live model, not restart or award an invented result.
+  const previousMatch = host.room.matchId;
+  const previousState = later.state;
+  const disconnectedGuest = guest;
+  disconnectedGuest.socket.close(1000, 'reconnect test');
+  try {
+    await waitUntil(() => healthy() && host.room?.phase === 'paused' && disconnectedGuest.closed,
+      'A dropped player did not pause the shared match');
+  } catch {
+    throw new Error(`Disconnect did not finish cleanly (room: ${host.room?.phase || 'unknown'}, socket: ${disconnectedGuest.socket.readyState}, closed: ${disconnectedGuest.closed})`);
+  }
+  const pausedSnapshots = host.snapshots.size;
+  await delay(12000);
+  expect(host.room.phase === 'paused' && host.snapshots.size === pausedSnapshots,
+    'The paused match advanced or ended before the reconnect grace expired');
+  const rejoined = await request(`/api/island/pvp/rooms/${code}/join`, { token: second, body: { nickname: '測試島民乙' } });
+  expect(rejoined.status === 200 && rejoined.value.seat === disconnectedGuest.seat,
+    'The returning anonymous player did not retain its seat');
+  guest = connect(rejoined.value);
+  await waitUntil(() => healthy() && host.room?.phase === 'playing' && guest.room?.phase === 'playing'
+    && commonSnapshot(host, guest, state => state.phase === 'playing'), 'A twelve-second reconnect did not resume the existing match');
+  const resumed = commonSnapshot(host, guest, state => state.phase === 'playing');
+  expect(resumed.matchId === previousMatch && resumed.state.elapsed >= previousState.elapsed
+    && resumed.state.elapsed <= previousState.elapsed + .2,
+    'Reconnect restarted the match or consumed the paused time');
+  expect(resumed.state.fighters.every((body, seat) => body.hp === previousState.fighters[seat].hp
+    && gapBetween(body, previousState.fighters[seat]) < 1e-7), 'Reconnect changed health or positions');
+  console.log('Reconnect: twelve seconds offline preserves the same match, health, positions and timer.');
+
   const matchId = host.room.matchId;
   send(guest, { type: 'leave', matchId });
   await waitUntil(() => commonSnapshot(host, guest, state => state.phase === 'finished'), 'The two players did not receive the same final state');
   const final = commonSnapshot(host, guest, state => state.phase === 'finished');
   expect(final.matchId === matchId && final.state.winner === host.seat && final.state.reason === 'forfeit', 'Explicit leave did not resolve the correct shared forfeit');
   expect(final.state.fighters.every(body => body.hp === 160), 'A leave invented combat damage');
-  expect(clients.every(client => client.messages.some(message => message.type === 'room' && message.room.phase === 'finished')), 'Both clients did not receive terminal room status');
+  expect([host, guest].every(client => client.messages.some(message => message.type === 'room' && message.room.phase === 'finished')), 'Both current clients did not receive terminal room status');
   console.log('Result: both clients agree on the same match, winner and forfeit.');
 } finally {
   for (const client of clients) {
@@ -167,5 +198,5 @@ try {
   secrets.fill('');
 }
 healthy();
-console.log('PASS: room capacity, realtime play, authority, privacy and cleanup.');
+console.log('PASS: room capacity, realtime play, authority, reconnect, privacy and cleanup.');
 function gapBetween(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
