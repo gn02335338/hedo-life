@@ -1113,13 +1113,27 @@ the repository checks with `npm test` and `npm run build:check`.
 ## Island conflicts and temporary dispositions
 
 The island-only conflict model lets visitors argue or fight with the 34 authored
-colleagues. Fight choices resolve only after selection: the loser is transferred
+colleagues. Fighting opens an original, browser-local 75-second realtime duel:
+movement, combo attacks, invulnerable dodges, charged specials and paper pickups.
+Health and actual inputs decide win/loss; an equal-health timeout is a draw with
+no holds. An opaque single-use begin/settle/cancel token binds the active opponent,
+rejects stale or duplicate completion, and never rerolls the played outcome.
+Bounded numerical combat summaries are projected into the session history.
+The loser is transferred
 to `hospital-er`, and the winner to `police-desk`. Arguments with the two fictional
 bosses may transfer the visitor to `exile-gate` or `cold-palace`. Explicit incident
 transfers use collision-safe landings; ordinary schedules still move by walking.
 Active NPC dispositions override daily routines and cannot be cleared by changing
 the island clock. Facility actions release the visitor or the specific colleague;
 released colleagues walk back to their current scheduled destination.
+
+The battle controller owns scoped keyboard/pointer input, animation frames and
+resize observation. Hidden/blur pauses and clears held inputs; explicit resume
+resets its frame clock without catch-up. Closing before play cancels; after play
+starts it offers resume or forfeit. Escape, native dialog close, hash changes and
+page teardown cannot leave a detached fight or input owner running. The 2D duel
+works independently of WebGL; unavailable 2D rendering cancels the reservation
+with a retry option rather than fabricating an outcome.
 
 All incident state, bounded history and holds live only in page memory. Reloading
 ends the session. No identity, saved career, server replay, leaderboard, HTTP API,

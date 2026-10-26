@@ -123,11 +123,19 @@ function makeDocument(html) {
   document.hidden = false; document.visibilityState = 'visible';
   return document;
 }
-async function fixture({ fallback = false, reducedMotion = false, conflictRandom = () => .01 } = {}) {
+async function fixture({ fallback = false, reducedMotion = false, conflictRandom = () => .01, brawlFails = false, brawlDeferred = false } = {}) {
   const [source, html] = await Promise.all(['app.js', 'index.html'].map(name => readFile(new URL(`../dist/island/${name}`, import.meta.url), 'utf8')));
   const document = makeDocument(html), window = new Surface(), calls = [], timers = new Map(); let nextTimer = 0, onLifeUpdate, now = 0;
   const bytes = new Map([['hedo-island-v1', JSON.stringify({ version: 1, visited: ['lobby'], choices: { lobby: 2 } })], ['hedo-anonymous-v1', 'TEST_IDENTITY'], ['hedo-life-v1', 'UNCHANGED_CAREER']]);
-  const writes = [];
+  const writes = [], brawls = [];
+  let resolveBrawlImport;
+  const brawlImportWait = brawlDeferred ? new Promise(resolve => { resolveBrawlImport = resolve; }) : Promise.resolve();
+  const mountIslandBrawl = config => {
+    if (brawlFails) throw new Error('intentional 2D canvas failure');
+    const state = { phase: 'ready', destroyed: 0, pauses: 0, config }; brawls.push(state);
+    const title = document.createElement('h2'); title.id = 'encounter-title'; title.textContent = '移動島大亂鬥'; config.container.append(title);
+    return { getState: () => ({ phase: state.phase }), destroy: () => { state.destroyed++; }, pause: () => { state.phase = 'paused'; state.pauses++; }, requestExit: () => { if (state.phase === 'ready') return true; state.phase = 'paused'; state.pauses++; return false; } };
+  };
   window.localStorage = { getItem: key => bytes.get(key) ?? null, setItem: (key, value) => { writes.push(key); bytes.set(key, value); } };
   const scene = Object.fromEntries(['setResidents', 'setDispositions', 'sendPlayerToPlace', 'setRoaming', 'setHour', 'setPaused', 'setMovementEnabled', 'setConversationTarget', 'setConnections', 'setTopView', 'focus', 'focusPlace', 'focusPerson', 'reset', 'destroy', 'setMoveInput', 'zoom'].map(method => [method, (...args) => { calls.push({ method, args }); }]));
   const createIslandScene = async config => { if (fallback) throw new Error('intentional renderer unavailable'); onLifeUpdate = config.onLifeUpdate; document.querySelector('#scene').append(document.createElement('canvas')); return scene; };
@@ -137,16 +145,16 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
   const context = vm.createContext({
     createIslandConflicts: () => createIslandConflicts({ random: conflictRandom }),
     ...routines, DISTRICTS, TOUR, PLACES, PLACE_BY_ID, ISLAND_CAST, ENCOUNTERS, displayPersona, readProgress, writeProgress,
-    document, window, matchMedia: media, history, location, createIslandScene,
+    document, window, matchMedia: media, history, location, createIslandScene, mountIslandBrawl, brawlImportWait,
     bindWalkControls: () => ({ clear() {}, destroy() {} }), bindApplications: () => ({ getResidents: () => [] }),
     createIslandAdminSummary: () => ({ refresh: async () => {} }), residentAvatar: () => document.createElement('span'),
     console: { warn() {} }, setTimeout: callback => { timers.set(++nextTimer, { kind: 'timeout', callback }); return nextTimer; }, clearTimeout: id => timers.delete(id),
     setInterval: callback => { timers.set(++nextTimer, { kind: 'interval', callback }); return nextTimer; }, clearInterval: id => timers.delete(id),
     performance: { now: () => now }, requestAnimationFrame: callback => { timers.set(++nextTimer, callback); return nextTimer; }, cancelAnimationFrame: id => timers.delete(id),
   });
-  const script = source.replace(/^import\s[\s\S]*?;\r?\n/gm, '').replace("const { createIslandScene } = await import('./scene.js');", '');
+  const script = source.replace(/^import\s[\s\S]*?;\r?\n/gm, '').replace("const { createIslandScene } = await import('./scene.js');", '').replace("const { mountIslandBrawl } = await import('./brawl-ui.js');", 'await brawlImportWait;');
   const api = await new vm.Script(`(async () => { ${script}\n return { setHour, renderCastDirectory, renderDetail, renderEncounter, meetColleague, updateIslandLife, renderLifeStatus, closeDialog, getHour: () => hour, renderConflictMenu, visitPlace, getConflictState: () => conflicts.getState() }; })()`, { filename: 'dist/island/app.js' }).runInContext(context);
-  return { api, document, window, calls, scene, timers, bytes, writes, advanceClock: seconds => { now += seconds * 1000; for (const timer of timers.values()) if (timer.kind === 'interval') timer.callback(); }, life: rows => onLifeUpdate?.({ actors: rows }), node: selector => document.querySelector(selector) };
+  return { api, document, window, calls, scene, timers, bytes, writes, brawls, location, resolveBrawlImport, startBattle: () => { brawls.at(-1).phase = 'playing'; }, finishBattle: (outcome, summary = {}) => brawls.at(-1).config.onFinish(outcome, { duration: 25, maxCombo: 5, damageDealt: 110, damageTaken: 35, specialsUsed: 1, reason: 'knockout', ...summary }), advanceClock: seconds => { now += seconds * 1000; for (const timer of timers.values()) if (timer.kind === 'interval') timer.callback(); }, life: rows => onLifeUpdate?.({ actors: rows }), node: selector => document.querySelector(selector) };
 }
 
 test('routine controls retain the legacy island passport, career bytes and anonymous identity', async () => {
@@ -297,14 +305,14 @@ test('a lost WebGL context switches stale live destinations to the selected sche
 });
 
 test('fight choices resolve only after selection, transfer both sides, and recover at the matching facility', async () => {
-  for (const [random, playerStatus, placeId, otherStatus] of [[.01, 'police', 'police-desk', 'hospital'], [.99, 'hospital', 'hospital-er', 'police']]) {
-    const f = await fixture({ conflictRandom: () => random });
+  for (const [outcome, playerStatus, placeId, otherStatus] of [['win', 'police', 'police-desk', 'hospital'], ['lose', 'hospital', 'hospital-er', 'police']]) {
+    const f = await fixture({ conflictRandom: () => { throw new Error('a played fight must never roll a result'); } });
     f.api.meetColleague('jack');
     await f.node('[data-conflict-action="fight"]').dispatch('click');
     assert.equal(f.api.getConflictState().history.length, 0, 'opening a confrontation does not draw a result');
     assert.ok(!f.node('#encounter-content').textContent.includes('打贏了'));
     assert.ok(!f.node('#encounter-content').textContent.includes('先去醫院'));
-    await f.node('[data-conflict-style="steady"]').dispatch('click');
+    f.startBattle(); f.finishBattle(outcome);
     const state = f.api.getConflictState();
     assert.equal(state.player.status, playerStatus);
     assert.equal(state.people[0].status, otherStatus);
@@ -348,7 +356,7 @@ test('fallback exposes incident recovery and a held Aliang does not pretend to l
   const f = await fixture({ fallback: true, reducedMotion: true, conflictRandom: () => .99 });
   f.api.meetColleague('kind');
   await f.node('[data-conflict-action="fight"]').dispatch('click');
-  await f.node('[data-conflict-style="swift"]').dispatch('click');
+  f.startBattle(); f.finishBattle('lose');
   assert.equal(f.api.getConflictState().people[0].status, 'police');
   assert.equal(f.calls.filter(call => call.method === 'sendPlayerToPlace').length, 0, 'fallback does not claim a physical transfer rendered on a map');
   f.api.setHour(19.25);
@@ -370,8 +378,104 @@ test('Aliang still supports conflict choices while hosting the evening invitatio
   assert.equal(f.node('#encounter-title').textContent, routines.MYSTERY_TRIP.story.title);
   assert.ok(f.node('[data-conflict-action="argue"]'));
   await f.node('[data-conflict-action="fight"]').dispatch('click');
-  await f.node('[data-conflict-style="steady"]').dispatch('click');
+  f.startBattle(); f.finishBattle('win');
   assert.equal(f.api.getConflictState().people[0].id, 'kind');
   assert.equal(f.api.getConflictState().people[0].status, 'hospital');
   assert.ok(f.node('#mystery-status').textContent.includes('醫院留觀'));
+});
+
+test('a pending bout pins the opponent and clock, while closing before start cancels without a result', async () => {
+  const f = await fixture();
+  f.api.meetColleague('jack');
+  await f.node('[data-conflict-action="fight"]').dispatch('click');
+  assert.equal(f.api.getConflictState().activeFight.opponentId, 'jack');
+  assert.equal(f.api.getConflictState().history.length, 0);
+  const before = f.api.getHour(); f.advanceClock(60); assert.equal(f.api.getHour(), before);
+  assert.equal(f.calls.filter(call => call.method === 'setConversationTarget').at(-1).args[0].id, 'jack');
+  assert.equal(f.api.closeDialog(f.node('#encounter-dialog')), true);
+  assert.equal(f.brawls[0].destroyed, 1);
+  assert.equal(f.api.getConflictState().activeFight, null);
+  assert.equal(f.api.getConflictState().history.length, 0);
+  assert.equal(f.api.getConflictState().player.status, 'free');
+  assert.equal(f.node('#encounter-dialog').classList.contains('brawl-dialog'), false);
+});
+
+test('closing or native Escape during a started bout pauses instead of silently escaping, and forfeit settles once', async () => {
+  const f = await fixture();
+  f.api.meetColleague('wing');
+  await f.node('[data-conflict-action="fight"]').dispatch('click'); f.startBattle();
+  assert.equal(f.api.closeDialog(f.node('#encounter-dialog')), false);
+  assert.equal(f.node('#encounter-dialog').open, true);
+  assert.equal(f.brawls[0].phase, 'paused');
+  let prevented = false;
+  await f.node('#encounter-dialog').dispatch('cancel', { preventDefault() { prevented = true; } });
+  assert.equal(prevented, true);
+  assert.equal(f.api.getConflictState().history.length, 0);
+  const callback = f.brawls[0].config.onFinish;
+  f.finishBattle('lose', { reason: 'forfeit' });
+  assert.equal(f.brawls[0].destroyed, 1);
+  assert.equal(f.api.getConflictState().player.status, 'hospital');
+  assert.equal(f.api.getConflictState().history.length, 1);
+  callback('win', { duration: 1 });
+  assert.equal(f.api.getConflictState().history.length, 1, 'late renderer callbacks cannot settle a completed bout again');
+  assert.equal(f.api.getConflictState().player.status, 'hospital');
+});
+
+test('a stale callback cannot finish a newer bout, and a draw keeps both participants free', async () => {
+  const f = await fixture();
+  f.api.meetColleague('jack'); await f.node('[data-conflict-action="fight"]').dispatch('click');
+  const oldFinish = f.brawls[0].config.onFinish;
+  f.api.closeDialog(f.node('#encounter-dialog'));
+  f.api.meetColleague('kind'); await f.node('[data-conflict-action="fight"]').dispatch('click'); f.startBattle();
+  oldFinish('win', { duration: 20 });
+  assert.equal(f.api.getConflictState().history.length, 0);
+  assert.equal(f.api.getConflictState().activeFight.opponentId, 'kind');
+  f.finishBattle('draw', { duration: 75, damageDealt: 40, damageTaken: 40, reason: 'timeout' });
+  assert.equal(f.api.getConflictState().player.status, 'free');
+  assert.equal(f.api.getConflictState().people.length, 0);
+  assert.equal(f.api.getConflictState().history.at(-1).outcome, 'draw');
+  assert.ok(f.node('#encounter-content').textContent.includes('不分勝負'));
+  assert.ok(f.node('.brawl-result-score').textContent.includes('75 秒'));
+});
+
+test('an unavailable 2D canvas or page teardown never invents a fight result', async () => {
+  const failed = await fixture({ brawlFails: true });
+  failed.api.meetColleague('jack'); await failed.node('[data-conflict-action="fight"]').dispatch('click');
+  assert.equal(failed.api.getConflictState().activeFight, null);
+  assert.equal(failed.api.getConflictState().history.length, 0);
+  assert.ok(failed.node('#encounter-content').textContent.includes('這場尚未開始'));
+  assert.equal(failed.node('#encounter-dialog').classList.contains('brawl-dialog'), false);
+  const f = await fixture();
+  f.api.meetColleague('jack'); await f.node('[data-conflict-action="fight"]').dispatch('click'); f.startBattle();
+  await f.window.dispatch('pagehide');
+  assert.equal(f.brawls[0].destroyed, 1);
+  assert.equal(f.api.getConflictState().history.length, 0);
+  assert.equal(f.api.getConflictState().activeFight, null);
+});
+
+test('closing while the battle module loads prevents a late mount and preserves existing saved data', async () => {
+  const f = await fixture({ brawlDeferred: true });
+  f.api.meetColleague('jack');
+  const pending = f.node('[data-conflict-action="fight"]').dispatch('click');
+  assert.ok(f.api.getConflictState().activeFight);
+  f.api.closeDialog(f.node('#encounter-dialog'));
+  f.resolveBrawlImport(); await pending;
+  assert.equal(f.brawls.length, 0);
+  assert.equal(f.api.getConflictState().activeFight, null);
+  assert.equal(f.api.getConflictState().history.length, 0);
+  assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+  assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+  assert.deepEqual([...f.bytes.keys()].sort(), ['hedo-anonymous-v1', 'hedo-island-v1', 'hedo-life-v1']);
+});
+
+test('a hash navigation during combat pauses the owned match without replacing its DOM or opponent', async () => {
+  const f = await fixture();
+  f.api.meetColleague('jack'); await f.node('[data-conflict-action="fight"]').dispatch('click'); f.startBattle();
+  f.location.hash = '#harbor'; await f.window.dispatch('hashchange');
+  assert.equal(f.location.hash, '');
+  assert.equal(f.node('#encounter-title').textContent, '移動島大亂鬥');
+  assert.equal(f.brawls[0].phase, 'paused');
+  assert.equal(f.brawls[0].destroyed, 0);
+  assert.equal(f.api.getConflictState().activeFight.opponentId, 'jack');
+  assert.equal(f.api.getConflictState().history.length, 0);
 });

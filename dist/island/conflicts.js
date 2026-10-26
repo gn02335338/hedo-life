@@ -6,6 +6,7 @@ import { displayPersona } from '../persona.js';
 const peopleIds = new Set(ISLAND_CAST.map(person => person.id));
 const bosses = new Set(['wing', 'spencer']);
 const HISTORY_LIMIT = 12;
+let nextSessionId = 0;
 const free = () => ({ status: 'free', placeId: null, districtId: null });
 const copy = value => JSON.parse(JSON.stringify(value));
 
@@ -19,7 +20,6 @@ export const FIGHT_STYLES = Object.freeze([
   Object.freeze({ id: 'swift', label: '找準空檔' }),
   Object.freeze({ id: 'bold', label: '直接迎上去' }),
 ]);
-const styleIds = new Set(FIGHT_STYLES.map(style => style.id));
 const destination = status => {
   const { label, ...place } = CONFLICT_PLACES[status];
   return { ...place };
@@ -28,12 +28,14 @@ const destination = status => {
 /** A bounded, renderer-independent conflict session. Only a completed action
  * draws an outcome. Invalid/repeated actions cannot alter another disposition. */
 export function createIslandConflicts({ random = Math.random } = {}) {
-  let player = free(), turn = 0;
+  const sessionId = ++nextSessionId;
+  let player = free(), turn = 0, nextFightId = 0, activeFight = null;
   const people = new Map(), history = [];
-  const snapshot = () => ({ player: { ...player }, people: [...people.values()].map(person => ({ ...person })), history: copy(history) });
+  const snapshot = () => ({ player: { ...player }, people: [...people.values()].map(person => ({ ...person })), history: copy(history), activeFight: activeFight ? { ...activeFight } : null });
   const reject = (kind, code, message) => ({ ok: false, kind, code, message });
   const checkPerson = (kind, id) => {
     if (!peopleIds.has(id)) return reject(kind, 'unknown-person', '這位角色目前不在島上的人物名冊。');
+    if (activeFight) return reject(kind, 'fight-active', '先完成或離開目前的對決，再開始下一段互動。');
     if (player.status !== 'free') return reject(kind, 'player-unavailable', '先處理目前的島上事件，再找人起爭執。');
     if (people.has(id)) return reject(kind, 'person-unavailable', '對方正在處理剛才的事件，先讓他休息或完成筆錄。');
     return null;
@@ -44,10 +46,11 @@ export function createIslandConflicts({ random = Math.random } = {}) {
     return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value < 1
       ? { value } : { error: reject(kind, 'invalid-random', '這段插曲暫時沒有開始，請再試一次。') };
   }
-  function finish(kind, participantId, outcome, title, description) {
+  function finish(kind, participantId, outcome, title, description, summary) {
     turn++;
     const entry = { turn, kind, participantId, outcome, title, description,
       player: { ...player }, person: people.has(participantId) ? { ...people.get(participantId) } : null };
+    if (summary) entry.summary = { ...summary };
     history.push(entry);
     if (history.length > HISTORY_LIMIT) history.splice(0, history.length - HISTORY_LIMIT);
     return { ok: true, ...copy(entry), people: [...people.values()].map(person => ({ ...person })) };
@@ -69,18 +72,55 @@ export function createIslandConflicts({ random = Math.random } = {}) {
     return finish('argue', id, 'standoff', '誰也沒有說服誰',
       `你和${name}各說各的，連路過的海鷗都聽不出結論。最後兩人各自轉身，留下一句「下次再說」，小島又恢復了原本的聲音。`);
   }
-  function fight(id, style = 'steady') {
-    const invalid = checkPerson('fight', id); if (invalid) return invalid;
-    if (!styleIds.has(style)) return reject('fight', 'invalid-style', '先選一種這次要採取的架勢。');
-    const sample = draw('fight'); if (sample.error) return sample.error;
-    const threshold = style === 'swift' ? .54 : style === 'bold' ? .46 : .5;
-    const won = sample.value < threshold, name = displayPersona(id).name;
+  function beginFight(id) {
+    const invalid = checkPerson('begin-fight', id); if (invalid) return invalid;
+    activeFight = { token: `island-fight-${sessionId}-${++nextFightId}`, opponentId: id };
+    return { ok: true, kind: 'begin-fight', ...activeFight };
+  }
+  function validToken(token) { return typeof token === 'string' && activeFight?.token === token; }
+  function fightSummary(value, outcome) {
+    try {
+      if (value !== undefined && (!value || typeof value !== 'object' || Array.isArray(value)
+        || Object.prototype.toString.call(value) !== '[object Object]')) return null;
+      const summary = {}, limits = { duration: 600, maxCombo: 999, damageDealt: 99999, damageTaken: 99999, specialsUsed: 999 };
+      for (const [key, max] of Object.entries(limits)) {
+        const number = value && Object.hasOwn(value, key) ? value[key] : 0;
+        if (typeof number !== 'number' || !Number.isFinite(number)) return null;
+        const bounded = Math.min(max, Math.max(0, number));
+        summary[key] = key === 'duration' ? Math.round(bounded * 100) / 100 : Math.floor(bounded);
+      }
+      const reason = value && Object.hasOwn(value, 'reason') ? value.reason : outcome === 'draw' ? 'timeout' : 'knockout';
+      summary.reason = reason === 'ko' ? 'knockout' : reason;
+      if (!['knockout', 'timeout', 'forfeit'].includes(summary.reason)) return null;
+      return summary;
+    } catch { return null; }
+  }
+  function settleFight(token, outcome, summaryInput) {
+    if (!validToken(token)) return reject('fight', 'invalid-fight-token', '這場對決已經結束，或不是目前進行中的對決。');
+    if (!['win', 'lose', 'draw'].includes(outcome)) return reject('fight', 'invalid-fight-outcome', '這場對決尚未產生有效結果。');
+    const summary = fightSummary(summaryInput, outcome);
+    if (!summary) return reject('fight', 'invalid-fight-summary', '這場對決的紀錄尚未完整，請重新確認。');
+    const id = activeFight.opponentId, name = displayPersona(id).name;
+    activeFight = null;
+    if (outcome === 'draw') return finish('fight', id, 'draw', '這一場，先算平手',
+      `對決結束，你和${name}都停下腳步。這次沒有分出勝負，兩人各退一步，先把火氣放在場邊，再回到自己的島上日常。`, summary);
+    const won = outcome === 'win';
     player = destination(won ? 'police' : 'hospital');
     people.set(id, { id, ...destination(won ? 'hospital' : 'police') });
-    return finish('fight', id, won ? 'win' : 'lose', won ? '打贏了，下一站是警局' : '打輸了，先去醫院',
-      won
-        ? `一陣卡通煙塵散去，你還站著，${name}坐在地上喊暫停。救護車把${name}送往移動醫院；你則被請到島上警局，把剛才的經過寫成筆錄。`
-        : `你還在找下一個空檔，腳下一滑，卡通煙塵就先把你蓋住。你被送往移動醫院包紮；${name}雖然贏了，仍被請到島上警局說明經過。`);
+    const ending = summary.reason === 'forfeit'
+      ? won ? `${name}放下架勢，提早認輸。` : `你舉手認輸，讓這場對決提早結束。`
+      : summary.reason === 'timeout'
+        ? won ? `鈴聲響起，這場對決由你勝出。` : `鈴聲響起，這場對決由${name}勝出。`
+        : won ? `一陣卡通煙塵散去，你還站著，${name}坐在地上喊暫停。` : `${name}抓準空檔，你在一陣卡通煙塵裡倒下。`;
+    return finish('fight', id, outcome, won ? '打贏了，下一站是警局' : '打輸了，先去醫院',
+      ending + (won
+        ? `救護車把${name}送往移動醫院；你則被請到島上警局，把剛才的經過寫成筆錄。`
+        : `你被送往移動醫院包紮；${name}雖然贏了，仍被請到島上警局說明經過。`), summary);
+  }
+  function cancelFight(token) {
+    if (!validToken(token)) return reject('cancel-fight', 'invalid-fight-token', '這場對決已經結束，或不是目前進行中的對決。');
+    activeFight = null;
+    return { ok: true, kind: 'cancel-fight' };
   }
   function recoverPlayer(placeId) {
     if (player.status === 'free') return reject('recover-player', 'already-free', '你現在可以自由散步。');
@@ -109,5 +149,5 @@ export function createIslandConflicts({ random = Math.random } = {}) {
           ? `你陪${name}補完筆錄，等值勤人員把資料收齊。手續完成，他準備回到原本的島上行程。`
           : `你陪${name}辦好交班與點名，等回島通知送到。冷凍解除，他準備回到原本的島上行程。`);
   }
-  return Object.freeze({ getState: snapshot, argue, fight, recoverPlayer, releasePerson });
+  return Object.freeze({ getState: snapshot, argue, beginFight, settleFight, cancelFight, recoverPlayer, releasePerson });
 }

@@ -52,6 +52,7 @@ const placeVisits = new Set();
 const residentChoices = new Map();
 let residentById = new Map();
 let activeEncounter = null;
+let activeBrawl = null;
 let lifeActors = new Map();
 let lifeAvailable = false;
 let sceneUnavailable = false;
@@ -193,7 +194,7 @@ function setSidebar(open) {
 }
 function canWalk() {
   const sidebarOpen = mobile.matches ? document.body.classList.contains('mobile-sheet-open') : !document.body.classList.contains('sidebar-collapsed');
-  return roaming && !sidebarOpen && !document.querySelector('dialog[open]');
+  return roaming && !activeBrawl && !sidebarOpen && !document.querySelector('dialog[open]');
 }
 function updateWalking() {
   walkControls?.clear();
@@ -306,7 +307,14 @@ function renderConflictResult(result) {
   $('#encounter-place').textContent = '島上插曲 · 事情已經發生';
   const title = element('h2', '', result.title); title.id = 'encounter-title'; title.tabIndex = -1;
   content.append(title, element('p', 'encounter-opening', result.description));
-  if (result.kind === 'fight') content.append(element('div', 'conflict-result-stamp', '一陣卡通煙塵過後，各自有了下一站。'));
+  if (result.kind === 'fight') {
+    content.append(element('div', 'conflict-result-stamp', result.outcome === 'draw' ? '雙方停手，這場不分勝負。' : '一陣卡通煙塵過後，各自有了下一站。'));
+    if (result.summary) {
+      const score = element('div', 'brawl-result-score');
+      score.append(element('strong', '', `對戰 ${Math.round(result.summary.duration)} 秒`), element('span', '', `最高 ${result.summary.maxCombo} 連擊 · 大招 ${result.summary.specialsUsed} 次`));
+      score.append(element('span', '', `造成 ${result.summary.damageDealt} 傷害 · 承受 ${result.summary.damageTaken} 傷害`)); content.append(score);
+    }
+  }
   if (player.status !== 'free') {
     const place = PLACE_BY_ID.get(player.placeId);
     content.append(element('p', 'conflict-outcome', `你：${dispositionNames[player.status]} · ${place.name}`));
@@ -320,18 +328,68 @@ function renderConflictResult(result) {
   if (!$('#encounter-dialog').open) openDialog($('#encounter-dialog'));
   updateWalking(); title.focus({ preventScroll: true });
 }
+function disposeBrawl({ cancel = true } = {}) {
+  const match = activeBrawl; if (!match) return;
+  // Clear ownership first: late renderer callbacks must never finish a new bout.
+  activeBrawl = null;
+  match.handle?.destroy();
+  if (cancel) conflicts.cancelFight(match.token);
+  conflictState = conflicts.getState();
+  $('#encounter-dialog').classList.remove('brawl-dialog');
+  $('#encounter-dialog [data-close-dialog]').setAttribute('aria-label', '結束對話，繼續散步');
+}
+async function startBrawl(id) {
+  if (activeBrawl) return;
+  const reservation = conflicts.beginFight(id);
+  if (!reservation.ok) { toast(reservation.message); return; }
+  stopTour();
+  const target = { kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` };
+  activeEncounter = target;
+  const match = { token: reservation.token, handle: null, returnHash: location.hash };
+  activeBrawl = match; conflictState = conflicts.getState();
+  const dialog = $('#encounter-dialog'), content = $('#encounter-content');
+  content.replaceChildren(); dialog.classList.add('brawl-dialog');
+  $('#encounter-dialog [data-close-dialog]').setAttribute('aria-label', '暫停或離開對戰');
+  $('#encounter-place').textContent = `島上插曲 · 和${displayPersona(id).name}對戰`;
+  const loadingTitle = element('h2', '', '移動島大亂鬥'); loadingTitle.id = 'encounter-title';
+  content.append(loadingTitle, element('p', 'encounter-opening', '正在準備場地…'), button('primary-button', '先回到小島', () => closeDialog(dialog)));
+  if (!dialog.open) openDialog(dialog);
+  updateWalking();
+  try {
+    const { mountIslandBrawl } = await import('./brawl-ui.js');
+    if (activeBrawl !== match) return;
+    content.replaceChildren();
+    match.handle = mountIslandBrawl({
+      container: content, opponent: { id, name: displayPersona(id).name, image: personaImage(id) }, reducedMotion: reducedMotion.matches,
+      onFinish(outcome, summary) {
+        if (activeBrawl !== match) return;
+        const result = conflicts.settleFight(match.token, outcome, summary);
+        disposeBrawl({ cancel: !result.ok });
+        if (!result.ok) { renderEncounter(target); updateWalking(); toast(result.message); return; }
+        renderConflictResult(result);
+      },
+    });
+  } catch (error) {
+    if (activeBrawl !== match) return;
+    disposeBrawl(); content.replaceChildren();
+    const title = element('h2', '', '場地暫時沒有準備好'); title.id = 'encounter-title';
+    content.append(title, element('p', 'encounter-opening', '這台裝置暫時無法開啟對戰畫面。可以重試，或先回去聊天。這場尚未開始。'));
+    content.append(button('primary-button', '重新準備對戰 →', () => startBrawl(id)), button('mystery-inline', '回到對話', () => { renderEncounter(target); updateWalking(); }));
+    $('#encounter-leave').textContent = '先回到小島 →';
+    updateWalking();
+    console.warn('Island brawl unavailable:', error instanceof Error ? error.message : 'battle initialization failed');
+  }
+}
 function renderConflictMenu(id, kind) {
+  if (kind === 'fight') return startBrawl(id);
   activeEncounter = { kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` };
   const content = $('#encounter-content'); content.replaceChildren();
-  const persona = displayPersona(id), title = element('h2', '', kind === 'fight' ? `和${persona.name}起了衝突` : `和${persona.name}吵上幾句`);
+  const persona = displayPersona(id), title = element('h2', '', `和${persona.name}吵上幾句`);
   title.id = 'encounter-title'; title.tabIndex = -1;
   $('#encounter-place').textContent = '島上插曲 · 選擇你的做法';
-  content.append(title, element('p', 'encounter-opening', kind === 'fight' ? '剛才的火氣還沒散，兩個人已經站到一塊空地上。你打算怎麼應對？' : '話題愈說愈僵，旁邊的人慢慢放下茶杯。這句話，要現在說出口嗎？'));
+  content.append(title, element('p', 'encounter-opening', '話題愈說愈僵，旁邊的人慢慢放下茶杯。這句話，要現在說出口嗎？'));
   const choices = element('div', 'story-choices conflict-choices');
-  if (kind === 'fight') for (const [style, label] of [['steady', '站穩腳步，正面應對'], ['swift', '抓準空檔，搶先一步'], ['bold', '氣勢拉滿，放手一搏']]) {
-    const action = button('', label, () => renderConflictResult(conflicts.fight(id, style)));
-    action.dataset.conflictStyle = style; choices.append(action);
-  } else {
+  {
     const action = button('', '把不滿直接說出來', () => renderConflictResult(conflicts.argue(id)));
     action.dataset.conflictArgue = id; choices.append(action);
   }
@@ -757,7 +815,13 @@ function restoreDialogFocus() {
   else if (lastFocus?.isConnected && lastFocus !== document.body && !lastFocus.closest('[hidden]') && lastFocus.getClientRects().length) lastFocus.focus({ preventScroll: true });
   else if (activeId) $('#detail-title')?.focus({ preventScroll: true });
 }
-function closeDialog(dialog) { dialog.close(); updateWalking(); restoreDialogFocus(); }
+function closeDialog(dialog) {
+  if (dialog === $('#encounter-dialog') && activeBrawl) {
+    if (activeBrawl.handle && !activeBrawl.handle.requestExit()) return false;
+    disposeBrawl();
+  }
+  dialog.close(); updateWalking(); restoreDialogFocus(); return true;
+}
 
 walkControls = bindWalkControls({ pad: $('#walk-pad'), canMove: canWalk, onMove: input => scene?.setMoveInput(input), onInteract: interactNearby, onHome: () => setRoaming(false) });
 $('#roam-toggle').addEventListener('click', () => setRoaming(!roaming));
@@ -813,7 +877,13 @@ $('#help-open').addEventListener('click', () => openDialog($('#help-dialog')));
 $('#help-sidebar').addEventListener('click', () => openDialog($('#help-dialog')));
 document.querySelectorAll('[data-close-dialog]').forEach(node => node.addEventListener('click', () => closeDialog(node.closest('dialog'))));
 document.querySelectorAll('dialog').forEach(dialog => {
+  dialog.addEventListener('cancel', event => {
+    if (dialog !== $('#encounter-dialog') || !activeBrawl) return;
+    if (activeBrawl.handle && !activeBrawl.handle.requestExit()) { event.preventDefault(); return; }
+    disposeBrawl();
+  });
   dialog.addEventListener('close', () => {
+    if (dialog === $('#encounter-dialog') && activeBrawl) disposeBrawl();
     updateWalking();
     // Native Escape can need restoration; explicit navigation after close owns
     // its new focus and must not be overridden by this queued close event.
@@ -835,7 +905,9 @@ document.addEventListener('keydown', event => {
 mobile.addEventListener('change', () => { document.body.classList.remove('mobile-sheet-open', 'sidebar-collapsed'); setSidebar(!mobile.matches && !roaming); });
 window.addEventListener('hashchange', () => {
   const id = location.hash.slice(1);
-  if ($('#encounter-dialog').open) closeDialog($('#encounter-dialog'));
+  if ($('#encounter-dialog').open && closeDialog($('#encounter-dialog')) === false) {
+    history.replaceState(null, '', location.pathname + location.search + activeBrawl.returnHash); return;
+  }
   if (PLACE_BY_ID.has(id)) visitPlace(id);
   else if (byId.has(id)) selectDistrict(id); else browse();
 });
@@ -845,7 +917,7 @@ const clockTimer = setInterval(() => {
   if (!clockRunning || paused || reducedMotion.matches || document.hidden || tourIndex >= 0 || document.querySelector('dialog[open]')) return;
   setHour(6 + ((hour - 6 + seconds / 240) % 17));
 }, 1000);
-window.addEventListener('pagehide', () => { clearInterval(clockTimer); walkControls.destroy(); scene?.destroy(); }, { once: true });
+window.addEventListener('pagehide', () => { disposeBrawl(); clearInterval(clockTimer); walkControls.destroy(); scene?.destroy(); }, { once: true });
 // A bfcache restoration needs a fresh renderer after pagehide teardown.
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 
