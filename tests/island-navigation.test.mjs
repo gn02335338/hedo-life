@@ -138,3 +138,12 @@ test('deliberately approaching a closer conversation releases a nearby building 
   assert.equal(nearestInteraction({x:1,z:0},[first,second],first.key),second,'walking closer changes the conversation');
   assert.equal(nearestInteraction({x:.8,z:0},[first,second],second.key),second,'crossing back slightly does not flicker');
 });
+
+test('nearby colleagues in a gathering can each own the prompt while tiny midpoint movements remain stable', () => {
+  const first = { key: 'person:first', position: { x: 0, z: 0 }, radius: 1.4 };
+  const second = { key: 'person:second', position: { x: .8, z: 0 }, radius: 1.4 };
+  assert.equal(nearestInteraction({ x: .41, z: .6 }, [first, second], first.key), first);
+  assert.equal(nearestInteraction({ x: .5, z: .6 }, [first, second], first.key), second);
+  assert.equal(nearestInteraction({ x: .39, z: .6 }, [first, second], second.key), second);
+  assert.equal(nearestInteraction({ x: .3, z: .6 }, [first, second], second.key), first);
+});

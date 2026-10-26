@@ -233,7 +233,11 @@ export function nearestInteraction(position, targets, currentId = null) {
     const enter = enterRadius(current);
     const exit = Number.isFinite(current.exitRadius) ? Math.max(enter, current.exitRadius) : enter + .4;
     const currentDistance = distanceTo(current);
-    const clearlyCloser = nearest && nearestDistance <= .85 && currentDistance - nearestDistance >= .3;
+    // A tight gathering leaves less room to approach one person more closely.
+    // Keep a small dead band there; use the wider one between distant targets.
+    const targetGap = nearest ? Math.hypot((nearest.position || nearest).x - (current.position || current).x, (nearest.position || nearest).z - (current.position || current).z) : Infinity;
+    const switchMargin = targetGap < 1.2 ? .05 : .3;
+    const clearlyCloser = nearest && nearestDistance <= .85 && currentDistance - nearestDistance >= switchMargin;
     if (currentDistance <= exit && !clearlyCloser) return current;
   }
   return nearest;

@@ -22,7 +22,8 @@ test('23 departments and shared/after-work destinations have separate safe physi
 });
 
 test('all23 place prompts and all61 character prompts remain reachable in a full moving campus',()=>{
-  const life=createNpcLife({residents:roster});
+  for(const hour of [10,12]){
+  const life=createNpcLife({residents:roster,hour});
   for(const phase of [0,20,55]){
     if(phase)for(let i=0;i<(phase===20?200:350);i++)life.update(.1);
     const actors=life.getState(),obstacles=life.getObstacles();
@@ -45,7 +46,7 @@ test('all23 place prompts and all61 character prompts remain reachable in a full
         parents.set(k,cell);queue.push({x,z,current});
       }
     }
-    assert.deepEqual(targets.filter(target=>!reached.has(target.key)).map(target=>target.key),[],`phase ${phase}: all conversations and entrances can own the prompt`);
+    assert.deepEqual(targets.filter(target=>!reached.has(target.key)).map(target=>target.key),[],`hour ${hour}, phase ${phase}: all conversations and entrances can own the prompt`);
     for(const target of places){
       const route=[];for(let cell=reached.get(target.key);cell;cell=parents.get(key(cell.x,cell.z)))route.push(point(cell.x,cell.z));route.reverse();
       let position={...start},current=nearestInteraction(position,targets)?.key??null;
@@ -56,5 +57,6 @@ test('all23 place prompts and all61 character prompts remain reachable in a full
       }
       assert.equal(current,target.key);
     }
+  }
   }
 });
