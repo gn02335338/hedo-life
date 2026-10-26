@@ -238,11 +238,13 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     const rows = [...agents.values()]; let plansLeft = 2;
     if (!frozen && elapsed) {
       frame++;
-      // Narrow bridges admit a small wave of departures. Colleagues waiting
-      // their turn keep strolling locally, rather than crowding every shore.
-      let capacity = 6 - rows.filter(agent => agent.traveling && agent.commuting).length;
-      for (const agent of rows) if (capacity > 0 && agent.traveling && !agent.commuting) {
-        agent.commuting = true; agent.target = null; agent.path = []; agent.wait = 0; capacity--;
+      // Limit cross-island departures, not the search for a resting spot after
+      // landing. A crowded destination must not hold every departure slot while
+      // the last colleague is still waiting at their department.
+      let capacity = 6 - rows.filter(agent => agent.traveling && agent.commuting && agent.districtId !== agent.routine.districtId).length;
+      for (const agent of rows) if (agent.traveling && !agent.commuting && (capacity > 0 || agent.districtId === agent.routine.districtId)) {
+        agent.commuting = true; agent.target = null; agent.path = []; agent.wait = 0;
+        if (agent.districtId !== agent.routine.districtId) capacity--;
       }
     }
     for (let i = 0; i < rows.length; i++) {
