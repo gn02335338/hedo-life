@@ -1,5 +1,5 @@
 import { BRAWL_ARENA, createIslandBrawl } from './brawl.js';
-import { drawBrawlCharacter } from './brawl-characters.js';
+import { drawBrawlCharacter, drawBrawlAvatar } from './brawl-characters.js';
 
 // Original island artwork and controls. The arena never reads or writes saves.
 const keyDirections = { KeyW: [0, -1], ArrowUp: [0, -1], KeyS: [0, 1], ArrowDown: [0, 1], KeyA: [-1, 0], ArrowLeft: [-1, 0], KeyD: [1, 0], ArrowRight: [1, 0] };
@@ -176,12 +176,12 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
   const pauseButton = button('brawl-pause-button', '暫停 Ⅱ', () => model.getState().phase === 'paused' ? resume() : pause()); pauseButton.dataset.brawlPause = '';
   head.append(titles, pauseButton); root.append(head);
   const hud = node('div', 'brawl-hud');
-  let opponentPortrait;
   const health = (name, isPlayer) => {
     const card = node('div', `brawl-fighter-hud ${isPlayer ? 'is-player' : 'is-opponent'}`), line = node('div', 'brawl-fighter-line');
     const identity = node('div', 'brawl-fighter-identity');
-    if (isPlayer) identity.append(node('span', 'brawl-avatar', '我'));
-    else { opponentPortrait = node('img', 'brawl-avatar'); opponentPortrait.src = opponent.image; opponentPortrait.alt = ''; identity.append(opponentPortrait); }
+    const avatar = node('canvas', 'brawl-avatar'); avatar.width = 72; avatar.height = 72; avatar.setAttribute('aria-hidden', 'true');
+    try { const avatarContext = avatar.getContext('2d'); if (avatarContext) drawBrawlAvatar(avatarContext, { id: opponent.id, isPlayer }); } catch { /* The name still identifies the fighter if this small icon is unavailable. */ }
+    identity.append(avatar);
     const label = node('b', '', name), hp = node('span', 'brawl-health-number', '100'); hp.dataset[isPlayer ? 'brawlPlayerHp' : 'brawlOpponentHp'] = '';
     identity.append(label); line.append(identity, hp);
     const track = node('div', 'brawl-health-track'); track.setAttribute('role', 'progressbar'); track.setAttribute('aria-label', `${name}的體力`); track.setAttribute('aria-valuemin', '0'); track.setAttribute('aria-valuemax', '100');
@@ -233,7 +233,7 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
   };
   function draw(state) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.fillStyle = '#b7cbbb'; ctx.fillRect(0, 0, width, height);
-    // Expand only near an edge: keep faces large and the whole portrait in view.
+    // Expand only near an edge: keep the full doll and name in view.
     const actors = [state.player, state.opponent];
     const left = Math.min(0, ...actors.map(actor => actor.x - 96));
     const top = Math.min(0, ...actors.map(actor => actor.y - 212));
@@ -259,7 +259,7 @@ export function mountIslandBrawl({ container, opponent, onFinish, reducedMotion 
     }
     const sorted = [...(state.obstacles || []).map(obstacle => ({ y: obstacle.y, draw: () => drawObstacle(ctx, obstacle) })),
       { y: state.player.y, draw: () => drawBrawlCharacter(ctx, state.player, { isPlayer: true, name: '我', elapsed: state.elapsed, reducedMotion }) },
-      { y: state.opponent.y, draw: () => drawBrawlCharacter(ctx, state.opponent, { isPlayer: false, name: opponent.name, portrait: opponentPortrait, elapsed: state.elapsed, reducedMotion }) }].sort((a, b) => a.y - b.y);
+      { y: state.opponent.y, draw: () => drawBrawlCharacter(ctx, state.opponent, { isPlayer: false, name: opponent.name, elapsed: state.elapsed, reducedMotion }) }].sort((a, b) => a.y - b.y);
     for (const item of sorted) item.draw();
     for (const projectile of state.projectiles || []) { ellipse(ctx, projectile.x + 2, projectile.y + 5, 8, 4, '#5b6a5626'); ellipse(ctx, projectile.x, projectile.y - 8, 9, 8, '#fffae6'); text(ctx, '⌁', projectile.x, projectile.y - 4, 15, '#b4a484'); }
     for (const effect of state.effects || []) drawEffect(ctx, effect, reducedMotion);
