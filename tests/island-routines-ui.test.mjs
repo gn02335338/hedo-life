@@ -6,7 +6,7 @@ import { DISTRICTS, TOUR } from '../dist/island/content.js';
 import { PLACES, PLACE_BY_ID } from '../dist/island/places.js';
 import { ISLAND_CAST } from '../dist/island/cast.js';
 import { ENCOUNTERS } from '../dist/island/encounters.js';
-import { displayPersona } from '../dist/persona.js';
+import { displayIslandPersona as displayPersona } from '../dist/island/persona.js';
 import { readProgress, writeProgress } from '../dist/island/progress.js';
 import * as routines from '../dist/island/routines.js';
 import { createIslandConflicts } from '../dist/island/conflicts.js';
@@ -389,6 +389,7 @@ test('a pending bout pins the opponent and clock, while closing before start can
   f.api.meetColleague('jack');
   await f.node('[data-conflict-action="fight"]').dispatch('click');
   assert.equal(f.api.getConflictState().activeFight.opponentId, 'jack');
+  assert.equal(f.brawls[0].config.opponent.image, '/assets/jack-sport.webp');
   assert.equal(f.api.getConflictState().history.length, 0);
   const before = f.api.getHour(); f.advanceClock(60); assert.equal(f.api.getHour(), before);
   assert.equal(f.calls.filter(call => call.method === 'setConversationTarget').at(-1).args[0].id, 'jack');

@@ -37,7 +37,7 @@ function bookHarness(cloud,cache=null){
 test('the cast archive contains the current public portraits and never lists locked endings',()=>{
  const html=characterBookHTML();
  assert.equal([...html.matchAll(/class="character-card"/g)].length,CHARACTER_IDS.length);
- for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.displayPersona(id).image}"`));assert.ok(html.includes(persona.displayName(id)));}
+ for(const id of CHARACTER_IDS){assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));assert.ok(html.includes(persona.displayName(id)));}
  assert.doesNotMatch(html,/Wing|Spencer|Erich|Sonny|JenJen|Rick|Hope|Kind|Jack|美美/);
  assert.doesNotMatch(html,/納斯達克幻想|自願離職陷阱|勉強通關|成功率/);
  assert.match(html,/不影響升遷或工作事件抽選/);

@@ -153,7 +153,7 @@ test('the expanded archive preserves the eleven published IDs and presents Helen
   assert.match(html, new RegExp(`${characters.CHARACTER_IDS.length}<small>位遊戲角色`));
   for (const id of characters.CHARACTER_IDS) {
     assert.ok(html.includes(`id="character-card-${id}"`));
-    assert.ok(html.includes(`src="${persona.displayPersona(id).image}"`));
+    assert.ok(html.includes(`src="${persona.PERSONAS[id].image}"`));
   }
   assert.equal(persona.PERSONAS.helen.name, '前女友');
   assert.equal(persona.PERSONAS.helen.title, '產品開發總監');

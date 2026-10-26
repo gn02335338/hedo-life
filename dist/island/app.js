@@ -1,6 +1,6 @@
 import { DISTRICTS, TOUR } from './content.js';
 import { readProgress, writeProgress } from './progress.js';
-import { displayPersona } from '../persona.js';
+import { displayIslandPersona as displayPersona } from './persona.js';
 import { ENCOUNTERS } from './encounters.js';
 import { bindWalkControls } from './walk-controls.js';
 import { bindApplications, residentAvatar } from './applications.js';

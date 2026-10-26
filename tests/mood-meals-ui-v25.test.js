@@ -127,7 +127,7 @@ for(const mobile of [false,true]){
   assert.match(menu.eventId,/^meal-guests-[ab]$/);assert.equal(menuEvent.speaker,'self');assert.equal(menu.turn,run.turn);assert.equal(menu.stats.cash,100);
   assert.equal(menu.rng,run.rng);assert.match(cards,/meal-choices/);assert.equal([...cards.matchAll(/data-meal-target=/g)].length,8);
   for(const choice of menuEvent.choices.filter(choice=>choice.mealTarget)){
-   const person=persona.PERSONAS[choice.mealTarget];assert.ok(cards.includes(`src="${persona.displayPersona(choice.mealTarget).image}"`));assert.ok(cards.includes(esc(choice.text)));assert.ok(cards.includes(esc(person.title)));
+   const person=persona.PERSONAS[choice.mealTarget];assert.ok(cards.includes(`src="${person.image}"`));assert.ok(cards.includes(esc(choice.text)));assert.ok(cards.includes(esc(person.title)));
   }
   hiddenOutcomes(html,menuEvent);assert.match(html,/選人|名單/);
   assert.match(app.node('#main').innerHTML,/aria-label="/);
@@ -138,7 +138,7 @@ for(const mobile of [false,true]){
   run=engine.advance(engine.applyChoice(run,open));const menuEvent=engine.getEvent(run),index=menuEvent.choices.findIndex(choice=>choice.mealTarget&&choice.available!==false),guest=menuEvent.choices[index].mealTarget;
   app.render(run);await app.doubleChoice(index);assert.equal(app.state().stats.cash,run.stats.cash);
   const dinner=app.state(),event=engine.getEvent(dinner),html=app.html();
-  assert.equal(dinner.eventId,`meal-with-${guest}`);assert.equal(event.speaker,guest);assert.ok(html.includes(`src="${persona.displayPersona(guest).image}"`));hiddenOutcomes(html,event);
+  assert.equal(dinner.eventId,`meal-with-${guest}`);assert.equal(event.speaker,guest);assert.ok(html.includes(`src="${persona.PERSONAS[guest].image}"`));hiddenOutcomes(html,event);
   const paidIndex=event.choices.findIndex(choice=>choice.effect==='mealFinish');assert.ok(paidIndex>=0);
   const expected=engine.applyChoice(dinner,paidIndex),beforeActions=dinner.actions.length;
   await app.doubleChoice(paidIndex);const paid=app.state();
@@ -219,7 +219,7 @@ for(const mobile of [false,true]){
  test(`${device}: all sixteen naturally replayed dinner scenes show their own portrait and reveal only the chosen reply`,async()=>{
   for(const guest of MEAL_GUEST_IDS_V25){
    const app=await harness(mobile),run=naturalRun(`meal-with-${guest}`),event=engine.getEvent(run),html=app.render(run);
-   assert.equal(engine.validRun(run),true);assert.equal(event.speaker,guest);assert.ok(html.includes(`src="${persona.displayPersona(guest).image}"`));hiddenOutcomes(html,event);
+   assert.equal(engine.validRun(run),true);assert.equal(event.speaker,guest);assert.ok(html.includes(`src="${persona.PERSONAS[guest].image}"`));hiddenOutcomes(html,event);
    const expected=engine.applyChoice(run,1);await app.doubleChoice(1);
    assert.deepEqual(plain(app.state()),plain(expected));assert.ok(app.html().includes(esc(app.state().history.at(-1).result)));
    await app.action('next');const returned=app.state();assert.equal(engine.validRun(returned),true);assert.equal(returned.mealContext,null);
@@ -234,7 +234,7 @@ for(const mobile of [false,true]){
   for(const route of professorRoutes.scenes){
    const app=await harness(mobile),run=engine.replayRun(route.roleId,route.seed,route.beforeActions),event=engine.getEvent(run),html=app.render(run);
    assert.equal(event.speaker,'professor');assert.equal(engine.validRun(run),true);assert.ok(html.includes('林老師'));
-   assert.ok(html.includes(`src="${persona.displayPersona('professor').image}"`));hiddenOutcomes(html,event);
+   assert.ok(html.includes(`src="${persona.PERSONAS.professor.image}"`));hiddenOutcomes(html,event);
    const expected=engine.applyChoice(run,0);await app.doubleChoice(0);
    assert.deepEqual(plain(app.state()),plain(expected));assert.ok(app.html().includes(esc(expected.history.at(-1).result)));
    assert.match(app.html(),/outcome-ledger|這次實際變化/);await app.action('next');
@@ -244,7 +244,7 @@ for(const mobile of [false,true]){
  test(`${device}: all six natural professor dinner reactions reveal after payment and double clicks cannot charge twice`,async()=>{
   for(const route of professorRoutes.meals){
    const app=await harness(mobile),run=engine.replayRun(route.roleId,route.seed,route.beforeActions),event=engine.getEvent(run),html=app.render(run);
-   assert.equal(event.id,'meal-with-professor');assert.ok(html.includes('林老師'));assert.ok(html.includes(`src="${persona.displayPersona('professor').image}"`));hiddenOutcomes(html,event);
+   assert.equal(event.id,'meal-with-professor');assert.ok(html.includes('林老師'));assert.ok(html.includes(`src="${persona.PERSONAS.professor.image}"`));hiddenOutcomes(html,event);
    for(const choice of event.choices)for(const outcome of choice.draw?.outcomes||[])assert.ok(!html.includes(esc(outcome.result)),'no table reaction is visible before a choice');
    const expected=engine.applyChoice(run,route.replyIndex);await app.doubleChoice(route.replyIndex);
    assert.deepEqual(plain(app.state()),plain(expected));assert.equal(app.state().stats.cash,run.stats.cash-18);

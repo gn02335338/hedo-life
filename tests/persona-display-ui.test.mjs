@@ -3,11 +3,13 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { PERSONAS, displayPersona } from '../dist/persona.js';
+import { displayIslandPersona } from '../dist/island/persona.js';
 
-test('Jack displays his sports portrait while the canonical portrait and art manifest stay intact', async () => {
-  const original = PERSONAS.jack, shown = displayPersona('jack');
+test('Jack displays his sports portrait on the island while career portraits and the art manifest stay intact', async () => {
+  const original = PERSONAS.jack, shown = displayIslandPersona('jack');
   assert.equal(shown.image, './assets/jack-sport.webp');
   assert.equal(original.image, './assets/jack.png');
+  assert.equal(displayPersona('jack').image, original.image);
   assert.equal(PERSONAS.jack, original);
   assert.ok(Object.isFrozen(original));
   const manifest = JSON.parse(await readFile(new URL('../dist/assets/art-v38.json', import.meta.url), 'utf8'));
@@ -23,6 +25,6 @@ test('Jack displays his sports portrait while the canonical portrait and art man
 
 test('other public characters retain their original displayed image paths', () => {
   for (const id of Object.keys(PERSONAS).filter(id => id !== 'jack')) {
-    assert.equal(displayPersona(id).image, PERSONAS[id].image, id);
+    assert.equal(displayIslandPersona(id).image, displayPersona(id).image, id);
   }
 });
