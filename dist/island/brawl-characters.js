@@ -216,10 +216,10 @@ export function drawBrawlAvatar(ctx, { id, isPlayer = false }) {
   head(ctx, look, 1); ctx.restore();
 }
 
-export function drawBrawlCharacter(ctx, actor, { isPlayer, name, elapsed = 0, reducedMotion = false }) {
+export function drawBrawlCharacter(ctx, actor, { isPlayer, name, elapsed = 0, reducedMotion = false, lookOverride = null }) {
   const { x, y } = actor, active = actor.action;
   const pose = actor.pose || active;
-  const look = isPlayer ? ISLAND_VISITOR_LOOK : getIslandCharacterLook(actor.id);
+  const look = lookOverride || (isPlayer ? ISLAND_VISITOR_LOOK : getIslandCharacterLook(actor.id));
   const direction = Math.cos(actor.facing) < 0 ? -1 : 1;
   if ((active === 'windup' || actor.telegraphRemaining > 0) && (!actor.telegraphKind || actor.telegraphKind === 'cone')) {
     ctx.save(); ctx.translate(x, y); ctx.rotate(actor.facing);

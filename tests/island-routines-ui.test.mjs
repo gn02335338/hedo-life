@@ -133,12 +133,12 @@ function makeDocument(html) {
   return document;
 }
 async function fixture({ fallback = false, reducedMotion = false, conflictRandom = () => .01, brawlFails = false, brawlDeferred = false,
-  challengeProgress, initialHash = '', sailDeferred = false, sailFails = false } = {}) {
+  challengeProgress, initialHash = '', initialSearch = '', sailDeferred = false, sailFails = false, pvpDeferred = false, pvpFails = false } = {}) {
   const [source, html] = await Promise.all(['app.js', 'index.html'].map(name => readFile(new URL(`../dist/island/${name}`, import.meta.url), 'utf8')));
   const document = makeDocument(html), window = new Surface(), calls = [], timers = new Map(); let nextTimer = 0, onLifeUpdate, now = 0;
   const bytes = new Map([['hedo-island-v1', JSON.stringify({ version: 1, visited: ['lobby'], choices: { lobby: 2 } })], ['hedo-anonymous-v1', 'TEST_IDENTITY'], ['hedo-life-v1', 'UNCHANGED_CAREER']]);
   if (challengeProgress) bytes.set(CHALLENGE_STORAGE_KEY, JSON.stringify(challengeProgress));
-  const writes = [], brawls = [], voyages = []; let sceneRegion = 'company';
+  const writes = [], brawls = [], voyages = [], pvps = []; let sceneRegion = 'company';
   let resolveBrawlImport;
   const brawlImportWait = brawlDeferred ? new Promise(resolve => { resolveBrawlImport = resolve; }) : Promise.resolve();
   const mountIslandBrawl = config => {
@@ -146,6 +146,13 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
     const state = { phase: 'ready', destroyed: 0, pauses: 0, config }; brawls.push(state);
     const title = document.createElement('h2'); title.id = 'encounter-title'; title.textContent = '移動島大亂鬥'; config.container.append(title);
     return { getState: () => ({ phase: state.phase }), destroy: () => { state.destroyed++; }, pause: () => { state.phase = 'paused'; state.pauses++; }, requestExit: () => { if (state.phase === 'ready') return true; state.phase = 'paused'; state.pauses++; return false; } };
+  };
+  let resolvePvpImport;
+  const pvpImportWait = pvpDeferred ? new Promise(resolve => { resolvePvpImport = resolve; }) : Promise.resolve();
+  const mountIslandPvp = config => {
+    if (pvpFails) throw new Error('intentional multiplayer initialization failure');
+    const state = { config, destroyed: 0, exitRequests: 0, allowExit: true }; pvps.push(state);
+    return { destroy() { state.destroyed++; }, requestExit() { state.exitRequests++; return state.allowExit; } };
   };
   window.localStorage = { getItem: key => bytes.get(key) ?? null, setItem: (key, value) => { writes.push(key); bytes.set(key, value); } };
   const scene = Object.fromEntries(['setResidents', 'setDispositions', 'sendPlayerToPlace', 'setRoaming', 'setHour', 'setPaused', 'setMovementEnabled', 'setConversationTarget', 'setConnections', 'setTopView', 'focus', 'focusPlace', 'focusPerson', 'reset', 'destroy', 'setMoveInput', 'zoom'].map(method => [method, (...args) => { calls.push({ method, args }); }]));
@@ -164,22 +171,22 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
   scene.destroy = () => { calls.push({ method: 'destroy', args: [] }); for (const voyage of voyages) voyage.settle(false); };
   const createIslandScene = async config => { if (fallback) throw new Error('intentional renderer unavailable'); onLifeUpdate = config.onLifeUpdate; document.querySelector('#scene').append(document.createElement('canvas')); return scene; };
   const media = query => Object.assign(new Surface(), { matches: query.includes('reduced-motion') && reducedMotion });
-  const location = { pathname: '/island/', search: '', hash: initialHash, reload() {} };
-  const history = { replaceState: (_state, _unused, path) => { location.hash = path.includes('#') ? path.slice(path.indexOf('#')) : ''; } };
+  const location = { pathname: '/island/', search: initialSearch, hash: initialHash, reload() {} };
+  const history = { replaceState: (_state, _unused, path) => { const url = new URL(path, 'https://island.test' + location.pathname + location.search + location.hash); location.search = url.search; location.hash = url.hash; } };
   const context = vm.createContext({
     createIslandConflicts: () => createIslandConflicts({ random: conflictRandom }),
     ...routines, DISTRICTS, TOUR, PLACES, PLACE_BY_ID, ISLAND_CAST, ENCOUNTERS, displayPersona, displayIslandPersona, readProgress, writeProgress,
     createIslandChallenge, getRegionForDistrict, REGIONS, DOCKS,
-    document, window, matchMedia: media, history, location, createIslandScene, mountIslandBrawl, brawlImportWait,
+    document, window, URLSearchParams, matchMedia: media, history, location, createIslandScene, mountIslandBrawl, brawlImportWait, mountIslandPvp, pvpImportWait,
     bindWalkControls: () => ({ clear() {}, destroy() {} }), bindApplications: () => ({ getResidents: () => [] }),
     createIslandAdminSummary: () => ({ refresh: async () => {} }), residentAvatar: () => document.createElement('span'),
     console: { warn() {} }, setTimeout: callback => { timers.set(++nextTimer, { kind: 'timeout', callback }); return nextTimer; }, clearTimeout: id => timers.delete(id),
     setInterval: callback => { timers.set(++nextTimer, { kind: 'interval', callback }); return nextTimer; }, clearInterval: id => timers.delete(id),
     performance: { now: () => now }, requestAnimationFrame: callback => { timers.set(++nextTimer, callback); return nextTimer; }, cancelAnimationFrame: id => timers.delete(id),
   });
-  const script = source.replace(/^import\s[\s\S]*?;\r?\n/gm, '').replace("const { createIslandScene } = await import('./scene.js');", '').replace("const { mountIslandBrawl } = await import('./brawl-ui.js');", 'await brawlImportWait;');
-  const api = await new vm.Script(`(async () => { ${script}\n return { setHour, renderCastDirectory, renderDetail, renderEncounter, meetColleague, updateIslandLife, renderLifeStatus, closeDialog, getHour: () => hour, renderConflictMenu, visitPlace, selectDistrict, startBrawl, openChallenge, openFerry, sailTo, getConflictState: () => conflicts.getState(), getChallengeState: () => challenge.getState(), getTravelState: () => ({ currentRegion, pendingTravel, activeVoyage: !!activeVoyage }), getVisited: () => [...progress.visited], getPlaceVisits: () => [...placeVisits] }; })()`, { filename: 'dist/island/app.js' }).runInContext(context);
-  return { api, document, window, calls, scene, timers, bytes, writes, brawls, voyages, location, resolveBrawlImport,
+  const script = source.replace(/^import\s[\s\S]*?;\r?\n/gm, '').replace("const { createIslandScene } = await import('./scene.js');", '').replace("const { mountIslandBrawl } = await import('./brawl-ui.js');", 'await brawlImportWait;').replace("const { mountIslandPvp } = await import('./pvp-ui.js');", 'await pvpImportWait;');
+  const api = await new vm.Script(`(async () => { ${script}\n return { setHour, renderCastDirectory, renderDetail, renderEncounter, meetColleague, updateIslandLife, renderLifeStatus, closeDialog, getHour: () => hour, renderConflictMenu, visitPlace, selectDistrict, startBrawl, openChallenge, openFerry, sailTo, openPvp, getPvpActive: () => !!activePvp, getConflictState: () => conflicts.getState(), getChallengeState: () => challenge.getState(), getTravelState: () => ({ currentRegion, pendingTravel, activeVoyage: !!activeVoyage }), getVisited: () => [...progress.visited], getPlaceVisits: () => [...placeVisits] }; })()`, { filename: 'dist/island/app.js' }).runInContext(context);
+  return { api, document, window, calls, scene, timers, bytes, writes, brawls, voyages, pvps, location, resolveBrawlImport, resolvePvpImport,
     resolveSail: success => voyages.at(-1)?.settle(success), rejectSail: () => voyages.at(-1)?.reject(),
     startBattle: () => { brawls.at(-1).phase = 'playing'; }, finishBattle: (outcome, summary = {}) => brawls.at(-1).config.onFinish(outcome, { duration: 25, maxCombo: 5, damageDealt: 110, damageTaken: 35, specialsUsed: 1, reason: 'knockout', ...summary }), advanceClock: seconds => { now += seconds * 1000; for (const timer of timers.values()) if (timer.kind === 'interval') timer.callback(); }, life: rows => onLifeUpdate?.({ actors: rows }), node: selector => document.querySelector(selector) };
 }
@@ -199,6 +206,96 @@ const actor = (id, districtId, extra = {}) => ({
   state: 'resting', activity: '在附近歇腳', routine: routines.getPersonRoutine(id, 10),
   destinationDistrictId: districtId, destinationPlaceId: ISLAND_CAST.find(person => person.id === id).workplaceId,
   traveling: false, ...extra,
+});
+
+test('multiplayer pauses only the island and guards travel, story battles and hashes until an accepted exit', async () => {
+  const f = await fixture();
+  await f.api.openPvp();
+  assert.equal(f.node('#pvp-dialog').open, true);
+  assert.equal(f.api.getPvpActive(), true);
+  assert.equal(f.calls.filter(call => call.method === 'setPaused').at(-1).args[0], true);
+  const visited = f.api.getVisited();
+  f.api.selectDistrict('court'); f.api.openFerry(); f.api.openChallenge();
+  await f.api.startBrawl('jack', { story: true });
+  assert.deepEqual(f.api.getVisited(), visited);
+  assert.equal(f.node('#ferry-dialog').open, false);
+  assert.equal(f.node('#challenge-dialog').open, false);
+  assert.equal(f.brawls.length, 0);
+  f.location.hash = '#court'; await f.window.dispatch('hashchange');
+  assert.equal(f.location.hash, '');
+  f.pvps[0].allowExit = false;
+  assert.equal(f.api.closeDialog(f.node('#pvp-dialog')), false);
+  assert.equal(f.pvps[0].destroyed, 0);
+  let prevented = false;
+  await f.node('#pvp-dialog').dispatch('cancel', { preventDefault() { prevented = true; } });
+  assert.equal(prevented, true);
+  f.pvps[0].config.onClose();
+  assert.equal(f.api.getPvpActive(), false);
+  assert.equal(f.node('#pvp-dialog').open, false);
+  assert.equal(f.pvps[0].destroyed, 1);
+  assert.equal(f.calls.filter(call => call.method === 'setPaused').at(-1).args[0], false);
+  assert.equal(f.api.getChallengeState().wins.length, 0);
+  assert.equal(f.api.getConflictState().player.status, 'free');
+  assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+});
+
+test('invite links prefill the multiplayer UI without changing the passport or anonymous identity', async () => {
+  const f = await fixture({ initialSearch: '?duel=ABCD2345' });
+  assert.equal(f.node('#pvp-dialog').open, true);
+  assert.equal(f.pvps[0].config.inviteCode, 'ABCD2345');
+  assert.equal(f.pvps[0].config.storage, f.window.localStorage);
+  assert.deepEqual(Array.from(f.api.getVisited()), ['lobby']);
+  assert.ok(f.writes.every(key => key === 'hedo-island-v1'));
+  assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+});
+
+test('closing multiplayer during module loading prevents a late mount, and teardown preserves the pause preference', async () => {
+  const f = await fixture({ pvpDeferred: true });
+  await f.node('#pause-toggle').dispatch('click');
+  const loading = f.api.openPvp();
+  assert.equal(f.node('#pvp-dialog').open, true);
+  f.api.closeDialog(f.node('#pvp-dialog'));
+  f.resolvePvpImport(); await loading;
+  assert.equal(f.pvps.length, 0);
+  assert.equal(f.calls.filter(call => call.method === 'setPaused').at(-1).args[0], true);
+  await f.api.openPvp();
+  assert.equal(f.pvps.length, 1);
+  await f.window.dispatch('pagehide');
+  assert.equal(f.pvps[0].destroyed, 1);
+  assert.equal(f.api.getPvpActive(), false);
+  assert.equal(f.api.getChallengeState().wins.length, 0);
+});
+
+test('failed multiplayer initialization remains closable and cannot interrupt an owned NPC battle', async () => {
+  const f = await fixture({ pvpFails: true });
+  await f.api.openPvp();
+  assert.match(f.node('#pvp-content').textContent, /尚未加入房間/);
+  f.api.closeDialog(f.node('#pvp-dialog'));
+  await f.api.startBrawl('jack');
+  await f.api.openPvp();
+  assert.equal(f.node('#pvp-dialog').open, false);
+  assert.equal(f.api.getPvpActive(), false);
+  assert.equal(f.brawls.length, 1);
+});
+
+test('only the owned multiplayer room updates the public invite URL, which survives reload but clears on normal exit', async () => {
+  const f = await fixture({ initialSearch: '?view=island', initialHash: '#lab' });
+  await f.api.openPvp();
+  const old = f.pvps[0];
+  old.config.onStatus({ roomCode: 'ABCD2345', phase: 'waiting' });
+  assert.equal(f.location.search, '?view=island&duel=ABCD2345');
+  assert.equal(f.location.hash, '#lab');
+  f.api.closeDialog(f.node('#pvp-dialog'));
+  assert.equal(f.location.search, '?view=island');
+  await f.api.openPvp();
+  old.config.onStatus({ roomCode: 'ZZZZ9999' }); old.config.onClose();
+  assert.equal(f.api.getPvpActive(), true);
+  assert.equal(f.location.search, '?view=island');
+  f.pvps[1].config.onStatus({ roomCode: 'WXYZ7890', phase: 'playing' });
+  await f.window.dispatch('pagehide');
+  assert.equal(f.location.search, '?view=island&duel=WXYZ7890');
+  assert.equal(f.pvps[1].destroyed, 1);
+  assert.equal(f.api.getPvpActive(), false);
 });
 
 test('directory tracks the current body while commuting and locates its latest district, not its home or destination', async () => {

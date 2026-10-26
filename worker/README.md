@@ -1610,3 +1610,60 @@ Fresh browser lives use the strict `e39-r74-[nsd]-[0-9a-f]{22}` profile. It inhe
 The five dinner guests use a fifth chooser page through the existing `mealPage` and `mealPick` effects. Invitation and dinner replies are server-replayed; no client-supplied affection or random result is accepted. Ordinary new private gatherings use the `private-social` history kind and do not count as completed work, tenure, salary, PIP service or loan repayment. They are excluded during active PIP, queued personnel notices or resource warnings. Closing one marks it seen and arms a same-workday cooldown; normal answers, leaving and conflict aftermath resume the waiting work rules without creating an employment departure. All source IDs, presence checks and consequences remain canonical engine decisions.
 
 The 1,000-card achievement catalog retains its published IDs and art. Its v66 relationship roster is explicitly frozen at the original 28 people, so later character additions do not silently resize or reorder that catalog. Locked names, pictures and choice outcomes stay hidden in player UI. New avatar files and generation prompts are documented in `research/portraits-v74.md`; private photos and raw source material are excluded from the repository.
+
+## Island player-versus-player rooms
+
+The island header opens an invite-only two-player duel. `worker/entry.js`
+re-exports the existing default Worker and `HedoArchive` together with the new
+`IslandPvpRoom` class. The `ARCHIVE` binding, `global-v3` object name, archive
+identity and v1 migration remain unchanged; a separate `ISLAND_PVP` binding and
+additive SQLite DO migration own ephemeral rooms.
+
+Authenticated JSON `POST /api/island/pvp/rooms` and
+`POST /api/island/pvp/rooms/:code/join` reuse the browser's existing anonymous
+bearer and accept only a nickname of up to twelve code points. Same-origin
+checks and persisted creation limits bound room creation. An eight-character
+Crockford code identifies the room. HTTP responses are private and no-store;
+the returned seat ticket is sent only in the first WebSocket frame, never in a
+URL, subprotocol, log, invite link, public state or browser persistence.
+`GET /api/island/pvp/rooms/:code/socket` requires a same-origin WebSocket upgrade.
+Its HTTP handshake passes through the existing Archive with a persisted
+SHA-256 IP budget of 240 attempts per ten-minute window, including unknown
+rooms, before any room lookup; excess attempts return 429. After admission,
+all WebSocket frames are handled only by the room DO.
+
+Each room uses the pure `dist/island/pvp-combat.js` simulation: both sides have
+160 HP and identical moves, no NPC AI or hidden character powers. The server
+steps combat at 20 Hz and broadcasts snapshots at 10 Hz. Clients send bounded
+inputs with increasing sequence numbers and the current match ID; they cannot
+supply positions, damage or results. Inputs become neutral after 250 ms without
+updates. Per-socket message budgets, a small unauthenticated-socket cap and a
+five-second ticket deadline bound inbound work. Replacing a seat connection
+invalidates the previous socket's late messages and close events.
+
+Both players must ready before a three-second countdown. A dropped player
+neutralizes input and pauses the match for a fifteen-second reconnect grace;
+one absent player forfeits, while both absent players cancel without a winner.
+A server restart or failed simulation/storage tick cancels an interrupted match
+rather than inventing a result. Explicitly leaving a running match forfeits;
+leaving a waiting/countdown seat frees it. Both players must request a rematch,
+then ready again; a new match ID rejects old-round packets. The room expires
+after ten minutes. Waiting/terminal sockets use the hibernation API; simulation
+timers run only during active countdown/play and stop on every terminal path.
+
+The player interface uses fixed blue/coral visitor appearances and authoritative
+HP/results, with interpolation only for visual movement. Blur clears all held
+controls. Pagehide disconnects rather than sending a forfeit; the public
+`?duel=CODE` link allows rejoining the same anonymous seat. No story challenge
+victories, career actions, archive rewards or island incident dispositions are
+awarded by multiplayer. Nicknames and room metadata are isolated from career
+saves and removed when the room expires; no public match history is retained.
+
+`node scripts/island-pvp-smoke.mjs --base http://127.0.0.1:4196` exercises real
+HTTP admission and two real WebSockets, including third-player rejection,
+countdown, input authority, stale-input release, forfeit agreement and public
+state privacy. It uses temporary anonymous credentials only in memory and
+closes both test sockets. Unit tests cover the pure combat model, room/session
+lifecycle, request validation, client ownership, keyboard/touch cleanup and the
+island modal integration. The standard `npm test` and `npm run build:check`
+remain required before publication.

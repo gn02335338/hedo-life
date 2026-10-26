@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hedo-life",
   "workers_dev": true,
-  "main": "worker/index.js",
+  "main": "worker/entry.js",
   "compatibility_date": "2026-10-19",
   "vars": {
     "FEEDBACK_REPOSITORY": "gn02335338/hedo-life",
@@ -21,6 +21,10 @@
       {
         "name": "ARCHIVE",
         "class_name": "HedoArchive"
+      },
+      {
+        "name": "ISLAND_PVP",
+        "class_name": "IslandPvpRoom"
       }
     ]
   },
@@ -30,6 +34,10 @@
       "new_sqlite_classes": [
         "HedoArchive"
       ]
+    },
+    {
+      "tag": "v2-island-pvp",
+      "new_sqlite_classes": ["IslandPvpRoom"]
     }
   ],
   "observability": {

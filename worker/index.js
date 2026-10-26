@@ -17,6 +17,8 @@ import { CardGameStore, CardRateGuard, validateCardLifeClaim } from './card-game
 import { GtaRacingStore, validateGtaRaceFilter } from './gta-racing.js';
 import { RACE_PROOF_LIMITS } from '../dist/gta/racing-proof.js';
 
+import { handlePvpArchive } from './island-pvp-directory.js';
+
 const ENDING_IDS = new Set(ENDINGS.map(ending => ending.id));
 
 export class HedoArchive extends DurableObject {
@@ -337,6 +339,7 @@ export class HedoArchive extends DurableObject {
         return await this.adminPrivate.fetch(request);
       }
       if (['POST', 'DELETE', 'PATCH'].includes(request.method)) assertSameOrigin(request);
+      if (path === '/api/island/pvp' || path.startsWith('/api/island/pvp/')) return await handlePvpArchive(request, this);
       if (path === '/api/gta' || path.startsWith('/api/gta/')) {
         const url = new URL(request.url);
         if (path === '/api/gta/leaderboard' && request.method === 'GET') {

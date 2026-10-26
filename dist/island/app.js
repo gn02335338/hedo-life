@@ -62,6 +62,7 @@ const residentChoices = new Map();
 let residentById = new Map();
 let activeEncounter = null;
 let activeBrawl = null;
+let activePvp = null;
 let lifeActors = new Map();
 let lifeAvailable = false;
 let sceneUnavailable = false;
@@ -115,13 +116,13 @@ function syncRegion() {
 // Every remote entry uses this gate before visits, conversations or camera focus.
 function requireRegion(regionId, continuation) {
   if (!regionId) return false;
-  if (activeBrawl || activeVoyage || pageGone) { toast('先完成眼前這段旅程。'); return false; }
+  if (activeBrawl || activePvp || activeVoyage || pageGone) { toast('先完成眼前這段旅程。'); return false; }
   if (regionId === currentRegion) return true;
   openFerry(regionId, continuation);
   return false;
 }
 function openFerry(destination = null, continuation = null) {
-  if (activeBrawl || activeVoyage || pageGone) return;
+  if (activeBrawl || activePvp || activeVoyage || pageGone) return;
   stopTour();
   document.querySelectorAll('dialog[open]').forEach(dialog => closeDialog(dialog));
   pendingTravel = destination ? { regionId: destination, continuation } : null;
@@ -143,7 +144,7 @@ function renderFerry() {
   if (!sceneReady) root.append(element('p', '', '正在準備碼頭，稍等一下就能出發。'));
 }
 async function sailTo(regionId) {
-  if (!sceneReady || activeVoyage || activeBrawl || pageGone || regionId === currentRegion || !REGIONS[regionId]) return false;
+  if (!sceneReady || activeVoyage || activeBrawl || activePvp || pageGone || regionId === currentRegion || !REGIONS[regionId]) return false;
   const continuation = pendingTravel?.regionId === regionId ? pendingTravel.continuation : null;
   pendingTravel = null;
   const voyage = { from: currentRegion, to: regionId };
@@ -180,7 +181,7 @@ function syncChallenge() {
   if ($('#challenge-dialog').open) renderChallenge();
 }
 function openChallenge() {
-  if (activeBrawl || activeVoyage) return;
+  if (activeBrawl || activePvp || activeVoyage) return;
   if ($('#encounter-dialog').open) closeDialog($('#encounter-dialog'));
   stopTour(); challenge.sync(); renderChallenge(); openDialog($('#challenge-dialog'));
 }
@@ -233,6 +234,55 @@ function renderStoryResult(result, id) {
   $('#encounter-leave').textContent = '先回島上走走 →';
   if (!$('#encounter-dialog').open) openDialog($('#encounter-dialog'));
   updateWalking(); title.focus({ preventScroll: true });
+}
+function writePvpLink(roomCode = '') {
+  const params = new URLSearchParams(location.search);
+  if (roomCode) params.set('duel', roomCode); else params.delete('duel');
+  const search = params.toString();
+  history.replaceState(null, '', location.pathname + (search ? `?${search}` : '') + location.hash);
+}
+function disposePvp({ preserveInvite = false } = {}) {
+  const session = activePvp; if (!session) return;
+  activePvp = null;
+  session.handle?.destroy();
+  if (!preserveInvite) writePvpLink();
+  document.body.classList.remove('pvp-open');
+  scene?.setPaused(paused);
+  updateWalking();
+}
+async function openPvp(inviteCode = '') {
+  if (activeBrawl || activeVoyage || pageGone) return;
+  if (activePvp) { $('#pvp-dialog').focus(); return; }
+  stopTour();
+  document.querySelectorAll('dialog[open]').forEach(dialog => closeDialog(dialog));
+  const session = { handle: null, returnHash: location.hash };
+  activePvp = session; activeEncounter = null;
+  document.body.classList.add('pvp-open');
+  scene?.setPaused(true);
+  const dialog = $('#pvp-dialog'), content = $('#pvp-content');
+  content.replaceChildren(element('p', '', '正在準備雙人對戰場地…'));
+  openDialog(dialog);
+  try {
+    const { mountIslandPvp } = await import('./pvp-ui.js');
+    if (activePvp !== session || pageGone) return;
+    content.replaceChildren();
+    session.handle = mountIslandPvp({
+      container: content, storage, inviteCode,
+      onStatus(status) {
+        if (activePvp !== session || pageGone) return;
+        if (/^[0123456789ABCDEFGHJKMNPQRSTVWXYZ]{8}$/.test(status?.roomCode || '')) writePvpLink(status.roomCode);
+      },
+      onClose() {
+        if (activePvp !== session) return;
+        disposePvp(); dialog.close(); restoreDialogFocus();
+      },
+    });
+  } catch (error) {
+    if (activePvp !== session) return;
+    content.replaceChildren(element('h3', '', '對戰場地暫時未能開啟'), element('p', '', '請重新整理後再試，或先回島上走走。這次尚未加入房間。'));
+    content.append(button('primary-button', '回到小島', () => closeDialog(dialog)));
+    console.warn('Island multiplayer unavailable:', error instanceof Error ? error.message : 'initialization failed');
+  }
 }
 function save() {
   storageAvailable = writeProgress(storage, progress);
@@ -335,7 +385,7 @@ function setSidebar(open) {
 }
 function canWalk() {
   const sidebarOpen = mobile.matches ? document.body.classList.contains('mobile-sheet-open') : !document.body.classList.contains('sidebar-collapsed');
-  return roaming && !activeBrawl && !activeVoyage && !sidebarOpen && !document.querySelector('dialog[open]');
+  return roaming && !activeBrawl && !activePvp && !activeVoyage && !sidebarOpen && !document.querySelector('dialog[open]');
 }
 function updateWalking() {
   walkControls?.clear();
@@ -487,7 +537,7 @@ function disposeBrawl({ cancel = true } = {}) {
   $('#encounter-dialog [data-close-dialog]').setAttribute('aria-label', '結束對話，繼續散步');
 }
 async function startBrawl(id, { story = false } = {}) {
-  if (activeBrawl || activeVoyage || pageGone) return;
+  if (activeBrawl || activePvp || activeVoyage || pageGone) return;
   if (['rick', 'spencer', 'wing', 'hidden-visitor'].includes(id)) story = true;
   if (story) {
     const gate = challenge.canChallenge(id);
@@ -1004,6 +1054,10 @@ function restoreDialogFocus() {
   else if (activeId) $('#detail-title')?.focus({ preventScroll: true });
 }
 function closeDialog(dialog) {
+  if (dialog === $('#pvp-dialog') && activePvp) {
+    if (activePvp.handle && !activePvp.handle.requestExit()) return false;
+    disposePvp();
+  }
   if (dialog === $('#encounter-dialog') && activeBrawl) {
     if (activeBrawl.handle && !activeBrawl.handle.requestExit()) return false;
     disposeBrawl();
@@ -1014,6 +1068,7 @@ function closeDialog(dialog) {
 walkControls = bindWalkControls({ pad: $('#walk-pad'), canMove: canWalk, onMove: input => scene?.setMoveInput(input), onInteract: interactNearby, onHome: () => setRoaming(false) });
 $('#ferry-open').addEventListener('click', () => openFerry());
 $('#challenge-open').addEventListener('click', openChallenge);
+$('#pvp-open').addEventListener('click', () => openPvp());
 window.addEventListener('storage', () => { challenge.sync(); syncChallenge(); });
 $('#roam-toggle').addEventListener('click', () => setRoaming(!roaming));
 $('#interact-button').addEventListener('click', interactNearby);
@@ -1047,7 +1102,7 @@ $('#zoom-out').addEventListener('click', () => scene?.zoom(-1));
 $('#map-reset').addEventListener('click', () => { if (roaming) setRoaming(false); else { stopTour(); browse(); if (mobile.matches) setSidebar(false); } });
 $('#connections-toggle').addEventListener('click', () => { connections = !connections; scene?.setConnections(connections); $('#connections-toggle').setAttribute('aria-pressed', String(connections)); });
 $('#top-toggle').addEventListener('click', () => { topView = !topView; scene?.setTopView(topView); $('#top-toggle').setAttribute('aria-pressed', String(topView)); });
-function updatePause() { scene?.setPaused(paused); $('#pause-toggle').setAttribute('aria-pressed', String(paused)); $('#pause-label').textContent = paused ? '播放' : '暫停'; renderLifeStatus(); }
+function updatePause() { scene?.setPaused(paused || !!activePvp); $('#pause-toggle').setAttribute('aria-pressed', String(paused)); $('#pause-label').textContent = paused ? '播放' : '暫停'; renderLifeStatus(); }
 $('#pause-toggle').addEventListener('click', () => { paused = !paused; updatePause(); });
 $('#time-range').addEventListener('input', event => { stopTour(); clockRunning = false; setHour(event.target.value); });
 document.querySelectorAll('[data-time-preset]').forEach(node => node.addEventListener('click', () => { stopTour(); clockRunning = false; setHour(Number(node.dataset.timePreset)); }));
@@ -1069,11 +1124,16 @@ $('#help-sidebar').addEventListener('click', () => openDialog($('#help-dialog'))
 document.querySelectorAll('[data-close-dialog]').forEach(node => node.addEventListener('click', () => closeDialog(node.closest('dialog'))));
 document.querySelectorAll('dialog').forEach(dialog => {
   dialog.addEventListener('cancel', event => {
+    if (dialog === $('#pvp-dialog') && activePvp) {
+      if (activePvp.handle && !activePvp.handle.requestExit()) { event.preventDefault(); return; }
+      disposePvp(); return;
+    }
     if (dialog !== $('#encounter-dialog') || !activeBrawl) return;
     if (activeBrawl.handle && !activeBrawl.handle.requestExit()) { event.preventDefault(); return; }
     disposeBrawl();
   });
   dialog.addEventListener('close', () => {
+    if (dialog === $('#pvp-dialog') && activePvp) disposePvp();
     if (dialog === $('#encounter-dialog') && activeBrawl) disposeBrawl();
     updateWalking();
     // Native Escape can need restoration; explicit navigation after close owns
@@ -1095,6 +1155,7 @@ document.addEventListener('keydown', event => {
 });
 mobile.addEventListener('change', () => { document.body.classList.remove('mobile-sheet-open', 'sidebar-collapsed'); setSidebar(!mobile.matches && !roaming); });
 window.addEventListener('hashchange', () => {
+  if (activePvp) { history.replaceState(null, '', location.pathname + location.search + activePvp.returnHash); return; }
   if (activeVoyage) { history.replaceState(null, '', location.pathname + location.search + (activeId ? `#${activeId}` : '')); return; }
   const id = location.hash.slice(1);
   if ($('#encounter-dialog').open && closeDialog($('#encounter-dialog')) === false) {
@@ -1109,7 +1170,7 @@ const clockTimer = setInterval(() => {
   if (!clockRunning || paused || reducedMotion.matches || activeVoyage || document.hidden || tourIndex >= 0 || document.querySelector('dialog[open]')) return;
   setHour(6 + ((hour - 6 + seconds / 240) % 17));
 }, 1000);
-window.addEventListener('pagehide', () => { pageGone = true; activeVoyage = null; pendingTravel = null; disposeBrawl(); clearInterval(clockTimer); walkControls.destroy(); scene?.destroy(); }, { once: true });
+window.addEventListener('pagehide', () => { pageGone = true; activeVoyage = null; pendingTravel = null; disposePvp({ preserveInvite: true }); disposeBrawl(); clearInterval(clockTimer); walkControls.destroy(); scene?.destroy(); }, { once: true });
 // A bfcache restoration needs a fresh renderer after pagehide teardown.
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 
@@ -1121,6 +1182,8 @@ save();
 const initialId = location.hash.slice(1);
 if (byId.has(initialId)) selectDistrict(initialId, { moveFocus: false });
 else if (PLACE_BY_ID.has(initialId)) visitPlace(initialId);
+const inviteCode = new URLSearchParams(location.search).get('duel');
+if (inviteCode) void openPvp(inviteCode.slice(0, 64));
 try {
   const { createIslandScene } = await import('./scene.js');
   scene = await createIslandScene({ container: $('#scene'), initialHour: hour, districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
