@@ -135,7 +135,7 @@ function makeDocument(html) {
 async function fixture({ fallback = false, reducedMotion = false, conflictRandom = () => .01, brawlFails = false, brawlDeferred = false,
   challengeProgress, initialHash = '', initialSearch = '', sailDeferred = false, sailFails = false, pvpDeferred = false, pvpFails = false } = {}) {
   const [source, html] = await Promise.all(['app.js', 'index.html'].map(name => readFile(new URL(`../dist/island/${name}`, import.meta.url), 'utf8')));
-  const document = makeDocument(html), window = new Surface(), calls = [], timers = new Map(); let nextTimer = 0, onLifeUpdate, now = 0;
+  const document = makeDocument(html), window = new Surface(), calls = [], timers = new Map(); let nextTimer = 0, onLifeUpdate, onSelectDock, now = 0;
   const bytes = new Map([['hedo-island-v1', JSON.stringify({ version: 1, visited: ['lobby'], choices: { lobby: 2 } })], ['hedo-anonymous-v1', 'TEST_IDENTITY'], ['hedo-life-v1', 'UNCHANGED_CAREER']]);
   if (challengeProgress) bytes.set(CHALLENGE_STORAGE_KEY, JSON.stringify(challengeProgress));
   const writes = [], brawls = [], voyages = [], pvps = []; let sceneRegion = 'company';
@@ -169,7 +169,7 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
     });
   };
   scene.destroy = () => { calls.push({ method: 'destroy', args: [] }); for (const voyage of voyages) voyage.settle(false); };
-  const createIslandScene = async config => { if (fallback) throw new Error('intentional renderer unavailable'); onLifeUpdate = config.onLifeUpdate; document.querySelector('#scene').append(document.createElement('canvas')); return scene; };
+  const createIslandScene = async config => { if (fallback) throw new Error('intentional renderer unavailable'); onLifeUpdate = config.onLifeUpdate; onSelectDock = config.onSelectDock; document.querySelector('#scene').append(document.createElement('canvas')); return scene; };
   const media = query => Object.assign(new Surface(), { matches: query.includes('reduced-motion') && reducedMotion });
   const location = { pathname: '/island/', search: initialSearch, hash: initialHash, reload() {} };
   const history = { replaceState: (_state, _unused, path) => { const url = new URL(path, 'https://island.test' + location.pathname + location.search + location.hash); location.search = url.search; location.hash = url.hash; } };
@@ -187,6 +187,7 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
   const script = source.replace(/^import\s[\s\S]*?;\r?\n/gm, '').replace("const { createIslandScene } = await import('./scene.js');", '').replace("const { mountIslandBrawl } = await import('./brawl-ui.js');", 'await brawlImportWait;').replace("const { mountIslandPvp } = await import('./pvp-ui.js');", 'await pvpImportWait;');
   const api = await new vm.Script(`(async () => { ${script}\n return { setHour, renderCastDirectory, renderDetail, renderEncounter, meetColleague, updateIslandLife, renderLifeStatus, closeDialog, getHour: () => hour, renderConflictMenu, visitPlace, selectDistrict, startBrawl, openChallenge, openFerry, sailTo, openPvp, getPvpActive: () => !!activePvp, getConflictState: () => conflicts.getState(), getChallengeState: () => challenge.getState(), getTravelState: () => ({ currentRegion, pendingTravel, activeVoyage: !!activeVoyage }), getVisited: () => [...progress.visited], getPlaceVisits: () => [...placeVisits] }; })()`, { filename: 'dist/island/app.js' }).runInContext(context);
   return { api, document, window, calls, scene, timers, bytes, writes, brawls, voyages, pvps, location, resolveBrawlImport, resolvePvpImport,
+    dock: regionId => onSelectDock(regionId),
     resolveSail: success => voyages.at(-1)?.settle(success), rejectSail: () => voyages.at(-1)?.reject(),
     startBattle: () => { brawls.at(-1).phase = 'playing'; }, finishBattle: (outcome, summary = {}) => brawls.at(-1).config.onFinish(outcome, { duration: 25, maxCombo: 5, damageDealt: 110, damageTaken: 35, specialsUsed: 1, reason: 'knockout', ...summary }), advanceClock: seconds => { now += seconds * 1000; for (const timer of timers.values()) if (timer.kind === 'interval') timer.callback(); }, life: rows => onLifeUpdate?.({ actors: rows }), node: selector => document.querySelector(selector) };
 }
@@ -730,6 +731,34 @@ test('a free ordinary fight keeps its consequences separate from the story win l
   assert.equal(f.api.getConflictState().people[0].status, 'hospital');
   assert.deepEqual(f.api.getChallengeState().wins, []);
   assert.ok(!f.writes.some(key => key.startsWith(CHALLENGE_STORAGE_KEY)));
+});
+
+test('each arrived island dock opens boarding without sailing, while stale remote markers and mid-voyage clicks are ignored', async () => {
+  const f = await fixture({ sailDeferred: true });
+  const journey = ['company', 'life', 'exile'];
+  for (const [index, regionId] of journey.entries()) {
+    const progress = [...f.bytes], voyages = f.voyages.length;
+    assert.equal(f.api.getTravelState().currentRegion, regionId);
+    for (const remote of Object.keys(REGIONS).filter(id => id !== regionId)) {
+      f.dock(remote);
+      assert.equal(f.node('#ferry-dialog').open, false, `${regionId}: a stale ${remote} marker cannot open boarding`);
+    }
+    f.dock(regionId);
+    assert.equal(f.node('#ferry-dialog').open, true, `${regionId}: the physical dock opens its destination choices`);
+    assert.equal(f.node(`[data-sail-region="${regionId}"]`).disabled, true, 'the current island is already docked');
+    assert.equal(f.api.getTravelState().currentRegion, regionId);
+    assert.equal(f.api.getTravelState().activeVoyage, false, 'clicking a dock does not auto-board');
+    assert.equal(f.voyages.length, voyages);
+    assert.deepEqual([...f.bytes], progress, 'opening a dock does not change passport, identity or career progress');
+    const nextRegion = journey[index + 1];
+    if (!nextRegion) { f.api.closeDialog(f.node('#ferry-dialog')); break; }
+    const sailing = f.node(`[data-sail-region="${nextRegion}"]`).dispatch('click');
+    assert.equal(f.api.getTravelState().activeVoyage, true);
+    f.dock(regionId);
+    assert.equal(f.node('#ferry-dialog').open, false, 'the departing dock cannot reopen while at sea');
+    assert.equal(f.voyages.length, voyages + 1);
+    f.resolveSail(true); await sailing;
+  }
 });
 
 test('district, place, colleague and hash navigation all wait for an actual ferry arrival', async () => {

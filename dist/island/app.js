@@ -132,7 +132,7 @@ function openFerry(destination = null, continuation = null) {
 }
 function renderFerry() {
   const root = $('#ferry-destinations'); root.replaceChildren();
-  $('#ferry-description').textContent = `目前在${REGIONS[currentRegion].name}。先到${DOCKS[currentRegion].name}登船，靠岸後再繼續探索。`;
+  $('#ferry-description').textContent = `從${DOCKS[currentRegion].name}出發。選好下一站，搭船靠岸後再繼續探索。`;
   for (const region of Object.values(REGIONS)) {
     const here = region.id === currentRegion;
     const option = button('ferry-destination', '', () => sailTo(region.id));
@@ -1186,7 +1186,7 @@ const inviteCode = new URLSearchParams(location.search).get('duel');
 if (inviteCode) void openPvp(inviteCode.slice(0, 64));
 try {
   const { createIslandScene } = await import('./scene.js');
-  scene = await createIslandScene({ container: $('#scene'), initialHour: hour, districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
+  scene = await createIslandScene({ container: $('#scene'), initialHour: hour, districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onSelectDock: regionId => { if (regionId === currentRegion) openFerry(); }, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
   sceneReady = true;
   if ($('#ferry-dialog').open) renderFerry();
   scene.setResidents(applications.getResidents());

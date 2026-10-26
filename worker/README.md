@@ -1050,8 +1050,11 @@ explorable places (81 choices), twelve district stories (36 choices), a six-stop
 day tour, and all 34 current public colleagues (102 encounter choices).
 Walking uses connected paths and bridges within each island, reachable place
 entries and a controllable visitor. No inter-island walking surface exists.
-The header ferry control and three dock interactions share the same departure,
-voyage and arrival flow. District/place hashes, directory locations, tours and
+Each shore has a visible timber terminal, sheltered waiting area, destination
+signs and a moored ferry. Current-island dock labels open the ferry menu in
+overview; while walking they become usable within boarding range, independently
+of nearby NPC priority. The header ferry control and three dock interactions
+share the same departure, voyage and arrival flow. District/place hashes, directory locations, tours and
 incident destinations require arrival before opening remote content; the
 non-WebGL list retains this flow. A failed voyage leaves the visitor on the
 original island. Region and transit state are session-only.

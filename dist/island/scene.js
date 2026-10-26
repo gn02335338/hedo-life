@@ -18,7 +18,7 @@ import { ISLAND_CAST } from './cast.js';
 import { PLACES } from './places.js';
 import { createNpcLife } from './npc-life.js';
 
-export async function createIslandScene({ container, districts = [], initialHour = 10, onSelect = () => {}, onSelectPlace = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {}, onLifeUpdate = () => {} }) {
+export async function createIslandScene({ container, districts = [], initialHour = 10, onSelect = () => {}, onSelectPlace = () => {}, onSelectDock = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {}, onLifeUpdate = () => {} }) {
   if (!container) throw new Error('Missing island container');
   let renderer;
   try {
@@ -97,6 +97,8 @@ export async function createIslandScene({ container, districts = [], initialHour
   const tileGroups = new Map();
   const labelItems = [];
   const placeLabels = [];
+  const dockLabels = [];
+  const mooredFerries = new Map();
   let focusedDistrict = null, focusedPerson = null;
   const ferryBoats=new Map();
   const people = [];
@@ -801,19 +803,91 @@ export async function createIslandScene({ container, districts = [], initialHour
   // Bridge geometry is decorative and should not select an unrelated district.
   for (let i = rayTargets.length-1; i >= 0; i--) if (!rayTargets[i].userData.district) rayTargets.splice(i,1);
 
-  function makeFerryBoat(small=false) {
+  function makeFerryBoat(small=false, accent=palette.teal) {
     const boat=group(scene);boat.visible=false;
     box(boat,palette.woodDark,0,.17,0,small?.76:1.4,.22,small?1.2:2.25);
     box(boat,palette.cream,0,.31,0,small?.62:1.18,.1,small?1.02:1.96);
-    if(!small){box(boat,palette.white,0,.65,-.3,.85,.62,.85);box(boat,palette.teal,0,.99,-.3,1.04,.1,1.04);box(boat,palette.glass,0,.75,.135,.58,.25,.025);}
+    if(!small){
+      box(boat,palette.white,0,.65,-.3,.85,.62,.85);
+      box(boat,accent,0,.99,-.3,1.04,.1,1.04);
+      box(boat,palette.glass,0,.75,.135,.58,.25,.025);
+      box(boat,accent,0,.37,.78,1.25,.14,.12);
+      for(const x of [-.58,.58])for(const z of [-.84,.81])cylinder(boat,palette.cream,x,.55,z,.025,.42,6);
+      for(const x of [-.58,.58])box(boat,palette.cream,x,.76,.12,.035,.035,1.35);
+      cylinder(boat,palette.navy,.35,1.18,-.35,.025,.4,6);
+      box(boat,accent,.48,1.3,-.35,.28,.16,.025);
+    }
     return boat;
   }
+  const portAccents={company:{material:palette.teal,color:'#477b70',flag:'01'},life:{material:palette.brick,color:'#ad6e44',flag:'02'},exile:{material:palette.lilac,color:'#68657e',flag:'03'}};
   for(const port of Object.values(DOCKS)) {
-    const dx=port.sea.x-port.position.x,dz=port.sea.z-port.position.z,length=Math.hypot(dx,dz),pier=group(scene,(port.position.x+port.sea.x)/2,.82,(port.position.z+port.sea.z)/2,Math.atan2(dx,dz));
-    box(pier,palette.woodDark,0,0,0,1.1,.17,length);
-    for(let i=0;i<Math.ceil(length/.28);i++)box(pier,palette.woodLight,0,.11,-length/2+(i+.5)*length/Math.ceil(length/.28),1.2,.08,.24);
-    textSign(pier,port.name,0,1.2,-length/2+.4,2.3,.52);
+    const dx=port.sea.x-port.position.x,dz=port.sea.z-port.position.z,length=Math.hypot(dx,dz),heading=Math.atan2(dx,dz);
+    const accent=portAccents[port.regionId],terminal=group(scene,port.position.x,.96,port.position.z,heading);
+    terminal.userData.dock=port.regionId;
+    // Keep the central landing and its landward approach unobstructed. The
+    // shelter, bench and fixtures sit on the side platform over the shoreline.
+    const pier=group(terminal);
+    box(pier,palette.woodDark,0,-.14,length/2,1.7,.2,length+.6);
+    for(let i=0;i<Math.ceil((length+.6)/.25);i++)box(pier,palette.woodLight,0,0,-.3+(i+.5)*(length+.6)/Math.ceil((length+.6)/.25),1.82,.09,.21);
+    box(pier,palette.woodDark,-1.52,-.14,1.2,2.45,.2,2.65);
+    for(let i=0;i<11;i++)box(pier,palette.woodLight,-1.52,0,-.1+(i+.5)*2.6/11,2.55,.09,.2);
+    for(const x of [-.81,.81])for(const z of [.6,length/2,length]){
+      cylinder(pier,palette.woodDark,x,-.25,z,.095,1.65,7);
+      cylinder(pier,palette.cream,x,.54,z,.065,.85,7);
+      cylinder(pier,accent.material,x,.98,z,.095,.07,7);
+    }
+    // Rope rails stop before the landward gate so boarding remains legible.
+    for(const x of [-.81,.81])line(pier,[[x,.84,.6],[x,.7,length/2],[x,.84,length]],'#e8d8b9');
+    for(const x of [-.55,.55]){
+      cylinder(pier,palette.navy,x,.1,length-.3,.07,.21,7);
+      box(pier,palette.navy,x,.23,length-.3,.25,.07,.09);
+    }
+    // An open boarding arch reads clearly at the island-wide camera distance.
+    for(const x of [-.94,.94])box(terminal,palette.woodDark,x,1.1,.12,.12,2.2,.12);
+    box(terminal,accent.material,0,2.23,.12,2.17,.2,.32);
+    textSign(terminal,port.name,0,2.57,.14,2.8,.48,accent.color);
+    textSign(terminal,'渡輪登船口',0,1.95,.21,1.55,.3,accent.color);
+    // A small roofed waiting room keeps each port recognizable from the sea.
+    const shelter=group(terminal,-1.82,.05,1.12);
+    box(shelter,palette.cream,0,.52,.35,1.6,1.04,.1);
+    for(const x of [-.76,.76])for(const z of [-.65,.65])cylinder(shelter,palette.woodDark,x,.82,z,.055,1.64,7);
+    roof(shelter,accent.material,0,1.67,0,1.95,1.75,.48);
+    box(shelter,palette.white,0,1.67,.02,1.88,.075,1.8);
+    // Leave the waiting-room mouth open, with its bench against the rear wall.
+    for(const x of [-.5,.5])box(shelter,palette.navy,x,.23,.37,.065,.46,.45);
+    for(let n=0;n<3;n++)box(shelter,palette.woodLight,0,.49,.2+n*.13,1.3,.08,.1);
+    box(shelter,accent.material,0,.76,.58,1.32,.35,.07);
+    textSign(shelter,`FERRY ${accent.flag}`,0,1.32,-.69,1.35,.27,accent.color,'#fff4dd',Math.PI);
+    // A route board and rescue ring sit off the landing's central walking line.
+    const destinations=Object.values(REGIONS).filter(region=>region.id!==port.regionId);
+    cylinder(terminal,palette.woodDark,-2.67,1.08,2.2,.05,2.16,7);
+    destinations.forEach((region,index)=>textSign(terminal,`→ ${region.name}`,-2.2,1.88-index*.36,2.22,2.05,.28,accent.color));
+    const ring=mesh(terminal,geo(new THREE.TorusGeometry(.24,.07,7,18)),palette.red,-.96,.62,1.14);
+    ring.rotation.y=Math.PI/2;
+    for(const x of [-.96])cylinder(terminal,palette.woodDark,x,.5,1.15,.04,1,7);
+    const glow=mat('#ffedb7',{emissive:'#f6c66d',emissiveIntensity:.05});lampMaterials.add(glow);
+    cylinder(terminal,palette.navy,-2.64,1.32,.12,.045,2.64,7);
+    box(terminal,glow,-2.64,2.67,.12,.26,.34,.26);
+    box(terminal,accent.material,-2.64,2.88,.12,.39,.08,.39);
+    // Terminal meshes are merged per material, keeping the three new harbors
+    // inexpensive and making their physical structures clickable in overview.
+    bakeStatic(terminal);
+    terminal.traverse(object=>{if(object.isMesh)object.userData.dock=port.regionId;});
     interactionTargets.push({kind:'dock',id:port.regionId,regionId:port.regionId,districtId:port.districtId,key:`dock:${port.regionId}`,position:port.position,radius:1.6,exitRadius:2});
+    const dockButton=document.createElement('button');dockButton.type='button';dockButton.className='map-dock-label';dockButton.dataset.dockRegion=port.regionId;
+    dockButton.style.pointerEvents='auto';dockButton.style.display='none';dockButton.setAttribute('aria-label',`${port.name}，選擇搭船目的地`);
+    const icon=document.createElement('span');icon.className='map-dock-icon';icon.textContent='⚓';
+    const copy=document.createElement('span');copy.className='map-dock-copy';
+    const title=document.createElement('strong');title.textContent='搭船旅行';
+    const name=document.createElement('small');name.textContent=port.name;copy.append(title,name);
+    const action=document.createElement('span');action.className='map-dock-action';action.textContent='選目的地 →';dockButton.append(icon,copy,action);
+    dockButton.addEventListener('click',event=>{event.stopPropagation();if(!voyage&&port.regionId===currentRegion&&(!roaming||Math.hypot(port.position.x-playerPosition.x,port.position.z-playerPosition.z)<=1.6))onSelectDock(port.regionId);});
+    overlay.append(dockButton);dockLabels.push({regionId:port.regionId,element:dockButton,port,position:new THREE.Vector3(port.sea.x+dx/length*3-Math.cos(heading)*5.8,1.1,port.sea.z+dz/length*3+Math.sin(heading)*5.8)});
+    const moored=makeFerryBoat(false,accent.material);
+    const offsetX=1.78,offsetZ=length-.84;
+    moored.position.set(port.position.x+Math.cos(heading)*offsetX+Math.sin(heading)*offsetZ,.08,port.position.z-Math.sin(heading)*offsetX+Math.cos(heading)*offsetZ);
+    moored.rotation.y=heading;moored.visible=true;mooredFerries.set(port.regionId,moored);
+    moving.push({type:'boat',object:moored,anchored:true,phase:Object.keys(DOCKS).indexOf(port.regionId)*1.7});
   }
   const passengerBoat=makeFerryBoat();
 
@@ -1009,6 +1083,12 @@ export async function createIslandScene({ container, districts = [], initialHour
     const rect=renderer.domElement.getBoundingClientRect();
     pointer.set((event.clientX-rect.left)/rect.width*2-1,-(event.clientY-rect.top)/rect.height*2+1);
     raycaster.setFromCamera(pointer,camera);
+    const surfaceHit=raycaster.intersectObjects(rayTargets,false)[0];
+    const dockHit=surfaceHit?.object.userData.dock?surfaceHit:null;
+    if(dockHit){
+      const port=DOCKS[dockHit.object.userData.dock];
+      if(!voyage&&port?.regionId===currentRegion&&(!roaming||Math.hypot(port.position.x-playerPosition.x,port.position.z-playerPosition.z)<=1.6)){onSelectDock(port.regionId);return;}
+    }
     const placeHit=raycaster.intersectObjects(placeRayTargets,false)[0];
     if(placeHit){const id=placeHit.object.userData.place,point=PLACE_ENTRANCES[id];if(!roaming||Math.hypot(point.x-playerPosition.x,point.z-playerPosition.z)<=.95){onSelectPlace(id);return;}}
     const hit=raycaster.intersectObjects(rayTargets,false).find((item)=>item.object.userData.district);
@@ -1304,6 +1384,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   }
   function endVoyage(success) {
     const trip=voyage;if(!trip)return;voyage=null;passengerBoat.visible=false;
+    for(const boat of mooredFerries.values())boat.visible=true;
     if(success){currentRegion=trip.to;const region=REGIONS[currentRegion];homeTarget.set(region.center.x,1,region.center.z);playerPosition={...DOCKS[currentRegion].landing};ensurePlayerSpace();}
     player.object.visible=roaming;playerRing.visible=roaming;playerMarker.style.display=roaming?'':'none';
     player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
@@ -1316,6 +1397,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     const points=getFerryRoute(currentRegion,regionId);moveInput={x:0,z:0};standStill();transition=null;nearby=null;onNearby(null);
     return new Promise(resolve=>{
       voyage={from:currentRegion,to:regionId,points,length:ferryRouteLength(points),start:performance.now(),onProgress,resolve};
+      for(const [id,boat] of mooredFerries)boat.visible=id!==currentRegion&&id!==regionId;
       player.object.visible=false;playerRing.visible=false;playerMarker.style.display='none';passengerBoat.visible=true;needsRender=true;
       try{onProgress?.(0);}catch{}
       if(reducedMotion.matches)endVoyage(true);
@@ -1381,6 +1463,12 @@ export async function createIslandScene({ container, districts = [], initialHour
       item.element.disabled=roaming&&distance>.95;
       item.element.classList.toggle('is-nearby',nearby?.kind==='place'&&nearby.id===item.id);
       positionOverlay(item.element,item.position,roaming?distance<3.4:focusedDistrict===item.districtId,roaming,entryPlacements);
+    }
+    for(const item of dockLabels){
+      const distance=Math.hypot(item.port.position.x-playerPosition.x,item.port.position.z-playerPosition.z);
+      item.element.disabled=roaming&&distance>1.6;
+      item.element.classList.toggle('is-nearby',roaming&&distance<=1.6);
+      positionOverlay(item.element,item.position,!voyage&&item.regionId===currentRegion&&(!roaming||distance<5.5),roaming,[]);
     }
     renderer.render(scene,camera);
     renderedOnce=true;needsRender=false;
