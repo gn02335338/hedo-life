@@ -122,6 +122,20 @@ test('private application reasons never appear in the public profile preview or 
   assert.ok(!f.ids.get('residents-list').textContent.includes(fields.reason));
 });
 
+test('old approved residents and application choices use renamed districts without changing stored identifiers', async t => {
+  const f = fixture(t, async path => Response.json(path.endsWith('/config') ? { enabled: true } : path.endsWith('/mine') ? { applications: [application()] } : { version: 1, residents: [publicResident] }));
+  await f.open(); await tick();
+  const options = f.controls.get('districtId').querySelectorAll('option');
+  assert.equal(options.length, 9, 'new places do not expand the nine application districts');
+  assert.equal(options.find(option => option.value === 'cafe')?.textContent, '共享生活館');
+  f.fill(); await f.form.dispatch('input');
+  assert.ok(f.ids.get('application-preview-content').textContent.includes('共享生活館'));
+  assert.ok(f.ids.get('application-history').textContent.includes('共享生活館'));
+  assert.ok(f.ids.get('residents-list').textContent.includes('共享生活館'));
+  assert.equal(f.ui.getResidents()[0].districtId, 'cafe');
+  assert.equal(f.ui.getResidents()[0].id, residentId);
+});
+
 test('a failed credential read cannot overwrite an existing anonymous career identity', async () => {
   let stored = owner, reads = 0, writes = 0, requests = 0;
   const storage = {

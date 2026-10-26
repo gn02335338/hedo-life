@@ -6,10 +6,11 @@ import { ISLAND_CAST } from '../dist/island/cast.js';
 import { DISTRICTS } from '../dist/island/content.js';
 import { PERSONAS, displayPersona } from '../dist/persona.js';
 import { CHARACTER_IDS } from '../dist/character-stats.js';
+import { PLACE_BY_ID } from '../dist/island/places.js';
 
-const originalResidents = {
-  lobby: 'wing', lab: 'jack', meeting: 'meimei', hr: 'hope', finance: 'janet',
-  cafe: 'jonathan', plaza: 'captain', court: 'owen', harbor: 'cindy',
+const districtGuides = {
+  lobby: 'wing', lab: 'jack', meeting: 'zoe', hr: 'hope', finance: 'janet',
+  cafe: 'jonathan', plaza: 'meimei', court: 'sonny', harbor: 'cindy',
 };
 const hasText = value => typeof value === 'string' && value.trim().length > 0;
 
@@ -19,8 +20,9 @@ test('the island cast exactly covers the public character book with valid names 
   assert.equal(new Set(ISLAND_CAST.map(person => person.id)).size, ISLAND_CAST.length);
   const districts = new Set(DISTRICTS.map(place => place.id));
   for (const person of ISLAND_CAST) {
-    assert.deepEqual(Object.keys(person).sort(), ['districtId', 'id'], `${person.id}: display identity is not copied into location data`);
+    assert.deepEqual(Object.keys(person).sort(), ['districtId', 'id', 'workplaceId'], `${person.id}: public identity and outcomes are not copied into affiliation data`);
     assert.ok(districts.has(person.districtId), `${person.id}: existing map location`);
+    assert.equal(PLACE_BY_ID.get(person.workplaceId)?.category, 'department', `${person.id}: workplace names an actual department`);
     const display = displayPersona(person.id);
     assert.ok(hasText(display?.name), `${person.id}: public display name`);
     assert.ok(hasText(display?.about), `${person.id}: public introduction`);
@@ -29,7 +31,7 @@ test('the island cast exactly covers the public character book with valid names 
   }
 });
 
-test('every public character has one encounter at their mapped home, preserving the original nine', () => {
+test('every public character has one encounter at their mapped campus location and every district has a guide', () => {
   assert.equal(ENCOUNTERS.length, ISLAND_CAST.length);
   assert.equal(new Set(ENCOUNTERS.map(encounter => encounter.id)).size, ENCOUNTERS.length);
   assert.deepEqual(ENCOUNTERS.map(({ id }) => id).sort(), [...CHARACTER_IDS].sort());
@@ -38,10 +40,16 @@ test('every public character has one encounter at their mapped home, preserving 
     assert.equal(encounter.districtId, homes.get(encounter.id), `${encounter.id}: scene and conversation share a district`);
     assert.deepEqual(Object.keys(encounter).sort(), ['choices', 'districtId', 'greeting', 'id', 'opening', 'title'], `${encounter.id}: conversation data has no career effects or private profile fields`);
   }
-  for (const [districtId, id] of Object.entries(originalResidents)) {
-    assert.equal(homes.get(id), districtId, `${id}: original home stays in place`);
+  for (const [districtId, id] of Object.entries(districtGuides)) {
+    assert.equal(homes.get(id), districtId, `${id}: guide is present in this district`);
     assert.equal(ENCOUNTERS.find(encounter => encounter.id === id)?.districtId, districtId);
   }
+  for (const district of DISTRICTS) assert.ok(ISLAND_CAST.filter(person => person.districtId === district.id).length <= 7, `${district.id}: keeps room for safe wandering`);
+  for (const [id, districtId, workplaceId] of [['erich', 'hr', 'legal'], ['helen', 'lab', 'product-development'], ['simon', 'lab', 'product-design'], ['zoe', 'meeting', 'training'], ['meimei', 'plaza', 'ecommerce-sales']]) {
+    assert.deepEqual(ISLAND_CAST.find(person => person.id === id), { id, districtId, workplaceId });
+  }
+  assert.equal(homes.get('kind'), 'harbor', '阿良 is at the mysterious-trip waterfront, separate from 船長');
+  assert.equal(homes.get('captain'), 'hr');
 });
 
 test('encounters provide short proximity prompts and distinct scenes separate from district stories', () => {

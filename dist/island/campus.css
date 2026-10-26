@@ -1,0 +1,20 @@
+.zone-filters{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;margin:16px 0 12px;background:#e9ecdf;border:1px solid #dce2d0;border-radius:7px}
+.zone-filters button{min-height:34px;background:transparent;color:#647761;border-radius:4px;font-size:11px}
+.zone-filters button[aria-pressed=true]{background:#294f43;color:#fff8e5;box-shadow:0 2px 5px #24473315}
+.side-description{margin-bottom:12px}.zone-result-count{font-size:10px;color:#6e7f67;margin:15px 0 0;line-height:1.5}
+.district-group-label{padding:19px 7px 6px;color:#9b7050;font-size:9px;letter-spacing:.14em}
+.district-card{gap:10px;padding:14px 7px}.district-meta{line-height:1.75;color:#71816b}.district-swatch{width:30px;height:30px}
+.district-group-label+.district-card{padding-top:10px}
+.place-search-hits{display:flex;gap:5px;flex-wrap:wrap;padding:3px 7px 10px;border-bottom:1px solid #e4e5d8}
+.place-search-hits button{padding:8px 10px;border:1px solid #d6deca;border-radius:5px;font-size:10px;color:#456441;background:#f0f3e6}
+.places-heading{font-size:12px;margin:24px 0 6px;color:#36583f}.places-description{font-size:10px;line-height:1.7;color:#73846a;margin:0 0 12px}
+.district-places{margin:0 0 22px}.place-card{width:100%;display:flex;align-items:flex-start;gap:10px;background:#fffdf4;border:1px solid #d9dfcc;border-radius:7px;text-align:left;padding:13px 11px;margin-bottom:8px;color:#355b45;transition:background .15s,border-color .15s}
+.place-card:hover,.place-card:focus-visible{background:#edf2e2;border-color:#829e73}.place-number{font:10px ui-monospace,monospace;color:#a27c57;line-height:1.9;white-space:nowrap}
+.place-copy{flex:1;min-width:0}.place-copy strong{font-size:12px;display:block;line-height:1.7}.place-copy>span{display:block;font-size:10px;line-height:1.8;color:#78836e;margin-top:3px}.place-arrow{font-size:13px;color:#8b9d74;line-height:1.8}
+.cast-workplace{display:block;font-size:10px;line-height:1.6;color:#836c50;margin:5px 0 2px}.cast-place{line-height:1.6}
+.map-place-label{position:absolute;left:0;top:0;z-index:3;display:flex;align-items:center;gap:5px;white-space:nowrap;max-width:190px;padding:8px 10px;background:#fffbefef;color:#294f43;border:1px solid #b7c8a5;border-radius:18px;font-size:10px;line-height:1.4;box-shadow:0 3px 12px #20392b28;pointer-events:auto}
+.map-place-label span:first-child{color:#ad7954;font:9px ui-monospace,monospace}.map-place-label:hover,.map-place-label:focus-visible{background:#e4edcf;border-color:#5e815d}.map-place-label:disabled{pointer-events:none;opacity:.88}.map-place-label.is-nearby{border-color:#a36e3c;background:#f9e5b8}
+.map-place-label[aria-pressed=true]{border-color:#a36e3c;background:#f9e5b8}
+.sidebar-bottom strong#place-progress{font-weight:500;color:#6e805d}.sidebar-bottom p{line-height:1.9}.detail-tags{gap:4px}.detail-tags span{font-size:9px}
+@media(max-width:780px){.zone-filters button{min-height:38px}.side-description{margin-bottom:10px}.place-card{padding:13px 12px}.place-copy strong{font-size:13px}.place-copy>span{font-size:11px}.map-place-label{font-size:10px;max-width:155px;padding:8px 9px}.district-group-label{font-size:10px}.places-heading{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.place-card{transition:none}}

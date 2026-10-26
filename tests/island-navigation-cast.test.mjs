@@ -17,7 +17,7 @@ const occupied = residentTargets.map(({position}) => ({...position,radius:RESIDE
 const targets = [...LAYOUT.map(({id}) => ({kind:'building',key:`building:${id}`,
   position:DISTRICT_ENTRANCES[id],radius:1.25})),...castTargets,...residentTargets];
 
-test('every public colleague has a distinct authored place without displacing guides or community slots',()=>{
+test('every public colleague has a distinct campus home without displacing community slots',()=>{
   assert.equal(ISLAND_CAST.length,34);
   assert.deepEqual(Object.keys(CAST_POSITIONS).sort(),ISLAND_CAST.map(person=>person.id).sort());
   for(const {id,districtId} of ISLAND_CAST){
@@ -28,8 +28,8 @@ test('every public colleague has a distinct authored place without displacing gu
     for(const other of castTargets)if(other.id!==id)assert.ok(distance(point,other.position)>CAST_RADIUS*2,`${id}/${other.id}: separate figures`);
     for(const other of residentTargets)assert.ok(distance(point,other.position)>CAST_RADIUS+RESIDENT_RADIUS+.3,`${id}/${other.key}: preserve community space`);
   }
-  for(const [districtId,id] of Object.entries({lobby:'wing',lab:'jack',meeting:'meimei',hr:'hope',finance:'janet',cafe:'jonathan',plaza:'captain',court:'owen',harbor:'cindy'})){
-    assert.equal(distance(CAST_POSITIONS[id],NPC_POSITIONS[districtId]),0,`${id}: original guide stays in place`);
+  for(const [districtId,id] of Object.entries({lobby:'wing',lab:'jack',meeting:'zoe',hr:'hope',finance:'janet',cafe:'jonathan',plaza:'meimei',court:'sonny',harbor:'cindy'})){
+    assert.equal(distance(CAST_POSITIONS[id],NPC_POSITIONS[districtId]),0,`${id}: district guide matches the campus roster`);
   }
   for(const {position,key} of residentTargets)assert.ok(isWalkable(position),`${key}: unused slot remains clear`);
   for(const bridge of BRIDGES)for(let i=0;i<=40;i++){

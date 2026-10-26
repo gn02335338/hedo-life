@@ -1041,9 +1041,11 @@ credential, personal-data field or database migration.
 ## Hedo Island static experience
 
 `/island/` is served from `dist/island/` through the existing static asset binding.
-It is a standalone original 3D miniature with nine districts, 27 district dialogue
-choices and a six-stop day tour. Walking mode adds a controllable visitor,
-connected bridges and all 29 current public colleagues with 87 separate encounter choices.
+It is a standalone original 3D miniature with nine stable districts, grouped into
+departments, shared spaces and after-work areas. There are 23 independently
+explorable places (69 choices), nine district stories (27 choices), a six-stop
+day tour, and all 34 current public colleagues (102 encounter choices).
+Walking uses connected bridges, reachable place entries and a controllable visitor.
 The roster matches `PERSONAS`, includes Alice, and gives each colleague a reachable home and a bounded neighborhood walking route. The searchable character directory and district character
 buttons also support conversations without WebGL. Hidden anonymous character-book
 cards are not revealed by the island roster.
@@ -1069,13 +1071,16 @@ known districts, deduplicate visits and discard invalid indexes or choices for
 unvisited districts. If storage is unavailable, exploration remains usable for
 the current page session. Clearing browser storage removes these island memories.
 
-Walking preserves that key and version 1 schema. Entering a district story or
-meeting a colleague can mark the district visited; choosing a district response
-uses its existing district ID. NPC outcomes live separately in the in-memory
-`encounterChoices` map keyed by public persona ID, never in the district-choice
-namespace. The encounter counter counts that map for the current page session;
-reloading resets it. Neither NPC responses nor visitor position are written to
-local storage, session storage, career history or the server.
+The campus redesign preserves that key, all nine district IDs and the version 1
+schema. Exploring a district/place or meeting a colleague can mark its district
+visited. Old `progress.choices` values remain stored without being reinterpreted
+as a response to a rewritten story. New district responses (`districtChoices`),
+place responses (`placeChoices`), place visits (`placeVisits`) and NPC responses
+(`encounterChoices`) live only in page memory. Reloading clears these new visit
+memories; no new storage key, identity, server table or domain-migration key is
+introduced. Legacy `#court`-style links keep working; place hashes such as
+`#mis-service` open the matching place without selecting a response. Public
+place IDs never enter the application/review API's district-ID schema.
 
 Three.js 0.180.0 and its helpers are bundled locally under MIT; see
 `dist/island/THREE-LICENSE.txt`. The island application, dialogue and procedural
@@ -1152,7 +1157,7 @@ invalidates in-flight roster reads before refreshing the local scene.
 
 The renderer accepts at most 27 fully validated records, uses predetermined safe
 positions, and reuses a bounded set of models. Resident collisions and targets
-are separate from the 29 official colleagues. Removing a resident clears its
+are separate from the 34 official colleagues. Removing a resident clears its
 interaction and obstacle; loading around a player relocates them to a walkable
 spot if needed. Conversations reveal the introduction only after a choice, and
 resident choices stay in their own in-memory map. The official-encounter counter follows the current roster size; its choices stay

@@ -26,32 +26,44 @@ const byId = new Map(LAYOUT.map(district => [district.id, district]));
 const world = (id, x, z) => ({ x: byId.get(id).x + x, z: byId.get(id).z + z });
 
 export const DISTRICT_ENTRANCES = Object.fromEntries(LAYOUT.map(district => [district.id, world(district.id, 0, 2.85)]));
-export const NPC_POSITIONS = Object.fromEntries(Object.entries({
-  lobby: [2.6, 1.9], lab: [2.3, 2.7], meeting: [2, 2.6],
-  hr: [1.55, 1.65], finance: [1.25, 2.45], cafe: [2.65, 1.45],
-  plaza: [2.4, 1.6], court: [2.3, 2.55], harbor: [1.35, 2.35],
-}).map(([id, [x, z]]) => [id, world(id, x, z)]));
+// Separate physical entrances around each campus, kept outside the main walls.
+// Their identifiers are independent of the nine established district/save IDs.
+const placeEntrances = {
+  'general-manager-office':['lobby',.1,1.25], 'chairman-office':['lobby',-2.5,-.5],
+  'research-center':['lab',-1.15,1.1], 'product-development':['lab',.75,1.1],
+  'mis-service':['lab',-2.45,-.5], 'product-design':['lab',1.95,-.45], 'project-management':['lab',0,-2.15],
+  'business-development':['plaza',-1.6,2], 'ecommerce-sales':['plaza',0,2], 'advertising-sales':['plaza',1.6,2],
+  marketing:['meeting',-1.75,1.1], training:['meeting',1.75,1.1],
+  'finance-department':['finance',-.95,1.15], accounting:['finance',.85,1.15],
+  'human-resources':['hr',-1.2,1.1], administration:['hr',.65,1.1], legal:['hr',-2.3,-.6],
+  'meeting-rooms':['cafe',-2.35,-.65], pantry:['cafe',-.8,.85], 'welfare-committee':['cafe',.7,.85],
+  'basketball-court':['court',0,2.5], izakaya:['harbor',1.6,1.2], 'aliang-mystery-trip':['harbor',2,2.65],
+};
+export const PLACE_ENTRANCES = Object.freeze(Object.fromEntries(Object.entries(placeEntrances)
+  .map(([id,[districtId,x,z]])=>[id,Object.freeze(world(districtId,x,z))])));
 
-// Authored standing places for the complete public cast. Existing guides retain
-// their positions; new colleagues use courtyards and back paths, leaving all
-// approved resident slots and bridge approaches free.
+// Authored campus homes for the complete public cast. Department affiliations
+// choose the island; courtyards and back paths keep approved resident slots and
+// bridge approaches free.
 const castLocalPositions = {
   wing:[2.6,1.9], spencer:[-1.25,-2.75], rick:[.5,-2.65],
-  jack:[2.3,2.7], sam:[-1.25,-2.85], professor:[.05,-3.15], princess:[1.7,1.15],
-  meimei:[2,2.6], helen:[-.85,1.95], joyce:[.9,1.9], hester:[-.8,-3.15],
-  hope:[1.55,1.65], jenjen:[-1.3,-2.85], zoe:[.7,-2.65],
-  janet:[1.25,2.45], sophie:[-1.25,-2.65], erich:[.1,-3.2],
+  jack:[2.3,2.7], sam:[-1.25,-2.85], professor:[-.8,-3.15], princess:[1.7,1.15],
+  meimei:[2.4,1.6], helen:[.05,-3.15], joyce:[-.9,-3.35], hester:[-2.95,-.9],
+  hope:[1.55,1.65], jenjen:[-1.3,-2.85], zoe:[2,2.6],
+  janet:[1.25,2.45], sophie:[-1.25,-2.65], erich:[.7,-2.65],
   jonathan:[2.65,1.45], annie_yu:[-1.2,-2.7], alice:[.1,-3.15],
-  captain:[2.4,1.6], simon:[-.9,-3.35], action:[-.5,1.8],
-  owen:[2.3,2.55], sonny:[-1.25,-.8,1.23], kind:[1.1,.4,1.23],
+  captain:[2.6,-2.1], simon:[-3,-1.5], action:[-.5,1.8],
+  owen:[2.75,-1], sonny:[-1.25,-.8,1.23], kind:[2.75,1.15],
   cindy:[1.35,2.35], james:[-.8,-2.6], johnny:[.4,-2.15],
-  wine:[3,-1.5], peter:[-3,-1.5], tony:[-3,-1.5], henry:[-3,-.5], mia:[-3,0],
+  wine:[3,-1.5], peter:[1.1,.4,1.23], tony:[-3,-1.5], henry:[-3,-.5], mia:[-3,0],
 };
 export const CAST_POSITIONS = Object.freeze(Object.fromEntries(ISLAND_CAST.map(({id,districtId})=>{
   const [x,z,y=WALK_HEIGHT]=castLocalPositions[id];
   return [id,Object.freeze({...world(districtId,x,z),y})];
 })));
 export const CAST_RADIUS = .21;
+export const NPC_POSITIONS = Object.freeze(Object.fromEntries(Object.entries({lobby:'wing',lab:'jack',meeting:'zoe',hr:'hope',finance:'janet',cafe:'jonathan',plaza:'meimei',court:'sonny',harbor:'cindy'})
+  .map(([districtId,id])=>[districtId,Object.freeze({x:CAST_POSITIONS[id].x,z:CAST_POSITIONS[id].z})])));
 
 function rectangle(x, z, width, depth, rotation = 0) {
   const cos = Math.cos(rotation), sin = Math.sin(rotation);
@@ -133,6 +145,7 @@ const terrainObstacles = [
   { id: 'plaza', x: 0, z: -.8, radius: 2.25 },
   { id: 'harbor', x: -.95, z: -.8, radius: 1.12 },
   { id: 'harbor', x: 1.65, z: .05, width: 1.45, depth: 1.35, rotation: -.15 },
+  { id: 'harbor', x: 2.6, z: 1.95, width: .8, depth: .8 },
   ...[-2.15, 2.15].map(x => ({ id: 'court', x: x * Math.cos(-.06), z: -.3 - x * Math.sin(-.06), radius: .055 })),
 ].map(obstacle => ({ ...obstacle, ...world(obstacle.id, obstacle.x, obstacle.z) }));
 const castObstacles = Object.values(CAST_POSITIONS).map(position => ({ ...position, radius: CAST_RADIUS }));

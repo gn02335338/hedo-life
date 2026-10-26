@@ -6,10 +6,14 @@ import { bindWalkControls } from './walk-controls.js';
 import { bindApplications, residentAvatar } from './applications.js';
 import { ISLAND_CAST } from './cast.js';
 import { createIslandAdminSummary } from './admin-summary.js';
+import { PLACES, PLACE_BY_ID } from './places.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
 const castByDistrict = new Map(DISTRICTS.map(d => [d.id, ISLAND_CAST.filter(person => person.districtId === d.id)]));
+const placesByDistrict = new Map(DISTRICTS.map(d => [d.id, PLACES.filter(place => place.districtId === d.id)]));
+const categoryNames = { department: '部門園區', shared: '共享空間', afterwork: '下班生活' };
+const personaImage = id => displayPersona(id).image.replace(/^\.\//, '/');
 const mobile = matchMedia('(max-width: 780px)');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let storage;
@@ -18,6 +22,8 @@ let progress = readProgress(storage);
 let scene = null;
 let activeId = null;
 let filter = 'all';
+let zoneFilter = 'all';
+let focusedPlaceId = null;
 let tourIndex = -1;
 let hour = 12;
 let paused = reducedMotion.matches;
@@ -30,6 +36,11 @@ let roaming = false;
 let nearby = null;
 let walkControls;
 const encounterChoices = new Map();
+// Revised stories never reinterpret a response index saved for the old map.
+// Keep the original v1 record intact; new memories belong to this visit.
+const districtChoices = new Map();
+const placeChoices = new Map();
+const placeVisits = new Set();
 const residentChoices = new Map();
 let residentById = new Map();
 let activeEncounter = null;
@@ -65,12 +76,13 @@ function save() {
 function syncProgress() {
   const count = progress.visited.length;
   $('#passport-count').textContent = count;
-  $('#passport-open').setAttribute('aria-label', `小島護照，已踏訪 ${count} 個地點`);
+  $('#passport-open').setAttribute('aria-label', `小島護照，已踏訪 ${count} 個園區`);
   $('#visited-filter-count').textContent = String(count).padStart(2, '0');
   $('#progress-label').textContent = `${count} / 9`;
   $('#mobile-progress').textContent = `${count} / 9 已踏訪`;
   $('#progress-bar').style.width = `${count / 9 * 100}%`;
   $('#encounter-count').textContent = `本次散步 · ${encounterChoices.size} / ${ENCOUNTERS.length} 段偶遇`;
+  $('#place-progress').textContent = `本次場所 ${placeVisits.size} / ${PLACES.length}`;
   document.querySelectorAll('.map-label').forEach(node => {
     node.classList.toggle('is-visited', progress.visited.includes(node.dataset.district));
     node.setAttribute('aria-pressed', String(node.dataset.district === activeId));
@@ -106,21 +118,37 @@ function renderList() {
   list.replaceChildren();
   const matches = DISTRICTS.filter(d => {
     if (filter === 'visited' && !progress.visited.includes(d.id)) return false;
-    const text = [d.name, d.summary, ...d.tags, ...castByDistrict.get(d.id).map(({ id }) => {
+    if (zoneFilter !== 'all' && d.category !== zoneFilter) return false;
+    const text = [d.name, d.summary, ...d.tags, ...placesByDistrict.get(d.id).flatMap(place => [place.name, ...place.tags]), ...castByDistrict.get(d.id).map(({ id }) => {
       const p = displayPersona(id); return `${id} ${p.name} ${p.title}`;
     })].join(' ').toLocaleLowerCase();
     return !query || text.includes(query);
   });
+  matches.sort((a, b) => ['department', 'shared', 'afterwork'].indexOf(a.category) - ['department', 'shared', 'afterwork'].indexOf(b.category));
   for (const d of matches) {
+    if (!query && (!list.lastElementChild || list.lastElementChild.dataset.category !== d.category)) {
+      const heading = element('div', 'district-group-label', categoryNames[d.category]);
+      heading.dataset.category = d.category; list.append(heading);
+    }
     const visited = progress.visited.includes(d.id);
     const card = button(`district-card${visited ? ' is-visited' : ''}`, '', () => selectDistrict(d.id));
     card.dataset.districtLink = d.id;
     card.setAttribute('aria-label', `${d.number} ${d.name}${visited ? '，已踏訪' : ''}`);
     const info = element('span', 'district-info');
-    info.append(element('span', 'district-name', d.name), element('span', 'district-meta', `${d.tags[0]} · ${castByDistrict.get(d.id).length} 位同事`));
+    info.append(element('span', 'district-name', d.name), element('span', 'district-meta', placesByDistrict.get(d.id).map(place => place.shortName).join(' · ')));
     card.append(element('span', 'district-number', d.number), districtIcon(d), info, element('span', 'district-arrow', visited ? '✓' : '↗'));
+    card.dataset.category = d.category;
     list.append(card);
+    if (query) {
+      const hits = placesByDistrict.get(d.id).filter(place => [place.name, ...place.tags].join(' ').toLocaleLowerCase().includes(query));
+      if (hits.length) {
+        const shortcuts = element('div', 'place-search-hits');
+        for (const place of hits) { const link = button('', `${place.name} ↗`, () => visitPlace(place.id)); link.dataset.visitPlace = place.id; shortcuts.append(link); }
+        list.append(shortcuts);
+      }
+    }
   }
+  $('#zone-result-count').textContent = query ? `找到 ${matches.length} 個園區` : `${matches.length} 個園區 · ${matches.reduce((sum, d) => sum + placesByDistrict.get(d.id).length, 0)} 個場所`;
   $('#empty-search').hidden = matches.length !== 0;
 }
 function setSidebar(open) {
@@ -181,6 +209,12 @@ function updateNearby(target) {
     $('#nearby-name').textContent = displayPersona(target.id).name;
     $('#nearby-greeting').textContent = encounter?.greeting || '一起聊聊島上的日常。';
     $('#interact-label').textContent = '聊聊';
+  } else if (target.kind === 'place') {
+    const place = PLACE_BY_ID.get(target.id);
+    if (!place) { $('#nearby-prompt').hidden = true; return; }
+    $('#nearby-name').textContent = place.name;
+    $('#nearby-greeting').textContent = place.summary;
+    $('#interact-label').textContent = '探索';
   } else {
     $('#nearby-name').textContent = district.name;
     $('#nearby-greeting').textContent = '已經走到門口了，進來聽一段日常。';
@@ -192,17 +226,20 @@ function renderEncounter(target) {
   if (target.kind === 'resident') return renderResidentEncounter(target);
   const district = byId.get(target.districtId);
   const isPerson = target.kind === 'person';
-  const story = isPerson ? encounterById.get(target.id) : district.story;
+  const place = target.kind === 'place' ? PLACE_BY_ID.get(target.id) : null;
+  const story = isPerson ? encounterById.get(target.id) : place?.story || district.story;
   const content = $('#encounter-content'); content.replaceChildren();
-  $('#encounter-place').textContent = `${district.number} / ${district.name} · ${isPerson ? '島上偶遇' : '門口的日常'}`;
+  $('#encounter-place').textContent = `${district.number} / ${district.name} · ${isPerson ? '島上偶遇' : place?.name || '園區日常'}`;
   if (isPerson) {
     const speaker = element('div', 'encounter-speaker');
-    const portrait = element('img'); portrait.src = `/assets/${target.id}.png`; portrait.alt = '';
+    const portrait = element('img'); portrait.src = personaImage(target.id); portrait.alt = '';
     speaker.append(portrait, element('strong', '', displayPersona(target.id).name)); content.append(speaker);
   }
   const title = element('h2', '', story.title); title.id = 'encounter-title';
   content.append(title, element('p', 'encounter-opening', story.opening));
-  const selected = isPerson ? encounterChoices.get(target.id) : progress.choices[district.id];
+  const choicesMap = isPerson ? encounterChoices : place ? placeChoices : districtChoices;
+  const choiceKey = isPerson || place ? target.id : district.id;
+  const selected = choicesMap.get(choiceKey);
   if (Number.isInteger(selected)) {
     const result = element('div', 'story-response'); result.id = 'encounter-response'; result.tabIndex = -1;
     result.append(element('b', '', `你說：${story.choices[selected].label}`), element('p', '', story.choices[selected].response));
@@ -212,8 +249,7 @@ function renderEncounter(target) {
     const choices = element('div', 'story-choices');
     story.choices.forEach((choice, index) => {
       const option = button('', '', () => {
-        if (isPerson) encounterChoices.set(target.id, index);
-        else { progress.choices[district.id] = index; save(); }
+        choicesMap.set(choiceKey, index);
         syncProgress();
         renderEncounter(target);
         $('#encounter-response').focus({ preventScroll: true });
@@ -257,6 +293,18 @@ function meetColleague(id) {
   renderEncounter({ kind: 'person', id, districtId: person.districtId, key: `person:${id}` });
   openDialog($('#encounter-dialog'));
 }
+function visitPlace(id) {
+  const place = PLACE_BY_ID.get(id); if (!place) return;
+  stopTour();
+  placeVisits.add(id);
+  if (!roaming) selectDistrict(place.districtId, { moveFocus: false });
+  if (!progress.visited.includes(place.districtId)) { progress.visited.push(place.districtId); save(); }
+  focusedPlaceId = id;
+  syncProgress();
+  if (!roaming) { scene?.focusPlace(id); history.replaceState(null, '', `#${id}`); }
+  renderEncounter({ kind: 'place', id, districtId: place.districtId, key: `place:${id}` });
+  openDialog($('#encounter-dialog'));
+}
 function actorActivity(actor) {
   if (!lifeAvailable) return '在島上等你';
   if (actor?.state === 'talking') return '正在聊天';
@@ -287,19 +335,21 @@ function updateIslandLife({ actors = [] } = {}) {
 }
 function renderCastDirectory() {
   const query = $('#cast-search').value.trim().toLocaleLowerCase();
-  const matches = ISLAND_CAST.filter(({ id, districtId }) => {
+  const matches = ISLAND_CAST.filter(({ id, districtId, workplaceId }) => {
     const p = displayPersona(id);
-    return [id, p.name, p.title, byId.get(districtId).name].join(' ').toLocaleLowerCase().includes(query);
+    return [id, p.name, p.title, byId.get(districtId).name, PLACE_BY_ID.get(workplaceId)?.name].join(' ').toLocaleLowerCase().includes(query);
   });
-  $('#cast-results').textContent = query ? `找到 ${matches.length} 位同事` : `${ISLAND_CAST.length} 位同事，分散在九個地點。`;
+  $('#cast-results').textContent = query ? `找到 ${matches.length} 位同事` : `${ISLAND_CAST.length} 位同事，在各園區工作，也在島上走走。`;
   $('#cast-empty').hidden = matches.length !== 0;
   const list = $('#cast-list'); list.replaceChildren();
-  for (const { id, districtId } of matches) {
+  for (const { id, districtId, workplaceId } of matches) {
     const p = displayPersona(id), district = byId.get(districtId);
     const card = element('article', 'cast-card'); card.dataset.characterId = id;
-    const portrait = element('img'); portrait.src = `/assets/${id}.png`; portrait.alt = ''; portrait.loading = 'lazy';
+    const portrait = element('img'); portrait.src = personaImage(id); portrait.alt = ''; portrait.loading = 'lazy';
     const copy = element('div', 'cast-copy');
-    copy.append(element('h3', '', p.name), element('p', '', p.title), element('span', 'cast-place', `${district.number} · ${district.name}`));
+    copy.append(element('h3', '', p.name), element('p', '', p.title));
+    if (PLACE_BY_ID.has(workplaceId)) copy.append(element('span', 'cast-workplace', `工作據點 · ${PLACE_BY_ID.get(workplaceId).name}`));
+    copy.append(element('span', 'cast-place', `現在在 · ${district.name}`));
     const activity = element('span', 'cast-activity', actorActivity(lifeActors.get(`person:${id}`)));
     activity.dataset.personActivity = id;
     copy.append(activity);
@@ -324,11 +374,13 @@ function interactNearby() {
   if (!target) return;
   if (target.kind === 'person' && !encounterById.has(target.id)) return;
   if (target.kind === 'resident' && !residentById.has(target.id)) return;
+  if (target.kind === 'place') { visitPlace(target.id); return; }
   if (!progress.visited.includes(target.districtId)) { progress.visited.push(target.districtId); save(); syncProgress(); }
   renderEncounter(target); openDialog($('#encounter-dialog'));
 }
 function browse({ reset = true } = {}) {
   activeId = null;
+  focusedPlaceId = null;
   $('#browse-panel').hidden = false;
   $('#detail-panel').hidden = true;
   document.body.classList.remove('exploring');
@@ -345,36 +397,47 @@ function openList() {
 function renderDetail(d) {
   const detail = $('#detail-panel');
   detail.replaceChildren();
-  const back = button('detail-back', '← 回到地點清單', () => { stopTour(); browse(); $('#search').focus({ preventScroll: true }); });
+  const back = button('detail-back', '← 回到園區導覽', () => { stopTour(); browse(); $('#search').focus({ preventScroll: true }); });
   const hero = element('div', 'detail-hero');
   hero.dataset.number = d.number;
   hero.style.setProperty('--district-tint', `${d.color}35`);
   const title = element('h2', '', d.name); title.id = 'detail-title'; title.tabIndex = -1;
   const tags = element('div', 'detail-tags'); d.tags.forEach(t => tags.append(element('span', '', t)));
   hero.append(element('span', 'eyebrow', `${d.number} / ${d.kicker}`), title, tags);
+  const units = element('section', 'district-places');
+  const unitHeading = element('h3', 'places-heading', d.category === 'department' ? '走進各個部門' : d.category === 'shared' ? '一起使用的空間' : '今晚，想怎麼過？');
+  units.append(unitHeading, element('p', 'places-description', '點選場所探索故事，也可以在地圖上找入口。'));
+  for (const [index, place] of placesByDistrict.get(d.id).entries()) {
+    const card = button('place-card', '', () => visitPlace(place.id));
+    card.dataset.visitPlace = place.id;
+    const copy = element('span', 'place-copy');
+    copy.append(element('strong', '', place.name), element('span', '', place.summary));
+    card.append(element('span', 'place-number', `${d.number}.${index + 1}`), copy, element('span', 'place-arrow', placeVisits.has(place.id) ? '✓' : '↗'));
+    units.append(card);
+  }
   const people = element('div', 'people-list');
   for (const { id } of castByDistrict.get(d.id)) {
     const persona = displayPersona(id);
     const chip = button('person-chip', '', () => meetColleague(id)); chip.title = persona.title;
     chip.setAttribute('aria-label', `和${persona.name}聊聊`);
-    const portrait = element('img'); portrait.src = `/assets/${id}.png`; portrait.alt = ''; portrait.loading = 'lazy';
+    const portrait = element('img'); portrait.src = personaImage(id); portrait.alt = ''; portrait.loading = 'lazy';
     chip.append(portrait, element('span', '', persona.name)); people.append(chip);
   }
   const story = element('section', 'story-card');
   story.append(element('span', 'eyebrow', 'A LITTLE ISLAND STORY'), element('h3', '', d.story.title), element('p', 'story-opening', d.story.opening));
-  const choice = progress.choices[d.id];
+  const choice = districtChoices.get(d.id);
   if (Number.isInteger(choice)) {
     const response = element('div', 'story-response'); response.tabIndex = -1; response.id = 'story-response';
     response.append(element('b', '', `你說：${d.story.choices[choice].label}`), element('p', '', d.story.choices[choice].response), element('small', '', '這段日常，已經成為你的島上回憶。'));
     story.append(response, button('story-again', '再試另一種回話', () => {
-      delete progress.choices[d.id]; save(); renderDetail(d);
+      districtChoices.delete(d.id); renderDetail(d);
       $('#detail-panel .story-choices button').focus({ preventScroll: true });
     }));
   } else {
     const choices = element('div', 'story-choices');
     d.story.choices.forEach((c, index) => {
       const option = button('', '', () => {
-        progress.choices[d.id] = index; save(); renderDetail(d);
+        districtChoices.set(d.id, index); renderDetail(d);
         const result = $('#story-response');
         result.focus({ preventScroll: true }); result.scrollIntoView({ block: 'nearest', behavior: reducedMotion.matches ? 'instant' : 'smooth' });
       });
@@ -386,13 +449,14 @@ function renderDetail(d) {
   }
   const related = element('div', 'related-list');
   d.related.forEach(id => related.append(button('', `${byId.get(id).name} ↗`, () => selectDistrict(id))));
-  detail.append(back, hero, element('p', 'detail-summary', d.summary), element('h3', 'people-title', '在這裡可能遇見'), people, story, element('h3', 'related-title', '順路，再去看看'), related, element('p', 'detail-stamp', `✓ ${d.number} 號島章已蓋進小島護照`));
+  detail.append(back, hero, element('p', 'detail-summary', d.summary), units, element('h3', 'people-title', '在這裡可能遇見'), people, story, element('h3', 'related-title', '順路，再去看看'), related, element('p', 'detail-stamp', `✓ ${d.number} 號島章已蓋進小島護照`));
 }
 function selectDistrict(id, { touring = false, moveFocus = true } = {}) {
   const d = byId.get(id); if (!d) return;
   if (roaming) setRoaming(false);
   if (!touring) stopTour();
   activeId = id;
+  focusedPlaceId = null;
   const firstVisit = !progress.visited.includes(id);
   if (firstVisit) { progress.visited.push(id); save(); }
   $('#browse-panel').hidden = true; $('#detail-panel').hidden = false;
@@ -454,15 +518,16 @@ function renderPassport() {
     stamp.append(element('strong', '', d.number), element('span', '', d.name), element('small', '', visited ? 'HEDO · 已踏訪' : '等待你的足跡'));
     grid.append(stamp);
   }
-  const memories = Object.keys(progress.choices).length;
+  const memories = districtChoices.size + placeChoices.size;
   $('#passport-message').textContent = progress.visited.length === 9
-    ? `九座小島都留下了你的足跡，也收下 ${memories} 段日常。今天的行程完成，剩下的時間是你的。`
-    : `已踏訪 ${progress.visited.length} / 9 個地點，收下 ${memories} 段日常。還有 ${9 - progress.visited.length} 個地方等你慢慢發現。`;
+    ? `九個園區都留下了你的足跡。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`
+    : `已踏訪 ${progress.visited.length} / 9 個園區。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`;
 }
 function openDialog(dialog) { lastFocus = document.activeElement; dialog.showModal(); updateWalking(); }
 function restoreDialogFocus() {
   if (roaming) $('#scene canvas')?.focus({ preventScroll: true });
-  else if (lastFocus?.isConnected) lastFocus.focus({ preventScroll: true });
+  else if (lastFocus?.isConnected && lastFocus !== document.body && !lastFocus.closest('[hidden]') && lastFocus.getClientRects().length) lastFocus.focus({ preventScroll: true });
+  else if (activeId) $('#detail-title')?.focus({ preventScroll: true });
 }
 function closeDialog(dialog) { dialog.close(); updateWalking(); restoreDialogFocus(); }
 
@@ -475,6 +540,11 @@ $('#cast-search').addEventListener('input', renderCastDirectory);
 $('#cast-total').textContent = String(ISLAND_CAST.length);
 
 $('#search').addEventListener('input', renderList);
+document.querySelectorAll('[data-zone-filter]').forEach(node => node.addEventListener('click', () => {
+  zoneFilter = node.dataset.zoneFilter;
+  document.querySelectorAll('[data-zone-filter]').forEach(other => other.setAttribute('aria-pressed', String(other === node)));
+  renderList();
+}));
 for (const name of ['all', 'visited']) $('#filter-' + name).addEventListener('click', () => {
   filter = name;
   $('#filter-all').setAttribute('aria-pressed', String(name === 'all'));
@@ -530,7 +600,12 @@ document.addEventListener('keydown', event => {
   }
 });
 mobile.addEventListener('change', () => { document.body.classList.remove('mobile-sheet-open', 'sidebar-collapsed'); setSidebar(!mobile.matches && !roaming); });
-window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if (byId.has(id)) selectDistrict(id); else browse(); });
+window.addEventListener('hashchange', () => {
+  const id = location.hash.slice(1);
+  if ($('#encounter-dialog').open) closeDialog($('#encounter-dialog'));
+  if (PLACE_BY_ID.has(id)) visitPlace(id);
+  else if (byId.has(id)) selectDistrict(id); else browse();
+});
 window.addEventListener('pagehide', () => { walkControls.destroy(); scene?.destroy(); }, { once: true });
 // A bfcache restoration needs a fresh renderer after pagehide teardown.
 window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
@@ -542,14 +617,16 @@ renderList(); syncProgress(); updatePause(); setSidebar(!mobile.matches);
 save();
 const initialId = location.hash.slice(1);
 if (byId.has(initialId)) selectDistrict(initialId, { moveFocus: false });
+else if (PLACE_BY_ID.has(initialId)) visitPlace(initialId);
 try {
   const { createIslandScene } = await import('./scene.js');
-  scene = await createIslandScene({ container: $('#scene'), districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
+  scene = await createIslandScene({ container: $('#scene'), districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
   scene.setResidents(applications.getResidents());
   $('#loading').hidden = true;
   $('#roam-toggle').disabled = false;
   setHour(hour); updatePause(); updateWalking(); scene.setConnections(connections); scene.setTopView(topView);
-  if (activeId) scene.focus(activeId);
+  if (focusedPlaceId) scene.focusPlace(focusedPlaceId);
+  else if (activeId) scene.focus(activeId);
   syncProgress();
   $('#scene').addEventListener('webglcontextlost', () => {
     syncRoaming(false); $('#roam-toggle').disabled = true; $('#explore-start').disabled = true;

@@ -6,7 +6,7 @@ export const NPC_STOP_DISTANCE = 2.1;
 export const NPC_RESUME_DISTANCE = 2.7;
 const GAP = .025, MAX_STEP = .035;
 const districts = new Map(LAYOUT.map(row => [row.id, row]));
-const activities = { lobby: '看看公告', lab: '整理靈感', meeting: '等下一場會議', hr: '照看小花圃', finance: '伸個懶腰', cafe: '等一杯咖啡', plaza: '看看廣場', court: '場邊休息', harbor: '吹吹海風' };
+const activities = { lobby: '看看總部公告', lab: '找開發靈感', meeting: '等一場分享', hr: '看看服務公告', finance: '在中庭歇腳', cafe: '到茶水間歇腳', plaza: '逛逛商務聚落', court: '場邊休息', harbor: '看看夜色碼頭' };
 const finite = p => p && Number.isFinite(p.x) && Number.isFinite(p.z);
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const seedOf = text => { let value = 2166136261; for (const char of text) value = Math.imul(value ^ char.codePointAt(0), 16777619); return value >>> 0; };
