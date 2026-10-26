@@ -1,6 +1,6 @@
 // Original public island scenes. A label never contains its selected response.
 // These places do not unlock or change the career game's private story paths.
-const categories = { lobby: 'department', lab: 'department', plaza: 'department', meeting: 'department', finance: 'department', hr: 'department', cafe: 'shared', court: 'afterwork', harbor: 'afterwork' };
+const categories = { lobby: 'department', lab: 'department', plaza: 'department', meeting: 'department', finance: 'department', hr: 'department', cafe: 'shared', court: 'afterwork', harbor: 'afterwork', exile: 'special', hospital: 'special', police: 'special' };
 function place(id, districtId, name, shortName, summary, tags, title, opening, choices) {
   return Object.freeze({ id, districtId, name, shortName, category: categories[districtId], summary,
     tags: Object.freeze([name, ...tags]), story: Object.freeze({ title, opening,
@@ -145,5 +145,30 @@ export const PLACES = Object.freeze([
       ['今天只陪他在碼頭走一段', '阿良收起小卡，和你沿著燈下步道慢慢走。行程沒有因此變少，這一小段也是今晚自己選的安排。'],
       ['替空白卡畫一個待填的問號', '你把問號畫得很大，阿良在下面加上「想去再說」。卡片被放回口袋，沒有人替你答應下一站。'],
     ]),
+  place('exile-gate', 'exile', '看門值班亭', '看門值班亭', '一張椅子、一份值班簿，替冷凍中的日子留個出口。', ['看門', '值班', '冷凍'],
+    '今天的門，往哪邊開', '看門值班亭的牌子寫著「出入平安」。值班簿裡沒有業績欄，只有「燈有沒有亮」與「人有沒有好好吃飯」兩個小方框。', [
+      ['確認今天的值班事項', '你核對燈泡、門鎖與飲水，逐一打勾。值班簿終於有一頁不需要猜主管的意思。'],
+      ['把門口的小路掃乾淨', '落葉被掃到花圃旁，路也清楚了。有人經過時，你沒有盤問進度，只說了一句早安。'],
+      ['替值班簿加一欄看見的風景', '你寫下今天的海是淡綠色。下一個值班的人接著寫：「以及一隻很準時的鳥。」'],
+    ]),
+  place('cold-palace', 'exile', '冷宮', '冷宮', '沒被排進會議的時間，也可以先把自己照顧好。', ['流放', '冷凍', '歇腳'],
+    '窗邊那張沒有待辦的椅子', '冷宮窗邊擺著兩張椅子，一張朝海，一張朝原本的部門。桌上的便條說：「想回去前，先想清楚要把什麼帶回去。」', [
+      ['整理接下來想做的事', '你把想做的寫下來，再把別人的期待另外放一張。兩張紙沒有突然變短，但終於不必混著看。'],
+      ['先在窗邊安靜休息', '海風翻過空白的便條。你沒有急著追它，先把杯裡的熱茶喝完。'],
+      ['替冷宮掛一張不冷的招牌', '你寫了「本日有熱水」。招牌有點歪，卻讓後來的人在進門前先笑了一下。'],
+    ]),
+  place('hospital-er', 'hospital', '急診室', '急診室', '先檢查擦傷，包紮後坐一會兒，再繼續散步。', ['醫院', '送醫', '包紮'],
+    '繃帶不用比誰綁得快', '急診室的托盤上排著乾淨繃帶。護理人員先請你把拳頭放鬆，接著說：「現在只要回答哪裡痛，不必證明剛才誰比較厲害。」', [
+      ['照順序說明不舒服的地方', '你把擦傷的位置說清楚，包紮很快就完成了。打結的繃帶收好，打結的心情也可以慢慢解開。'],
+      ['先喝水，坐著休息一下', '水杯摸起來微涼，你把急促的呼吸慢慢放平。窗外的人繼續散步，這次不用追上任何人。'],
+      ['替繃帶取一個重新出發的名字', '你說這卷叫「先休息」。護理人員把標籤貼好，又指了指椅子：「那就照著名字做。」'],
+    ]),
+  place('police-desk', 'police', '筆錄室', '筆錄室', '把經過講清楚，做完筆錄，再重新回到小島。', ['警局', '送警局', '筆錄'],
+    '每個驚嘆號都有自己的欄位', '筆錄室的表格留了很大的空白。桌邊的人提醒：「經過寫這裡，心情可以另外說。」你看了一眼，第一次覺得分欄也有一點道理。', [
+      ['把事情從第一句話開始說', '你沒有再跳著講，紙上的時間順序也跟著清楚。說到最後，最先放下的是一直握緊的手。'],
+      ['確認紀錄有沒有寫錯', '你補上漏掉的一句話，對方也改正了一個時間。兩個人終於在同一頁紙上看見同一件事。'],
+      ['先把桌邊的椅子擺正', '椅子擺好，大家坐回自己的位置。那句剛才一直被打斷的話，這次終於有人聽完。'],
+    ]),
+
 ]);
 export const PLACE_BY_ID = new Map(PLACES.map(row => [row.id, row]));

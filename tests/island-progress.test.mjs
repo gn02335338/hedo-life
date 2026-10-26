@@ -48,12 +48,12 @@ test('missing, malformed and structurally invalid saved progress resets safely',
   }
 });
 
-test('unknown and duplicate visits stay bounded to the nine known districts', () => {
+test('unknown and duplicate visits stay bounded to the known districts, including special destinations', () => {
   const ids = DISTRICTS.map(district => district.id);
   const visited = [...Array(25000).fill('unknown'), null, 1, {}, 'constructor', '__proto__', ...ids, ...ids];
   const progress = readSaved({ version: 1, visited, choices: {} });
   assert.deepEqual(progress.visited, ids);
-  assert.equal(progress.visited.length, 9);
+  assert.equal(progress.visited.length, DISTRICTS.length);
   assert.deepEqual(progress.choices, {});
 });
 

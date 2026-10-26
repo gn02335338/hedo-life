@@ -2,17 +2,18 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { PLACES } from '../dist/island/places.js';
 import { LAYOUT, PLACE_ENTRANCES, PLAYER_SPAWN, isTerrainWalkable, isWalkable, movePlayer, nearestInteraction } from '../dist/island/navigation.js';
+import { RESIDENT_POSITIONS } from '../dist/island/residents.js';
 import { createNpcLife } from '../dist/island/npc-life.js';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
-const roster=LAYOUT.flatMap(({id:districtId})=>[0,1,2].map(slot=>({id:`${districtId}-${slot}`,districtId,slot})));
+const roster=LAYOUT.filter(({id})=>Object.hasOwn(RESIDENT_POSITIONS,id)).flatMap(({id:districtId})=>[0,1,2].map(slot=>({id:`${districtId}-${slot}`,districtId,slot})));
 const places=PLACES.map(place=>({kind:'place',id:place.id,districtId:place.districtId,key:`place:${place.id}`,position:PLACE_ENTRANCES[place.id],radius:.9,exitRadius:1.15}));
 const dynamic={dynamicCharacters:true};
 
-test('23 departments and shared/after-work destinations have separate safe physical entrances',()=>{
-  assert.equal(PLACES.length,23);
+test('27 departments and shared/after-work destinations have separate safe physical entrances',()=>{
+  assert.equal(PLACES.length,27);
   assert.deepEqual(Object.keys(PLACE_ENTRANCES).sort(),PLACES.map(place=>place.id).sort());
-  assert.equal(new Set(Object.values(PLACE_ENTRANCES).map(point=>`${point.x},${point.z}`)).size,23);
+  assert.equal(new Set(Object.values(PLACE_ENTRANCES).map(point=>`${point.x},${point.z}`)).size,27);
   for(const place of PLACES){
     const point=PLACE_ENTRANCES[place.id],district=LAYOUT.find(row=>row.id===place.districtId);
     assert.ok(isTerrainWalkable(point),`${place.id}: entrance lies on clear ground`);
@@ -21,7 +22,7 @@ test('23 departments and shared/after-work destinations have separate safe physi
   assert.ok(!isTerrainWalkable({x:13.4,z:12.45}),'the mystery kiosk has a matching solid footprint');
 });
 
-test('all23 place prompts and all61 character prompts remain reachable in a full moving campus',()=>{
+test('all27 place prompts and all61 character prompts remain reachable in a full moving campus',()=>{
   for(const hour of [10,12]){
   const life=createNpcLife({residents:roster,hour});
   for(const phase of [0,20,55]){
@@ -40,8 +41,12 @@ test('all23 place prompts and all61 character prompts remain reachable in a full
       if(selected&&distance(p,selected.position)<.85&&!reached.has(selected.key))reached.set(selected.key,cell);
       if(reached.size===targets.length)break;
       for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
-        const x=cell.x+dx,z=cell.z+dz,k=key(x,z);if(parents.has(k)||Math.abs(x)>105||Math.abs(z)>115)continue;
+        const x=cell.x+dx,z=cell.z+dz,k=key(x,z);if(parents.has(k)||Math.abs(x)>105||Math.abs(z)>170)continue;
         const next=point(x,z);if(!usable.has(k))usable.set(k,isWalkable(next,.22,obstacles,dynamic));if(!usable.get(k))continue;
+        // Valid endpoints can still cut the corner of a round body. Flood only
+        // edges the real visitor can walk, then replay that exact valid path.
+        const walked=movePlayer(p,{x:dx*step,z:dz*step},.1,10,obstacles,dynamic);
+        if(distance(walked,next)>1e-7)continue;
         const current=nearestInteraction(next,targets,cell.current)?.key??null;
         parents.set(k,cell);queue.push({x,z,current});
       }

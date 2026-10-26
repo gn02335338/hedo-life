@@ -6,7 +6,7 @@ import { LAYOUT, BRIDGES, CAST_POSITIONS, PLAYER_SPAWN, isDistrictWalkable, isTe
 import { RESIDENT_POSITIONS } from '../dist/island/residents.js';
 import { npcGroundHeight } from '../dist/island/npc-routing.js';
 
-const fullRoster = (suffix = '') => LAYOUT.flatMap(({ id: districtId }) => [0, 1, 2].map(slot => ({ id: `${districtId}-${slot}${suffix}`, districtId, slot })));
+const fullRoster = (suffix = '') => LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITIONS, district.id)).flatMap(({ id: districtId }) => [0, 1, 2].map(slot => ({ id: `${districtId}-${slot}${suffix}`, districtId, slot })));
 const gap = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const poses = life => life.getState().map(({ key, position, heading }) => ({ key, position, heading }));
 const tick = (life, seconds, options) => { let state; for (let i = 0; i < Math.ceil(seconds * 10); i++) state = life.update(.1, options); return state; };

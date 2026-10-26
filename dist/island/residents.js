@@ -9,7 +9,8 @@ export const OUTFITS = Object.freeze([
   { id:'cream', label:'奶油白', color:'#fff4dd' },
 ].map(Object.freeze));
 
-const districts = new Set(LAYOUT.map(({id})=>id));
+// Residency keeps its original application schema; the new facilities are visits.
+const districts = new Set(['lobby', 'lab', 'meeting', 'hr', 'finance', 'cafe', 'plaza', 'court', 'harbor']);
 const outfits = new Set(OUTFITS.map(({id})=>id));
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const publicFields = ['districtId','greeting','id','introduction','nickname','outfit','slot'].sort().join(',');
@@ -64,10 +65,11 @@ const localPositions = {
   court:[[-1.5,2.95],[1.05,2.95],[2.9,-.3]],
   harbor:[[-2.3,1.5],[-1.25,2.7],[2.45,-1.1]],
 };
-export const RESIDENT_POSITIONS = Object.freeze(Object.fromEntries(LAYOUT.map(district => [district.id,
+export const RESIDENT_POSITIONS = Object.freeze(Object.fromEntries(LAYOUT.filter(district => districts.has(district.id)).map(district => [district.id,
   Object.freeze(localPositions[district.id].map(([x,z])=>Object.freeze({x:district.x+x,z:district.z+z}))),
 ])));
 export const RESIDENT_RADIUS = .21;
 export function residentObstacles(residents) {
-  return residents.map(resident=>({...RESIDENT_POSITIONS[resident.districtId][resident.slot],radius:RESIDENT_RADIUS}));
+  return residents.filter(resident => RESIDENT_POSITIONS[resident.districtId]?.[resident.slot])
+    .map(resident=>({...RESIDENT_POSITIONS[resident.districtId][resident.slot],radius:RESIDENT_RADIUS}));
 }

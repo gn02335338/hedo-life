@@ -9,6 +9,7 @@ import { ENCOUNTERS } from '../dist/island/encounters.js';
 import { displayPersona } from '../dist/persona.js';
 import { readProgress, writeProgress } from '../dist/island/progress.js';
 import * as routines from '../dist/island/routines.js';
+import { createIslandConflicts } from '../dist/island/conflicts.js';
 
 // Execute the real app controller against a small DOM, replacing only renderer,
 // network and timers. This exercises user-visible controls and event handlers;
@@ -122,18 +123,19 @@ function makeDocument(html) {
   document.hidden = false; document.visibilityState = 'visible';
   return document;
 }
-async function fixture({ fallback = false, reducedMotion = false } = {}) {
+async function fixture({ fallback = false, reducedMotion = false, conflictRandom = () => .01 } = {}) {
   const [source, html] = await Promise.all(['app.js', 'index.html'].map(name => readFile(new URL(`../dist/island/${name}`, import.meta.url), 'utf8')));
   const document = makeDocument(html), window = new Surface(), calls = [], timers = new Map(); let nextTimer = 0, onLifeUpdate, now = 0;
   const bytes = new Map([['hedo-island-v1', JSON.stringify({ version: 1, visited: ['lobby'], choices: { lobby: 2 } })], ['hedo-anonymous-v1', 'TEST_IDENTITY'], ['hedo-life-v1', 'UNCHANGED_CAREER']]);
   const writes = [];
   window.localStorage = { getItem: key => bytes.get(key) ?? null, setItem: (key, value) => { writes.push(key); bytes.set(key, value); } };
-  const scene = Object.fromEntries(['setResidents', 'setHour', 'setPaused', 'setMovementEnabled', 'setConversationTarget', 'setConnections', 'setTopView', 'focus', 'focusPlace', 'focusPerson', 'reset', 'destroy', 'setMoveInput', 'zoom'].map(method => [method, (...args) => { calls.push({ method, args }); }]));
+  const scene = Object.fromEntries(['setResidents', 'setDispositions', 'sendPlayerToPlace', 'setRoaming', 'setHour', 'setPaused', 'setMovementEnabled', 'setConversationTarget', 'setConnections', 'setTopView', 'focus', 'focusPlace', 'focusPerson', 'reset', 'destroy', 'setMoveInput', 'zoom'].map(method => [method, (...args) => { calls.push({ method, args }); }]));
   const createIslandScene = async config => { if (fallback) throw new Error('intentional renderer unavailable'); onLifeUpdate = config.onLifeUpdate; document.querySelector('#scene').append(document.createElement('canvas')); return scene; };
   const media = query => Object.assign(new Surface(), { matches: query.includes('reduced-motion') && reducedMotion });
   const location = { pathname: '/island/', search: '', hash: '', reload() {} };
   const history = { replaceState: (_state, _unused, path) => { location.hash = path.includes('#') ? path.slice(path.indexOf('#')) : ''; } };
   const context = vm.createContext({
+    createIslandConflicts: () => createIslandConflicts({ random: conflictRandom }),
     ...routines, DISTRICTS, TOUR, PLACES, PLACE_BY_ID, ISLAND_CAST, ENCOUNTERS, displayPersona, readProgress, writeProgress,
     document, window, matchMedia: media, history, location, createIslandScene,
     bindWalkControls: () => ({ clear() {}, destroy() {} }), bindApplications: () => ({ getResidents: () => [] }),
@@ -143,7 +145,7 @@ async function fixture({ fallback = false, reducedMotion = false } = {}) {
     performance: { now: () => now }, requestAnimationFrame: callback => { timers.set(++nextTimer, callback); return nextTimer; }, cancelAnimationFrame: id => timers.delete(id),
   });
   const script = source.replace(/^import\s[\s\S]*?;\r?\n/gm, '').replace("const { createIslandScene } = await import('./scene.js');", '');
-  const api = await new vm.Script(`(async () => { ${script}\n return { setHour, renderCastDirectory, renderDetail, renderEncounter, meetColleague, updateIslandLife, renderLifeStatus, closeDialog, getHour: () => hour }; })()`, { filename: 'dist/island/app.js' }).runInContext(context);
+  const api = await new vm.Script(`(async () => { ${script}\n return { setHour, renderCastDirectory, renderDetail, renderEncounter, meetColleague, updateIslandLife, renderLifeStatus, closeDialog, getHour: () => hour, renderConflictMenu, visitPlace, getConflictState: () => conflicts.getState() }; })()`, { filename: 'dist/island/app.js' }).runInContext(context);
   return { api, document, window, calls, scene, timers, bytes, writes, advanceClock: seconds => { now += seconds * 1000; for (const timer of timers.values()) if (timer.kind === 'interval') timer.callback(); }, life: rows => onLifeUpdate?.({ actors: rows }), node: selector => document.querySelector(selector) };
 }
 
@@ -292,4 +294,82 @@ test('a lost WebGL context switches stale live destinations to the selected sche
   assert.equal(f.bytes.get('hedo-life-v1'), career);
   assert.equal(f.bytes.get('hedo-island-v1'), passport);
   assert.deepEqual([...f.bytes.keys()].sort(), keys);
+});
+
+test('fight choices resolve only after selection, transfer both sides, and recover at the matching facility', async () => {
+  for (const [random, playerStatus, placeId, otherStatus] of [[.01, 'police', 'police-desk', 'hospital'], [.99, 'hospital', 'hospital-er', 'police']]) {
+    const f = await fixture({ conflictRandom: () => random });
+    f.api.meetColleague('jack');
+    await f.node('[data-conflict-action="fight"]').dispatch('click');
+    assert.equal(f.api.getConflictState().history.length, 0, 'opening a confrontation does not draw a result');
+    assert.ok(!f.node('#encounter-content').textContent.includes('打贏了'));
+    assert.ok(!f.node('#encounter-content').textContent.includes('先去醫院'));
+    await f.node('[data-conflict-style="steady"]').dispatch('click');
+    const state = f.api.getConflictState();
+    assert.equal(state.player.status, playerStatus);
+    assert.equal(state.people[0].status, otherStatus);
+    assert.equal(f.node('#island-conflict-panel').dataset.status, playerStatus);
+    assert.equal(f.calls.filter(call => call.method === 'sendPlayerToPlace').at(-1).args[0], placeId);
+    assert.equal(f.calls.filter(call => call.method === 'setDispositions').at(-1).args[0][0].id, 'jack');
+    f.api.visitPlace('pantry');
+    assert.equal(f.node('[data-conflict-recover]'), null, 'an unrelated facility cannot complete treatment or a police statement');
+    f.api.visitPlace(placeId);
+    await f.node('[data-conflict-recover]').dispatch('click');
+    assert.equal(f.api.getConflictState().player.status, 'free');
+    assert.equal(f.api.getConflictState().people.length, 1, 'the opponent is not implicitly released');
+    const other = f.api.getConflictState().people[0];
+    f.api.visitPlace(other.placeId);
+    await f.node('[data-conflict-release="jack"]').dispatch('click');
+    assert.equal(f.api.getConflictState().people.length, 0);
+    assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+    assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+    assert.deepEqual([...f.bytes.keys()].sort(), ['hedo-anonymous-v1', 'hedo-island-v1', 'hedo-life-v1']);
+  }
+});
+
+test('boss arguments can exile the visitor, clock changes retain the hold, and either exile facility can release it', async () => {
+  const f = await fixture({ conflictRandom: () => .3 });
+  f.api.meetColleague('wing');
+  await f.node('[data-conflict-action="argue"]').dispatch('click');
+  assert.equal(f.api.getConflictState().history.length, 0);
+  await f.node('[data-conflict-argue="wing"]').dispatch('click');
+  assert.equal(f.api.getConflictState().player.status, 'exile');
+  assert.equal(f.api.getConflictState().player.placeId, 'cold-palace');
+  f.api.setHour(19.25);
+  assert.equal(f.api.getConflictState().player.status, 'exile');
+  f.api.meetColleague('jack');
+  assert.equal(f.node('[data-conflict-action="fight"]'), null, 'an unresolved hold blocks further fights');
+  f.api.visitPlace('exile-gate');
+  await f.node('[data-conflict-recover]').dispatch('click');
+  assert.equal(f.api.getConflictState().player.status, 'free');
+});
+
+test('fallback exposes incident recovery and a held Aliang does not pretend to lead the evening trip', async () => {
+  const f = await fixture({ fallback: true, reducedMotion: true, conflictRandom: () => .99 });
+  f.api.meetColleague('kind');
+  await f.node('[data-conflict-action="fight"]').dispatch('click');
+  await f.node('[data-conflict-style="swift"]').dispatch('click');
+  assert.equal(f.api.getConflictState().people[0].status, 'police');
+  assert.equal(f.calls.filter(call => call.method === 'sendPlayerToPlace').length, 0, 'fallback does not claim a physical transfer rendered on a map');
+  f.api.setHour(19.25);
+  await f.node('#mystery-open').dispatch('click');
+  assert.notEqual(f.node('#encounter-title').textContent, routines.MYSTERY_TRIP.story.title);
+  assert.ok(f.node('#encounter-content').textContent.includes('警局做筆錄'));
+  assert.ok(!f.node('#encounter-content').textContent.includes('今晚的集合正在進行'));
+  f.api.visitPlace('hospital-er');
+  await f.node('[data-conflict-recover]').dispatch('click');
+  assert.equal(f.api.getConflictState().player.status, 'free');
+});
+
+test('Aliang still supports conflict choices while hosting the evening invitation', async () => {
+  const f = await fixture();
+  f.api.setHour(19.25);
+  f.api.meetColleague('kind');
+  assert.equal(f.node('#encounter-title').textContent, routines.MYSTERY_TRIP.story.title);
+  assert.ok(f.node('[data-conflict-action="argue"]'));
+  await f.node('[data-conflict-action="fight"]').dispatch('click');
+  await f.node('[data-conflict-style="steady"]').dispatch('click');
+  assert.equal(f.api.getConflictState().people[0].id, 'kind');
+  assert.equal(f.api.getConflictState().people[0].status, 'hospital');
+  assert.ok(f.node('#mystery-status').textContent.includes('醫院留觀'));
 });

@@ -8,11 +8,16 @@ import { ISLAND_CAST } from './cast.js';
 import { createIslandAdminSummary } from './admin-summary.js';
 import { PLACES, PLACE_BY_ID } from './places.js';
 import { getPersonRoutine, getIslandRoutine, MYSTERY_TRIP } from './routines.js';
+import { createIslandConflicts } from './conflicts.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
 const placesByDistrict = new Map(DISTRICTS.map(d => [d.id, PLACES.filter(place => place.districtId === d.id)]));
-const categoryNames = { department: '部門園區', shared: '共享空間', afterwork: '下班生活' };
+const categoryNames = { department: '部門園區', shared: '共享空間', afterwork: '下班生活', special: '島上另一面' };
+const conflicts = createIslandConflicts();
+let conflictState = conflicts.getState();
+const dispositionNames = { free: '自由散步', hospital: '醫院留觀', police: '警局做筆錄', exile: '流放冷凍中' };
+const dispositionOf = id => conflictState.people.find(person => person.id === id);
 const personaImage = id => displayPersona(id).image.replace(/^\.\//, '/');
 const mobile = matchMedia('(max-width: 780px)');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -53,11 +58,15 @@ let sceneUnavailable = false;
 const encounterById = new Map(ENCOUNTERS.map(item => [item.id, item]));
 
 function currentDistrict(id) {
+  const disposition = dispositionOf(id);
+  if (disposition) return disposition.districtId;
   return lifeAvailable ? lifeActors.get(`person:${id}`)?.districtId || getPersonRoutine(id, hour)?.districtId
     : getPersonRoutine(id, hour)?.districtId;
 }
 function peopleInDistrict(id) { return ISLAND_CAST.filter(person => currentDistrict(person.id) === id); }
 function personLocation(id) {
+  const disposition = dispositionOf(id);
+  if (disposition) return `${dispositionNames[disposition.status]} · ${PLACE_BY_ID.get(disposition.placeId)?.name}`;
   const actor = lifeAvailable ? lifeActors.get(`person:${id}`) : null, routine = getPersonRoutine(id, hour);
   const destination = PLACE_BY_ID.get(actor?.destinationPlaceId || routine?.placeId)?.name;
   if (!lifeAvailable) return `今日行程 · ${destination}`;
@@ -94,9 +103,9 @@ function syncProgress() {
   $('#passport-count').textContent = count;
   $('#passport-open').setAttribute('aria-label', `小島護照，已踏訪 ${count} 個園區`);
   $('#visited-filter-count').textContent = String(count).padStart(2, '0');
-  $('#progress-label').textContent = `${count} / 9`;
-  $('#mobile-progress').textContent = `${count} / 9 已踏訪`;
-  $('#progress-bar').style.width = `${count / 9 * 100}%`;
+  $('#progress-label').textContent = `${count} / ${DISTRICTS.length}`;
+  $('#mobile-progress').textContent = `${count} / ${DISTRICTS.length} 已踏訪`;
+  $('#progress-bar').style.width = `${count / DISTRICTS.length * 100}%`;
   $('#encounter-count').textContent = `本次散步 · ${encounterChoices.size} / ${ENCOUNTERS.length} 段偶遇`;
   $('#place-progress').textContent = `本次場所 ${placeVisits.size} / ${PLACES.length}`;
   document.querySelectorAll('.map-label').forEach(node => {
@@ -114,6 +123,9 @@ const iconPaths = {
   plaza: 'M4 20h16M6 20V10h12v10M3 10l9-6 9 6H3m6 2v6m6-6v6',
   court: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18m0 0v18M3 12h18M6 5q10 7 0 14M18 5q-10 7 0 14',
   harbor: 'M12 3v12M8 6h8M5 13v3q7 10 14 0v-3M3 21q3-2 6 0t6 0 6 0',
+  exile: 'M4 21V7h16v14M2 21h20M8 7V3h8v4M10 21v-6h4v6m-7-4h.1m10 0h.1',
+  hospital: 'M4 21V6h16v15M2 21h20M10 9h4m-2-2v4m-2 10v-6h4v6',
+  police: 'M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7l-9-4m0 5v8m-4-4h8',
 };
 function districtIcon(d) {
   const wrap = element('span', 'district-swatch');
@@ -140,7 +152,7 @@ function renderList() {
     })].join(' ').toLocaleLowerCase();
     return !query || text.includes(query);
   });
-  matches.sort((a, b) => ['department', 'shared', 'afterwork'].indexOf(a.category) - ['department', 'shared', 'afterwork'].indexOf(b.category));
+  matches.sort((a, b) => ['department', 'shared', 'afterwork', 'special'].indexOf(a.category) - ['department', 'shared', 'afterwork', 'special'].indexOf(b.category));
   for (const d of matches) {
     if (!query && (!list.lastElementChild || list.lastElementChild.dataset.category !== d.category)) {
       const heading = element('div', 'district-group-label', categoryNames[d.category]);
@@ -223,7 +235,7 @@ function updateNearby(target) {
   } else if (target.kind === 'person') {
     const encounter = encounterById.get(target.id);
     $('#nearby-name').textContent = displayPersona(target.id).name;
-    $('#nearby-greeting').textContent = target.id === MYSTERY_TRIP.hostId && getIslandRoutine(hour).trip ? MYSTERY_TRIP.invitation : actorActivity(lifeActors.get(`person:${target.id}`)) || encounter?.greeting;
+    $('#nearby-greeting').textContent = dispositionOf(target.id) ? personLocation(target.id) : target.id === MYSTERY_TRIP.hostId && getIslandRoutine(hour).trip ? MYSTERY_TRIP.invitation : actorActivity(lifeActors.get(`person:${target.id}`) || { id: target.id }) || encounter?.greeting;
     $('#interact-label').textContent = '聊聊';
   } else if (target.kind === 'place') {
     const place = PLACE_BY_ID.get(target.id);
@@ -236,6 +248,131 @@ function updateNearby(target) {
     $('#nearby-greeting').textContent = '已經走到門口了，進來聽一段日常。';
     $('#interact-label').textContent = '探索';
   }
+}
+function renderConflictStatus() {
+  const state = conflictState, root = $('#island-conflict-panel');
+  root.replaceChildren(); root.dataset.status = state.player.status;
+  root.append(element('span', 'eyebrow', 'ISLAND INCIDENTS'), element('h3', '', '你的島上狀態'));
+  root.append(element('strong', 'conflict-player-status', dispositionNames[state.player.status]));
+  if (state.player.status !== 'free') {
+    const place = PLACE_BY_ID.get(state.player.placeId);
+    root.append(element('p', '', `在${place.name}完成${state.player.status === 'hospital' ? '包紮與留觀' : state.player.status === 'police' ? '事情經過的筆錄' : '值班或冷宮點名'}，就能恢復一般活動。`));
+    const link = button('conflict-location-button', `前往${place.name}處理 →`, () => goToConflictPlace(place.id));
+    link.dataset.conflictPlayerPlace = place.id; root.append(link);
+  } else root.append(element('p', '', '和同事聊聊，也能選擇吵架或打架。每一次衝突，都會留下下一站。'));
+  if (state.people.length) {
+    const list = element('div', 'conflict-people');
+    for (const person of state.people) {
+      const link = button('', `${displayPersona(person.id).name} · ${dispositionNames[person.status]} ↗`, () => goToConflictPlace(person.placeId));
+      link.dataset.conflictPerson = person.id; list.append(link);
+    }
+    root.append(list);
+  }
+  const latest = state.history.at(-1);
+  if (latest) root.append(element('p', 'conflict-latest', `剛剛發生 · ${latest.title}`));
+}
+function syncConflicts() {
+  conflictState = conflicts.getState();
+  const actors = scene?.setDispositions?.(conflictState.people);
+  if (Array.isArray(actors)) updateIslandLife({ actors });
+  renderConflictStatus(); renderDistrictPeople(); renderList();
+  if ($('#cast-dialog').open) renderCastDirectory();
+  renderRoutineStatus();
+}
+function goToConflictPlace(placeId) {
+  if ($('#encounter-dialog').open) closeDialog($('#encounter-dialog'));
+  stopTour();
+  if (scene && !sceneUnavailable) {
+    setRoaming(true);
+    if (scene.sendPlayerToPlace?.(placeId) === false) toast('入口暫時有點擠，先從場所清單處理這段插曲。');
+  }
+  visitPlace(placeId);
+}
+function renderConflictResult(result) {
+  if (!result.ok) { toast(result.message); return; }
+  activeEncounter = null;
+  syncConflicts();
+  const player = conflictState.player;
+  if (player.status !== 'free' && scene && !sceneUnavailable) {
+    stopTour();
+    if (!roaming) setRoaming(true);
+    setSidebar(false);
+    const arrived = scene.sendPlayerToPlace?.(player.placeId) !== false;
+    if (arrived && !progress.visited.includes(player.districtId)) { progress.visited.push(player.districtId); save(); }
+    if (!arrived) toast('入口暫時有點擠，點下方場所繼續處理。');
+    syncProgress();
+  }
+  const content = $('#encounter-content'); content.replaceChildren();
+  $('#encounter-place').textContent = '島上插曲 · 事情已經發生';
+  const title = element('h2', '', result.title); title.id = 'encounter-title'; title.tabIndex = -1;
+  content.append(title, element('p', 'encounter-opening', result.description));
+  if (result.kind === 'fight') content.append(element('div', 'conflict-result-stamp', '一陣卡通煙塵過後，各自有了下一站。'));
+  if (player.status !== 'free') {
+    const place = PLACE_BY_ID.get(player.placeId);
+    content.append(element('p', 'conflict-outcome', `你：${dispositionNames[player.status]} · ${place.name}`));
+    const proceed = button('primary-button', `查看${place.name}，處理接下來的事 →`, () => goToConflictPlace(place.id));
+    proceed.dataset.conflictProceed = place.id; content.append(proceed);
+  }
+  for (const person of conflictState.people.filter(person => person.id === result.participantId)) {
+    content.append(element('p', 'conflict-outcome', `${displayPersona(person.id).name}：${dispositionNames[person.status]} · ${PLACE_BY_ID.get(person.placeId).name}`));
+  }
+  $('#encounter-leave').textContent = '先看看四周 →';
+  if (!$('#encounter-dialog').open) openDialog($('#encounter-dialog'));
+  updateWalking(); title.focus({ preventScroll: true });
+}
+function renderConflictMenu(id, kind) {
+  activeEncounter = { kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` };
+  const content = $('#encounter-content'); content.replaceChildren();
+  const persona = displayPersona(id), title = element('h2', '', kind === 'fight' ? `和${persona.name}起了衝突` : `和${persona.name}吵上幾句`);
+  title.id = 'encounter-title'; title.tabIndex = -1;
+  $('#encounter-place').textContent = '島上插曲 · 選擇你的做法';
+  content.append(title, element('p', 'encounter-opening', kind === 'fight' ? '剛才的火氣還沒散，兩個人已經站到一塊空地上。你打算怎麼應對？' : '話題愈說愈僵，旁邊的人慢慢放下茶杯。這句話，要現在說出口嗎？'));
+  const choices = element('div', 'story-choices conflict-choices');
+  if (kind === 'fight') for (const [style, label] of [['steady', '站穩腳步，正面應對'], ['swift', '抓準空檔，搶先一步'], ['bold', '氣勢拉滿，放手一搏']]) {
+    const action = button('', label, () => renderConflictResult(conflicts.fight(id, style)));
+    action.dataset.conflictStyle = style; choices.append(action);
+  } else {
+    const action = button('', '把不滿直接說出來', () => renderConflictResult(conflicts.argue(id)));
+    action.dataset.conflictArgue = id; choices.append(action);
+  }
+  choices.append(button('conflict-cancel', '算了，先繼續聊天', () => { renderEncounter(activeEncounter); updateWalking(); $('#encounter-title').tabIndex = -1; $('#encounter-title').focus(); }));
+  content.append(choices); $('#encounter-leave').textContent = '離開這場口角 →'; updateWalking(); title.focus();
+}
+function appendConflictActions(content, id) {
+  const disposition = dispositionOf(id), player = conflictState.player;
+  const area = element('section', 'conflict-actions');
+  if (disposition) {
+    area.append(element('p', '', `${displayPersona(id).name}正在${PLACE_BY_ID.get(disposition.placeId).name}，先把這段插曲收好。`));
+    area.append(button('', `去${PLACE_BY_ID.get(disposition.placeId).name}看看 →`, () => goToConflictPlace(disposition.placeId)));
+  } else if (player.status !== 'free') {
+    area.append(element('p', '', `你還有${dispositionNames[player.status]}的後續要處理。`));
+    area.append(button('', '先處理自己的下一站 →', () => goToConflictPlace(player.placeId)));
+  } else {
+    area.append(element('span', 'eyebrow', '話不投機，也有下一段'));
+    const argue = button('', '吵架', () => renderConflictMenu(id, 'argument')); argue.dataset.conflictAction = 'argue';
+    const fight = button('', '打架', () => renderConflictMenu(id, 'fight')); fight.dataset.conflictAction = 'fight';
+    area.append(argue, fight);
+  }
+  content.append(area);
+}
+function appendFacilityActions(content, placeId) {
+  const state = conflictState, player = state.player;
+  const exileFacilities = ['exile-gate', 'cold-palace'];
+  const ownTask = player.status !== 'free' && (player.placeId === placeId || player.status === 'exile' && exileFacilities.includes(placeId));
+  const people = state.people.filter(person => person.placeId === placeId);
+  if (!ownTask && !people.length) return;
+  const area = element('section', 'facility-actions'); area.append(element('h3', '', '把這段插曲處理完'));
+  if (ownTask) {
+    const label = player.status === 'hospital' ? '完成包紮與留觀，辦理出院' : player.status === 'police' ? '說明事情經過，完成筆錄' : placeId === 'cold-palace' ? '完成冷宮點名，解除冷凍' : '完成看門值班，解除冷凍';
+    const complete = button('primary-button', label, () => renderConflictResult(conflicts.recoverPlayer(placeId)));
+    complete.dataset.conflictRecover = placeId; area.append(complete);
+  }
+  for (const person of people) {
+    const label = person.status === 'hospital' ? '辦理出院' : person.status === 'police' ? '完成筆錄' : '解除冷凍';
+    const complete = button('', `陪${displayPersona(person.id).name}${label} →`, () => renderConflictResult(conflicts.releasePerson(person.id, placeId)));
+    complete.dataset.conflictRelease = person.id; area.append(complete);
+  }
+  content.append(area);
 }
 function renderEncounter(target) {
   activeEncounter = target;
@@ -253,8 +390,8 @@ function renderEncounter(target) {
     const portrait = element('img'); portrait.src = personaImage(speakerId); portrait.alt = '';
     speaker.append(portrait, element('strong', '', displayPersona(speakerId).name)); content.append(speaker);
     if (isPerson) {
-      content.append(element('p', 'encounter-routine', `${personLocation(target.id)} · ${actorActivity(lifeActors.get(`person:${target.id}`))}`));
-      if (target.id === MYSTERY_TRIP.hostId) content.append(button('mystery-inline', '聽聽阿良的晚間邀約 →', () => { renderEncounter({ kind: 'routine', id: MYSTERY_TRIP.placeId, districtId: currentDistrict(MYSTERY_TRIP.hostId) }); updateWalking(); $('#encounter-title').tabIndex = -1; $('#encounter-title').focus(); }));
+      content.append(element('p', 'encounter-routine', `${personLocation(target.id)} · ${actorActivity(lifeActors.get(`person:${target.id}`) || { id: target.id })}`));
+      if (target.id === MYSTERY_TRIP.hostId && !dispositionOf(target.id)) content.append(button('mystery-inline', '聽聽阿良的晚間邀約 →', () => { renderEncounter({ kind: 'routine', id: MYSTERY_TRIP.placeId, districtId: currentDistrict(MYSTERY_TRIP.hostId) }); updateWalking(); $('#encounter-title').tabIndex = -1; $('#encounter-title').focus(); }));
       content.append(element('p', 'encounter-memory-label', '聊起一段島上回憶'));
     } else content.append(element('p', 'encounter-routine', getIslandRoutine(hour).trip ? '今晚的集合正在進行，夥伴會從各處慢慢走來。' : '每日 19:00–20:00，在夜色碼頭集合。現在可以先聊聊晚上的安排。'));
   }
@@ -288,6 +425,8 @@ function renderEncounter(target) {
     content.append(choices);
     $('#encounter-leave').textContent = '先聊到這裡，繼續走走 →';
   }
+  if (isPerson || isRoutine) appendConflictActions(content, isRoutine ? MYSTERY_TRIP.hostId : target.id);
+  if (place) appendFacilityActions(content, place.id);
 }
 function renderResidentEncounter(target) {
   const resident = residentById.get(target.id);
@@ -317,7 +456,7 @@ function meetColleague(id) {
   const person = encounterById.get(id);
   if (!person) return;
   stopTour();
-  if (id === MYSTERY_TRIP.hostId && getIslandRoutine(hour).trip) { openMysteryInvitation(); return; }
+  if (id === MYSTERY_TRIP.hostId && getIslandRoutine(hour).trip && !dispositionOf(id)) { openMysteryInvitation(); return; }
   renderEncounter({ kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` });
   openDialog($('#encounter-dialog'));
 }
@@ -334,6 +473,8 @@ function visitPlace(id) {
   openDialog($('#encounter-dialog'));
 }
 function actorActivity(actor) {
+  const disposition = dispositionOf(actor?.id);
+  if (disposition) return dispositionNames[disposition.status];
   if (!lifeAvailable) return '在島上等你';
   if (actor?.state === 'talking') return '正在聊天';
   if (actor?.state === 'greeting') return '停下來打招呼';
@@ -347,11 +488,17 @@ function renderRoutineStatus() {
   $('#island-routine-description').textContent = routine.description;
   $('#mystery-status').textContent = routine.trip ? routine.trip.stage === 'stroll' ? '碼頭小旅行 · 跟阿良走一段' : '阿良正在揪團 · 夥伴陸續集合' : hour >= 20 ? '今晚已散場 · 下次 19:00 再約' : '晚間預告 · 19:00 夜色碼頭集合';
   $('#mystery-open').textContent = routine.trip ? '聽聽阿良的邀約 ↗' : '看看今晚的邀約 ↗';
+  const hostDisposition = dispositionOf(MYSTERY_TRIP.hostId);
+  if (hostDisposition) {
+    $('#mystery-status').textContent = `阿良目前${dispositionNames[hostDisposition.status]}，今晚先把行程放一放。`;
+    $('#mystery-open').textContent = '先去看看阿良 →';
+  }
   $('#time-flow').setAttribute('aria-pressed', String(clockRunning));
   $('#time-flow').disabled = reducedMotion.matches;
   $('#time-flow').textContent = reducedMotion.matches ? '減少動態 · 時間已停' : clockRunning && !paused ? '時間流動中 · 暫停' : '時間已停 · 播放';
 }
 function openMysteryInvitation() {
+  if (dispositionOf(MYSTERY_TRIP.hostId)) { meetColleague(MYSTERY_TRIP.hostId); return; }
   stopTour();
   renderEncounter({ kind: 'routine', id: MYSTERY_TRIP.placeId, districtId: currentDistrict(MYSTERY_TRIP.hostId), key: `person:${MYSTERY_TRIP.hostId}` });
   openDialog($('#encounter-dialog'));
@@ -425,7 +572,7 @@ function renderCastDirectory() {
     copy.append(element('h3', '', p.name), element('p', '', p.title));
     if (PLACE_BY_ID.has(workplaceId)) copy.append(element('span', 'cast-workplace', `工作據點 · ${PLACE_BY_ID.get(workplaceId).name}`));
     const location = element('span', 'cast-place', personLocation(id)); location.dataset.personLocation = id; copy.append(location);
-    const activity = element('span', 'cast-activity', actorActivity(lifeActors.get(`person:${id}`)));
+    const activity = element('span', 'cast-activity', actorActivity(lifeActors.get(`person:${id}`) || { id }));
     activity.dataset.personActivity = id;
     copy.append(activity);
     const actions = element('div', 'cast-actions');
@@ -482,7 +629,7 @@ function renderDetail(d) {
   const tags = element('div', 'detail-tags'); d.tags.forEach(t => tags.append(element('span', '', t)));
   hero.append(element('span', 'eyebrow', `${d.number} / ${d.kicker}`), title, tags);
   const units = element('section', 'district-places');
-  const unitHeading = element('h3', 'places-heading', d.category === 'department' ? '走進各個部門' : d.category === 'shared' ? '一起使用的空間' : '今晚，想怎麼過？');
+  const unitHeading = element('h3', 'places-heading', d.category === 'department' ? '走進各個部門' : d.category === 'shared' ? '一起使用的空間' : d.category === 'special' ? '在這裡，把事情處理完' : '今晚，想怎麼過？');
   units.append(unitHeading, element('p', 'places-description', '點選場所探索故事，也可以在地圖上找入口。'));
   for (const [index, place] of placesByDistrict.get(d.id).entries()) {
     const card = button('place-card', '', () => visitPlace(place.id));
@@ -538,7 +685,7 @@ function selectDistrict(id, { touring = false, moveFocus = true } = {}) {
   $('#island-sidebar').scrollTop = 0;
   if (!touring || !mobile.matches) setSidebar(true);
   history.replaceState(null, '', `#${id}`);
-  if (firstVisit) toast(progress.visited.length === 9 ? '九個島章集齊了。今日宜，準時下班！' : `已抵達 ${d.name} · 收下一枚島章`);
+  if (firstVisit) toast(progress.visited.length === DISTRICTS.length ? '所有島章集齊了。今天的小島，多了幾段故事。' : `已抵達 ${d.name} · 收下一枚島章`);
   if (moveFocus && !touring) $('#detail-title').focus({ preventScroll: true });
 }
 function wander() {
@@ -550,7 +697,7 @@ function wander() {
 function setHour(value) {
   hour = Math.min(23, Math.max(6, Number(value) || 12));
   const routine = getIslandRoutine(hour);
-  if (routine.phase === 'mystery' && lastRoutinePhase && lastRoutinePhase !== 'mystery') toast('阿良揪團了：到夜色碼頭集合，一起走一段！');
+  if (routine.phase === 'mystery' && !dispositionOf(MYSTERY_TRIP.hostId) && lastRoutinePhase && lastRoutinePhase !== 'mystery') toast('阿良揪團了：到夜色碼頭集合，一起走一段！');
   lastRoutinePhase = routine.phase;
   const minutes = Math.floor(hour * 60 + 1e-6), h = Math.floor(minutes / 60), m = minutes % 60;
   $('#time-output').textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
@@ -596,9 +743,9 @@ function renderPassport() {
     grid.append(stamp);
   }
   const memories = districtChoices.size + placeChoices.size;
-  $('#passport-message').textContent = progress.visited.length === 9
-    ? `九個園區都留下了你的足跡。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`
-    : `已踏訪 ${progress.visited.length} / 9 個園區。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`;
+  $('#passport-message').textContent = progress.visited.length === DISTRICTS.length
+    ? `十二個園區都留下了你的足跡。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`
+    : `已踏訪 ${progress.visited.length} / ${DISTRICTS.length} 個園區。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`;
 }
 function openDialog(dialog) { lastFocus = document.activeElement; dialog.showModal(); updateWalking(); }
 function restoreDialogFocus() {
@@ -700,7 +847,7 @@ window.addEventListener('pageshow', event => { if (event.persisted) location.rel
 
 const adminSummary = createIslandAdminSummary({ badge: $('#island-admin-pending') });
 const applications = bindApplications({ storage, openDialog, closeDialog, onResidents: updateResidents, onMeet: meetResident, stopTour, onChange: () => { void adminSummary.refresh(); } });
-renderList(); syncProgress(); updatePause(); setHour(hour); setSidebar(!mobile.matches);
+renderList(); syncProgress(); renderConflictStatus(); updatePause(); setHour(hour); setSidebar(!mobile.matches);
 // Test storage availability without touching the career game's keys.
 save();
 const initialId = location.hash.slice(1);
@@ -710,6 +857,7 @@ try {
   const { createIslandScene } = await import('./scene.js');
   scene = await createIslandScene({ container: $('#scene'), initialHour: hour, districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
   scene.setResidents(applications.getResidents());
+  scene.setDispositions?.(conflictState.people);
   $('#loading').hidden = true;
   $('#roam-toggle').disabled = false;
   setHour(hour); updatePause(); updateWalking(); scene.setConnections(connections); scene.setTopView(topView);

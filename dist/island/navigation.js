@@ -11,12 +11,16 @@ export const LAYOUT = [
   { id: 'plaza', x: 9.7, z: 1.3, color: '#c88b75', label: [0, 1.7, 3.5] },
   { id: 'court', x: .7, z: 10, color: '#729988', label: [0, 1.7, 3.4] },
   { id: 'harbor', x: 10.8, z: 10.5, color: '#d2af72', label: [0, 1.7, 3.5] },
+  { id: 'exile', x: -7.4, z: -18, color: '#9a9db8', label: [0, 1.7, 3.4] },
+  { id: 'hospital', x: 1.7, z: -18.5, color: '#d28483', label: [0, 1.7, 3.4] },
+  { id: 'police', x: 10.6, z: -17.8, color: '#738fae', label: [0, 1.7, 3.4] },
 ];
 export const LINKS = [
   ['lab', 'meeting'], ['meeting', 'finance'], ['lab', 'hr'],
   ['lab', 'lobby'], ['meeting', 'lobby'], ['finance', 'plaza'],
   ['hr', 'lobby'], ['hr', 'cafe'], ['lobby', 'plaza'],
   ['lobby', 'court'], ['cafe', 'court'], ['court', 'harbor'], ['plaza', 'harbor'],
+  ['lab', 'exile'], ['meeting', 'hospital'], ['finance', 'police'], ['exile', 'hospital'], ['hospital', 'police'],
 ];
 export const WALK_HEIGHT = 1.07;
 export const PLAYER_SPAWN = Object.freeze({ x: 0, z: 3.1 });
@@ -38,6 +42,8 @@ const placeEntrances = {
   'human-resources':['hr',-1.2,1.1], administration:['hr',.65,1.1], legal:['hr',-2.3,-.6],
   'meeting-rooms':['cafe',-2.35,-.65], pantry:['cafe',-.8,.85], 'welfare-committee':['cafe',.7,.85],
   'basketball-court':['court',0,2.5], izakaya:['harbor',1.6,1.2], 'aliang-mystery-trip':['harbor',2,2.65],
+  'exile-gate':['exile',1.8,1.35], 'cold-palace':['exile',-.65,.7],
+  'hospital-er':['hospital',0,1.35], 'police-desk':['police',0,1.25],
 };
 export const PLACE_ENTRANCES = Object.freeze(Object.fromEntries(Object.entries(placeEntrances)
   .map(([id,[districtId,x,z]])=>[id,Object.freeze(world(districtId,x,z))])));
@@ -146,6 +152,12 @@ const terrainObstacles = [
   { id: 'harbor', x: -.95, z: -.8, radius: 1.12 },
   { id: 'harbor', x: 1.65, z: .05, width: 1.45, depth: 1.35, rotation: -.15 },
   { id: 'harbor', x: 2.6, z: 1.95, width: .8, depth: .8 },
+  { id: 'exile', x: -.65, z: -.8, width: 2.15, depth: 1.9 },
+  { id: 'exile', x: 1.8, z: .15, width: .95, depth: .9 },
+  { id: 'hospital', x: -.3, z: -.5, width: 3.1, depth: 2.2 },
+  { id: 'hospital', x: 2.45, z: 1.3, width: .85, depth: 1.35 },
+  { id: 'police', x: -.25, z: -.5, width: 2.9, depth: 2.1 },
+  { id: 'police', x: 2.35, z: 1.4, width: .85, depth: 1.3 },
   ...[-2.15, 2.15].map(x => ({ id: 'court', x: x * Math.cos(-.06), z: -.3 - x * Math.sin(-.06), radius: .055 })),
 ].map(obstacle => ({ ...obstacle, ...world(obstacle.id, obstacle.x, obstacle.z) }));
 const castObstacles = Object.values(CAST_POSITIONS).map(position => ({ ...position, radius: CAST_RADIUS }));
@@ -241,4 +253,19 @@ export function nearestInteraction(position, targets, currentId = null) {
     if (currentDistance <= exit && !clearlyCloser) return current;
   }
   return nearest;
+}
+
+/** Emergency transport uses a clear landing outside the selected facility.
+ * Fail closed rather than putting the visitor inside another actor or wall. */
+export function findPlaceLanding(placeId, extraObstacles = [], options = { dynamicCharacters: true }) {
+  const entrance = PLACE_ENTRANCES[placeId];
+  if (!entrance || !Array.isArray(extraObstacles)) return null;
+  for (const radius of [0, .35, .55, .8, 1.1, 1.4, 1.7]) {
+    for (let index = 0; index < (radius ? 24 : 1); index++) {
+      const angle = index * Math.PI / 12;
+      const point = { x: entrance.x + Math.sin(angle) * radius, z: entrance.z + Math.cos(angle) * radius };
+      if (isWalkable(point, PLAYER_RADIUS, extraObstacles, options)) return point;
+    }
+  }
+  return null;
 }

@@ -10,7 +10,7 @@ import { RESIDENT_POSITIONS, RESIDENT_RADIUS } from '../dist/island/residents.js
 const distance = (a,b) => Math.hypot(a.x-b.x,a.z-b.z);
 const castTargets = ISLAND_CAST.map(({id,districtId}) => ({kind:'person',id,districtId,
   key:`person:${id}`,position:CAST_POSITIONS[id],radius:1.4}));
-const residentTargets = LAYOUT.flatMap(({id}) => RESIDENT_POSITIONS[id].map((position,slot) => ({
+const residentTargets = LAYOUT.flatMap(({id}) => (RESIDENT_POSITIONS[id]||[]).map((position,slot) => ({
   kind:'resident',key:`resident:${id}:${slot}`,position,radius:1.15,exitRadius:1.4,
 })));
 const occupied = residentTargets.map(({position}) => ({...position,radius:RESIDENT_RADIUS}));
@@ -51,10 +51,10 @@ test('all34 colleague conversations and all27 community conversations are reacha
     const cell=queue[head],position=point(cell.x,cell.z),selected=targets.find(target=>target.key===cell.current);
     if(selected&&selected.kind!=='building'&&distance(position,selected.position)<.9&&!approaches.has(selected.key))approaches.set(selected.key,cell);
     for(const district of LAYOUT)if(distance(position,DISTRICT_ENTRANCES[district.id])<.2)entrances.add(district.id);
-    if(approaches.size===castTargets.length+residentTargets.length&&entrances.size===9)break;
+    if(approaches.size===castTargets.length+residentTargets.length&&entrances.size===LAYOUT.length)break;
     for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
       const x=cell.x+dx,z=cell.z+dz,k=key(x,z);
-      if(parents.has(k)||Math.abs(x)>100||Math.abs(z)>110)continue;
+      if(parents.has(k)||Math.abs(x)>100||Math.abs(z)>165)continue;
       const destination=point(x,z);
       if(!usable.has(k))usable.set(k,isWalkable(destination,PLAYER_RADIUS,occupied));
       if(!usable.get(k))continue;
@@ -64,7 +64,7 @@ test('all34 colleague conversations and all27 community conversations are reacha
   }
   const missing=[...castTargets,...residentTargets].filter(target=>!approaches.has(target.key)).map(target=>target.key);
   assert.deepEqual(missing,[],'all named conversations own the proximity prompt on a reachable walking path');
-  assert.equal(entrances.size,9,'the complete cast does not close any district entrance');
+  assert.equal(entrances.size,LAYOUT.length,'the complete cast does not close any district entrance');
   for(const target of [...castTargets,...residentTargets]){
     const route=[];
     for(let cell=approaches.get(target.key);cell;cell=parents.get(key(cell.x,cell.z)))route.push(point(cell.x,cell.z));

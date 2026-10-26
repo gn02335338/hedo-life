@@ -8,7 +8,7 @@ import { OrbitControls } from './vendor/OrbitControls.js';
 import { mergeGeometries } from './vendor/BufferGeometryUtils.js';
 
 import { displayPersona } from '../persona.js';
-import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, PLACE_ENTRANCES, CAST_POSITIONS, PLAYER_RADIUS, isWalkable, movePlayer, nearestInteraction } from './navigation.js';
+import { LAYOUT, LINKS, WALK_HEIGHT, PLAYER_SPAWN, DISTRICT_ENTRANCES, PLACE_ENTRANCES, CAST_POSITIONS, PLAYER_RADIUS, isWalkable, movePlayer, nearestInteraction, findPlaceLanding } from './navigation.js';
 
 import { OUTFITS, RESIDENT_POSITIONS, normalizeResidents } from './residents.js';
 
@@ -47,7 +47,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   container.append(overlay);
 
   const camera = new THREE.OrthographicCamera(-24, 24, 24, -24, .1, 250);
-  const homeTarget = new THREE.Vector3(.4, 1, 1);
+  const homeTarget = new THREE.Vector3(.4, 1, -3.5);
   const homeOffset = new THREE.Vector3(34, 42, 42);
   camera.position.copy(homeTarget).add(homeOffset);
   camera.lookAt(homeTarget);
@@ -541,6 +541,90 @@ export async function createIslandScene({ container, districts = [], initialHour
 
   // District keepsakes sit on existing furniture, roofs or the decorative dock.
   // Nothing here adds a standing obstacle to the shared walking paths.
+
+  function exile(p) {
+    const palace=group(p,-.65,1.05,-.8);
+    box(palace,palette.cream,0,.07,0,2.45,.14,2.2);
+    box(palace,palette.lilac,0,.92,0,2.15,1.7,1.9);
+    roof(palace,palette.navy,0,1.87,0,2.47,2.17,.65);
+    for(const x of [-.68,.68]){
+      box(palace,palette.white,x,.97,.98,.38,.7,.045);
+      box(palace,palette.glass,x,1,.101+.9,.27,.51,.025);
+      box(palace,palette.white,x,.97,-.98,.38,.7,.045);
+    }
+    box(palace,palette.woodDark,0,.61,.98,.53,1.1,.055);
+    textSign(palace,'冷宮',0,1.55,1.02,1.15,.32,'#78809a');
+    const gate=group(p,1.8,1.05,.15);
+    box(gate,palette.teal,0,.62,0,.95,1.24,.9);
+    roof(gate,palette.navy,0,1.29,0,1.2,1.15,.4);
+    box(gate,palette.glass,0,.85,.47,.69,.42,.03);
+    box(gate,palette.woodLight,0,.4,.52,.75,.08,.24);
+    textSign(gate,'值班亭',0,1.19,.56,.9,.22,'#6d7d7e');
+    const clock=group(gate,0,.94,-.47);
+    cylinder(clock,palette.cream,0,0,0,.17,.04,12).rotation.x=Math.PI/2;
+    box(p, palette.navy,2.6,1.8,1.5,.065,1.5,.065);
+    box(p,palette.gold,2.6,2.25,1.5,.54,.1,.12);
+    bench(p,-2.5,1.5,.1);
+    const tea=group(p,-2.15,1.05,2.1);
+    cylinder(tea,palette.woodLight,0,.4,0,.35,.09,10);
+    cylinder(tea,palette.woodDark,0,.2,0,.045,.4,7);
+    cylinder(tea,palette.white,0,.52,0,.07,.16,8);
+    textSign(p,'流放島',-.8,1.65,2.8,1.75,.35,'#7b8195');
+  }
+  function hospital(p) {
+    const b=group(p,-.3,1.05,-.5);
+    box(b,palette.cream,0,.09,0,3.5,.18,2.6);
+    box(b,palette.white,0,1.37,0,3.1,2.55,2.2);
+    for(const x of [-1.05,1.05])for(const y of [.95,1.85])box(b,palette.glass,x,y,1.13,.52,.56,.04);
+    box(b,palette.pink,0,2.7,0,3.35,.18,2.45);
+    box(b,palette.white,0,.75,1.14,.8,1.3,.06);
+    box(b,palette.glass,0,.79,1.18,.62,1.12,.025);
+    box(b,palette.red,0,2.22,1.16,.64,.17,.055);
+    box(b,palette.red,0,2.22,1.17,.17,.64,.055);
+    box(b,palette.pink,0,1.55,1.5,1.5,.11,.72);
+    textSign(b,'急診室',0,1.73,1.54,1.2,.27,'#b77470');
+    const roofSign=group(b,0,3,-.25);
+    box(roofSign,palette.white,0,.12,0,1.2,.72,.13);
+    box(roofSign,palette.red,0,.12,.09,.5,.14,.04);
+    box(roofSign,palette.red,0,.12,.1,.14,.5,.04);
+    const car=group(p,2.45,1.08,1.3);
+    box(car,palette.white,0,.38,0,.85,.62,1.35);
+    box(car,palette.pink,0,.47,.7,.58,.14,.025);
+    box(car,palette.glass,0,.68,.44,.66,.28,.035);
+    box(car,palette.red,0,.75,-.3,.53,.09,.22);
+    for(const x of [-.45,.45])for(const z of [-.42,.42])ball(car,palette.charcoal,x,.16,z,.14,.5,1,1);
+    box(car,palette.red,-.44,.42,-.05,.03,.12,.4);
+    box(car,palette.red,-.45,.42,-.05,.03,.4,.12);
+    bench(p,-2.6,1.6,0);
+  }
+  function police(p) {
+    const b=group(p,-.25,1.05,-.5);
+    box(b,palette.cream,0,.09,0,3.3,.18,2.5);
+    box(b,palette.blue,0,1.02,0,2.9,1.9,2.1);
+    box(b,palette.navy,0,2.04,0,3.2,.22,2.4);
+    for(const x of [-.95,.95]){
+      box(b,palette.white,x,1.02,1.08,.64,.85,.05);
+      box(b,palette.glass,x,1.04,1.12,.47,.61,.025);
+    }
+    box(b,palette.navy,0,.7,1.08,.65,1.25,.065);
+    box(b,palette.glass,0,.8,1.13,.48,.86,.025);
+    box(b,palette.white,0,1.67,1.1,1.25,.4,.05);
+    textSign(b,'島上警局',0,1.69,1.15,1.18,.3,'#48667e');
+    const badge=mesh(b,geo(new THREE.CircleGeometry(.34,5)),palette.gold,0,2.49,.4);badge.rotation.z=Math.PI;
+    box(b,palette.white,0,2.49,.43,.27,.055,.025);
+    textSign(b,'筆錄室',0,1.27,1.21,.72,.21,'#55758a');
+    const car=group(p,2.35,1.08,1.4);
+    box(car,palette.white,0,.26,0,.85,.4,1.3);
+    box(car,palette.navy,0,.49,-.05,.78,.31,.75);
+    box(car,palette.glass,0,.51,.35,.6,.2,.025);
+    for(const x of [-.45,.45])for(const z of [-.42,.42])ball(car,palette.charcoal,x,.15,z,.14,.5,1,1);
+    box(car,palette.red,-.18,.69,0,.24,.1,.19);box(car,palette.blue,.18,.69,0,.24,.1,.19);
+    const flag=group(p,-2.45,1.05,1.5);
+    cylinder(flag,palette.navy,0,1,0,.035,2,7);
+    box(flag,palette.blue,.3,1.7,0,.6,.38,.025);
+    box(flag,palette.gold,.3,1.7,.02,.12,.12,.025);
+  }
+
   function districtKeepsakes(p,id) {
     if(id==='lobby'){
       for(let i=0;i<3;i++){box(p,palette.teal,.75,6.27,-1.02+i*.36,.29,.13,.26);ball(p,palette.leafLight,.75,6.42,-1.02+i*.36,.18,1,.7,1);}
@@ -619,8 +703,8 @@ export async function createIslandScene({ container, districts = [], initialHour
     for (const geometry of originals) { geometry.dispose(); allGeometries.delete(geometry); }
   }
 
-  const buildingFunctions = { lobby: office, lab: laboratory, meeting, hr: humanResources, finance, cafe, plaza, court, harbor };
-  const districtGround=['#bac994','#a6bfab','#c3bc9c','#c4c999','#b3c2ae','#c8bd99','#bdc89a','#9fbda4','#c8c4a0'];
+  const buildingFunctions = { lobby: office, lab: laboratory, meeting, hr: humanResources, finance, cafe, plaza, court, harbor, exile, hospital, police };
+  const districtGround=['#bac994','#a6bfab','#c3bc9c','#c4c999','#b3c2ae','#c8bd99','#bdc89a','#9fbda4','#c8c4a0','#c2c5c7','#b9c9ba','#b9c4c9'];
   for (let index = 0; index < LAYOUT.length; index++) {
     const config = LAYOUT[index];
     const tile = group(scene, config.x, 0, config.z);
@@ -920,10 +1004,10 @@ export async function createIslandScene({ container, districts = [], initialHour
     needsRender=true;
     const rect=container.getBoundingClientRect();width=Math.max(1,rect.width);height=Math.max(1,rect.height);
     const aspect=width/height;
-    baseView=aspect<.8?27:aspect<1.1?21.3:19.3;
+    baseView=aspect<.8?30:aspect<1.1?25:22.8;
     camera.left=-baseView*aspect;camera.right=baseView*aspect;camera.top=baseView;camera.bottom=-baseView;
     // On tall screens keep the entire archipelago within the horizontal frame.
-    if(aspect<.8){camera.left=-20.8;camera.right=20.8;camera.top=20.8/aspect;camera.bottom=-20.8/aspect;}
+    if(aspect<.8){camera.left=-23.8;camera.right=23.8;camera.top=23.8/aspect;camera.bottom=-23.8/aspect;}
     if(window.innerWidth>780&&!roaming){const dx=(camera.right-camera.left)*.04,dy=(camera.top-camera.bottom)*.02;camera.left-=dx;camera.right-=dx;camera.top-=dy;camera.bottom-=dy;}
     camera.updateProjectionMatrix();renderer.setSize(width,height,false);
   };
@@ -1031,6 +1115,23 @@ export async function createIslandScene({ container, districts = [], initialHour
       moveCamera(homeTarget,1,homeOffset);
     }
     updateNearby();onRoamChange(next);
+  }
+  function sendPlayerToPlace(placeId) {
+    if (destroyed || contextLost) return false;
+    const landing=findPlaceLanding(placeId,characterObstacles,dynamicNavigation);
+    if (!landing) return false;
+    playerPosition=landing;moveInput={x:0,z:0};nearby=null;focusedPerson=null;
+    setRoaming(true);standStill();
+    player.object.position.set(landing.x,WALK_HEIGHT,landing.z);
+    playerRing.position.set(landing.x,WALK_HEIGHT+.018,landing.z);
+    moveCamera(getFollowTarget().clone(),window.innerWidth<=780?3.15:2.65,homeOffset);
+    updateNearby();needsRender=true;
+    return true;
+  }
+  function setDispositions(rows) {
+    if(destroyed || contextLost) return [];
+    npcLife.setDispositions(rows);lastLifePublished=-Infinity;updateNpcLife(0);updateNearby();needsRender=true;
+    return lifeSnapshot.map(actor=>({...actor,position:{...actor.position}}));
   }
   function resetView() {
     if(roaming)setRoaming(false);
@@ -1247,6 +1348,8 @@ export async function createIslandScene({ container, districts = [], initialHour
     setMoveInput,
     setMovementEnabled,
     setResidents,
+    setDispositions,
+    sendPlayerToPlace,
     setConversationTarget,
     interactNearby(){return updateNearby();},
     setHour,

@@ -10,7 +10,19 @@ export const NPC_RESUME_DISTANCE = 2.7;
 export const NPC_COMMUTE_SPEED = 1.35;
 const MAX_STEP = .035;
 const districts = new Map(LAYOUT.map(row => [row.id, row]));
-const activities = { lobby: '看看總部公告', lab: '找開發靈感', meeting: '等一場分享', hr: '看看服務公告', finance: '在中庭歇腳', cafe: '到茶水間歇腳', plaza: '逛逛商務聚落', court: '場邊休息', harbor: '看看夜色碼頭' };
+const activities = { lobby: '看看總部公告', lab: '找開發靈感', meeting: '等一場分享', hr: '看看服務公告', finance: '在中庭歇腳', cafe: '到茶水間歇腳', plaza: '逛逛商務聚落', court: '場邊休息', harbor: '看看夜色碼頭', exile: '在流放島點名', hospital: '等候休養', police: '等候筆錄' };
+const consequenceLocations = {
+  hospital: { districtId: 'hospital', places: ['hospital-er'], activity: '在醫院休養', label: '送醫休養' },
+  police: { districtId: 'police', places: ['police-desk'], activity: '在警局做筆錄', label: '警局留置' },
+  exile: { districtId: 'exile', places: ['exile-gate', 'cold-palace'], activity: '在流放島等待復職', label: '冷凍流放中' },
+};
+function scheduledRoutine(id, hour, dispositions) {
+  const disposition = dispositions.get(id);
+  if (!disposition) return getPersonRoutine(id, hour);
+  const config = consequenceLocations[disposition.status];
+  return { phase: disposition.status, districtId: disposition.districtId, placeId: disposition.placeId,
+    activity: config.activity, label: config.label, timeLabel: '完成手續後返回' };
+}
 const finite = p => p && Number.isFinite(p.x) && Number.isFinite(p.z);
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const seedOf = text => { let value = 2166136261; for (const char of text) value = Math.imul(value ^ char.codePointAt(0), 16777619); return value >>> 0; };
@@ -29,15 +41,15 @@ function makeAgent(kind, id, districtId, home, slot = null) {
   return { key, kind, id, districtId, slot, home: { ...home }, position: { ...home, y: npcGroundHeight(home) }, radius: kind === 'person' ? CAST_RADIUS : RESIDENT_RADIUS, seed,
     heading: (seed % 628) / 100, state: 'resting', activity: activities[districtId], greeting: false, target: null,
     wait: .35 + (seed % 3000) / 1000, blocked: 0, visits: 0, speed: .34 + (seed % 220) / 1000,
-    points: patrolPoints(home, districtId), routine: null, destination: { ...home }, traveling: false, commuting: false, path: [], routeDelay: 0, yieldTarget: null };
+    points: patrolPoints(home, districtId), routine: null, disposition: null, destination: { ...home }, traveling: false, commuting: false, path: [], routeDelay: 0, yieldTarget: null };
 }
 const residentHomes = Object.entries(RESIDENT_POSITIONS).flatMap(([districtId, points]) => points.map(point => ({ ...point, districtId })));
 /** Assign separate resting spots before a trip; reserve public entrances and
  * community arrival slots so a large department never forms a solid doorway. */
-function assignDestinations(hour, fixed = new Map()) {
+function assignDestinations(hour, fixed = new Map(), dispositions = new Map()) {
   const assignments = new Map(), reserved = [...fixed.values()];
   for (const person of ISLAND_CAST) {
-    const routine = getPersonRoutine(person.id, hour), target = PLACE_ENTRANCES[routine.placeId];
+    const routine = scheduledRoutine(person.id, hour, dispositions), target = PLACE_ENTRANCES[routine.placeId];
     if (fixed.has(person.id)) { assignments.set(person.id, { routine, position: fixed.get(person.id) }); continue; }
     const points = districtGround(routine.districtId).filter(point => residentHomes.every(home => distance(point, home) > .95)
       && Object.values(PLACE_ENTRANCES).every(entrance => distance(point, entrance) > .9));
@@ -61,6 +73,7 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     agent.routine = routine; agents.set(agent.key, agent);
   }
   let conversation = null, frame = 0, visitor = null, visitorVisible = false;
+  let dispositions = new Map();
   const bridgeLocks = new Map();
   const free = (point, agent, player = null) => {
     for (const other of agents.values()) if (other !== agent && distance(point, other.position) < agent.radius + other.radius + ROUTE_GAP - 1e-8) return false;
@@ -69,18 +82,19 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
   const state = () => [...agents.values()].map(agent => ({ key: agent.key, kind: agent.kind, id: agent.id, districtId: agent.districtId,
     position: { ...agent.position }, heading: agent.heading, state: agent.state, activity: agent.activity,
     routine: agent.routine ? { ...agent.routine } : null,
+    disposition: agent.disposition ? { ...agent.disposition } : null,
     destinationDistrictId: agent.routine?.districtId ?? agent.districtId,
     destinationPlaceId: agent.routine?.placeId ?? null, traveling: agent.traveling }));
   function setHour(value) {
     if (!Number.isFinite(Number(value))) return state();
     currentHour = ((Number(value) % 24) + 24) % 24;
     const people = [...agents.values()].filter(agent => agent.kind === 'person');
-    if (people.every(agent => getPersonRoutine(agent.id, currentHour).placeId === agent.routine.placeId)) {
-      for (const agent of people) agent.routine = getPersonRoutine(agent.id, currentHour);
+    if (people.every(agent => scheduledRoutine(agent.id, currentHour, dispositions).placeId === agent.routine.placeId)) {
+      for (const agent of people) agent.routine = scheduledRoutine(agent.id, currentHour, dispositions);
       return state();
     }
-    const fixed = new Map([...agents.values()].filter(agent => agent.kind === 'person' && getPersonRoutine(agent.id, currentHour).placeId === agent.routine.placeId).map(agent => [agent.id, agent.destination]));
-    const next = assignDestinations(currentHour, fixed);
+    const fixed = new Map([...agents.values()].filter(agent => agent.kind === 'person' && scheduledRoutine(agent.id, currentHour, dispositions).placeId === agent.routine.placeId).map(agent => [agent.id, agent.destination]));
+    const next = assignDestinations(currentHour, fixed, dispositions);
     for (const agent of agents.values()) if (agent.kind === 'person') {
       const { routine, position } = next.get(agent.id), changed = routine.placeId !== agent.routine.placeId;
       agent.routine = routine;
@@ -90,10 +104,63 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     }
     return state();
   }
+  /** Emergency transfers are explicit. Timetable changes and release still walk.
+   * Plan a whole batch before moving anyone, keeping entrances and bodies clear. */
+  function setDispositions(rows = []) {
+    if (!Array.isArray(rows) || rows.length > ISLAND_CAST.length) return state();
+    const next = new Map();
+    for (const row of rows) {
+      const config = row && Object.hasOwn(consequenceLocations, row.status) ? consequenceLocations[row.status] : null;
+      const actor = row && agents.get(`person:${row.id}`);
+      if (!actor || !config || config.districtId !== row.districtId || !config.places.includes(row.placeId)
+        || PLACE_BY_ID.get(row.placeId)?.districtId !== row.districtId || next.has(row.id)) return state();
+      next.set(row.id, { status: row.status, placeId: row.placeId, districtId: row.districtId });
+    }
+    const people = [...agents.values()].filter(agent => agent.kind === 'person');
+    const same = (a, b) => a?.status === b?.status && a?.placeId === b?.placeId && a?.districtId === b?.districtId;
+    const transfers = people.filter(agent => next.has(agent.id) && !same(agent.disposition, next.get(agent.id)));
+    const transferring = new Set(transfers.map(agent => agent.key)), landings = new Map();
+    for (const agent of transfers) {
+      const disposition = next.get(agent.id), entrance = PLACE_ENTRANCES[disposition.placeId];
+      const options = [...districtGround(disposition.districtId)]
+        .filter(point => publicEntrances.every(entry => distance(point, entry) > .9))
+        .sort((a, b) => distance(a, entrance) - distance(b, entrance));
+      const landing = options.find(point => [...agents.values()].every(other => other === agent || transferring.has(other.key)
+          || distance(point, other.position) >= agent.radius + other.radius + ROUTE_GAP - 1e-8)
+        && [...landings.values()].every(other => distance(point, other) >= agent.radius + CAST_RADIUS + ROUTE_GAP - 1e-8)
+        && (!visitorVisible || !finite(visitor) || distance(point, visitor) >= agent.radius + PLAYER_RADIUS + ROUTE_GAP - 1e-8));
+      if (!landing) return state();
+      landings.set(agent.id, { ...landing });
+    }
+    const fixed = new Map(people.filter(agent => same(agent.disposition, next.get(agent.id))).map(agent => [agent.id, agent.destination]));
+    for (const [id, point] of landings) fixed.set(id, point);
+    const assignments = assignDestinations(currentHour, fixed, next);
+    dispositions = next;
+    for (const agent of people) {
+      const previous = agent.disposition, disposition = next.get(agent.id) || null;
+      if (same(previous, disposition)) continue;
+      agent.disposition = disposition;
+      const { routine, position } = assignments.get(agent.id);
+      agent.routine = routine; agent.destination = { ...position }; agent.target = null; agent.path = [];
+      agent.yieldTarget = null; agent.greeting = false; agent.blocked = 0; agent.routeDelay = 0; agent.wait = 0;
+      for (const [bridge, owner] of bridgeLocks) if (owner === agent.key) bridgeLocks.delete(bridge);
+      if (disposition) {
+        agent.position = { ...position, y: npcGroundHeight(position) }; agent.home = { ...position };
+        agent.districtId = disposition.districtId; agent.points = patrolPoints(position, disposition.districtId);
+        agent.traveling = false; agent.commuting = false; agent.state = 'resting'; agent.activity = routine.activity;
+        agent.wait = 1.4;
+      } else {
+        // Released colleagues resume the current routine from their real position.
+        agent.traveling = true; agent.commuting = false; agent.state = 'resting';
+        agent.activity = `準備前往${PLACE_BY_ID.get(routine.placeId).name}`;
+      }
+    }
+    return state();
+  }
   function setResidents(rows = []) {
     const accepted = new Map(), slots = new Set();
     for (const row of Array.isArray(rows) ? rows.slice(0, 27) : []) {
-      if (!row || typeof row.id !== 'string' || !row.id || !districts.has(row.districtId) || !Number.isInteger(row.slot) || row.slot < 0 || row.slot > 2) continue;
+      if (!row || typeof row.id !== 'string' || !row.id || !RESIDENT_POSITIONS[row.districtId] || !Number.isInteger(row.slot) || row.slot < 0 || row.slot > 2) continue;
       const key = `resident:${row.id}`, slot = `${row.districtId}:${row.slot}`;
       if (accepted.has(key) || slots.has(slot)) continue;
       accepted.set(key, row); slots.add(slot);
@@ -237,6 +304,6 @@ export function createNpcLife({ residents = [], hour = 12 } = {}) {
     return state();
   }
   setResidents(residents);
-  return { update, getState: state, setResidents, setConversationTarget, setHour,
+  return { update, getState: state, setResidents, setConversationTarget, setHour, setDispositions,
     getObstacles: () => [...agents.values()].map(agent => ({ ...agent.position, radius: agent.radius, key: agent.key })) };
 }

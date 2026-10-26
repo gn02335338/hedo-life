@@ -136,6 +136,49 @@ export const DISTRICTS = [
     },
     related: ['court', 'lobby'],
   },
+  {
+    id: 'exile', number: '10', name: '流放島', category: 'special', kicker: 'A QUIETER CORNER OF THE ISLAND',
+    summary: '被冷凍的日子，先到看門值班亭報到；冷宮裡也留著重新出發的位置。', color: '#9a9db8',
+    people: [], tags: ['看門值班亭', '冷宮', '流放', '冷凍'], time: '10:30',
+    story: {
+      title: '沒有訪客的訪客簿',
+      opening: '橋的另一頭掛著「流放島」木牌。看門值班亭裡有一張椅子，冷宮的窗邊有一壺熱茶。訪客簿上寫著：「今天也請記得，冷凍不代表你整個人都結冰了。」',
+      choices: [
+        { label: '先去值班亭看看今天的安排', response: '值班表只有一行：「替經過的人留一盞燈。」你把燈打開，空白的下午多了一件做得完的小事。' },
+        { label: '到冷宮窗邊坐一下', response: '窗外看得到原本的部門，茶杯還是溫的。你慢慢整理剛才的話，決定回去時只帶走真正需要說清楚的那一句。' },
+        { label: '替訪客簿補一句歡迎', response: '你寫下「路過也可以來喝茶」。第一個來的人不是主管，是一隻把腳印蓋得很整齊的海鳥。' },
+      ],
+    }, related: ['lab', 'hospital'],
+  },
+  {
+    id: 'hospital', number: '11', name: '移動醫院', category: 'special', kicker: 'TAKE A BREATH, GET SOME REST',
+    summary: '急診室先處理擦傷與瘀青，等人恢復精神，再談下一步。', color: '#d28483',
+    people: [], tags: ['急診室', '醫院', '包紮', '休養'], time: '15:00',
+    story: {
+      title: '號碼牌也想休息',
+      opening: '移動醫院的急診室亮著柔和的燈。櫃台提醒先坐下，號碼牌背面還印著「今天不必趕進度」。走廊的水壺咕嚕一聲，彷彿替大家鬆了一口氣。',
+      choices: [
+        { label: '先坐好，等護理人員叫號', response: '你把肩膀放鬆，終於聽得見自己的呼吸。叫號響起時，不必再跟另一個人比誰先站起來。' },
+        { label: '替等候的人倒一杯水', response: '紙杯排成一列，等候室安靜下來。有人小聲說謝謝，這是今天最容易聽懂的一句回應。' },
+        { label: '替號碼牌畫一個深呼吸符號', response: '你畫了兩個慢慢展開的括號。旁邊的人跟著吸氣、吐氣，連號碼機都像是放慢了一拍。' },
+      ],
+    }, related: ['meeting', 'police'],
+  },
+  {
+    id: 'police', number: '12', name: '島上警局', category: 'special', kicker: 'TELL THE STORY ONE SENTENCE AT A TIME',
+    summary: '把剛才的衝突寫進筆錄，先讓每個人把一句話說完。', color: '#738fae',
+    people: [], tags: ['筆錄室', '警局', '筆錄', '冷靜'], time: '16:30',
+    story: {
+      title: '先把驚嘆號放下',
+      opening: '島上警局的接待桌擺著兩支筆，一支寫得很順，另一支專門借給一直指著別人的手。筆錄室門上貼著「輪流說話」，後面還有一張小紙：「也記得聽。」',
+      choices: [
+        { label: '依照事情的順序說清楚', response: '你把事情拆成三段，原本混在一起的火氣和經過終於分開。紙上多了一份能好好讀完的紀錄。' },
+        { label: '先聽對方把一句話說完', response: '等對方說完，你發現有一段剛才根本沒聽見。筆錄多補了一行，聲音也降了一點。' },
+        { label: '替筆錄室的筆安排休息座位', response: '你把兩支筆並排放好，說它們今天已經跑過很多圈。櫃台笑了一下，接著把真正該填的欄位指給你看。' },
+      ],
+    }, related: ['finance', 'hospital'],
+  },
+
 ];
 
 export const TOUR = [

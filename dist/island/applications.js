@@ -136,7 +136,7 @@ export function bindApplications({ storage, openDialog, closeDialog, onResidents
     finally { rosterBusy = false; if (!disposed) { $('#residents-refresh').disabled = false; if (rosterQueued) { rosterQueued = false; void loadResidents(); } } }
   }
   const open = () => { stopTour(); openDialog(dialog); void refreshMine(); };
-  for (const district of DISTRICTS) { const option = node('option', '', district.name); option.value = district.id; form.elements.namedItem('districtId').append(option); }
+  for (const district of DISTRICTS.filter(district => district.category !== 'special')) { const option = node('option', '', district.name); option.value = district.id; form.elements.namedItem('districtId').append(option); }
   for (const outfit of OUTFITS) {
     const label = node('label'), input = node('input'); input.type = 'radio'; input.name = 'outfit'; input.value = outfit.id; input.checked = input.defaultChecked = outfit.id === 'teal'; input.required = true;
     const choice = node('span', 'outfit-option'), dot = node('span', 'outfit-dot'); dot.style.setProperty('--outfit', outfit.color); choice.append(dot, document.createTextNode(outfit.label)); label.append(input, choice); $('#application-outfits').append(label);

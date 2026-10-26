@@ -8,15 +8,15 @@ import {
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const close = (actual, expected, message) => assert.ok(Math.abs(actual - expected) < 1e-8, `${message}: ${actual} != ${expected}`);
 
-test('walking world has nine districts, safe entrances and connected physical bridges', () => {
-  assert.equal(LAYOUT.length, 9);
-  assert.equal(LINKS.length, 13);
+test('walking world has twelve districts, safe entrances and connected physical bridges', () => {
+  assert.equal(LAYOUT.length, 12);
+  assert.equal(LINKS.length, 18);
   assert.equal(WALK_HEIGHT, 1.07);
   assert.equal(PLAYER_RADIUS, .22);
   assert.ok(isWalkable(PLAYER_SPAWN));
   for (const district of LAYOUT) {
     assert.ok(isWalkable(DISTRICT_ENTRANCES[district.id]), `${district.id}: entrance`);
-    assert.ok(!isWalkable(NPC_POSITIONS[district.id]), `${district.id}: colleague has a solid footprint`);
+    if(NPC_POSITIONS[district.id])assert.ok(!isWalkable(NPC_POSITIONS[district.id]), `${district.id}: colleague has a solid footprint`);
   }
   for (const bridge of BRIDGES) {
     for (let i = 0; i <= 40; i++) {
@@ -84,20 +84,20 @@ test('every entrance and colleague can be reached from spawn through walkable ro
     const cell = queue[head], position = point(cell.x, cell.z);
     for (const district of LAYOUT) {
       if (!nearest.has(district.id) && distance(position, DISTRICT_ENTRANCES[district.id]) < .15) nearest.set(district.id, cell);
-      const gap = distance(position, NPC_POSITIONS[district.id]);
+      const gap = NPC_POSITIONS[district.id] ? distance(position, NPC_POSITIONS[district.id]) : Infinity;
       if (gap > .43 && gap < .8) npcApproaches.add(district.id);
     }
-    if (nearest.size === 9 && npcApproaches.size === 9) break;
+    if (nearest.size === LAYOUT.length && npcApproaches.size === Object.keys(NPC_POSITIONS).length) break;
     for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
       const nx = cell.x + dx, nz = cell.z + dz, nextKey = key(nx, nz);
-      if (parents.has(nextKey) || Math.abs(nx) > 90 || Math.abs(nz) > 100) continue;
+      if (parents.has(nextKey) || Math.abs(nx) > 90 || Math.abs(nz) > 155) continue;
       if (!usable.has(nextKey)) usable.set(nextKey, isWalkable(point(nx, nz)));
       if (!usable.get(nextKey)) continue;
       parents.set(nextKey, cell); queue.push({ x: nx, z: nz });
     }
   }
-  assert.equal(nearest.size, 9, `reachable entrances: ${[...nearest.keys()].join(', ')}`);
-  assert.equal(npcApproaches.size, 9, `reachable colleagues: ${[...npcApproaches].join(', ')}`);
+  assert.equal(nearest.size, LAYOUT.length, `reachable entrances: ${[...nearest.keys()].join(', ')}`);
+  assert.equal(npcApproaches.size, Object.keys(NPC_POSITIONS).length, `reachable colleagues: ${[...npcApproaches].join(', ')}`);
   for (const [id, end] of nearest) {
     const route = [];
     for (let cell = end; cell; cell = parents.get(key(cell.x, cell.z))) route.push(point(cell.x, cell.z));

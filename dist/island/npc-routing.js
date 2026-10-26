@@ -2,7 +2,12 @@ import { LAYOUT, BRIDGES, CAST_RADIUS, PLAYER_RADIUS, WALK_HEIGHT, isTerrainWalk
 
 export const ROUTE_GAP = .025;
 const PLANNING_RADIUS = CAST_RADIUS + ROUTE_GAP + .01;
-const STEP = .2, MIN_X = -15, MIN_Z = -14, WIDTH = 158, HEIGHT = 148;
+const STEP = .2;
+// Include the complete map so released colleagues can leave northern facilities.
+const MIN_X = Math.floor((Math.min(...LAYOUT.map(row => row.x)) - 5) / STEP) * STEP;
+const MIN_Z = Math.floor((Math.min(...LAYOUT.map(row => row.z)) - 5) / STEP) * STEP;
+const WIDTH = Math.ceil((Math.max(...LAYOUT.map(row => row.x)) + 5 - MIN_X) / STEP) + 1;
+const HEIGHT = Math.ceil((Math.max(...LAYOUT.map(row => row.z)) + 5 - MIN_Z) / STEP) + 1;
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 export const ROUTE_BRIDGES = BRIDGES.map((bridge, index) => {
   const half = bridge.length / 2 + .75, dx = Math.sin(bridge.rotation) * half, dz = Math.cos(bridge.rotation) * half;

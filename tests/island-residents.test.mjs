@@ -5,7 +5,7 @@ import { LAYOUT, BRIDGES, PLAYER_RADIUS, PLAYER_SPAWN, NPC_POSITIONS, DISTRICT_E
 
 const id = n => `00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const resident = (n=1,overrides={}) => ({id:id(n),nickname:`島民${n}`,districtId:'lobby',outfit:'teal',greeting:'一起散步吧。',introduction:'喜歡在小島散步，與大家分享平凡的日常。',slot:0,...overrides});
-const roster = () => LAYOUT.flatMap((district,index)=>[0,1,2].map(slot=>resident(index*3+slot+1,{districtId:district.id,slot,outfit:OUTFITS[(index+slot)%OUTFITS.length].id})));
+const roster = () => LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITIONS, district.id)).flatMap((district,index)=>[0,1,2].map(slot=>resident(index*3+slot+1,{districtId:district.id,slot,outfit:OUTFITS[(index+slot)%OUTFITS.length].id})));
 const payload = residents => ({version:1,residents});
 const distance = (a,b) => Math.hypot(a.x-b.x,a.z-b.z);
 
@@ -52,7 +52,7 @@ test('all27 resident slots, built-in colleagues and every bridge remain approach
   const residents=normalizeResidents(payload(roster())),extra=residentObstacles(residents);
   assert.ok(isWalkable(PLAYER_SPAWN,PLAYER_RADIUS,extra));
   const targets=residents.map(row=>({...row,kind:'resident',key:`resident:${row.id}`,position:RESIDENT_POSITIONS[row.districtId][row.slot],radius:1.15,exitRadius:1.4}));
-  const builtin=LAYOUT.flatMap(d=>[{key:`building:${d.id}`,position:DISTRICT_ENTRANCES[d.id],radius:1.25},{key:`person:${d.id}`,position:NPC_POSITIONS[d.id],radius:1.4}]);
+  const builtin=LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITIONS, district.id)).flatMap(d=>[{key:`building:${d.id}`,position:DISTRICT_ENTRANCES[d.id],radius:1.25},{key:`person:${d.id}`,position:NPC_POSITIONS[d.id],radius:1.4}]);
   for(const target of targets){assert.ok(isWalkable(target.position),`${target.districtId}/${target.slot}: exterior ground`);assert.equal(isWalkable(target.position,PLAYER_RADIUS,extra),false);}
   for(const bridge of BRIDGES)for(let i=0;i<=40;i++){
     const along=(i/40-.5)*(bridge.length+.8),point={x:bridge.x+Math.sin(bridge.rotation)*along,z:bridge.z+Math.cos(bridge.rotation)*along};
@@ -64,7 +64,7 @@ test('all27 resident slots, built-in colleagues and every bridge remain approach
     const cell=queue[head],position=point(cell.x,cell.z);
     const selected=nearestInteraction(position,[...builtin,...targets]);
     if(selected?.kind==='resident'&&distance(position,selected.position)<.85)approaches.set(selected.key,cell);
-    for(const district of LAYOUT){
+    for(const district of LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITIONS, district.id))){
       if(distance(position,NPC_POSITIONS[district.id])<.8)colleagues.add(district.id);
       if(distance(position,DISTRICT_ENTRANCES[district.id])<.2)entrances.add(district.id);
     }

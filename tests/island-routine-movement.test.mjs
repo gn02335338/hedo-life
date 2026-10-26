@@ -1,3 +1,4 @@
+import { RESIDENT_POSITIONS } from '../dist/island/residents.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createNpcLife, NPC_COMMUTE_SPEED } from '../dist/island/npc-life.js';
@@ -6,7 +7,7 @@ import { LAYOUT, PLACE_ENTRANCES, isTerrainWalkable } from '../dist/island/navig
 import { PLACE_BY_ID } from '../dist/island/places.js';
 import { MYSTERY_TRIP } from '../dist/island/routines.js';
 import { npcGroundHeight, findNpcRoute, sweptRoute, routeWalkable } from '../dist/island/npc-routing.js';
-const fullRoster = () => LAYOUT.flatMap(({ id: districtId }) => [0, 1, 2].map(slot => ({ id: `${districtId}-${slot}`, districtId, slot })));
+const fullRoster = () => LAYOUT.filter(district => Object.hasOwn(RESIDENT_POSITIONS, district.id)).flatMap(({ id: districtId }) => [0, 1, 2].map(slot => ({ id: `${districtId}-${slot}`, districtId, slot })));
 const gap = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const positions = life => life.getState().map(row => [row.key, row.position]);
 function assertSeparated(rows) {

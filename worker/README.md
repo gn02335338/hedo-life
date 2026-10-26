@@ -1041,9 +1041,10 @@ credential, personal-data field or database migration.
 ## The Moving Island static experience
 
 `/island/` is served from `dist/island/` through the existing static asset binding.
-It is a standalone original 3D miniature with nine stable districts, grouped into
-departments, shared spaces and after-work areas. There are 23 independently
-explorable places (69 choices), nine district stories (27 choices), a six-stop
+It is a standalone original 3D miniature with the original nine stable districts plus three special
+districts: exile, hospital and police. The original departments, shared spaces
+and after-work areas remain. There are 27 independently
+explorable places (81 choices), twelve district stories (36 choices), a six-stop
 day tour, and all 34 current public colleagues (102 encounter choices).
 Walking uses connected bridges, reachable place entries and a controllable visitor.
 The roster matches `PERSONAS`, includes Alice, and assigns each colleague a department,
@@ -1108,6 +1109,26 @@ After `npm start`, open `http://127.0.0.1:4173/island/`. Run the island checks w
 `node --test tests/island-*.test.mjs`, and
 the repository checks with `npm test` and `npm run build:check`.
 
+
+## Island conflicts and temporary dispositions
+
+The island-only conflict model lets visitors argue or fight with the 34 authored
+colleagues. Fight choices resolve only after selection: the loser is transferred
+to `hospital-er`, and the winner to `police-desk`. Arguments with the two fictional
+bosses may transfer the visitor to `exile-gate` or `cold-palace`. Explicit incident
+transfers use collision-safe landings; ordinary schedules still move by walking.
+Active NPC dispositions override daily routines and cannot be cleared by changing
+the island clock. Facility actions release the visitor or the specific colleague;
+released colleagues walk back to their current scheduled destination.
+
+All incident state, bounded history and holds live only in page memory. Reloading
+ends the session. No identity, saved career, server replay, leaderboard, HTTP API,
+secret, database table or deployment binding changes. New districts can earn
+passport visits in the existing version-1 browser record, while the original nine
+district IDs and saved choices remain intact. Applications, review and approved
+resident slots stay limited to the original nine districts and 27 total slots;
+medical/police/exile locations are not available as community residences. The
+non-WebGL list also provides all incident choices, status and recovery actions.
 
 ## Island applications and approved residents
 
