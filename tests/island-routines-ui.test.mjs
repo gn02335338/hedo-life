@@ -352,6 +352,8 @@ test('fallback exposes incident recovery and a held Aliang does not pretend to l
   assert.equal(f.api.getConflictState().people[0].status, 'police');
   assert.equal(f.calls.filter(call => call.method === 'sendPlayerToPlace').length, 0, 'fallback does not claim a physical transfer rendered on a map');
   f.api.setHour(19.25);
+  assert.ok(f.node('#island-routine-title').textContent.includes('先等阿良一下'));
+  assert.ok(!f.node('#island-routine-description').textContent.includes('阿良與夥伴正前往'));
   await f.node('#mystery-open').dispatch('click');
   assert.notEqual(f.node('#encounter-title').textContent, routines.MYSTERY_TRIP.story.title);
   assert.ok(f.node('#encounter-content').textContent.includes('警局做筆錄'));

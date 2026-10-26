@@ -490,6 +490,10 @@ function renderRoutineStatus() {
   $('#mystery-open').textContent = routine.trip ? '聽聽阿良的邀約 ↗' : '看看今晚的邀約 ↗';
   const hostDisposition = dispositionOf(MYSTERY_TRIP.hostId);
   if (hostDisposition) {
+    if (routine.trip) {
+      $('#island-routine-title').textContent = '今晚的行程，先等阿良一下';
+      $('#island-routine-description').textContent = `夥伴仍照原訂行程到夜色碼頭，阿良正在${dispositionNames[hostDisposition.status]}。可以先去看看他。`;
+    }
     $('#mystery-status').textContent = `阿良目前${dispositionNames[hostDisposition.status]}，今晚先把行程放一放。`;
     $('#mystery-open').textContent = '先去看看阿良 →';
   }
