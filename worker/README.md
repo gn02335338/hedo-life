@@ -1038,7 +1038,7 @@ All changes use existing anonymous proof endpoints. Per-run leaderboard entries
 retain owner isolation, idempotency and server-derived scores. There is no new
 credential, personal-data field or database migration.
 
-## Hedo Island static experience
+## The Moving Island static experience
 
 `/island/` is served from `dist/island/` through the existing static asset binding.
 It is a standalone original 3D miniature with nine stable districts, grouped into

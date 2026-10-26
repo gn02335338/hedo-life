@@ -1,5 +1,5 @@
 /**
- * Original procedural 禾多島 scene. Three.js 0.180.0 is vendored locally (MIT).
+ * Original procedural 移動島 scene. Three.js 0.180.0 is vendored locally (MIT).
  * All buildings, characters, boats and terrain are constructed here; no models,
  * textures, scripts or other assets from the reference website are distributed.
  */
@@ -22,7 +22,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
   } catch {
-    throw new Error('此裝置目前無法啟用 3D 地圖，仍可從地點清單探索禾多島。');
+    throw new Error('此裝置目前無法啟用 3D 地圖，仍可從地點清單探索移動島。');
   }
   const scene = new THREE.Scene();
   const daySea = new THREE.Color('#8fc6c2');
@@ -36,7 +36,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.27;
   renderer.domElement.className = 'island-canvas';
-  renderer.domElement.setAttribute('aria-label', '禾多島互動立體地圖，可拖曳旋轉、捲動縮放，或用地點按鈕探索。');
+  renderer.domElement.setAttribute('aria-label', '移動島互動立體地圖，可拖曳旋轉、捲動縮放，或用地點按鈕探索。');
   renderer.domElement.setAttribute('role', 'img');
   renderer.domElement.tabIndex = 0;
   renderer.domElement.style.touchAction = 'none';
@@ -1012,7 +1012,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   function setRoaming(value) {
     const next=Boolean(value);if(next===roaming)return;
     roaming=next;moveInput={x:0,z:0};standStill();needsRender=true;resize();
-    renderer.domElement.setAttribute('aria-label',next?'禾多島散步地圖。以 W A S D、方向鍵或畫面方向按鈕移動，靠近入口或同事後按 E 或空白鍵互動。可拖曳旋轉、捲動縮放，Home 回到全島。':'禾多島互動立體地圖，可拖曳旋轉、捲動縮放，或用地點按鈕探索。');
+    renderer.domElement.setAttribute('aria-label',next?'移動島散步地圖。以 W A S D、方向鍵或畫面方向按鈕移動，靠近入口或同事後按 E 或空白鍵互動。可拖曳旋轉、捲動縮放，Home 回到全島。':'移動島互動立體地圖，可拖曳旋轉、捲動縮放，或用地點按鈕探索。');
     player.object.visible=next;playerRing.visible=next;
     playerMarker.style.display=next?'':'none';
     controls.enablePan=!next;
