@@ -11,11 +11,12 @@ import { getPersonRoutine, getIslandRoutine, MYSTERY_TRIP } from './routines.js'
 import { createIslandConflicts } from './conflicts.js';
 import { createIslandChallenge } from './challenge.js';
 import { REGIONS, DOCKS, getRegionForDistrict } from './archipelago.js';
+import { ONEIRA_PORT, getOneiraArrival } from './friend-islands.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
 const placesByDistrict = new Map(DISTRICTS.map(d => [d.id, PLACES.filter(place => place.districtId === d.id)]));
-const categoryNames = { department: '部門園區', shared: '共享空間', afterwork: '下班生活', special: '島上另一面' };
+const categoryNames = { department: '部門園區', shared: '共享空間', afterwork: '下班生活', special: '島上另一面', project: '友好專案' };
 const conflicts = createIslandConflicts();
 let conflictState = conflicts.getState();
 const dispositionNames = { free: '自由散步', hospital: '醫院留觀', police: '警局做筆錄', exile: '流放冷凍中' };
@@ -28,7 +29,12 @@ try { storage = window.localStorage; } catch { /* Browsing remains available. */
 let progress = readProgress(storage);
 const challenge = createIslandChallenge({ storage });
 const displayPersona = id => displayIslandPersona(id, { revealHidden: !!challenge.getState().hidden });
-let currentRegion = 'company';
+const oneiraArrival = getOneiraArrival(location.search, location.hash);
+let currentRegion = oneiraArrival ? oneiraArrival.from : 'company';
+if (oneiraArrival) {
+  const params = new URLSearchParams(location.search); params.delete('from');
+  history.replaceState(null, '', location.pathname + (params.size ? `?${params}` : ''));
+}
 let pendingTravel = null;
 let activeVoyage = null;
 let sceneReady = false;
@@ -102,6 +108,18 @@ function button(className, text, action) {
   node.type = 'button';
   node.addEventListener('click', action);
   return node;
+}
+function oneiraGateway() {
+  const card = element('section', 'project-port');
+  const link = element('a', 'project-port-link', '走進 Oneira 官網 →');
+  link.href = ONEIRA_PORT.harborUrl;
+  link.referrerPolicy = 'no-referrer';
+  link.dataset.projectPort = ONEIRA_PORT.id;
+  card.append(element('span', 'eyebrow', 'ONEIRA · 想像成真的地方'),
+    element('h3', '', '好點子，從另一座島開始。'),
+    element('p', '', '到官網發現開源工具與創作者作品，也能從那裡搭船回移動島。'), link,
+    element('small', 'project-port-domain', 'oneirahub.com'));
+  return card;
 }
 function toast(text) {
   clearTimeout(toastTimer);
@@ -318,6 +336,7 @@ const iconPaths = {
   exile: 'M4 21V7h16v14M2 21h20M8 7V3h8v4M10 21v-6h4v6m-7-4h.1m10 0h.1',
   hospital: 'M4 21V6h16v15M2 21h20M10 9h4m-2-2v4m-2 10v-6h4v6',
   police: 'M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7l-9-4m0 5v8m-4-4h8',
+  oneira: 'm12 3 2.3 5.7L20 11l-5.7 2.3L12 19l-2.3-5.7L4 11l5.7-2.3L12 3m6 14 1.2 2.8L22 21l-2.8 1.2',
 };
 function districtIcon(d) {
   const wrap = element('span', 'district-swatch');
@@ -344,7 +363,7 @@ function renderList() {
     })].join(' ').toLocaleLowerCase();
     return !query || text.includes(query);
   });
-  matches.sort((a, b) => ['department', 'shared', 'afterwork', 'special'].indexOf(a.category) - ['department', 'shared', 'afterwork', 'special'].indexOf(b.category));
+  matches.sort((a, b) => ['department', 'shared', 'afterwork', 'special', 'project'].indexOf(a.category) - ['department', 'shared', 'afterwork', 'special', 'project'].indexOf(b.category));
   for (const d of matches) {
     if (!query && (!list.lastElementChild || list.lastElementChild.dataset.category !== d.category)) {
       const heading = element('div', 'district-group-label', categoryNames[d.category]);
@@ -675,6 +694,7 @@ function renderEncounter(target) {
   }
   const title = element('h2', '', story.title); title.id = 'encounter-title';
   content.append(title, element('p', 'encounter-opening', story.opening));
+  if (place?.id === ONEIRA_PORT.placeId) content.append(oneiraGateway());
   const choicesMap = isRoutine ? routineChoices : isPerson ? encounterChoices : place ? placeChoices : districtChoices;
   const choiceKey = isRoutine || isPerson || place ? target.id : district.id;
   const selected = choicesMap.get(choiceKey);
@@ -798,7 +818,7 @@ function renderDistrictPeople() {
   if (!activeId) return;
   const list = $('#detail-people'); if (!list) return;
   const people = peopleInDistrict(activeId), signature = people.map(person => person.id).join(',');
-  $('#detail-people-title').textContent = lifeAvailable ? '此刻，在這個園區' : '這個時段的行程';
+  $('#detail-people-title').textContent = activeId === ONEIRA_PORT.id ? '在靈感島，慢慢走' : lifeAvailable ? '此刻，在這個園區' : '這個時段的行程';
   if (list.dataset.roster === signature) return;
   const focusedId = document.activeElement?.dataset?.personId;
   list.dataset.roster = signature; list.replaceChildren();
@@ -810,7 +830,7 @@ function renderDistrictPeople() {
     chip.append(portrait, element('span', '', persona.name)); list.append(chip);
     if (id === focusedId) chip.focus({ preventScroll: true });
   }
-  if (!people.length) list.append(element('p', 'people-empty', '大家暫時到別處走走了，從人物名冊看看他們在哪裡。'));
+  if (!people.length) list.append(element('p', 'people-empty', activeId === ONEIRA_PORT.id ? '從航站走進 Oneira，或去開源靈感館坐坐；下一個好點子，也許就在這趟旅行裡。' : '大家暫時到別處走走了，從人物名冊看看他們在哪裡。'));
 }
 function renderLifeStatus() {
   const actors = [...lifeActors.values()];
@@ -926,7 +946,7 @@ function renderDetail(d) {
   const tags = element('div', 'detail-tags'); d.tags.forEach(t => tags.append(element('span', '', t)));
   hero.append(element('span', 'eyebrow', `${d.number} / ${d.kicker}`), title, tags);
   const units = element('section', 'district-places');
-  const unitHeading = element('h3', 'places-heading', d.category === 'department' ? '走進各個部門' : d.category === 'shared' ? '一起使用的空間' : d.category === 'special' ? '在這裡，把事情處理完' : '今晚，想怎麼過？');
+  const unitHeading = element('h3', 'places-heading', d.category === 'department' ? '走進各個部門' : d.category === 'shared' ? '一起使用的空間' : d.category === 'special' ? '在這裡，把事情處理完' : d.category === 'project' ? '讓靈感靠岸' : '今晚，想怎麼過？');
   units.append(unitHeading, element('p', 'places-description', '點選場所探索故事，也可以在地圖上找入口。'));
   for (const [index, place] of placesByDistrict.get(d.id).entries()) {
     const card = button('place-card', '', () => visitPlace(place.id));
@@ -964,7 +984,9 @@ function renderDetail(d) {
   }
   const related = element('div', 'related-list');
   d.related.forEach(id => related.append(button('', `${byId.get(id).name} ↗`, () => selectDistrict(id))));
-  detail.append(back, hero, element('p', 'detail-summary', d.summary), units, peopleTitle, people, story, element('h3', 'related-title', '順路，再去看看'), related, element('p', 'detail-stamp', `✓ ${d.number} 號島章已蓋進小島護照`));
+  detail.append(back, hero);
+  if (d.id === ONEIRA_PORT.id) detail.append(oneiraGateway());
+  detail.append(element('p', 'detail-summary', d.summary), units, peopleTitle, people, story, element('h3', 'related-title', '順路，再去看看'), related, element('p', 'detail-stamp', `✓ ${d.number} 號島章已蓋進小島護照`));
   renderDistrictPeople();
 }
 function selectDistrict(id, { touring = false, moveFocus = true } = {}) {
@@ -1044,7 +1066,7 @@ function renderPassport() {
   }
   const memories = districtChoices.size + placeChoices.size;
   $('#passport-message').textContent = progress.visited.length === DISTRICTS.length
-    ? `十二個園區都留下了你的足跡。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`
+    ? `${DISTRICTS.length} 個園區都留下了你的足跡。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`
     : `已踏訪 ${progress.visited.length} / ${DISTRICTS.length} 個園區。本次探索 ${placeVisits.size} / ${PLACES.length} 個場所，收下 ${memories} 段新日常。`;
 }
 function openDialog(dialog) { lastFocus = document.activeElement; dialog.showModal(); updateWalking(); }
@@ -1186,7 +1208,7 @@ const inviteCode = new URLSearchParams(location.search).get('duel');
 if (inviteCode) void openPvp(inviteCode.slice(0, 64));
 try {
   const { createIslandScene } = await import('./scene.js');
-  scene = await createIslandScene({ container: $('#scene'), initialHour: hour, districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onSelectDock: regionId => { if (regionId === currentRegion) openFerry(); }, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
+  scene = await createIslandScene({ container: $('#scene'), initialHour: hour, initialRegion: currentRegion, districts: DISTRICTS, onSelect: id => roaming ? interactNearby() : selectDistrict(id), onSelectPlace: visitPlace, onSelectDock: regionId => { if (regionId === currentRegion) openFerry(); }, onNearby: updateNearby, onRoamChange: syncRoaming, onLifeUpdate: updateIslandLife });
   sceneReady = true;
   if ($('#ferry-dialog').open) renderFerry();
   scene.setResidents(applications.getResidents());
@@ -1197,6 +1219,7 @@ try {
   if (focusedPlaceId) scene.focusPlace(focusedPlaceId);
   else if (activeId) scene.focus(activeId);
   syncProgress();
+  if (oneiraArrival) void sailTo(oneiraArrival.to);
   $('#scene').addEventListener('webglcontextlost', () => {
     syncRoaming(false); $('#roam-toggle').disabled = true; $('#explore-start').disabled = true;
     $('#map-fallback').hidden = false;
@@ -1211,4 +1234,5 @@ try {
   $('#roam-toggle').disabled = true; $('#explore-start').disabled = true;
   document.querySelectorAll('.map-controls button,.zoom-controls button').forEach(node => { node.disabled = true; });
   console.warn('Island map unavailable:', error instanceof Error ? error.message : 'renderer initialization failed');
+  if (oneiraArrival) void sailTo(oneiraArrival.to);
 }

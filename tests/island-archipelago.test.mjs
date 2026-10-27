@@ -6,10 +6,10 @@ import { findNpcRoute } from '../dist/island/npc-routing.js';
 import { createNpcLife } from '../dist/island/npc-life.js';
 const gap=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 
-test('the original twelve district identities form three sea regions with only local walking bridges',()=>{
-  assert.deepEqual(Object.keys(REGIONS),['company','life','exile']);
+test('the original twelve districts and Oneira form four sea regions with only local walking bridges',()=>{
+  assert.deepEqual(Object.keys(REGIONS),['company','life','exile','oneira']);
   assert.deepEqual(Object.values(REGIONS).flatMap(region=>region.districts).sort(),LAYOUT.map(d=>d.id).sort());
-  assert.equal(REGIONS.company.districts.length,7);assert.equal(REGIONS.life.districts.length,4);assert.deepEqual(REGIONS.exile.districts,['exile']);
+  assert.equal(REGIONS.company.districts.length,7);assert.equal(REGIONS.life.districts.length,4);assert.deepEqual(REGIONS.exile.districts,['exile']);assert.deepEqual(REGIONS.oneira.districts,['oneira']);
   assert.equal(getRegionForDistrict('__proto__'),null);
   for(const [a,b]of LINKS)assert.equal(getRegionForDistrict(a),getRegionForDistrict(b),`${a}/${b}: no bridge over the open sea`);
   for(const region of Object.values(REGIONS)){
@@ -21,6 +21,8 @@ test('the original twelve district identities form three sea regions with only l
   for(const a of LAYOUT)for(const b of LAYOUT)if(getRegionForDistrict(a.id)!==getRegionForDistrict(b.id))assert.ok(gap(a,b)>35,'separate regions have open water between their shores');
   assert.equal(findNpcRoute(PLACE_ENTRANCES.pantry,PLACE_ENTRANCES.izakaya),null);
   assert.equal(findNpcRoute(PLACE_ENTRANCES.izakaya,PLACE_ENTRANCES['cold-palace']),null);
+  assert.equal(findNpcRoute(PLACE_ENTRANCES.pantry,PLACE_ENTRANCES['oneira-hub']),null);
+  assert.equal(findNpcRoute(PLACE_ENTRANCES['oneira-hub'],PLACE_ENTRANCES['cold-palace']),null);
 });
 
 test('ferry routes depart and arrive at distinct ports and sail through open water in either direction',()=>{

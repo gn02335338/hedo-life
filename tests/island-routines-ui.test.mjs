@@ -12,6 +12,7 @@ import * as routines from '../dist/island/routines.js';
 import { createIslandConflicts } from '../dist/island/conflicts.js';
 import { createIslandChallenge, CHALLENGE_STORAGE_KEY } from '../dist/island/challenge.js';
 import { getRegionForDistrict, REGIONS, DOCKS } from '../dist/island/archipelago.js';
+import { ONEIRA_PORT, getOneiraArrival } from '../dist/island/friend-islands.js';
 
 // Execute the real app controller against a small DOM, replacing only renderer,
 // network and timers. This exercises user-visible controls and event handlers;
@@ -169,14 +170,14 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
     });
   };
   scene.destroy = () => { calls.push({ method: 'destroy', args: [] }); for (const voyage of voyages) voyage.settle(false); };
-  const createIslandScene = async config => { if (fallback) throw new Error('intentional renderer unavailable'); onLifeUpdate = config.onLifeUpdate; onSelectDock = config.onSelectDock; document.querySelector('#scene').append(document.createElement('canvas')); return scene; };
+  const createIslandScene = async config => { if (fallback) throw new Error('intentional renderer unavailable'); onLifeUpdate = config.onLifeUpdate; onSelectDock = config.onSelectDock; sceneRegion = config.initialRegion || 'company'; calls.push({ method: 'initialRegion', args: [sceneRegion] }); document.querySelector('#scene').append(document.createElement('canvas')); return scene; };
   const media = query => Object.assign(new Surface(), { matches: query.includes('reduced-motion') && reducedMotion });
   const location = { pathname: '/island/', search: initialSearch, hash: initialHash, reload() {} };
   const history = { replaceState: (_state, _unused, path) => { const url = new URL(path, 'https://island.test' + location.pathname + location.search + location.hash); location.search = url.search; location.hash = url.hash; } };
   const context = vm.createContext({
     createIslandConflicts: () => createIslandConflicts({ random: conflictRandom }),
     ...routines, DISTRICTS, TOUR, PLACES, PLACE_BY_ID, ISLAND_CAST, ENCOUNTERS, displayPersona, displayIslandPersona, readProgress, writeProgress,
-    createIslandChallenge, getRegionForDistrict, REGIONS, DOCKS,
+    createIslandChallenge, getRegionForDistrict, REGIONS, DOCKS, ONEIRA_PORT, getOneiraArrival,
     document, window, URLSearchParams, matchMedia: media, history, location, createIslandScene, mountIslandBrawl, brawlImportWait, mountIslandPvp, pvpImportWait,
     bindWalkControls: () => ({ clear() {}, destroy() {} }), bindApplications: () => ({ getResidents: () => [] }),
     createIslandAdminSummary: () => ({ refresh: async () => {} }), residentAvatar: () => document.createElement('span'),
@@ -733,9 +734,95 @@ test('a free ordinary fight keeps its consequences separate from the story win l
   assert.ok(!f.writes.some(key => key.startsWith(CHALLENGE_STORAGE_KEY)));
 });
 
+test('Oneira return links start at its port and wait for a real ferry arrival without sharing identity or career data', async () => {
+  const f = await fixture({ initialSearch: '?from=oneira', initialHash: '#oneira', sailDeferred: true });
+  assert.equal(f.calls.find(call => call.method === 'initialRegion').args[0], 'oneira');
+  assert.equal(f.api.getTravelState().currentRegion, 'oneira');
+  assert.equal(f.api.getTravelState().activeVoyage, true);
+  assert.deepEqual(f.voyages.map(voyage => voyage.regionId), ['company']);
+  assert.equal(f.node('#voyage-from').textContent, REGIONS.oneira.name);
+  assert.equal(f.node('#voyage-to').textContent, REGIONS.company.name);
+  assert.deepEqual([...f.api.getVisited()], ['lobby'], 'the voyage does not claim a visit before landing');
+  assert.equal(f.location.search, '');
+  assert.equal(f.location.hash, '', 'the return marker is consumed before normal location links');
+  assert.equal(f.node('#ferry-dialog').open, false, 'the explicit Oneira return link already chose the incoming voyage');
+  f.resolveSail(true); await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.api.getTravelState().currentRegion, 'company');
+  assert.equal(f.api.getTravelState().activeVoyage, false);
+  assert.ok(f.api.getVisited().includes('cafe'));
+  assert.ok(!f.api.getVisited().includes('oneira'), 'an origin marker does not invent an explored project island');
+  assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+  assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+  assert.ok(f.writes.every(key => key === 'hedo-island-v1'));
+});
+
+test('ordinary, duplicate or unrelated location markers do not auto-board an incoming Oneira ferry', async () => {
+  for (const [initialSearch, initialHash] of [
+    ['', '#oneira'], ['?from=other', '#oneira'],
+    ['?from=oneira&from=oneira', '#oneira'], ['?from=oneira', '#oneira-hub'],
+    ['?from=oneira&duel=ABCD2345', '#oneira'],
+  ]) {
+    const f = await fixture({ initialSearch, initialHash, sailDeferred: true });
+    assert.equal(f.api.getTravelState().currentRegion, 'company', `${initialSearch}${initialHash}`);
+    assert.equal(f.api.getTravelState().activeVoyage, false);
+    assert.equal(f.voyages.length, 0, 'only the exact return link chooses an automatic crossing');
+    assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+    assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+  }
+});
+
+test('an interrupted incoming Oneira ferry stays at its origin and cannot grant a company visit', async () => {
+  for (const stop of ['false', 'reject', 'pagehide']) {
+    const f = await fixture({ initialSearch: '?from=oneira', initialHash: '#oneira', sailDeferred: true });
+    const passport = f.bytes.get('hedo-island-v1');
+    if (stop === 'false') f.resolveSail(false);
+    else if (stop === 'reject') f.rejectSail();
+    else await f.window.dispatch('pagehide');
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(f.api.getTravelState().currentRegion, 'oneira', stop);
+    assert.equal(f.api.getTravelState().activeVoyage, false, stop);
+    assert.equal(f.bytes.get('hedo-island-v1'), passport);
+    assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+    assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+  }
+});
+
+test('the non-WebGL Oneira return keeps the fixed crossing and lands at the company port', async () => {
+  const f = await fixture({ fallback: true, initialSearch: '?from=oneira', initialHash: '#oneira' });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.api.getTravelState().currentRegion, 'company');
+  assert.equal(f.api.getTravelState().activeVoyage, false);
+  assert.equal(f.voyages.length, 0, 'fallback does not pretend a renderer performed a voyage');
+  assert.ok(f.api.getVisited().includes('cafe'));
+  assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+  assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+});
+
+test('Oneira website links appear only after local arrival and use the fixed public harbor address', async () => {
+  const f = await fixture({ initialSearch: '?redirect=https%3A%2F%2Fevil.example%2F&token=TEST_IDENTITY', sailDeferred: true });
+  const projectLinks = () => f.document.querySelectorAll('a').filter(link => link.dataset.projectPort === 'oneira');
+  assert.equal(projectLinks().length, 0);
+  f.api.visitPlace('oneira-hub');
+  assert.equal(f.node('#ferry-dialog').open, true);
+  assert.equal(projectLinks().length, 0, 'a remote place request is not an external navigation');
+  assert.equal(f.voyages.length, 0);
+  const sailing = f.node('[data-sail-region="oneira"]').dispatch('click');
+  assert.equal(projectLinks().length, 0, 'the project website remains behind the arrival gate');
+  f.resolveSail(true); await sailing;
+  assert.equal(f.api.getTravelState().currentRegion, 'oneira');
+  assert.ok(projectLinks().length >= 1);
+  for (const link of projectLinks()) {
+    assert.equal(link.href, ONEIRA_PORT.harborUrl);
+    assert.ok(!link.href.includes('TEST_IDENTITY') && !link.href.includes('evil.example'));
+  }
+  assert.equal(f.voyages.length, 1, 'a normal anchor is left for the visitor to choose explicitly');
+  assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+  assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+});
+
 test('each arrived island dock opens boarding without sailing, while stale remote markers and mid-voyage clicks are ignored', async () => {
   const f = await fixture({ sailDeferred: true });
-  const journey = ['company', 'life', 'exile'];
+  const journey = ['company', 'life', 'exile', 'oneira', 'company'];
   for (const [index, regionId] of journey.entries()) {
     const progress = [...f.bytes], voyages = f.voyages.length;
     assert.equal(f.api.getTravelState().currentRegion, regionId);

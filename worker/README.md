@@ -1041,23 +1041,37 @@ credential, personal-data field or database migration.
 ## The Moving Island static experience
 
 `/island/` is served from `dist/island/` through the existing static asset binding.
-It is a standalone original 3D archipelago with three sea regions: the company
-island, after-work life island and remote exile island. The company region has
+It is a standalone original 3D archipelago with four sea regions: the company
+island, after-work life island, remote exile island and Oneira friend island. The company region has
 seven department/shared districts; the court, harbor, hospital and police are
 on the life island, while exile has its own distant shore. All original nine
-district identities plus the three special districts remain stable. There are 27 independently
-explorable places (81 choices), twelve district stories (36 choices), a six-stop
+district identities plus the three special districts remain stable. There are 29 independently
+explorable places (87 choices), thirteen district stories (39 choices), a six-stop
 day tour, and all 34 current public colleagues (102 encounter choices).
 Walking uses connected paths and bridges within each island, reachable place
 entries and a controllable visitor. No inter-island walking surface exists.
 Each shore has a visible timber terminal, sheltered waiting area, destination
 signs and a moored ferry. Current-island dock labels open the ferry menu in
 overview; while walking they become usable within boarding range, independently
-of nearby NPC priority. The header ferry control and three dock interactions
+of nearby NPC priority. The header ferry control and four dock interactions
 share the same departure, voyage and arrival flow. District/place hashes, directory locations, tours and
 incident destinations require arrival before opening remote content; the
 non-WebGL list retains this flow. A failed voyage leaves the visitor on the
 original island. Region and transit state are session-only.
+
+Oneira is a separate fourth island with its own dock, original creative campus
+and open-source pavilion. Its two places use the `project` category and add no
+official colleague schedules or residency slots. After arriving, explicit links
+open only `https://oneirahub.com/harbor?from=moving-island`. The other site offers
+the fixed return link `https://hodo.bvivify.com/island/?from=oneira#oneira`.
+`friend-islands.js` accepts that public source marker only once, with its matching
+hash and no duel invitation. The renderer starts at the Oneira dock and plays
+the normal local ferry to the company dock before opening its
+content. Failure remains on Oneira; the non-WebGL flow retains the same arrival
+gate. The consumed source/hash are removed, so reloading does not replay the
+return. No credentials, career proof, player storage or arbitrary redirect URL
+are passed between projects. Existing archive, worker, migrations and residency
+API schema stay unchanged.
 The roster matches `PERSONAS`, includes Alice, and assigns each colleague a department,
 staggered pantry breaks and a court or izakaya destination after 18:00. At 19:00,
 Aliang (`kind`) invites Jack, Cindy, James and Johnny to the harbor; they stroll

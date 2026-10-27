@@ -21,11 +21,11 @@ const fullCampusBodies = [
 test('special districts have their own four facilities while original community slots stay in their nine districts', () => {
   assert.deepEqual(DISTRICTS.filter(d => d.category === 'special').map(d => d.id), ['exile', 'hospital', 'police']);
   assert.deepEqual(PLACES.filter(p => p.category === 'special').map(p => p.id), specialPlaces);
-  assert.equal(LAYOUT.length, 12);
-  assert.equal(PLACES.length, 27);
+  assert.equal(LAYOUT.length, 13);
+  assert.equal(PLACES.length, 29);
   assert.equal(Object.keys(RESIDENT_POSITIONS).length, 9);
   assert.equal(Object.values(RESIDENT_POSITIONS).flat().length, 27);
-  for (const id of ['exile', 'hospital', 'police']) assert.equal(Object.hasOwn(RESIDENT_POSITIONS,id), false);
+  for (const id of ['exile', 'hospital', 'police', 'oneira']) assert.equal(Object.hasOwn(RESIDENT_POSITIONS,id), false);
   for (const placeId of specialPlaces) {
     const place=PLACES.find(p => p.id===placeId), landing=findPlaceLanding(placeId,fullCampusBodies,dynamic);
     assert.ok(landing, placeId);

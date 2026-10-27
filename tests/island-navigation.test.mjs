@@ -11,8 +11,8 @@ import { walkRegionTargets } from './island-region-walking.mjs';
 const distance = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 const close = (actual, expected, message) => assert.ok(Math.abs(actual - expected) < 1e-8, `${message}: ${actual} != ${expected}`);
 
-test('walking world has twelve districts, safe entrances and connected physical bridges', () => {
-  assert.equal(LAYOUT.length, 12);
+test('walking world has thirteen districts, safe entrances and connected physical bridges', () => {
+  assert.equal(LAYOUT.length, 13);
   assert.equal(LINKS.length, 14);
   assert.equal(WALK_HEIGHT, 1.07);
   assert.equal(PLAYER_RADIUS, .22);
