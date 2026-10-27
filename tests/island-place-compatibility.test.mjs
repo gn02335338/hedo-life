@@ -22,10 +22,10 @@ const request = districtId => ({
 });
 
 test('renamed districts preserve all existing application identifiers and do not turn places into resident districts', () => {
-  assert.deepEqual(Object.fromEntries(DISTRICTS.filter(d => d.category !== 'special').map(({ id, name }) => [id, name])), districts);
+  assert.deepEqual(Object.fromEntries(DISTRICTS.filter(d => Object.hasOwn(districts, d.id)).map(({ id, name }) => [id, name])), districts);
   assert.deepEqual(ISLAND_DISTRICTS, Object.keys(districts));
   assert.equal(ISLAND_LIMITS.residentsPerDistrict, 3);
-  for (const district of DISTRICTS.filter(d => d.category === 'special')) {
+  for (const district of DISTRICTS.filter(d => !Object.hasOwn(districts, d.id))) {
     assert.throws(() => validateIslandApplication(request(district.id)), error => error.code === 'invalid_island_application');
   }
   for (const districtId of Object.keys(districts)) assert.equal(validateIslandApplication(request(districtId)).districtId, districtId);

@@ -1,6 +1,6 @@
 // Original public island scenes. A label never contains its selected response.
 // These places do not unlock or change the career game's private story paths.
-const categories = { lobby: 'department', lab: 'department', plaza: 'department', meeting: 'department', finance: 'department', hr: 'department', cafe: 'shared', court: 'afterwork', harbor: 'afterwork', exile: 'special', hospital: 'special', police: 'special' };
+const categories = { lobby: 'department', lab: 'department', plaza: 'department', meeting: 'department', finance: 'department', hr: 'department', cafe: 'shared', court: 'afterwork', harbor: 'afterwork', exile: 'special', hospital: 'special', police: 'special', oneira: 'project' };
 function place(id, districtId, name, shortName, summary, tags, title, opening, choices) {
   return Object.freeze({ id, districtId, name, shortName, category: categories[districtId], summary,
     tags: Object.freeze([name, ...tags]), story: Object.freeze({ title, opening,
@@ -170,5 +170,17 @@ export const PLACES = Object.freeze([
       ['先把桌邊的椅子擺正', '椅子擺好，大家坐回自己的位置。那句剛才一直被打斷的話，這次終於有人聽完。'],
     ]),
 
+  place('oneira-hub', 'oneira', 'Oneira 航站', 'Oneira 航站', '從小島走進 Oneira，看看開源工具、創作者作品與下一個好點子。', ['Oneira', '航站', '創作', '網站'],
+    '下一站，想像成真的地方', '航站的玻璃門上寫著 Oneira。櫃台沒有催你交出企劃，只放著一張寫有網站地址的小卡；想出發時，就從這裡走進作品與靈感的另一岸。', [
+      ['先替自己的點子取個名字', '你在小卡上寫了一個暫定的名字。它還能修改，也不必今天就完成；有了名字，下一次就比較找得到它。'],
+      ['看看這裡整理了哪些作品', '開源工具、用途與來源排在同一頁。你沿著真正需要的功能慢慢看，沒有先替自己添一堆用不到的任務。'],
+      ['在航站蓋一枚新的島章', '紫色印泥在護照上留下小小的帆船。你把卡片放好，今天的海路多了一個能再回來的地方。'],
+    ]),
+  place('oneira-library', 'oneira', '開源靈感館', '開源靈感館', '先看懂用途，再讀來源與授權，替下一個作品找材料。', ['Oneira', '開源', '工具', '靈感'],
+    '書架上沒有萬用答案', '靈感館把作品依用途分好：畫圖、自動化、知識整理與開發工具。每本小冊都留著作者與來源，書架上的便條提醒：「先看看它適不適合你要做的事。」', [
+      ['先挑一件真正要解決的小事', '你把需求縮成一句話，再挑能用得上的工具。書架沒有變矮，選擇卻終於不必一次全背回家。'],
+      ['讀一讀作者與授權說明', '你把原作的名字和使用條件一起記下來。靈感可以接著走，來時的路也留得清楚。'],
+      ['替還沒決定的點子留張書籤', '書籤夾在你想再看的那一頁。今天先不用選完，下一次回來，也不必重新找起。'],
+    ]),
 ]);
 export const PLACE_BY_ID = new Map(PLACES.map(row => [row.id, row]));

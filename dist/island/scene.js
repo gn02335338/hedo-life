@@ -18,7 +18,7 @@ import { ISLAND_CAST } from './cast.js';
 import { PLACES } from './places.js';
 import { createNpcLife } from './npc-life.js';
 
-export async function createIslandScene({ container, districts = [], initialHour = 10, onSelect = () => {}, onSelectPlace = () => {}, onSelectDock = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {}, onLifeUpdate = () => {} }) {
+export async function createIslandScene({ container, districts = [], initialHour = 10, initialRegion = 'company', onSelect = () => {}, onSelectPlace = () => {}, onSelectDock = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {}, onLifeUpdate = () => {} }) {
   if (!container) throw new Error('Missing island container');
   let renderer;
   try {
@@ -49,11 +49,13 @@ export async function createIslandScene({ container, districts = [], initialHour
   container.append(overlay);
 
   const camera = new THREE.OrthographicCamera(-24, 24, 24, -24, .1, 250);
-  const homeTarget = new THREE.Vector3(0, 1, 0);
-  let currentRegion='company', voyage=null;
+  let currentRegion=Object.hasOwn(REGIONS,initialRegion)?initialRegion:'company', voyage=null;
+  const homeTarget = new THREE.Vector3(REGIONS[currentRegion].center.x, 1, REGIONS[currentRegion].center.z);
   const homeOffset = new THREE.Vector3(34, 42, 42);
   camera.position.copy(homeTarget).add(homeOffset);
   camera.lookAt(homeTarget);
+  camera.zoom=currentRegion==='company'?1:currentRegion==='life'?1.35:2.15;
+  camera.updateProjectionMatrix();
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.copy(homeTarget);
   controls.enableDamping = true;
@@ -112,7 +114,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   const dynamicNavigation = Object.freeze({dynamicCharacters:true});
   let roaming = false, movementEnabled = true, nearby = null;
   let moveInput = { x:0, z:0 };
-  let playerPosition = { ...PLAYER_SPAWN };
+  let playerPosition = { ...(currentRegion==='company'?PLAYER_SPAWN:DOCKS[currentRegion].landing) };
   let walkTime = 0, playerMoving = false;
   const cameraRight = new THREE.Vector3(), cameraDown = new THREE.Vector3();
   const followTarget = new THREE.Vector3(), followDelta = new THREE.Vector3();
@@ -631,6 +633,48 @@ export async function createIslandScene({ container, districts = [], initialHour
     box(flag,palette.gold,.3,1.7,.02,.12,.12,.025);
   }
 
+  function oneira(p) {
+    const violet=mat('#8072b1'),ink=mat('#514875'),mist=mat('#d8d2ec');
+    // Oneira's observatory is a little workshop for ideas. Keep the ground
+    // footprint aligned with navigation and leave both southern entries open.
+    const observatory=group(p,-.55,1.05,-.65);
+    box(observatory,palette.cream,0,.07,0,2.65,.14,2.22);
+    box(observatory,palette.white,0,.95,0,2.4,1.9,2);
+    box(observatory,ink,0,1.91,0,2.62,.18,2.2);
+    for(const x of [-.8,.8])box(observatory,palette.glass,x,1.02,1.025,.45,.91,.035);
+    box(observatory,ink,0,.74,1.025,.72,1.34,.055);
+    box(observatory,palette.glass,0,.77,1.065,.55,1.16,.025);
+    box(observatory,violet,0,1.61,1.2,1.18,.14,.62);
+    textSign(observatory,'Oneira',0,2.23,1.06,1.85,.45,'#514875');
+    textSign(observatory,'想像成真的地方',0,1.65,1.55,1.75,.28,'#8072b1');
+    const dome=mesh(observatory,geo(new THREE.SphereGeometry(1,16,9,0,Math.PI*2,0,Math.PI/2)),mist,0,2.01,-.12,.98,.98,.98);
+    dome.castShadow=true;
+    const orbit=mesh(observatory,geo(new THREE.TorusGeometry(.69,.042,7,28)),palette.gold,0,3.49,-.12);
+    orbit.rotation.x=-.55;orbit.rotation.z=.46;
+    cylinder(observatory,ink,0,3.19,-.12,.038,.65,7);
+    ball(observatory,violet,0,3.49,-.12,.18);
+    ball(observatory,palette.gold,.61,3.79,-.12,.11);
+    // A separate open-source book pavilion sits by the eastern garden path.
+    const library=group(p,2.35,1.05,-.25);
+    box(library,palette.cream,0,.08,0,1.27,.16,1.37);
+    box(library,palette.white,0,.71,0,1.05,1.42,1.15);
+    roof(library,violet,0,1.46,0,1.35,1.46,.39);
+    box(library,ink,0,.79,.59,.77,1.04,.045);
+    for(let index=0;index<4;index++)box(library,[palette.gold,palette.blue,palette.lilac,palette.pink][index],-.27+index*.18,.81,.62,.12,.62-index%2*.12,.045);
+    textSign(library,'開源靈感館',0,1.42,.76,1.15,.25,'#514875');
+    const ideaTable=group(p,-2.4,1.05,1.9);
+    cylinder(ideaTable,palette.woodLight,0,.42,0,.4,.09,10);
+    cylinder(ideaTable,ink,0,.22,0,.05,.4,7);
+    box(ideaTable,palette.white,-.04,.48,0,.43,.025,.3,.14);
+    box(ideaTable,violet,.07,.5,.03,.21,.018,.025,.14);
+    bench(p,-2.6,.95,.2);
+    // A low lavender path leads from the ferry arch to the main entrance.
+    for(const z of [1.48,1.98,2.48])cylinder(p,mist,-.55,1.08,z,.2,.025,6);
+    const moon=mesh(p,geo(new THREE.TorusGeometry(.23,.065,7,18,Math.PI*1.55)),palette.gold,2.9,2.83,-1.6);
+    moon.rotation.z=.4;
+    cylinder(p,ink,2.9,1.9,-1.6,.035,1.6,7);
+  }
+
   function districtKeepsakes(p,id) {
     if(id==='lobby'){
       for(let i=0;i<3;i++){box(p,palette.teal,.75,6.27,-1.02+i*.36,.29,.13,.26);ball(p,palette.leafLight,.75,6.42,-1.02+i*.36,.18,1,.7,1);}
@@ -709,10 +753,11 @@ export async function createIslandScene({ container, districts = [], initialHour
     for (const geometry of originals) { geometry.dispose(); allGeometries.delete(geometry); }
   }
 
-  const buildingFunctions = { lobby: office, lab: laboratory, meeting, hr: humanResources, finance, cafe, plaza, court, harbor, exile, hospital, police };
-  const districtGround=['#bac994','#a6bfab','#c3bc9c','#c4c999','#b3c2ae','#c8bd99','#bdc89a','#9fbda4','#c8c4a0','#c2c5c7','#b9c9ba','#b9c4c9'];
+  const buildingFunctions = { lobby: office, lab: laboratory, meeting, hr: humanResources, finance, cafe, plaza, court, harbor, exile, hospital, police, oneira };
+  const districtGround=['#bac994','#a6bfab','#c3bc9c','#c4c999','#b3c2ae','#c8bd99','#bdc89a','#9fbda4','#c8c4a0','#c2c5c7','#b9c9ba','#b9c4c9','#c6c0d5'];
   for (let index = 0; index < LAYOUT.length; index++) {
     const config = LAYOUT[index];
+    const previousDecorationSeed=seed;
     const tile = group(scene, config.x, 0, config.z);
     tile.userData.district = config.id;
     tileGroups.set(config.id, tile);
@@ -782,6 +827,9 @@ export async function createIslandScene({ container, districts = [], initialHour
     button.addEventListener('click', (event) => { event.stopPropagation(); if(!roaming || nearby?.kind==='building' && nearby.districtId===config.id) onSelect(config.id); });
     overlay.append(button);
     labelItems.push({ id: config.id, element: button, position: new THREE.Vector3(config.x + config.label[0], config.label[1], config.z + config.label[2]) });
+    // The appended project shore must not reroll the established colleagues'
+    // skin tones or the original sea decorations that use the following stream.
+    if(config.id==='oneira')seed=previousDecorationSeed;
   }
 
   // Short boardwalks connect the shorelines, with a generous opening for water.
@@ -819,7 +867,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     }
     return boat;
   }
-  const portAccents={company:{material:palette.teal,color:'#477b70',flag:'01'},life:{material:palette.brick,color:'#ad6e44',flag:'02'},exile:{material:palette.lilac,color:'#68657e',flag:'03'}};
+  const portAccents={company:{material:palette.teal,color:'#477b70',flag:'01'},life:{material:palette.brick,color:'#ad6e44',flag:'02'},exile:{material:palette.lilac,color:'#68657e',flag:'03'},oneira:{material:mat('#8072b1'),color:'#514875',flag:'04'}};
   for(const port of Object.values(DOCKS)) {
     const dx=port.sea.x-port.position.x,dz=port.sea.z-port.position.z,length=Math.hypot(dx,dz),heading=Math.atan2(dx,dz);
     const accent=portAccents[port.regionId],terminal=group(scene,port.position.x,.96,port.position.z,heading);
@@ -1234,7 +1282,7 @@ export async function createIslandScene({ container, districts = [], initialHour
       controls.listenToKeyEvents(renderer.domElement);
       controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
       for(const colleague of people)if(colleague.label)colleague.label.style.display='none';
-      moveCamera(homeTarget,1,homeOffset);
+      moveCamera(homeTarget,currentRegion==='oneira'?2.15:1,homeOffset);
     }
     updateNearby();onRoamChange(next);
   }
@@ -1260,7 +1308,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     if(roaming)setRoaming(false);
     focusedDistrict=null;focusedPerson=null;
     for(const item of labelItems)item.element.setAttribute('aria-pressed','false');
-    selectRing.visible=false;topView=false;moveCamera(homeTarget,1,homeOffset);
+    selectRing.visible=false;topView=false;moveCamera(homeTarget,currentRegion==='oneira'?2.15:1,homeOffset);
   }
   function updateWalking(dt) {
     if(!roaming||voyage)return;
@@ -1380,7 +1428,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     if(destroyed||contextLost||voyage||regionId!==currentRegion||!Object.hasOwn(REGIONS,regionId))return false;
     const region=REGIONS[regionId];homeTarget.set(region.center.x,1,region.center.z);
     focusedDistrict=null;focusedPerson=null;selectRing.visible=false;
-    moveCamera(homeTarget,regionId==='exile'?2.15:regionId==='life'?1.35:1,homeOffset);return true;
+    moveCamera(homeTarget,regionId==='exile'||regionId==='oneira'?2.15:regionId==='life'?1.35:1,homeOffset);return true;
   }
   function endVoyage(success) {
     const trip=voyage;if(!trip)return;voyage=null;passengerBoat.visible=false;

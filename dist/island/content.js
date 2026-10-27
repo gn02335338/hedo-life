@@ -179,6 +179,20 @@ export const DISTRICTS = [
     }, related: ['finance', 'hospital'],
   },
 
+  {
+    id: 'oneira', number: '13', name: 'Oneira 島', category: 'project', kicker: 'A SHORE FOR WHAT COMES NEXT',
+    summary: '想像成真的地方。走進 Oneira 航站，從開源靈感館找到下一個想做的作品。', color: '#8072b1',
+    people: [], tags: ['Oneira 航站', '開源靈感館', 'Oneira', '開源', '創作'], time: '20:30',
+    story: {
+      title: '想法可以先靠岸',
+      opening: '渡船靠上紫色候船棚，岸邊的 Oneira 招牌寫著「想像成真的地方」。有人把還沒完成的草圖留在長椅上；旁邊的開源靈感館，正替每個作品留下來源與說明。',
+      choices: [
+        { label: '把下一個想做的小點子畫下來', response: '你先畫了一個今天能開始的小角落。紙上的世界還很小，卻已經有一條真正走得出去的路。' },
+        { label: '走進靈感館，看看作品的來處', response: '作品旁寫著作者、來源與授權。你把喜歡的用途記下來，也替原作者的名字留了一個清楚的位置。' },
+        { label: '坐在碼頭，把空白留一會兒', response: '海風吹過沒有填滿的紙。你沒有急著把它變成待辦，等下一個念頭自己走上岸。' },
+      ],
+    }, related: ['lab', 'cafe'],
+  },
 ];
 
 export const TOUR = [
