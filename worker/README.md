@@ -1059,6 +1059,16 @@ incident destinations require arrival before opening remote content; the
 non-WebGL list retains this flow. A failed voyage leaves the visitor on the
 original island. Region and transit state are session-only.
 
+The ocean mesh follows the map camera so normal pan, zoom and ferry views keep
+visible sea around every island. Ripple sampling stays in world coordinates
+when the mesh recenters. Omega City has a dedicated deep blue marine palette,
+mint wave highlights and authored offshore harbor scenery, with coordinated
+sky/fog and readable map labels. Its atmosphere still follows the existing
+island clock; the other four islands retain their original sea palettes.
+Water animation respects pause, reduced motion and page visibility. These
+rendering changes add no walking surface, ferry route, NPC schedule, storage
+field, API call or external asset.
+
 Oneira is a separate fourth island with its own dock, original creative campus
 and open-source pavilion. Its two places use the `project` category and keep the
 original community residency allocation. After arriving, explicit links
