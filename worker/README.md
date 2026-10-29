@@ -1060,8 +1060,8 @@ non-WebGL list retains this flow. A failed voyage leaves the visitor on the
 original island. Region and transit state are session-only.
 
 Oneira is a separate fourth island with its own dock, original creative campus
-and open-source pavilion. Its two places use the `project` category and add no
-official colleague schedules or residency slots. After arriving, explicit links
+and open-source pavilion. Its two places use the `project` category and keep the
+original community residency allocation. After arriving, explicit links
 open only `https://oneirahub.com/harbor?from=moving-island`. The other site offers
 the fixed return link `https://hodo.bvivify.com/island/?from=oneira#oneira`.
 `friend-islands.js` accepts that public source marker only once, with its matching
@@ -1080,11 +1080,20 @@ arrival gate; no new inter-island walking bridge is created. After arrival, its
 explicit game link opens only `https://omegacity-life.vercel.app/` in a new tab
 with no referrer; the career homepage also credits 手遊王愛麗絲 and links to that
 fixed public URL. We do not change the external game or add a return link there.
-These visitor places add no colleague schedules, residency options, identity
-sharing, save transfer, API endpoints or database migrations. The original nine
+These visitor places add no residency options, identity sharing, save transfer,
+API endpoints or database migrations. The original nine
 application districts and their twenty-seven resident slots remain unchanged.
 
-The roster matches `PERSONAS`, includes Alice, and assigns each colleague a department,
+The roster matches `PERSONAS`, includes Alice, and preserves each colleague's
+company affiliation. Three project hosts use `PROJECT_HOSTS`: Alice stays
+on Omega City (`omega-terminal` / `omega-overlook`), while Jack and Johnny use
+Oneira (`oneira-hub` / `oneira-library`) for arrival, daytime, local staggered
+breaks and evening activity. Jack and Johnny retain the 19:00–20:00 group trip
+and take the existing ferry back to Oneira afterwards. Incident dispositions
+still take priority and recovery resumes the host schedule. No duplicate cast
+entries or community residency slots are created. The directory exposes both
+the original company workplace and project host island; fallback uses authored
+schedules without claiming live positions. Other colleagues keep their department routines,
 staggered pantry breaks and a court or izakaya destination after 18:00. At 19:00,
 Aliang (`kind`) invites Jack, Cindy, James and Johnny to the harbor; they stroll
 there from 19:30 to 20:00. These authored schedules describe fictional island

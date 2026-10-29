@@ -11,7 +11,7 @@ export const NPC_RESUME_DISTANCE = 2.7;
 export const NPC_COMMUTE_SPEED = 1.35;
 const MAX_STEP = .035;
 const districts = new Map(LAYOUT.map(row => [row.id, row]));
-const activities = { lobby: '看看總部公告', lab: '找開發靈感', meeting: '等一場分享', hr: '看看服務公告', finance: '在中庭歇腳', cafe: '到茶水間歇腳', plaza: '逛逛商務聚落', court: '場邊休息', harbor: '看看夜色碼頭', exile: '在流放島點名', hospital: '等候休養', police: '等候筆錄' };
+const activities = { lobby: '看看總部公告', lab: '找開發靈感', meeting: '等一場分享', hr: '看看服務公告', finance: '在中庭歇腳', cafe: '到茶水間歇腳', plaza: '逛逛商務聚落', court: '場邊休息', harbor: '看看夜色碼頭', exile: '在流放島點名', hospital: '等候休養', police: '等候筆錄', oneira: '在 Oneira 島迎接朋友', 'omega-city': '在終末之都島迎接朋友' };
 const consequenceLocations = {
   hospital: { districtId: 'hospital', places: ['hospital-er'], activity: '在醫院休養', label: '送醫休養' },
   police: { districtId: 'police', places: ['police-desk'], activity: '在警局做筆錄', label: '警局留置' },

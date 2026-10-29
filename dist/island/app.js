@@ -7,7 +7,7 @@ import { bindApplications, residentAvatar } from './applications.js';
 import { ISLAND_CAST } from './cast.js';
 import { createIslandAdminSummary } from './admin-summary.js';
 import { PLACES, PLACE_BY_ID } from './places.js';
-import { getPersonRoutine, getIslandRoutine, MYSTERY_TRIP } from './routines.js';
+import { getPersonRoutine, getIslandRoutine, MYSTERY_TRIP, PROJECT_HOSTS } from './routines.js';
 import { createIslandConflicts } from './conflicts.js';
 import { createIslandChallenge } from './challenge.js';
 import { REGIONS, DOCKS, getRegionForDistrict } from './archipelago.js';
@@ -868,7 +868,7 @@ function renderDistrictPeople() {
     chip.append(portrait, element('span', '', persona.name)); list.append(chip);
     if (id === focusedId) chip.focus({ preventScroll: true });
   }
-  if (!people.length) list.append(element('p', 'people-empty', activeId === OMEGA_CITY_PORT.id ? '到市民登記站認識愛麗絲的遊戲，或先去城市觀景台看看四方燈火。原本的同事，仍在自己的島上生活。' : activeId === ONEIRA_PORT.id ? '從航站走進 Oneira，或去開源靈感館坐坐；下一個好點子，也許就在這趟旅行裡。' : '大家暫時到別處走走了，從人物名冊看看他們在哪裡。'));
+  if (!people.length) list.append(element('p', 'people-empty', activeId === OMEGA_CITY_PORT.id ? '愛麗絲暫時到別處處理事情，可以從人物名冊查看目前位置。你也可以先去城市觀景台走走。' : activeId === ONEIRA_PORT.id ? '傑克與強尼暫時到別處活動，可以從人物名冊查看目前位置。19:00–20:00 他們會赴阿良的碼頭之約，散場後再搭船回來。' : '大家暫時到別處走走了，從人物名冊看看他們在哪裡。'));
 }
 function renderLifeStatus() {
   const actors = [...lifeActors.values()];
@@ -908,7 +908,7 @@ function renderCastDirectory() {
   const query = $('#cast-search').value.trim().toLocaleLowerCase();
   const matches = ISLAND_CAST.filter(({ id, districtId, workplaceId }) => {
     const p = displayPersona(id);
-    return [id, p.name, p.title, byId.get(currentDistrict(id))?.name, personLocation(id), PLACE_BY_ID.get(workplaceId)?.name].join(' ').toLocaleLowerCase().includes(query);
+    return [id, p.name, p.title, byId.get(currentDistrict(id))?.name, personLocation(id), PLACE_BY_ID.get(workplaceId)?.name, byId.get(PROJECT_HOSTS[id]?.districtId)?.name].join(' ').toLocaleLowerCase().includes(query);
   });
   $('#cast-results').textContent = query ? `找到 ${matches.length} 位同事` : `${ISLAND_CAST.length} 位同事，在各園區工作，也在島上走走。`;
   $('#cast-empty').hidden = matches.length !== 0;
@@ -920,6 +920,8 @@ function renderCastDirectory() {
     const copy = element('div', 'cast-copy');
     copy.append(element('h3', '', p.name), element('p', '', p.title));
     if (PLACE_BY_ID.has(workplaceId)) copy.append(element('span', 'cast-workplace', `工作據點 · ${PLACE_BY_ID.get(workplaceId).name}`));
+    const project = PROJECT_HOSTS[id];
+    if (project) copy.append(element('span', 'cast-workplace', `專案島接待 · ${byId.get(project.districtId).name}`));
     const location = element('span', 'cast-place', personLocation(id)); location.dataset.personLocation = id; copy.append(location);
     const activity = element('span', 'cast-activity', actorActivity(lifeActors.get(`person:${id}`) || { id }));
     activity.dataset.personActivity = id;

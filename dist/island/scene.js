@@ -17,6 +17,7 @@ import { OUTFITS, RESIDENT_POSITIONS, normalizeResidents } from './residents.js'
 import { ISLAND_CAST } from './cast.js';
 import { PLACES } from './places.js';
 import { createNpcLife } from './npc-life.js';
+import { PROJECT_HOSTS } from './routines.js';
 
 export async function createIslandScene({ container, districts = [], initialHour = 10, initialRegion = 'company', onSelect = () => {}, onSelectPlace = () => {}, onSelectDock = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {}, onLifeUpdate = () => {} }) {
   if (!container) throw new Error('Missing island container');
@@ -1553,7 +1554,11 @@ export async function createIslandScene({ container, districts = [], initialHour
       const namedPeople=people.filter(person=>person.label&&person.object.visible).sort((a,b)=>distanceToPlayer(a)-distanceToPlayer(b));
       for(const colleague of namedPeople)positionOverlay(colleague.label,new THREE.Vector3(colleague.object.position.x,colleague.object.position.y+1.52,colleague.object.position.z),distanceToPlayer(colleague)<3.8,true,placements);
     }
-    if(!roaming)for(const person of colleagues)positionOverlay(person.label,new THREE.Vector3(person.object.position.x,person.object.position.y+1.52,person.object.position.z),person.id===focusedPerson);
+    if(!roaming)for(const person of colleagues){
+      const hostHere=PROJECT_HOSTS[person.id]?.districtId===person.target.districtId
+        &&getRegionForDistrict(person.target.districtId)===currentRegion&&!['boarding','sailing'].includes(person.lifeState);
+      positionOverlay(person.label,new THREE.Vector3(person.object.position.x,person.object.position.y+1.52,person.object.position.z),!voyage&&(person.id===focusedPerson||hostHere),false,entryPlacements);
+    }
     for(const item of placeLabels){
       const distance=Math.hypot(item.entrance.x-playerPosition.x,item.entrance.z-playerPosition.z);
       item.element.disabled=roaming&&distance>.95;
