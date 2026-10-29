@@ -22,9 +22,9 @@ function scene(episode='boarding',stage){
 }
 const rowFor=(run,index,ticket=.5)=>{const event=getCaptainVoyageEventV73(run),resolved=resolveCaptainVoyageChoiceV73(run,index,ticket);return {eventId:event.id,kind:event.kind,speaker:event.speaker,turn:run.turn,choiceIndex:index,choiceText:resolved.choiceText,result:resolved.result,captainVoyageOutcome:resolved.outcome,delta:{trust:99,boss:99},breakdown:[{source:'choice',delta:{trust:99,boss:99}},{source:'weather',delta:{trust:99,boss:99}}]};};
 
-test('exact r73 and inherited r74 profiles enable the voyage, including both special entry markers',()=>{
- for(const profile of [73,74])for(const marker of ['n','s','d'])assert.equal(isCaptainVoyageV73('e39-r'+profile+'-'+marker+'-'+'a'.repeat(22)),true);
- for(const value of [null,undefined,'',life().seed+'a','e39-r72-n-'+'a'.repeat(22),'e39-r75-n-'+'a'.repeat(22),'e39-r73-x-'+'a'.repeat(22),'e39-r73-n-'+'A'.repeat(22),'e39-r73-n-'+'a'.repeat(21)])assert.equal(isCaptainVoyageV73(value),false);
+test('exact r73 and inherited r74/r75 profiles enable the voyage, including both special entry markers',()=>{
+ for(const profile of [73,74,75])for(const marker of ['n','s','d'])assert.equal(isCaptainVoyageV73('e39-r'+profile+'-'+marker+'-'+'a'.repeat(22)),true);
+ for(const value of [null,undefined,'',life().seed+'a','e39-r72-n-'+'a'.repeat(22),'e39-r76-n-'+'a'.repeat(22),'e39-r73-x-'+'a'.repeat(22),'e39-r73-n-'+'A'.repeat(22),'e39-r73-n-'+'a'.repeat(21)])assert.equal(isCaptainVoyageV73(value),false);
  assert.equal(isCaptainVoyageV73(life()),true);
 });
 

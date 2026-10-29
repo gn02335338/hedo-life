@@ -28,7 +28,7 @@ test('HTTP accepts all five strict-r74 target envelopes and rejects them from ol
   for(const action of actions){
    const base={runId:randomUUID(),roleId:'system',seed:'e39-r74-n-'+'a'.repeat(22),actions:[action]};
    assert.doesNotThrow(()=>validateCompletion(base,ROLE_MAP));
-   for(const seed of ['e39-r73-n-'+'a'.repeat(22),'e39-r75-n-'+'a'.repeat(22),'e39-r74-x-'+'a'.repeat(22),'e39-r74-n-'+'a'.repeat(21),'e39-r74-n-'+'A'.repeat(22)])assert.throws(()=>validateCompletion({...base,seed},ROLE_MAP),error=>error.code==='invalid_actions');
+   for(const seed of ['e39-r73-n-'+'a'.repeat(22),'e39-r76-n-'+'a'.repeat(22),'e39-r74-x-'+'a'.repeat(22),'e39-r74-n-'+'a'.repeat(21),'e39-r74-n-'+'A'.repeat(22)])assert.throws(()=>validateCompletion({...base,seed},ROLE_MAP),error=>error.code==='invalid_actions');
   }
  }
 });

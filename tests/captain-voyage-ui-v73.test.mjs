@@ -62,8 +62,8 @@ test('each private outing uses its assigned scene and the people actually presen
  }
 });
 
-test('the actual app wires the phase, return, membership and illustration hooks and creates r74 lives',()=>{
+test('the actual app wires the phase, return, membership and illustration hooks and creates r75 lives',()=>{
  const app=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
  assert.match(app,/captainVoyageHTMLV73\(run,ev\)/);assert.match(app,/captainVoyageReturnHTMLV73\(run,event\)/);assert.match(app,/captainVoyageStatusHTMLV73\(run\)/);assert.match(app,/captainVoyageLegacyNoticeV73\(run\)/);
- assert.match(app,/\['office-treat','event-departure','blockchain','captain-voyage'\]\.includes\(ev\.kind\)/);assert.match(app,/recruitmentSeedV60\(entropy,kind,74\)/);
+ assert.match(app,/\['office-treat','event-departure','blockchain','captain-voyage'\]\.includes\(ev\.kind\)/);assert.match(app,/recruitmentSeedV60\(entropy,kind,75\)/);
 });

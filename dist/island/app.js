@@ -474,7 +474,7 @@ function renderConflictStatus() {
     root.append(element('p', '', `在${place.name}完成${state.player.status === 'hospital' ? '包紮與留觀' : state.player.status === 'police' ? '事情經過的筆錄' : '值班或冷宮點名'}，就能恢復一般活動。`));
     const link = button('conflict-location-button', `前往${place.name}處理 →`, () => goToConflictPlace(place.id));
     link.dataset.conflictPlayerPlace = place.id; root.append(link);
-  } else root.append(element('p', '', '和同事聊聊，也能選擇吵架或打架。每一次衝突，都會留下下一站。'));
+  } else root.append(element('p', '', '和同事聊聊，也能發起單挑，等對方答覆。事情發生後，這裡會留下各自的下一站。'));
   if (state.people.length) {
     const list = element('div', 'conflict-people');
     for (const person of state.people) {
@@ -482,6 +482,16 @@ function renderConflictStatus() {
       link.dataset.conflictPerson = person.id; list.append(link);
     }
     root.append(list);
+  }
+  if (state.companyIssues.length) {
+    const notices = element('section', 'company-incidents');
+    notices.append(element('h3', '', '公司現在卡在哪裡'));
+    for (const issue of state.companyIssues) {
+      const notice = button('company-incident', '', () => goToConflictPlace(issue.recoveryPlaceId));
+      notice.dataset.companyIssue = issue.id;
+      notice.append(element('strong', '', issue.title), element('span', '', `${issue.description} → 陪${displayPersona(issue.participantId).name}完成後續`)); notices.append(notice);
+    }
+    root.append(notices);
   }
   const latest = state.history.at(-1);
   if (latest) root.append(element('p', 'conflict-latest', `剛剛發生 · ${latest.title}`));
@@ -555,29 +565,31 @@ function disposeBrawl({ cancel = true } = {}) {
   $('#encounter-dialog').classList.remove('brawl-dialog');
   $('#encounter-dialog [data-close-dialog]').setAttribute('aria-label', '結束對話，繼續散步');
 }
-async function startBrawl(id, { story = false } = {}) {
+async function startBrawl(id, { story = false, duel = false } = {}) {
   if (activeBrawl || activePvp || activeVoyage || pageGone) return;
-  if (['rick', 'spencer', 'wing', 'hidden-visitor'].includes(id)) story = true;
+  if (!duel && ['rick', 'spencer', 'wing', 'hidden-visitor'].includes(id)) story = true;
   if (story) {
     const gate = challenge.canChallenge(id);
     if (!gate.ok) { toast(gate.message); openChallenge(); return; }
   }
   if (conflictState.player.status !== 'free' || dispositionOf(id)) { toast('先到對應場所完成這段插曲，再來挑戰。'); return; }
   if (lifeActors.get(`person:${id}`)?.ferry) { toast('對方正在搭船，等靠岸後再約。'); return; }
-  if (!requireRegion(getRegionForDistrict(currentDistrict(id)), () => startBrawl(id, { story }))) return;
+  if (!requireRegion(getRegionForDistrict(currentDistrict(id)), () => startBrawl(id, { story, duel }))) return;
   if (!displayPersona(id)) return;
   if ($('#challenge-dialog').open) closeDialog($('#challenge-dialog'));
-  const reservation = story ? challenge.begin(id) : conflicts.beginFight(id);
+  const reservation = story ? challenge.begin(id) : duel ? conflicts.requestDuel(id) : conflicts.beginFight(id);
   if (!reservation.ok) { toast(reservation.message); return; }
+  if (duel && reservation.outcome === 'refused') { renderConflictResult(reservation); return; }
+  if (duel) syncConflicts();
   stopTour();
   const target = { kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` };
   activeEncounter = target;
-  const match = { token: reservation.token, handle: null, returnHash: location.hash, story };
+  const match = { token: reservation.token, handle: null, returnHash: location.hash, story, duel };
   activeBrawl = match; conflictState = conflicts.getState();
   const dialog = $('#encounter-dialog'), content = $('#encounter-content');
   content.replaceChildren(); dialog.classList.add('brawl-dialog');
   $('#encounter-dialog [data-close-dialog]').setAttribute('aria-label', '暫停或離開對戰');
-  $('#encounter-place').textContent = `${story ? '故事挑戰' : '島上插曲'} · 和${displayPersona(id).name}對戰`;
+  $('#encounter-place').textContent = `${story ? '故事挑戰' : duel ? '對方接受了單挑' : '島上插曲'} · 和${displayPersona(id).name}對戰`;
   const loadingTitle = element('h2', '', '移動島大亂鬥'); loadingTitle.id = 'encounter-title';
   content.append(loadingTitle, element('p', 'encounter-opening', '正在準備場地…'), button('primary-button', '先回到小島', () => closeDialog(dialog)));
   if (!dialog.open) openDialog(dialog);
@@ -587,7 +599,7 @@ async function startBrawl(id, { story = false } = {}) {
     if (activeBrawl !== match) return;
     content.replaceChildren();
     match.handle = mountIslandBrawl({
-      container: content, opponent: { id, name: displayPersona(id).name, image: personaImage(id) }, story: story ? reservation.story : null, reducedMotion: reducedMotion.matches,
+      container: content, opponent: { id, name: displayPersona(id).name, image: personaImage(id) }, story: story ? reservation.story : duel ? { title: reservation.title, body: reservation.description } : null, reducedMotion: reducedMotion.matches,
       onFinish(outcome, summary) {
         if (activeBrawl !== match) return;
         const result = story ? challenge.settle(match.token, outcome) : conflicts.settleFight(match.token, outcome, summary);
@@ -601,7 +613,7 @@ async function startBrawl(id, { story = false } = {}) {
     disposeBrawl(); content.replaceChildren();
     const title = element('h2', '', '場地暫時沒有準備好'); title.id = 'encounter-title';
     content.append(title, element('p', 'encounter-opening', '這台裝置暫時無法開啟對戰畫面。可以重試，或先回去聊天。這場尚未開始。'));
-    content.append(button('primary-button', '重新準備對戰 →', () => startBrawl(id, { story })), button('mystery-inline', story ? '回到故事章節' : '回到對話', () => { if (story) openChallenge(); else { renderEncounter(target); updateWalking(); } }));
+    content.append(button('primary-button', '重新準備對戰 →', () => startBrawl(id, { story, duel })), button('mystery-inline', story ? '回到故事章節' : '回到對話', () => { if (story) openChallenge(); else { renderEncounter(target); updateWalking(); } }));
     $('#encounter-leave').textContent = '先回到小島 →';
     updateWalking();
     console.warn('Island brawl unavailable:', error instanceof Error ? error.message : 'battle initialization failed');
@@ -609,6 +621,7 @@ async function startBrawl(id, { story = false } = {}) {
 }
 function renderConflictMenu(id, kind) {
   if (kind === 'fight') return startBrawl(id);
+  if (kind === 'duel') return startBrawl(id, { duel: true });
   activeEncounter = { kind: 'person', id, districtId: currentDistrict(id), key: `person:${id}` };
   const content = $('#encounter-content'); content.replaceChildren();
   const persona = displayPersona(id), title = element('h2', '', `和${persona.name}吵上幾句`);
@@ -638,7 +651,15 @@ function appendConflictActions(content, id) {
     const argue = button('', '吵架', () => renderConflictMenu(id, 'argument')); argue.dataset.conflictAction = 'argue';
     const isBoss = ['rick', 'spencer', 'wing'].includes(id);
     const fight = button('', isBoss ? '故事首領戰' : '打架', () => renderConflictMenu(id, 'fight')); fight.dataset.conflictAction = 'fight';
-    area.append(argue, fight);
+    area.append(argue);
+    const invitation = conflictState.duelInvitations.find(item => item.id === id);
+    const duelButton = button('', invitation?.outcome === 'accepted' ? '繼續已接受的單挑' : '發起單挑', () => renderConflictMenu(id, 'duel'));
+    duelButton.dataset.conflictAction = 'duel';
+    if (invitation && invitation.outcome !== 'accepted') {
+      duelButton.disabled = true;
+      duelButton.textContent = invitation.outcome === 'refused' ? '對方已婉拒單挑' : '這次單挑已結束';
+    }
+    area.append(duelButton, fight);
     const gate = challenge.canChallenge(id);
     const storyButton = button('', gate.ok ? '故事挑戰 →' : '查看故事解鎖條件 →', () => gate.ok ? startBrawl(id, { story: true }) : openChallenge());
     storyButton.dataset.storyChallenge = id; if (!isBoss) area.append(storyButton);
@@ -698,6 +719,7 @@ function renderEncounter(target) {
   const choicesMap = isRoutine ? routineChoices : isPerson ? encounterChoices : place ? placeChoices : districtChoices;
   const choiceKey = isRoutine || isPerson || place ? target.id : district.id;
   const selected = choicesMap.get(choiceKey);
+  const blockedIssues = place ? conflictState.companyIssues.filter(issue => issue.placeIds.includes(place.id)) : [];
   if (Number.isInteger(selected)) {
     const result = element('div', 'story-response'); result.id = 'encounter-response'; result.tabIndex = -1;
     result.append(element('b', '', `你說：${story.choices[selected].label}`), element('p', '', story.choices[selected].response));
@@ -708,6 +730,16 @@ function renderEncounter(target) {
       const arrive = () => { selectDistrict('harbor'); scene?.focusPlace(MYSTERY_TRIP.placeId); };
       if (requireRegion('life', arrive)) arrive();
     }));
+  } else if (blockedIssues.length) {
+    const notice = element('section', 'company-task-hold'); notice.dataset.companyTaskHold = place.id;
+    notice.append(element('h3', '', '窗口暫停，這件事還不能結案'));
+    for (const issue of blockedIssues) {
+      notice.append(element('strong', '', issue.title), element('p', '', issue.description));
+      const help = button('primary-button', `去${PLACE_BY_ID.get(issue.recoveryPlaceId).name}陪${displayPersona(issue.participantId).name}完成後續 →`, () => goToConflictPlace(issue.recoveryPlaceId));
+      help.dataset.companyHelp = issue.participantId; notice.append(help);
+    }
+    content.append(notice);
+    $('#encounter-leave').textContent = '記下待辦，先去處理後續 →';
   } else {
     const choices = element('div', 'story-choices');
     story.choices.forEach((choice, index) => {

@@ -1,3 +1,4 @@
+import {duelHistoryChangeV75} from './career-duel-v75.js';
 import { PERSONAS } from './persona.js';
 import { isPatronageV49, isPatronageApplicationOutcomeV49 } from './patronage-v49.js';
 import { isRecruitmentOutcomeV60 } from './recruitment-v60.js';
@@ -80,6 +81,12 @@ export function characterHistoryChanges(run){
  const scores=Object.fromEntries(CHARACTER_IDS.map(id=>[id,50])),changes=[];
  for(const [historyIndex,row] of (Array.isArray(run?.history)?run.history:[]).entries()){
   if(!row||!Number.isInteger(row.choiceIndex)||row.choiceIndex<0)continue;
+  if(row.kind==='duel'||Object.hasOwn(row,'duelOutcome')){
+   const change=duelHistoryChangeV75(run,row),id=row.duelOutcome?.target;
+   if(!change||!known(id,run))continue;
+   const score=clamp(scores[id]+change.affinityDelta,0,100),affinityDelta=score-scores[id];scores[id]=score;
+   changes.push({historyIndex,id,encounters:1,imaginedHits:0,realHits:change.realHits,affinityDelta});continue;
+  }
   let relationship=null;
   if(isLifeSystemsV72(run)&&Object.hasOwn(row,'relationshipOutcome')){
    if(!isRelationshipOutcomeV72(run,row))continue;

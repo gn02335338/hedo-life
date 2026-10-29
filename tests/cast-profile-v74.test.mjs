@@ -22,13 +22,13 @@ import {castPrivateNoticeV74,castPrivateReturnV74} from '../dist/cast-private-ui
 
 test('fresh cast profiles inherit the complete current feature chain and reject future or malformed seeds',()=>{
  const gates=[isCastV74,isRecruitmentV60,isOfficeTreatsV61,isLifeBalanceV62,isParticipationV63,isExpansionV65,isExpansionV66,isPatronageBenefitsV67,isPatronageFamiliarityV68,isPatronageProgressV69,isKindRecoveryV70,isCareerContentV71,isLifeSystemsV72,isCaptainVoyageV73];
- for(const kind of ['normal','godson','goddaughter']){
-  const seed=recruitmentSeedV60('a'.repeat(22),kind,74);
+ for(const profile of [74,75])for(const kind of ['normal','godson','goddaughter']){
+  const seed=recruitmentSeedV60('a'.repeat(22),kind,profile);
   assert.equal(seed.length,32);
   for(const gate of gates){assert.equal(gate(seed),true,gate.name);assert.equal(gate({seed}),true,gate.name);}
  }
- for(const seed of [null,undefined,'',74,'e39-r73-n-'+'a'.repeat(22),'e39-r75-n-'+'a'.repeat(22),'e39-r74-x-'+'a'.repeat(22),'e39-r74-n-'+'a'.repeat(21),'e39-r74-n-'+'a'.repeat(23),'e39-r74-n-'+'A'.repeat(22)])assert.equal(isCastV74(seed),false);
- assert.throws(()=>recruitmentSeedV60('a'.repeat(22),'normal',75));
+ for(const seed of [null,undefined,'',74,'e39-r73-n-'+'a'.repeat(22),'e39-r76-n-'+'a'.repeat(22),'e39-r74-x-'+'a'.repeat(22),'e39-r74-n-'+'a'.repeat(21),'e39-r74-n-'+'a'.repeat(23),'e39-r74-n-'+'A'.repeat(22)])assert.equal(isCastV74(seed),false);
+ assert.throws(()=>recruitmentSeedV60('a'.repeat(22),'normal',76));
 });
 
 test('the latest previous profile receives an invitation to reapply without revealing choices or outcomes',()=>{
@@ -39,7 +39,7 @@ test('the latest previous profile receives an invitation to reapply without reve
  }
  for(const value of [null,{}, {seed:'e39-r72-n-'+'a'.repeat(22)},{seed:'e39-r74-n-'+'a'.repeat(22)},{seed:'e39-r75-n-'+'a'.repeat(22)}])assert.equal(castLegacyNoticeV74(value),'');
  const app=readFileSync(new URL('../dist/app.js',import.meta.url),'utf8');
- assert.match(app,/recruitmentSeedV60\(entropy,kind,74\)/);assert.match(app,/castLegacyNoticeV74\(run\)/);
+ assert.match(app,/recruitmentSeedV60\(entropy,kind,75\)/);assert.match(app,/castLegacyNoticeV74\(run\)/);
 });
 
 test('all five shipped avatars retain transparency, bounded size and the checked public-art hashes',async()=>{

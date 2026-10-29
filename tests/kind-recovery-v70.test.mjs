@@ -44,11 +44,11 @@ function ledger(before,pending){
 }
 
 test('only exact fresh r70 profiles opt into dual-resource recovery',()=>{
- for(const marker of ['n','s','d']){
-  const seed=`e39-r70-${marker}-`+'ab'.repeat(11);
+ for(const current of [70,71,72,73,74,75])for(const marker of ['n','s','d']){
+  const seed=`e39-r${current}-${marker}-`+'ab'.repeat(11);
   assert.equal(isKindRecoveryV70(seed),true);assert.equal(isKindRecoveryV70({seed}),true);
  }
- for(const seed of [undefined,null,'','e39-r69-n-'+'a'.repeat(22),'e39-r75-s-'+'a'.repeat(22),'e39-r70-n-'+'a'.repeat(21),'e39-r70-n-'+'a'.repeat(23),'e39-r70-x-'+'a'.repeat(22),'e39-r70-s-'+'A'.repeat(22),'e39-r70-d-'+'g'.repeat(22),'e39-r70-d-'+'a'.repeat(22)+'-extra'])assert.equal(isKindRecoveryV70(seed),false);
+ for(const seed of [undefined,null,'','e39-r69-n-'+'a'.repeat(22),'e39-r76-s-'+'a'.repeat(22),'e39-r70-n-'+'a'.repeat(21),'e39-r70-n-'+'a'.repeat(23),'e39-r70-x-'+'a'.repeat(22),'e39-r70-s-'+'A'.repeat(22),'e39-r70-d-'+'g'.repeat(22),'e39-r70-d-'+'a'.repeat(22)+'-extra'])assert.equal(isKindRecoveryV70(seed),false);
  assert.equal(KIND_RECOVERY_ENERGY_V70,45);
 });
 

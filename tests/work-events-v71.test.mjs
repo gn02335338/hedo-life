@@ -68,6 +68,6 @@ test('new work cadence gives every actual occupation recurring dilemmas without 
 });
 
 test('the strict new profile does not adopt unsupported or malformed future seeds',()=>{
- for(const marker of ['n','s','d'])assert.equal(isCareerContentV71(`e39-r71-${marker}-${'a'.repeat(22)}`),true);
- for(const seed of ['e39-r70-n-'+'a'.repeat(22),'e39-r75-n-'+'a'.repeat(22),'e39-r71-x-'+'a'.repeat(22),'e39-r71-n-'+'a'.repeat(21),'e39-r71-n-'+'A'.repeat(22)])assert.equal(isCareerContentV71(seed),false);
+ for(const profile of [71,72,73,74,75])for(const marker of ['n','s','d'])assert.equal(isCareerContentV71(`e39-r${profile}-${marker}-${'a'.repeat(22)}`),true);
+ for(const seed of ['e39-r70-n-'+'a'.repeat(22),'e39-r76-n-'+'a'.repeat(22),'e39-r71-x-'+'a'.repeat(22),'e39-r71-n-'+'a'.repeat(21),'e39-r71-n-'+'A'.repeat(22)])assert.equal(isCareerContentV71(seed),false);
 });

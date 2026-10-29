@@ -5,6 +5,7 @@ import {isWorkGapV50} from './work-gap-v50.js';
 import {isActivityPlayV55,deriveActivityPlayV55} from './activity-play-v55.js';
 import {isShareholderV58,deriveShareholderPlayV58} from './shareholders-v58.js';
 import {isEventDepartureOutcomeV63} from './event-departure-v63.js';
+import {isCareerDuelV75,duelHistoryChangeV75} from './career-duel-v75.js';
 const LABELS = Object.freeze({
  energy:'體力', cash:'存款', trust:'同事情義', dream:'大餅信仰',
  boss:'翅膀心情', mood:'自己心情', skill:'工作能力', slack:'偷懶能力', lick:'舔老闆能力'
@@ -33,6 +34,7 @@ function sampleLabel(row) {
  if (row?.kind === 'activity') return '活動';
  if (row?.kind === 'activity-invitation') return '邀約';
  if (row?.kind === 'hidden') return '意外相遇';
+ if (row?.kind === 'duel') return '同事單挑';
  if (id === 'rage-release') {
   if (row?.eventOutcome?.result === '腦內劇場') return '夢境';
   if (row?.eventOutcome?.result === '真的失控了') return '真實失控';
@@ -57,12 +59,17 @@ function historyMatchesActions(run, history) {
  if (!Array.isArray(run?.actions)) return true;
  const committed = run.actions.filter(action => action?.type === 'choice' &&
   !(isWorkGapV50(run) && action.eventId === 'work-gap-v50' && action.index === 0) ||
-  ['patronage-reply','activity-play','shareholder-play','event-departure'].includes(action?.type) ||
+  ['patronage-reply','activity-play','shareholder-play','event-departure','duel-invite','duel-play'].includes(action?.type) ||
   (['rage','verbal'].includes(action?.type) && ['event','result'].includes(action.phase)));
  if (committed.length !== history.length) return false;
  let spokenSource = null;
  return committed.every((action, index) => {
   const row = history[index];
+  if (action.type === 'duel-invite' || action.type === 'duel-play') {
+   spokenSource = null;
+   return isCareerDuelV75(run) && action.version === 1 && duelHistoryChangeV75(run,row) !== null &&
+    (action.type === 'duel-invite' ? row?.eventId === 'duel75-invitation' && row.duelOutcome.target === action.target : row?.eventId === 'duel75-result');
+  }
   if (action.type === 'event-departure') {
    spokenSource = null;
    return action.version === 1 && action.eventId === row?.eventId && isEventDepartureOutcomeV63(run,row);

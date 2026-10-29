@@ -68,7 +68,8 @@ test('Alice has 33 distinct original daily stories, a neutral public portrait, w
 
 test('strict fresh cohort gates keep historical event access, dinner pages and character evidence unchanged',()=>{
  assert.equal(isCareerContentV71(seedFor(0)),true);
- for(const suffix of ['e39-r70-n-'+ 'a'.repeat(22),'e39-r75-n-'+ 'a'.repeat(22),'e39-r71-n-'+ 'A'.repeat(22),'e39-r71-x-'+ 'a'.repeat(22),seedFor(0)+'x'])assert.equal(isCareerContentV71(suffix),false);
+ for(const current of [72,73,74,75])for(const marker of ['n','s','d'])assert.equal(isCareerContentV71(`e39-r${current}-${marker}-`+'a'.repeat(22)),true);
+ for(const suffix of ['e39-r70-n-'+ 'a'.repeat(22),'e39-r76-n-'+ 'a'.repeat(22),'e39-r71-n-'+ 'A'.repeat(22),'e39-r71-x-'+ 'a'.repeat(22),seedFor(0)+'x'])assert.equal(isCareerContentV71(suffix),false);
  for(const profile of [64,65,66,67,68,69,70])for(const page of [0,1,2,3]){
   const run=meal(profile,page);
   if(profile<65&&page===3){assert.throws(()=>getMealEventV71(run));assert.throws(()=>getMealEventV65(run));}
@@ -166,8 +167,8 @@ test('naturally appointed godsons and goddaughters can answer Alice once without
 
 test('Alice appointment voices start at r71, inherit current profiles and keep private reactions around the dinner table',()=>{
  const work={id:'alice71-first-pull',kind:'daily',speaker:'alice'},privateScene={id:'meal-with-alice',kind:'self-care',privateContext:true,speaker:'alice'};
- for(const profile of [65,67,70,75]){const run=meal(profile);assert.equal(patronageReplyLineV43(run,work,'alice'),'');assert.deepEqual(patronageReplyOutcomesV43(run,work,'alice'),[]);}
- for(const current of [72,73,74])assert.match(patronageReplyLineV43(meal(current),work,'alice'),/愛麗絲/);
+ for(const profile of [65,67,70,76]){const run=meal(profile);assert.equal(patronageReplyLineV43(run,work,'alice'),'');assert.deepEqual(patronageReplyOutcomesV43(run,work,'alice'),[]);}
+ for(const current of [72,73,74,75])assert.match(patronageReplyLineV43(meal(current),work,'alice'),/愛麗絲/);
  const run=meal(),line=patronageReplyLineV43(run,privateScene,'alice'),outcomes=patronageReplyOutcomesV43(run,privateScene,'alice');
  assert.ok(line.length>15);assert.match(line,/愛麗絲/);assert.equal(outcomes.length,4);assert.equal(new Set(outcomes.map(row=>row.result)).size,4);
  for(const row of outcomes){assert.ok(row.weight>0);assert.equal(row.delta.boss,undefined);assert.equal(row.effect,undefined);assert.ok(row.result.length>30);}

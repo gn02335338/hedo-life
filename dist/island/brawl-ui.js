@@ -152,24 +152,55 @@ function drawEffect(ctx, effect, reducedMotion) {
   if (effect.type === 'slash') {
     ctx.rotate(effect.angle || 0); ctx.strokeStyle = effect.owner === 'player' ? '#fdf7dc' : '#c27b50'; ctx.lineWidth = 8 * ratio + 2;
     ctx.beginPath(); ctx.arc(0, 0, effect.radius || 65, -.8 + progress * .25, .8 + progress * .25); ctx.stroke();
+    ctx.strokeStyle = effect.owner === 'player' ? '#63d5bd' : '#e79b72'; ctx.lineWidth = 3;
+    for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(0, 0, (effect.radius || 65) + i * 9, -.65 + i * .13, .6 + i * .12); ctx.stroke(); }
   } else if (effect.type === 'special') {
-    ctx.strokeStyle = '#b58c3d'; ctx.lineWidth = 6 * ratio + 2; ctx.beginPath(); ctx.arc(0, 0, (effect.radius || 140) * (.5 + progress * .5), 0, Math.PI * 2); ctx.stroke();
-    for (let i = 0; i < 8; i++) { const angle = i * Math.PI / 4 + progress; const radius = (effect.radius || 140) * (.6 + progress * .4); hex(ctx, Math.cos(angle) * radius, Math.sin(angle) * radius, 8 * ratio, '#e8cf80'); }
-    text(ctx, '下班無雙', 0, -55 - progress * 24, 24, '#957337', 800);
+    ctx.strokeStyle = '#e7b647'; ctx.lineWidth = 6 * ratio + 2; ctx.beginPath(); ctx.arc(0, 0, (effect.radius || 140) * (.5 + progress * .5), 0, Math.PI * 2); ctx.stroke();
+    for (let ring = 0; ring < 3; ring++) { ctx.lineWidth = 2; ctx.strokeStyle = ring % 2 ? '#fff1aa' : '#76d8bc'; ctx.beginPath(); ctx.arc(0, 0, (effect.radius || 140) * (.25 + progress * .6) + ring * 17, ring * .5, Math.PI * 1.7 + ring * .5); ctx.stroke(); }
+    for (let i = 0; i < 12; i++) { const angle = i * Math.PI / 6 + progress; const radius = (effect.radius || 140) * (.6 + progress * .4); hex(ctx, Math.cos(angle) * radius, Math.sin(angle) * radius, 8 * ratio, '#ffe49a'); }
+    text(ctx, '下班無雙', 0, -55 - progress * 24, 32, '#8c6325', 900);
   } else if (effect.type === 'dash') {
     ctx.rotate(effect.angle || 0); ctx.strokeStyle = '#9cbaa5'; ctx.lineWidth = 4;
     for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.moveTo(-28 - progress * 20, -15 + i * 14); ctx.lineTo(8 - progress * 16, -15 + i * 14); ctx.stroke(); }
   } else if (['heal', 'guard', 'zone', 'skill'].includes(effect.type)) {
     ctx.strokeStyle = effect.color || (effect.type === 'heal' ? '#739e78' : '#b99158'); ctx.lineWidth = 4 * ratio + 1;
     ctx.beginPath(); ctx.arc(0, 0, (effect.radius || 50) * (.7 + progress * .3), 0, Math.PI * 2); ctx.stroke();
+    hex(ctx, 0, 0, (effect.radius || 50) * (.5 + progress * .4), null, effect.color || '#9a9666');
     if (effect.text) text(ctx, effect.text, 0, -45 - progress * 12, effect.type === 'heal' ? 24 : 16, effect.color || '#7a7950', 700);
   } else {
     ctx.strokeStyle = effect.type === 'pickup' ? '#8aa26b' : '#bb7952'; ctx.lineWidth = 3;
     const radius = (effect.radius || 24) * (.7 + progress * .7);
     for (let i = 0; i < 6; i++) { const angle = i * Math.PI / 3; ctx.beginPath(); ctx.moveTo(Math.cos(angle) * radius * .55, Math.sin(angle) * radius * .55); ctx.lineTo(Math.cos(angle) * radius, Math.sin(angle) * radius); ctx.stroke(); }
+    if (effect.type === 'impact') {
+      const points = [];
+      for (let i = 0; i < 16; i++) { const angle = i * Math.PI / 8, reach = radius * (i % 2 ? .65 : 1.55); points.push([Math.cos(angle) * reach, Math.sin(angle) * reach]); }
+      ctx.beginPath(); points.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.fillStyle = effect.owner === 'player' ? '#fff4b9a0' : '#f4bd9f80'; ctx.fill();
+    }
     if (effect.text) text(ctx, effect.text, 0, -36 - progress * 28, 25, '#8f553b', 800);
   }
   ctx.restore();
+}
+
+// Keep the announcement in CSS pixels outside the scaled arena. A 360px screen
+// must not reduce a skill title to the old 8px canvas/toast treatment.
+export function brawlAnnouncement(state, profile, opponentName) {
+  const allMoves = [...profile.skills, ...profile.events];
+  const skill = allMoves.find(item => item.id === state.opponent.activeSkillId);
+  const notice = state.signature.history.at(-1);
+  if (skill && state.opponent.telegraphRemaining > 0) return {
+    key: `cast-${notice?.seq}`, tone: 'warning', kicker: `${opponentName} · ${profile.events.includes(skill) ? '專屬事件' : '正在蓄招'}`,
+    name: skill.name, line: skill.line, counter: skill.counter, color: skill.color,
+    progress: Math.min(1, Math.max(0, 1 - state.opponent.telegraphRemaining / Math.max(.01, state.opponent.telegraphDuration))),
+  };
+  const special = state.effects?.find(effect => effect.type === 'special' && effect.owner === 'player' && effect.text === '下班無雙');
+  if (special) return { key: `special-${special.id}`, tone: 'special', kicker: '你的奧義 · 打卡下班', name: '下班無雙', line: '薪水還沒入帳，怨念先全額交付。', counter: '氣勢已釋放，接近對手把握連擊空檔。', color: '#d8b454', progress: 1 };
+  if (notice && notice.type !== 'opening' && state.elapsed - notice.time <= 3.5) {
+    const move = allMoves.find(item => item.id === notice.id);
+    return { key: `notice-${notice.seq}`, tone: notice.type === 'skill-cancel' ? 'counter' : 'resolved', kicker: `${opponentName} · ${notice.type === 'skill-cancel' ? '破招成功' : '招式落下'}`,
+      name: notice.name, line: notice.text, counter: move?.counter || '', color: move?.color || '#b68c65', progress: 0 };
+  }
+  return { key: 'neutral', tone: 'idle', kicker: state.phase === 'ready' ? '移動島 · 對決開場' : '加班可忍，這招先閃', name: state.phase === 'ready' ? `你 vs ${opponentName}` : '見招拆招',
+    line: state.phase === 'ready' ? profile.opening : '看地面預警，繞到側面；對方補血時貼近打斷。', counter: '', color: '#7c9e8c', progress: 0 };
 }
 function drawSignatureWarning(ctx, actor, skill) {
   if (actor.telegraphRemaining <= 0 || !skill || actor.telegraphKind === 'cone') return;
@@ -187,11 +218,11 @@ function drawSignatureWarning(ctx, actor, skill) {
   ctx.restore();
 }
 
-export function mountIslandBrawl({ container, opponent, onFinish, story = null, reducedMotion = false }) {
+export function mountIslandBrawl({ container, opponent, onFinish, story = null, reducedMotion = false, model: suppliedModel = null }) {
   const doc = container.ownerDocument || document, view = doc.defaultView || window;
   const node = (tag, className = '', value) => { const item = doc.createElement(tag); if (className) item.className = className; if (value !== undefined) item.textContent = value; return item; };
   const button = (className, label, action) => { const item = node('button', className, label); item.type = 'button'; if (action) item.addEventListener('click', action); return item; };
-  const root = node('section', 'brawl-shell'); root.dataset.brawlRoot = '';
+  const root = node('section', 'brawl-shell'); root.dataset.brawlRoot = ''; root.dataset.reducedMotion = String(reducedMotion);
   const profile = getBrawlProfile(opponent.id);
   const moveById = new Map([...profile.skills, ...profile.events].map(skill => [skill.id, skill]));
   const head = node('div', 'brawl-heading'), titles = node('div');
@@ -200,6 +231,10 @@ export function mountIslandBrawl({ container, opponent, onFinish, story = null, 
   let model, controls, disposed = false, finished = false, frameId = 0, previousTime = null, resizeObserver;
   const pauseButton = button('brawl-pause-button', '暫停 Ⅱ', () => model.getState().phase === 'paused' ? resume() : pause()); pauseButton.dataset.brawlPause = '';
   head.append(titles, pauseButton); root.append(head);
+  const abilityToast = node('div', 'brawl-ability-toast brawl-marquee'); abilityToast.dataset.brawlAnnouncement = '';
+  const abilityKicker = node('span', 'brawl-cast-kicker'), abilityName = node('strong', 'brawl-cast-name'), abilityLine = node('span', 'brawl-cast-line'), abilityCounter = node('span', 'brawl-cast-counter');
+  const castTrack = node('span', 'brawl-cast-track'), castFill = node('span'); castTrack.setAttribute('aria-hidden', 'true'); castTrack.append(castFill);
+  abilityToast.append(abilityKicker, abilityName, abilityLine, abilityCounter, castTrack); root.append(abilityToast);
   const hud = node('div', 'brawl-hud');
   const health = (name, isPlayer) => {
     const card = node('div', `brawl-fighter-hud ${isPlayer ? 'is-player' : 'is-opponent'}`), line = node('div', 'brawl-fighter-line');
@@ -234,8 +269,9 @@ export function mountIslandBrawl({ container, opponent, onFinish, story = null, 
     storyPrelude.append(node('summary', '', `${story.title} · 開場故事`), node('p', '', story.body));
     root.insertBefore(storyPrelude, stage);
   }
-  const abilityToast = node('div', 'brawl-ability-toast'); abilityToast.setAttribute('aria-hidden', 'true'); abilityToast.hidden = true;
-  const abilityName = node('strong'), abilityLine = node('span'); abilityToast.append(abilityName, abilityLine); stage.append(abilityToast);
+  const cutIn = node('div', 'brawl-cut-in'); cutIn.setAttribute('aria-hidden', 'true');
+  const cutInPortrait = node('img'); cutInPortrait.src = opponent.image; cutInPortrait.alt = '';
+  cutIn.append(cutInPortrait, node('span', '', opponent.name)); stage.append(cutIn);
   const status = node('p', 'brawl-status', '準備好再開始；右上角可以先離開。'); status.dataset.brawlStatus = ''; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite'); root.append(status);
   const lower = node('div', 'brawl-controls'), pad = node('div', 'brawl-pad'); pad.setAttribute('role', 'group'); pad.setAttribute('aria-label', '方向搖桿，按住拖曳或按方向鍵'); pad.dataset.brawlPad = '';
   const stick = node('span', 'brawl-stick'); stick.setAttribute('aria-hidden', 'true'); stick.textContent = '步'; pad.append(stick);
@@ -265,9 +301,9 @@ export function mountIslandBrawl({ container, opponent, onFinish, story = null, 
   let ctx;
   try { ctx = canvas.getContext('2d', { alpha: false }); } catch { /* Explicit fallback below; never substitutes a random win. */ }
   if (!ctx) { root.remove(); throw new Error('這台裝置暫時無法顯示對戰畫面，請換個瀏覽器再試；這次不會結算勝敗。'); }
-  model = createIslandBrawl({ opponentId: opponent.id });
+  model = suppliedModel || createIslandBrawl({ opponentId: opponent.id });
   controls = bindIslandBrawlInput({ document: doc, window: view, pad, buttons, directionButtons, getPhase: () => model.getState().phase, onPause: pause, onStart: start });
-  let width = 960, height = 540, dpr = 1, lastStatus = '';
+  let width = 960, height = 540, dpr = 1, lastStatus = '', announcementKey = '', burstParity = 0;
   const resize = () => {
     const rect = canvas.getBoundingClientRect(); width = Math.max(1, rect.width || stage.clientWidth || 960); height = Math.max(1, rect.height || stage.clientHeight || 540);
     dpr = Math.min(2, Math.max(1, view.devicePixelRatio || 1)); canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr); draw(model.getState());
@@ -286,20 +322,49 @@ export function mountIslandBrawl({ container, opponent, onFinish, story = null, 
     const recentImpact = state.effects?.find(effect => effect.type === 'impact' && effect.life / effect.maxLife > .7);
     if (recentImpact && !reducedMotion) ctx.translate(Math.sin(state.elapsed * 150) * 2.5, Math.cos(state.elapsed * 120) * 1.5);
     ctx.fillStyle = '#b7cbbb'; ctx.fillRect(0, 0, 960, 540);
+    // Static spotlights and a bounded set of comic rays: no particles or timers
+    // survive the rendered frame, and reduced motion keeps the artwork still.
+    for (const [x, color] of [[150, '#f4dfad30'], [810, '#d3f1db38']]) {
+      ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x - 170, 540); ctx.lineTo(x + 170, 540); ctx.closePath(); ctx.fill();
+    }
     ctx.fillStyle = '#e9e5d3'; roundRect(ctx, 19, 19, 922, 502, 30); ctx.fill();
     ctx.strokeStyle = '#d1d1ba'; ctx.lineWidth = 2; roundRect(ctx, 31, 31, 898, 478, 25); ctx.stroke();
     ctx.strokeStyle = '#c8cbb542'; ctx.lineWidth = 1;
     for (let x = 55; x < 930; x += 58) { ctx.beginPath(); ctx.moveTo(x, 34); ctx.lineTo(x, 506); ctx.stroke(); }
     for (let y = 61; y < 510; y += 44) { ctx.beginPath(); ctx.moveTo(34, y); ctx.lineTo(926, y); ctx.stroke(); }
     ctx.lineWidth = 2; hex(ctx, 480, 270, 108, '#e1e3cf', '#c1c9b1'); hex(ctx, 480, 270, 97, null, '#cbd1bc');
+    ctx.save(); ctx.translate(480, 270); ctx.rotate(reducedMotion ? .12 : state.elapsed * .025);
+    for (let i = 0; i < 12; i++) { const angle = i * Math.PI / 6; hex(ctx, Math.cos(angle) * 112, Math.sin(angle) * 112, 3, '#b5c3a5'); }
+    ctx.restore();
     text(ctx, '移 動 島', 480, 259, 29, '#a1af91', 600); text(ctx, 'AFTER HOURS', 480, 284, 12, '#9cab8d', 500); text(ctx, '一場打完，事情還是要好好說', 480, 309, 12, '#a0ad92', 500);
     for (const pickup of state.pickups || []) if (pickup.available) {
       ellipse(ctx, pickup.x, pickup.y + 3, 15, 7, '#a6b08c47'); ellipse(ctx, pickup.x, pickup.y, 10, 9, '#fff9e7');
       ctx.strokeStyle = '#aa9c7b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(pickup.x - 6, pickup.y - 3); ctx.lineTo(pickup.x + 2, pickup.y + 4); ctx.lineTo(pickup.x + 6, pickup.y - 3); ctx.stroke();
       text(ctx, '紙團', pickup.x, pickup.y + 27, 13, '#859173', 500);
     }
+    const casting = state.opponent.telegraphRemaining > 0;
+    const unleash = (state.effects || []).some(effect => effect.type === 'special');
+    if ((casting || unleash) && !reducedMotion) {
+      ctx.save(); ctx.globalAlpha = unleash ? .27 : .12;
+      const center = unleash ? state.player : state.opponent;
+      ctx.strokeStyle = unleash ? '#c79c3d' : '#9d5f4b'; ctx.lineWidth = unleash ? 4 : 2;
+      for (let i = 0; i < 18; i++) {
+        const angle = i * Math.PI / 9 + state.elapsed * .1, inner = 260 + Math.sin(i * 7) * 50;
+        ctx.beginPath(); ctx.moveTo(center.x + Math.cos(angle) * inner, center.y - 55 + Math.sin(angle) * inner);
+        ctx.lineTo(center.x + Math.cos(angle) * 1050, center.y - 55 + Math.sin(angle) * 1050); ctx.stroke();
+      }
+      ctx.restore();
+    }
     drawSignatureWarning(ctx, state.opponent, moveById.get(state.opponent.activeSkillId));
     if (state.opponent.shield > 0) { ctx.strokeStyle = '#7fa4b1'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(state.opponent.x, state.opponent.y - 64, 37, 83, 0, 0, Math.PI * 2); ctx.stroke(); }
+    for (const actor of actors) {
+      const charged = actor === state.player && actor.energy >= 100;
+      if (charged || actor.activeSkillId && actor.telegraphRemaining > 0) {
+        ellipse(ctx, actor.x, actor.y + 3, 47, 15, charged ? '#e9c35465' : '#b8795c40');
+        ctx.save(); ctx.translate(actor.x, actor.y); ctx.rotate(reducedMotion ? 0 : state.elapsed * (charged ? 1.2 : -.8));
+        hex(ctx, 0, 0, charged ? 54 : 45, null, charged ? '#d1aa49' : '#ad8061'); ctx.restore();
+      }
+    }
     const sorted = [...(state.obstacles || []).map(obstacle => ({ y: obstacle.y, draw: () => drawObstacle(ctx, obstacle) })),
       { y: state.player.y, draw: () => drawBrawlCharacter(ctx, state.player, { isPlayer: true, name: '我', elapsed: state.elapsed, reducedMotion }) },
       { y: state.opponent.y, draw: () => drawBrawlCharacter(ctx, state.opponent, { isPlayer: false, name: opponent.name, elapsed: state.elapsed, reducedMotion }) }].sort((a, b) => a.y - b.y);
@@ -329,8 +394,18 @@ export function mountIslandBrawl({ container, opponent, onFinish, story = null, 
     buttons.special.classList.toggle('is-ready', state.player.energy >= 100);
     pauseButton.disabled = state.phase === 'ready' || state.phase === 'finished'; write(pauseButton, state.phase === 'paused' ? '繼續 ▷' : '暫停 Ⅱ');
     const activeMove = moveById.get(state.opponent.activeSkillId), notice = state.signature.history.at(-1);
-    abilityToast.hidden = state.phase !== 'playing' || !notice || state.elapsed - notice.time > 3;
-    if (notice) { write(abilityName, notice.type === 'opening' ? `${opponent.name} · 開場白` : notice.name); write(abilityLine, notice.text); }
+    const announcement = brawlAnnouncement(state, profile, opponent.name);
+    write(abilityKicker, announcement.kicker); write(abilityName, announcement.name); write(abilityLine, announcement.line); write(abilityCounter, announcement.counter);
+    abilityCounter.hidden = !announcement.counter;
+    abilityToast.dataset.tone = announcement.tone;
+    abilityToast.style.setProperty('--cast-color', announcement.color);
+    castFill.style.width = `${announcement.progress * 100}%`;
+    cutIn.hidden = state.phase !== 'playing' || !notice || !['skill-start', 'event-start'].includes(notice.type) || state.elapsed - notice.time > .75;
+    if (announcement.key !== announcementKey) {
+      announcementKey = announcement.key; burstParity = 1 - burstParity;
+      abilityToast.dataset.burst = String(burstParity); cutIn.dataset.burst = String(burstParity);
+    }
+    root.dataset.charged = String(state.player.energy >= 100);
     const castHint = activeMove && state.opponent.telegraphRemaining > 0 ? `${activeMove.name}：${activeMove.counter}` : null;
     let message = state.phase === 'ready' ? '準備好再開始；下方可查看對手招式。' : state.phase === 'paused' ? '已暫停，準備好再繼續。' : castHint || (state.opponent.action === 'windup' ? `${opponent.name}準備出手，看準扇形範圍再閃避。` : state.player.slowRemaining > 0 ? '暫時被拖慢腳步，仍可用空白鍵閃避。' : state.player.energy >= 100 ? '下班氣勢已滿，按 K 或「無雙」！' : state.player.paper ? '手上有紙團，按 L 或「丟」拉開距離。' : '按住「擊」連段，注意對手出手前的提示。');
     if (message !== lastStatus) { write(status, message); lastStatus = message; }
@@ -340,24 +415,24 @@ export function mountIslandBrawl({ container, opponent, onFinish, story = null, 
   function complete() {
     if (disposed || finished) return;
     const state = model.getState(); if (state.phase !== 'finished') return;
-    finished = true; controls.clear(); view.cancelAnimationFrame(frameId); onFinish(state.outcome, state.summary);
+    finished = true; controls.clear(); view.cancelAnimationFrame(frameId); onFinish(state.outcome, state.summary, model.getProof?.());
   }
   function start() {
     if (disposed || model.getState().phase !== 'ready') return;
     if (storyPrelude) storyPrelude.hidden = true;
-    controls.clear(); model.start(); previousTime = null; update(); canvas.focus({ preventScroll: true });
+    controls.clear(); model.start(); previousTime = null; update(); root.scrollIntoView?.({ block: 'start', behavior: 'instant' }); canvas.focus({ preventScroll: true });
   }
   function pause(focus = true) {
     if (disposed || model.getState().phase !== 'playing') return;
     controls.clear(); model.pause(); previousTime = null;
-    panelKicker.textContent = '先停一下，也沒關係'; panelTitle.textContent = '這場對戰，等你回來'; panelCopy.textContent = story ? '準備好再繼續；認輸只結束這場切磋，可以再來挑戰。' : '準備好再繼續；認輸離場會依敗方送醫收尾。';
+    panelKicker.textContent = '先停一下，也沒關係'; panelTitle.textContent = '這場對戰，等你回來'; panelCopy.textContent = '準備好再繼續；認輸後會先結算這場對決，再交代現場後續。';
     readyRules.hidden = true; startButton.hidden = true; resumeButton.hidden = false; forfeitButton.hidden = false;
     if (storyPrelude) storyPrelude.hidden = true;
     update(); if (focus) resumeButton.focus({ preventScroll: true });
   }
   function resume() {
     if (disposed || model.getState().phase !== 'paused') return;
-    controls.clear(); model.resume(); previousTime = null; update(); canvas.focus({ preventScroll: true });
+    controls.clear(); model.resume(); previousTime = null; update(); root.scrollIntoView?.({ block: 'start', behavior: 'instant' }); canvas.focus({ preventScroll: true });
   }
   function frame(time) {
     if (disposed || finished) return;

@@ -1,3 +1,4 @@
+import {isCareerDuelV75} from './career-duel-v75.js';
 import { ENDINGS } from './endings.js';
 import { isRecruitmentV60 } from './seed-profile-v60.js';
 
@@ -164,7 +165,7 @@ export function deriveLeaderboardScoreV56(run) {
     trust: stats.trust, boss: stats.boss, belief: stats.dream,
     turns: workTurns.size,
     verbal: count(run.flags.verbal_attempts),
-    realHits: count(run.flags.rage_real),
+    realHits: count(run.flags.rage_real) + (isCareerDuelV75(run) ? count(run.flags.duel75_real_hits) : 0),
     imaginedHits: count(run.flags.rage_imagined),
     promotions: count(run.flags.promotions)
   };

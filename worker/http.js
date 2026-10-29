@@ -1,3 +1,4 @@
+import {isCareerDuelV75,validateDuelProofV75} from '../dist/career-duel-v75.js';
 import {isCareerContentV71} from '../dist/career-content-v71.js';
 import {isExpansionV65} from '../dist/expansion-profile-v65.js';
 import {ACTIVITY_IDS_V44} from '../dist/activities-v44.js';
@@ -126,6 +127,18 @@ export function validateCompletion(body, roleMap) {
   for (const action of body.actions) {
     if (!action || typeof action !== 'object' || Array.isArray(action)) {
       throw new ApiError(400, 'invalid_actions', '遊戲操作紀錄無效。');
+    }
+    if (action.type === 'duel-invite') {
+      if (isCareerDuelV75(body.seed)&&Object.keys(action).sort().join(',')==='eventId,target,type,version'&&action.version===1
+          &&typeof action.eventId==='string'&&action.eventId.length>0&&action.eventId.length<=100
+          &&(targetAllowed(body.seed,action.target)||action.target==='hidden-visitor')) continue;
+      throw new ApiError(400, 'invalid_actions', '單挑邀約紀錄無效。');
+    }
+    if (action.type === 'duel-play') {
+      if (isCareerDuelV75(body.seed)&&Object.keys(action).sort().join(',')==='eventId,input,type,version'&&action.version===1&&action.eventId==='duel75-battle') {
+        try {validateDuelProofV75(action.input);continue;} catch {}
+      }
+      throw new ApiError(400, 'invalid_actions', '單挑操作紀錄無效。');
     }
     if (action.type === 'salary-advice') {
       if (/^e(?:28|29|30|31|32|33|34|35|36|37|38|39)-/.test(body.seed)&&Object.keys(action).every(key=>key==='type')) continue;

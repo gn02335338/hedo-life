@@ -434,7 +434,7 @@ test('a lost WebGL context switches stale live destinations to the selected sche
 
 test('fight choices resolve only after selection, transfer both sides, and recover at the matching facility', async () => {
   for (const [outcome, playerStatus, placeId, otherStatus] of [['win', 'police', 'police-desk', 'hospital'], ['lose', 'hospital', 'hospital-er', 'police']]) {
-    const f = await fixture({ conflictRandom: () => { throw new Error('a played fight must never roll a result'); } });
+    const f = await fixture({ conflictRandom: () => .01 });
     f.api.meetColleague('jack');
     await f.node('[data-conflict-action="fight"]').dispatch('click');
     assert.equal(f.api.getConflictState().history.length, 0, 'opening a confrontation does not draw a result');
@@ -486,7 +486,7 @@ test('boss arguments can exile the visitor, clock changes retain the hold, and e
 });
 
 test('fallback exposes incident recovery and a held Aliang does not pretend to lead the evening trip', async () => {
-  const f = await fixture({ fallback: true, reducedMotion: true, conflictRandom: () => .99 });
+  const f = await fixture({ fallback: true, reducedMotion: true, conflictRandom: () => .01 });
   f.api.meetColleague('kind');
   await f.node('[data-conflict-action="fight"]').dispatch('click');
   f.startBattle(); f.finishBattle('lose');
@@ -1002,4 +1002,45 @@ test('a hospital hold follows the actual body through departure, ferry and arriv
   assert.equal(f.api.getConflictState().player.status, 'police');
   assert.equal(f.api.getChallengeState().active, null);
   assert.deepEqual(f.api.getChallengeState().wins, []);
+});
+
+
+test('island duel refusals are revealed after the click and cannot be rerolled in the same visit', async () => {
+  let draws = 0;
+  const f = await fixture({ conflictRandom: () => { draws++; return .99; } });
+  f.api.meetColleague('wing');
+  assert.ok(f.node('[data-conflict-action="duel"]'));
+  assert.equal(draws, 0); assert.equal(f.brawls.length, 0);
+  assert.ok(!f.node('#encounter-content').textContent.includes('拒絕了單挑'));
+  await f.node('[data-conflict-action="duel"]').dispatch('click');
+  assert.equal(draws, 1); assert.equal(f.brawls.length, 0);
+  assert.ok(f.node('#encounter-title').textContent.includes('拒絕了單挑'));
+  assert.equal(f.api.getConflictState().history[0].outcome, 'refused');
+  f.api.meetColleague('wing');
+  assert.equal(f.node('[data-conflict-action="duel"]').disabled, true);
+  assert.ok(f.node('[data-conflict-action="fight"]'), 'existing story challenges remain independently accessible');
+  assert.equal(draws, 1); assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+});
+
+test('a boss can accept an ordinary duel without story unlocks, and their absence blocks company work until released', async () => {
+  const samples = [0, .99, 0], f = await fixture({ fallback: true, conflictRandom: () => samples.shift() });
+  f.api.meetColleague('wing'); await f.node('[data-conflict-action="duel"]').dispatch('click');
+  assert.equal(f.brawls.length, 1);
+  assert.ok(f.brawls[0].config.story.title.includes('接下了單挑'));
+  assert.equal(f.api.getConflictState().history.length, 1);
+  f.startBattle(); f.finishBattle('win');
+  const state = f.api.getConflictState();
+  assert.equal(state.player.status, 'free'); assert.equal(state.people[0].id, 'wing'); assert.equal(state.people[0].status, 'hospital');
+  assert.equal(f.api.getChallengeState().wins.length, 0, 'ordinary duel does not award story progression');
+  assert.ok(f.node('[data-company-issue="executive-approval"]'));
+  f.api.visitPlace('general-manager-office');
+  assert.ok(f.node('[data-company-task-hold="general-manager-office"]'));
+  assert.equal(f.node('[data-encounter-choice]'), null, 'blocked work cannot pretend its responsible person is present');
+  await f.node('[data-company-help="wing"]').dispatch('click');
+  await f.node('[data-sail-region="life"]').dispatch('click');
+  await f.node('[data-conflict-release="wing"]').dispatch('click');
+  assert.deepEqual(JSON.parse(JSON.stringify(f.api.getConflictState().companyIssues)), []);
+  f.api.visitPlace('general-manager-office'); await f.node('[data-sail-region="company"]').dispatch('click');
+  assert.equal(f.node('[data-company-task-hold]'), null); assert.ok(f.node('[data-encounter-choice="0"]'));
+  assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER'); assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
 });

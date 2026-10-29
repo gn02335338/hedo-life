@@ -65,7 +65,7 @@ function appHarness(mobile){
  const calls=[],nodes=new Map(),node=key=>{
   if(!nodes.has(key))nodes.set(key,{innerHTML:'',focus(){calls.push(`focus:${key}`);},scrollIntoView(){calls.push(`scroll:${key}`);}});return nodes.get(key);
  };
- const context=vm.createContext({...E,...balance,renderWorkGapHTMLV50,run:null,MAX_TURNS:E.MAX_TURNS,
+ const context=vm.createContext({...E,...balance,renderWorkGapHTMLV50,run:null,MAX_TURNS:E.MAX_TURNS,careerDuelUIV75:{dispose(){}},
   shareholderCleanupV58:null,activityPlayCleanupV55:null,patronagePickerContext:null,ragePickerContext:null,verbalPickerContext:null,gameViewRevision:0,screen:'game',main:node('#main'),$:node,
   window:{scrollTo(){calls.push('scroll:window');},matchMedia:()=>({matches:mobile})},isPersonnelNotice:()=>false,esc:String,STAT_LABELS:{mood:'自己心情',energy:'體力'},
   gameSidebarHTML:()=>'<aside class="game-sidebar"></aside>',activityReturnNotice:()=>'',eventDepartureControlV63:()=>'',

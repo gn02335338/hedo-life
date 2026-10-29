@@ -1,4 +1,5 @@
 import {isExpansionV66} from './expansion-profile-v66.js';
+import {isLifeV75,TYPHOON_STORY_V75} from './typhoon-story-v75.js';
 // Ordinary office fiction. This file contains no private archive or identity.
 const rows=[
  ['零食到貨，箱子比需求更早有編號。','辦公室支援同事請你幫忙標到貨日。零食每箱都查得到，產品需求卻還在不同群組打轉。','按日期與品項整理。','箱子有了可查位置，你也把幫忙範圍留在這次清點。','替每包餅乾發專案編號，宣布全公司最完整的追蹤系統上線。','她笑著把清單貼好。系統沒有真的改賣零食，大家倒能自己找一包餅乾。','整理完回原本工作。','你把完成項目交回，不必因為會貼標籤就接下永久管理。','幹，餅乾都追得到日期，需求還靠口頭講？整理可以，別又順手把整個零食櫃變成我的新部門。'],
@@ -26,5 +27,5 @@ const rows=[
  ['快遞簽收，不能順便簽產品驗收。','支援同事請你代收一箱展示用品，窗口把收到了轉成整套已確認。你只是看見箱子，裡面的設備甚至還沒開；兩個簽收被寫得像同一件事。','分開物流簽收與內容檢查。','箱子有了正確狀態，真正該驗的項目也找到負責者。','替紙箱印「本人無權代表內容發言」。','她笑著把驗收欄退回窗口。紙箱沒授權，交付倒是終於不會只靠一個收到了。','只回覆外箱已到，請窗口安排檢查。','你把看見和確認分開，不替沒開過的設備先蓋通過。','幹，收到箱子不是驗收設備。簽物流跟簽功能分清楚，別把我代拿一下變成整案都過了。']
 ];
 export const HIDDEN_STORIES_V66=Object.freeze(rows.map(([title,body,a,ar,b,br,c,cr,verbal])=>Object.freeze({title,body,verbal,choices:[{text:a,result:ar},{text:b,result:br},{text:c,result:cr}]})));
-export const hiddenStoryCountV66=run=>isExpansionV66(run)?8+HIDDEN_STORIES_V66.length:8;
-export const hiddenStoryV66=(run,index)=>isExpansionV66(run)&&Number.isInteger(index)&&index>=8?HIDDEN_STORIES_V66[index-8]:null;
+export const hiddenStoryCountV66=run=>isExpansionV66(run)?8+HIDDEN_STORIES_V66.length+(isLifeV75(run)?1:0):8;
+export const hiddenStoryV66=(run,index)=>isLifeV75(run)&&index===8+HIDDEN_STORIES_V66.length?TYPHOON_STORY_V75:isExpansionV66(run)&&Number.isInteger(index)&&index>=8?HIDDEN_STORIES_V66[index-8]:null;

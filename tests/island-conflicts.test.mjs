@@ -9,10 +9,10 @@ function finishFight(session, id, outcome = 'win', summary) {
   return session.settleFight(start.token, outcome, summary);
 }
 
-test('every official colleague accepts actual win/loss without another random draw', () => {
+test('every colleague retains the played winner while independent aftermath draws decide destinations', () => {
   for (const { id } of ISLAND_CAST) for (const [outcome, playerStatus, npcStatus] of [['win', 'police', 'hospital'], ['lose', 'hospital', 'police']]) {
     let draws = 0;
-    const session = createIslandConflicts({ random: () => { draws++; return outcome === 'win' ? .999 : 0; } });
+    const session = createIslandConflicts({ random: () => { draws++; return 0; } });
     assert.equal(session.fight, undefined, 'the old random fight API is absent');
     const start = session.beginFight(id), before = session.getState();
     assert.equal(before.player.status, 'free'); assert.deepEqual(before.people, []); assert.deepEqual(before.history, []);
@@ -22,7 +22,7 @@ test('every official colleague accepts actual win/loss without another random dr
     assert.equal(result.player.status, playerStatus); assert.equal(result.people[0].id, id); assert.equal(result.people[0].status, npcStatus);
     assert.equal(result.player.placeId, CONFLICT_PLACES[playerStatus].placeId); assert.equal(result.people[0].placeId, CONFLICT_PLACES[npcStatus].placeId);
     assert.match(result.description, /移動醫院/); assert.match(result.description, /島上警局/);
-    assert.equal(result.summary.reason, 'knockout'); assert.equal(session.getState().history.length, 1); assert.equal(session.getState().activeFight, null); assert.equal(draws, 0);
+    assert.equal(result.summary.reason, 'knockout'); assert.equal(session.getState().history.length, 1); assert.equal(session.getState().activeFight, null); assert.equal(draws, 2);
   }
 });
 
@@ -36,12 +36,12 @@ test('one reservation blocks conflicting actions and cancellation has no consequ
   assert.deepEqual(session.getState(), active); assert.equal(draws, 0);
   assert.equal(session.cancelFight('wrong-token').code, 'invalid-fight-token'); assert.deepEqual(session.getState(), active);
   assert.equal(session.cancelFight(start.token).ok, true);
-  assert.deepEqual(session.getState(), { player: { status: 'free', placeId: null, districtId: null }, people: [], history: [], activeFight: null });
+  assert.deepEqual(session.getState(), { player: { status: 'free', placeId: null, districtId: null }, people: [], history: [], activeFight: null, duelInvitations: [], companyIssues: [] });
   assert.equal(draws, 0); assert.equal(session.argue('wing').outcome, 'exiled'); assert.equal(draws, 1);
 });
 
 test('old, foreign, cancelled and duplicate callbacks cannot affect a current match', () => {
-  const session = createIslandConflicts(), other = createIslandConflicts();
+  const session = createIslandConflicts({ random: () => 0 }), other = createIslandConflicts({ random: () => 0 });
   const first = session.beginFight('jack'), foreign = other.beginFight('jack');
   assert.notEqual(first.token, foreign.token); assert.equal(session.settleFight(foreign.token, 'win').code, 'invalid-fight-token');
   session.cancelFight(first.token);
@@ -54,7 +54,7 @@ test('old, foreign, cancelled and duplicate callbacks cannot affect a current ma
 });
 
 test('invalid outcomes and summaries are atomic while scores are bounded and plain data', () => {
-  const session = createIslandConflicts(), start = session.beginFight('jack'), pending = session.getState();
+  const session = createIslandConflicts({ random: () => 0 }), start = session.beginFight('jack'), pending = session.getState();
   for (const outcome of ['victory', '', true, null, {}, 0]) {
     assert.equal(session.settleFight(start.token, outcome).code, 'invalid-fight-outcome'); assert.deepEqual(session.getState(), pending);
   }
@@ -70,13 +70,13 @@ test('invalid outcomes and summaries are atomic while scores are bounded and pla
 });
 
 test('draws preserve other holds and terminal copy describes timeout or forfeit', () => {
-  const session = createIslandConflicts(); finishFight(session, 'jack'); session.recoverPlayer('police-desk'); const people = session.getState().people;
+  const session = createIslandConflicts({ random: () => 0 }); finishFight(session, 'jack'); session.recoverPlayer('police-desk'); const people = session.getState().people;
   const draw = finishFight(session, 'wing', 'draw', { reason: 'timeout' });
   assert.equal(draw.outcome, 'draw'); assert.equal(draw.player.status, 'free'); assert.equal(draw.person, null); assert.deepEqual(draw.people, people);
   assert.equal(draw.summary.reason, 'timeout'); assert.match(draw.description, /沒有分出勝負/); assert.equal(session.getState().activeFight, null);
-  const timeout = finishFight(createIslandConflicts(), 'kind', 'win', { reason: 'timeout', duration: 75 });
+  const timeout = finishFight(createIslandConflicts({ random: () => 0 }), 'kind', 'win', { reason: 'timeout', duration: 75 });
   assert.match(timeout.description, /鈴聲/); assert.equal(timeout.player.status, 'police');
-  const forfeit = finishFight(createIslandConflicts(), 'wing', 'lose', { reason: 'forfeit' });
+  const forfeit = finishFight(createIslandConflicts({ random: () => 0 }), 'wing', 'lose', { reason: 'forfeit' });
   assert.match(forfeit.description, /認輸/); assert.equal(forfeit.player.status, 'hospital');
 });
 
@@ -123,6 +123,88 @@ test('reservations, receipts and bounded history are detached from caller mutati
   session.recoverPlayer('police-desk'); session.releasePerson('jack', 'hospital-er');
   for (let index = 0; index < 20; index++) session.argue('jack');
   const final = session.getState(); assert.equal(final.history.length, 12); assert.equal(final.history.at(-1).turn, 23); assert.equal(final.history[0].turn, 12);
-  assert.deepEqual(Object.keys(final).sort(), ['activeFight', 'history', 'people', 'player']);
-  assert.deepEqual(createIslandConflicts().getState(), { player: { status: 'free', placeId: null, districtId: null }, people: [], history: [], activeFight: null });
+  assert.deepEqual(Object.keys(final).sort(), ['activeFight', 'companyIssues', 'duelInvitations', 'history', 'people', 'player']);
+  assert.deepEqual(createIslandConflicts({ random: () => 0 }).getState(), { player: { status: 'free', placeId: null, districtId: null }, people: [], history: [], activeFight: null, duelInvitations: [], companyIssues: [] });
+});
+
+
+test('duel refusals commit once without starting combat, moving people or repeatedly drawing', () => {
+  let draws = 0;
+  const session = createIslandConflicts({ random: () => { draws++; return .99; } });
+  const refusal = session.requestDuel('wing');
+  assert.equal(refusal.ok, true); assert.equal(refusal.outcome, 'refused'); assert.match(refusal.description, /拒絕|簽核/);
+  assert.equal(session.getState().activeFight, null); assert.equal(session.getState().player.status, 'free');
+  assert.deepEqual(session.getState().people, []); assert.deepEqual(session.getState().companyIssues, []);
+  const snapshot = session.getState();
+  assert.equal(session.requestDuel('wing').code, 'duel-already-answered');
+  assert.deepEqual(session.getState(), snapshot); assert.equal(draws, 1);
+  assert.equal(session.beginFight('wing', { duel: true }).code, 'duel-not-accepted');
+  assert.equal(session.getState().history.length, 1);
+});
+
+test('accepted duels resume the same reply after pre-start cancellation and finish only once', () => {
+  let draws = 0;
+  const session = createIslandConflicts({ random: () => { draws++; return 0; } });
+  const accepted = session.requestDuel('jack');
+  assert.equal(accepted.outcome, 'accepted'); assert.ok(accepted.token); assert.match(accepted.description, /走位與出招/);
+  assert.equal(session.getState().history.length, 1); assert.equal(draws, 1);
+  assert.equal(session.requestDuel('wing').code, 'fight-active'); assert.equal(draws, 1);
+  session.cancelFight(accepted.token);
+  const resumed = session.requestDuel('jack');
+  assert.equal(resumed.outcome, 'accepted'); assert.notEqual(resumed.token, accepted.token);
+  assert.equal(draws, 1); assert.equal(session.getState().history.length, 1);
+  const result = session.settleFight(resumed.token, 'win');
+  assert.equal(result.outcome, 'win'); assert.equal(draws, 3);
+  assert.equal(session.getState().duelInvitations[0].outcome, 'completed');
+  const completed = session.getState();
+  assert.equal(session.settleFight(resumed.token, 'lose').code, 'invalid-fight-token'); assert.equal(draws, 3);
+  assert.deepEqual(session.getState(), completed);
+  session.recoverPlayer('police-desk'); session.releasePerson('jack', 'hospital-er');
+  assert.equal(session.requestDuel('jack').code, 'duel-already-answered'); assert.equal(draws, 3);
+});
+
+test('acceptance rates differ by character and the boundary itself refuses', () => {
+  for (const [id, threshold] of [['wing', .4], ['hope', .35], ['owen', .8], ['jack', .6]]) {
+    assert.equal(createIslandConflicts({ random: () => threshold - .000001 }).requestDuel(id).outcome, 'accepted');
+    assert.equal(createIslandConflicts({ random: () => threshold }).requestDuel(id).outcome, 'refused');
+  }
+});
+
+test('aftercare is probabilistic, independent and less severe for consensual timeout or forfeit', () => {
+  for (const outcome of ['win', 'lose']) for (const [playerRoll, personRoll, playerHeld, personHeld] of [[0, 0, true, true], [.99, .99, false, false], [0, .99, true, false], [.99, 0, false, true]]) {
+    const samples = [0, playerRoll, personRoll], session = createIslandConflicts({ random: () => samples.shift() });
+    const start = session.requestDuel('jack'), result = session.settleFight(start.token, outcome);
+    assert.equal(result.outcome, outcome);
+    assert.equal(result.player.status !== 'free', playerHeld);
+    assert.equal(result.people.length > 0, personHeld);
+    if (playerHeld) assert.equal(result.player.status, outcome === 'win' ? 'police' : 'hospital');
+    if (personHeld) assert.equal(result.people[0].status, outcome === 'win' ? 'hospital' : 'police');
+    assert.equal(samples.length, 0);
+  }
+  for (const [outcome, threshold] of [['win', .55], ['lose', .75]]) {
+    for (const [reason, reduction] of [['knockout', 0], ['timeout', .15], ['forfeit', .35]]) {
+      const samples = [0, threshold - reduction, .99], session = createIslandConflicts({ random: () => samples.shift() });
+      const start = session.requestDuel('jack'), result = session.settleFight(start.token, outcome, { reason });
+      assert.equal(result.player.status, 'free', `${outcome}/${reason} uses an exclusive boundary`);
+    }
+  }
+});
+
+test('company interruptions derive from the absent responsible person and release restores only that window', () => {
+  const samples = [0, .99, 0, 0, .99, 0], session = createIslandConflicts({ random: () => samples.shift() });
+  let start = session.requestDuel('wing'); session.settleFight(start.token, 'win');
+  assert.equal(session.getState().player.status, 'free');
+  const first = session.getState().companyIssues;
+  assert.equal(first[0].id, 'executive-approval'); assert.deepEqual(first[0].placeIds, ['general-manager-office']);
+  assert.equal(first[0].recoveryPlaceId, 'hospital-er'); assert.equal(first[0].participantId, 'wing');
+  first[0].placeIds.length = 0; assert.equal(session.getState().companyIssues[0].placeIds.length, 1, 'snapshots do not mutate company rules');
+  start = session.requestDuel('janet'); session.settleFight(start.token, 'lose');
+  const both = session.getState().companyIssues;
+  assert.deepEqual(both.map(item => item.id), ['executive-approval', 'cashflow']);
+  assert.equal(both[1].status, 'police');
+  assert.equal(session.releasePerson('wing', 'police-desk').code, 'wrong-place');
+  assert.equal(session.getState().companyIssues.length, 2);
+  const restored = session.releasePerson('wing', 'hospital-er'); assert.match(restored.description, /窗口已恢復/);
+  assert.deepEqual(session.getState().companyIssues.map(item => item.id), ['cashflow']);
+  session.releasePerson('janet', 'police-desk'); assert.deepEqual(session.getState().companyIssues, []);
 });

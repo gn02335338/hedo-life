@@ -74,10 +74,10 @@ const replayCase=record=>{
 };
 
 test('only strict fresh r68 seeds use the familiarity correction',()=>{
- for(const kind of ['n','s','d']){
-  const seed='e39-r68-'+kind+'-'+ 'a'.repeat(22);assert.equal(isPatronageFamiliarityV68(seed),true);assert.equal(isPatronageFamiliarityV68({seed}),true);
+ for(const current of [68,69,70,71,72,73,74,75])for(const kind of ['n','s','d']){
+  const seed=`e39-r${current}-`+kind+'-'+ 'a'.repeat(22);assert.equal(isPatronageFamiliarityV68(seed),true);assert.equal(isPatronageFamiliarityV68({seed}),true);
  }
- for(const seed of ['e39-r67-n-'+'a'.repeat(22),'e39-r75-n-'+'a'.repeat(22),'e39-r68-x-'+'a'.repeat(22),'e39-r68-n-'+'a'.repeat(21),'e39-r68-n-'+'a'.repeat(23),'e39-r68-n-'+'A'.repeat(22),'e39-r68-n-'+'g'.repeat(22),'e39-r68-n-'+'a'.repeat(22)+'-extra',null])assert.equal(isPatronageFamiliarityV68(seed),false);
+ for(const seed of ['e39-r67-n-'+'a'.repeat(22),'e39-r76-n-'+'a'.repeat(22),'e39-r68-x-'+'a'.repeat(22),'e39-r68-n-'+'a'.repeat(21),'e39-r68-n-'+'a'.repeat(23),'e39-r68-n-'+'A'.repeat(22),'e39-r68-n-'+'g'.repeat(22),'e39-r68-n-'+'a'.repeat(22)+'-extra',null])assert.equal(isPatronageFamiliarityV68(seed),false);
 });
 
 test('natural negative r68 replies to every public character preserve encounters but cannot improve a meal through extra familiarity',()=>{

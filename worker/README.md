@@ -1690,3 +1690,53 @@ closes both test sockets. Unit tests cover the pure combat model, room/session
 lifecycle, request validation, client ownership, keyboard/touch cleanup and the
 island modal integration. The standard `npm test` and `npm run build:check`
 remain required before publication.
+
+## Career duels and typhoon encounter (v75)
+
+Fresh strict `e39-r75-[nsd]-[0-9a-f]{22}` lives inherit r74 and add one fictional
+warehouse-store encounter to the rare hidden pool. Earlier cohorts retain their
+pool sizes, random draws, histories and transcripts. The scene's two explicit
+participants are available only while actually present; the hidden visitor stays
+outside public character cards and counters.
+
+`duel-invite` version 1 accepts exactly `{type,version,eventId,target}`. Canonical
+replay verifies the live unanswered source, actual participants, resources,
+screen ownership, one invitation per work turn and two invitations per life.
+The committed invitation records its seeded acceptance or refusal before another
+action may run. Refusals return to the source; accepted invitations own a battle
+context and survive JSON saves. No caller can inject a target, score or result.
+
+`duel-play` version 1 accepts exactly `{type,version,eventId,input}` with
+`eventId:'duel75-battle'` and input exactly `{frames,forfeit}`. Frames contain at
+most 2,251 lowercase hexadecimal byte pairs: nine digital directions and four
+buttons. Both the browser's supplied model and server replay use the existing
+island brawl at fixed 30 Hz with a canonical per-invitation seed. Pauses add no
+simulation time. Invalid directions, extra fields, incomplete fights, frames
+after a terminal result and a forged winner are rejected. Only raw controls are
+submitted, and the engine derives damage, victory, summary and aftermath. Two
+full bouts add under 10 KB to the existing 64 KiB proof envelope.
+The v75 combat rules, seeded skill schedule and committed narrative are a replay
+contract: future balance/content changes must preserve this version or introduce
+a separately gated simulation, rather than changing published recordings.
+
+Two independent seeded aftermath draws determine the player's and opponent's
+hospital/police disposition; a clean early surrender does not invent injuries.
+Actual absence causes role-specific company handoff problems. Normal `choice`
+actions resolve aftercare, with the optional eight-point payment disclosed in
+advance and included in the spending ledger. Stat, affinity, real-hit, chart and
+leaderboard projections read the committed canonical rows. Returning restores
+the original source and any hidden encounter context without answering it,
+advancing a workday, paying salary, servicing a loan or consuming PIP. Resource
+exhaustion waits for the owned scene's safe return boundary.
+
+Island free-roam conflicts remain visit-local; invitation receipts cannot reroll
+a refusal, and actual NPC absence temporarily closes its related company
+window until recovery. Story challenge and invite-only PvP remain separate.
+The battle renderer uses a large sticky skill banner and bounded procedural
+effects; reduced-motion preferences suppress animated visual flourishes.
+
+No endpoint, database migration, credential, anonymous identity or player storage
+key is added. The existing anonymous proof APIs perform canonical replay, prefix
+ownership checks, deduplication and public projections. Focused checks are
+`node --test tests/*duel*v75.test.mjs tests/typhoon-story-v75.test.mjs` in addition
+to the standard full test and dry-run build commands.
