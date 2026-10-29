@@ -75,12 +75,12 @@ function fixture(t, fetcher, { onChange = () => {} } = {}) {
   return { document, window, ids, controls, allNodes, form, ui, calls, rosterUpdates, fill, clickHistory, open };
 }
 
-test('application choices remain the nine supported resident districts and exclude the Oneira project island', async t => {
+test('application choices remain the nine supported resident districts and exclude both friend project islands', async t => {
   const f = fixture(t, async path => Response.json(path.endsWith('/config') ? { enabled: true } : path.endsWith('/mine') ? { applications: [] } : { version: 1, residents: [] }));
   await f.open();
   const districts = f.controls.get('districtId').children.map(option => option.value);
   assert.deepEqual(districts, ISLAND_DISTRICTS, 'every offered location is accepted by the existing resident API');
-  for (const id of ['oneira', 'exile', 'hospital', 'police']) assert.ok(!districts.includes(id), `${id}: visitor destinations do not become resident districts`);
+  for (const id of ['oneira', 'omega-city', 'exile', 'hospital', 'police']) assert.ok(!districts.includes(id), `${id}: visitor destinations do not become resident districts`);
 });
 
 test('resetting a submitted application retains a valid default outfit for a later reapplication', async t => {

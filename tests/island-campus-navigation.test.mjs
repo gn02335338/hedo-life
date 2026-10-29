@@ -13,10 +13,10 @@ const roster=LAYOUT.filter(({id})=>Object.hasOwn(RESIDENT_POSITIONS,id)).flatMap
 const places=PLACES.map(place=>({kind:'place',id:place.id,districtId:place.districtId,key:`place:${place.id}`,position:PLACE_ENTRANCES[place.id],radius:.9,exitRadius:1.15}));
 const dynamic={dynamicCharacters:true};
 
-test('29 department, shared, after-work and Oneira destinations have separate safe physical entrances',()=>{
-  assert.equal(PLACES.length,29);
+test('31 department, shared, after-work and friend-island destinations have separate safe physical entrances',()=>{
+  assert.equal(PLACES.length,31);
   assert.deepEqual(Object.keys(PLACE_ENTRANCES).sort(),PLACES.map(place=>place.id).sort());
-  assert.equal(new Set(Object.values(PLACE_ENTRANCES).map(point=>`${point.x},${point.z}`)).size,29);
+  assert.equal(new Set(Object.values(PLACE_ENTRANCES).map(point=>`${point.x},${point.z}`)).size,31);
   for(const place of PLACES){
     const point=PLACE_ENTRANCES[place.id],district=LAYOUT.find(row=>row.id===place.districtId);
     assert.ok(isTerrainWalkable(point),`${place.id}: entrance lies on clear ground`);
@@ -25,7 +25,7 @@ test('29 department, shared, after-work and Oneira destinations have separate sa
   assert.ok(!isTerrainWalkable({x:60.4,z:8.45}),'the mystery kiosk has a matching solid footprint');
 });
 
-test('all29 place prompts and all61 character prompts remain reachable in a full moving campus',()=>{
+test('all31 place prompts and all61 character prompts remain reachable in a full moving campus',()=>{
   for(const hour of [10,12]){
   const life=createNpcLife({residents:roster,hour});
   for(const phase of [0,20,55]){

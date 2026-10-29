@@ -1041,19 +1041,19 @@ credential, personal-data field or database migration.
 ## The Moving Island static experience
 
 `/island/` is served from `dist/island/` through the existing static asset binding.
-It is a standalone original 3D archipelago with four sea regions: the company
-island, after-work life island, remote exile island and Oneira friend island. The company region has
-seven department/shared districts; the court, harbor, hospital and police are
-on the life island, while exile has its own distant shore. All original nine
-district identities plus the three special districts remain stable. There are 29 independently
-explorable places (87 choices), thirteen district stories (39 choices), a six-stop
-day tour, and all 34 current public colleagues (102 encounter choices).
+It is a standalone original 3D archipelago with five sea regions: the company
+island, after-work life island, remote exile island, Oneira friend island and
+Omega City friend island. The company region has seven department/shared
+districts; the court, harbor, hospital and police are
+on the life island, while exile has its own distant shore. All thirteen existing
+district identities remain stable. There are 31 independently explorable
+places (93 choices), fourteen district stories (42 choices), a six-stop day tour, and all 34 current public colleagues (102 encounter choices).
 Walking uses connected paths and bridges within each island, reachable place
 entries and a controllable visitor. No inter-island walking surface exists.
 Each shore has a visible timber terminal, sheltered waiting area, destination
 signs and a moored ferry. Current-island dock labels open the ferry menu in
 overview; while walking they become usable within boarding range, independently
-of nearby NPC priority. The header ferry control and four dock interactions
+of nearby NPC priority. The header ferry control and five dock interactions
 share the same departure, voyage and arrival flow. District/place hashes, directory locations, tours and
 incident destinations require arrival before opening remote content; the
 non-WebGL list retains this flow. A failed voyage leaves the visitor on the
@@ -1072,6 +1072,18 @@ gate. The consumed source/hash are removed, so reloading does not replay the
 return. No credentials, career proof, player storage or arbitrary redirect URL
 are passed between projects. Existing archive, worker, migrations and residency
 API schema stay unchanged.
+
+Omega City (`omega-city`) adds a fifth separate island with an original neon
+skyline, its own dock and two `project` places: `omega-terminal` and
+`omega-overlook`. All twenty directed ferry routes use the same departure and
+arrival gate; no new inter-island walking bridge is created. After arrival, its
+explicit game link opens only `https://omegacity-life.vercel.app/` in a new tab
+with no referrer; the career homepage also credits 手遊王愛麗絲 and links to that
+fixed public URL. We do not change the external game or add a return link there.
+These visitor places add no colleague schedules, residency options, identity
+sharing, save transfer, API endpoints or database migrations. The original nine
+application districts and their twenty-seven resident slots remain unchanged.
+
 The roster matches `PERSONAS`, includes Alice, and assigns each colleague a department,
 staggered pantry breaks and a court or izakaya destination after 18:00. At 19:00,
 Aliang (`kind`) invites Jack, Cindy, James and Johnny to the harbor; they stroll

@@ -7,6 +7,16 @@ export const ONEIRA_PORT = Object.freeze({
   harborUrl: 'https://oneirahub.com/harbor?from=moving-island',
 });
 
+// This is Alice's external game. Opening it starts a separate experience; the
+// public destination never receives our anonymous identity or island progress.
+export const OMEGA_CITY_PORT = Object.freeze({
+  id: 'omega-city',
+  placeId: 'omega-terminal',
+  name: '終末之都',
+  author: '手遊王愛麗絲',
+  gameUrl: 'https://omegacity-life.vercel.app/',
+});
+
 export function getOneiraArrival(search = '', hash = '') {
   if (typeof search !== 'string' || typeof hash !== 'string' || hash !== '#oneira') return null;
   const params = new URLSearchParams(search);

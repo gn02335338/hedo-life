@@ -6,10 +6,10 @@ import { findNpcRoute } from '../dist/island/npc-routing.js';
 import { createNpcLife } from '../dist/island/npc-life.js';
 const gap=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z);
 
-test('the original twelve districts and Oneira form four sea regions with only local walking bridges',()=>{
-  assert.deepEqual(Object.keys(REGIONS),['company','life','exile','oneira']);
+test('the original thirteen districts and Omega City form five sea regions with only local walking bridges',()=>{
+  assert.deepEqual(Object.keys(REGIONS),['company','life','exile','oneira','omega-city']);
   assert.deepEqual(Object.values(REGIONS).flatMap(region=>region.districts).sort(),LAYOUT.map(d=>d.id).sort());
-  assert.equal(REGIONS.company.districts.length,7);assert.equal(REGIONS.life.districts.length,4);assert.deepEqual(REGIONS.exile.districts,['exile']);assert.deepEqual(REGIONS.oneira.districts,['oneira']);
+  assert.equal(REGIONS.company.districts.length,7);assert.equal(REGIONS.life.districts.length,4);assert.deepEqual(REGIONS.exile.districts,['exile']);assert.deepEqual(REGIONS.oneira.districts,['oneira']);assert.deepEqual(REGIONS['omega-city'].districts,['omega-city']);
   assert.equal(getRegionForDistrict('__proto__'),null);
   for(const [a,b]of LINKS)assert.equal(getRegionForDistrict(a),getRegionForDistrict(b),`${a}/${b}: no bridge over the open sea`);
   for(const region of Object.values(REGIONS)){
@@ -23,11 +23,17 @@ test('the original twelve districts and Oneira form four sea regions with only l
   assert.equal(findNpcRoute(PLACE_ENTRANCES.izakaya,PLACE_ENTRANCES['cold-palace']),null);
   assert.equal(findNpcRoute(PLACE_ENTRANCES.pantry,PLACE_ENTRANCES['oneira-hub']),null);
   assert.equal(findNpcRoute(PLACE_ENTRANCES['oneira-hub'],PLACE_ENTRANCES['cold-palace']),null);
+  for (const regionId of ['company','life','exile','oneira']) {
+    assert.equal(findNpcRoute(DOCKS[regionId].landing, PLACE_ENTRANCES['omega-terminal']), null, `${regionId}: Omega City requires a real sea crossing`);
+    assert.equal(findNpcRoute(PLACE_ENTRANCES['omega-overlook'], DOCKS[regionId].landing), null, `${regionId}: leaving Omega City also requires a boat`);
+  }
 });
 
 test('ferry routes depart and arrive at distinct ports and sail through open water in either direction',()=>{
+  let routes = 0;
   for(const from of Object.keys(REGIONS))for(const to of Object.keys(REGIONS)){
     if(from===to){assert.equal(getFerryRoute(from,to),null);continue;}
+    routes++;
     const points=getFerryRoute(from,to);assert.deepEqual(points[0],DOCKS[from].position);assert.deepEqual(points.at(-1),DOCKS[to].position);
     assert.deepEqual(points,getFerryRoute(to,from).reverse());
     const length=ferryRouteLength(points);assert.ok(length>50);
@@ -36,6 +42,7 @@ test('ferry routes depart and arrive at distinct ports and sail through open wat
     const sea=points.slice(1,-1),seaLength=ferryRouteLength(sea);
     for(let d=0;d<=seaLength;d+=.25)assert.equal(isTerrainWalkable(ferryPoint(sea,d)),false,`${from}/${to}: route does not cut through another island`);
   }
+  assert.equal(routes,20,'all five islands have both directions of every pair');
   assert.equal(getFerryRoute('company','unknown'),null);
 });
 

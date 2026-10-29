@@ -193,6 +193,20 @@ export const DISTRICTS = [
       ],
     }, related: ['lab', 'cafe'],
   },
+  {
+    id: 'omega-city', number: '14', name: '終末之都島', category: 'project', kicker: 'OMEGA CITY LIFE · ANOTHER LIFE AWAITS',
+    summary: '手遊王愛麗絲打造的賽博龐克人生遊戲。搭船到霓虹碼頭，走向另一段城市人生。', color: '#597e9c',
+    people: [], tags: ['終末之都', 'Omega City Life', '手遊王愛麗絲', '市民登記站', '城市觀景台'], time: '21:00',
+    story: {
+      title: '下一段人生，從海的另一邊開始',
+      opening: '渡船靠岸，青色燈光沿著碼頭亮起。小小的未來城市在海上排成一片天際線，入口標著《終末之都》與創作者手遊王愛麗絲的名字。你在移動島的今天還沒結束，另一個世界已經留了一扇門。',
+      choices: [
+        { label: '先到市民登記站看看', response: '介紹卡把城市的年代與生活放在一起。你沒有急著替未來下結論，只先記住：這段人生可以自己走進去看看。' },
+        { label: '沿著燈光走到觀景台', response: '高塔在海面上投出細細的倒影。你看著四個方向的城市索引，想好進城時要帶著哪一個問題。' },
+        { label: '替這趟跨世界旅行留一句話', response: '你在船票背面寫：「今天上班，明天也許住在未來。」海風吹過小卡，下一班回移動島的船依然亮著燈。' },
+      ],
+    }, related: ['oneira', 'cafe'],
+  },
 ];
 
 export const TOUR = [
