@@ -18,6 +18,7 @@ import { ISLAND_CAST } from './cast.js';
 import { PLACES } from './places.js';
 import { createNpcLife } from './npc-life.js';
 import { PROJECT_HOSTS } from './routines.js';
+import { ENVIRONMENTS, OCEAN_SIZE, OCEAN_SEGMENTS, OCEAN_LEVEL, getOceanViewCenter, OMEGA_SEA_MARKERS } from './ocean.js';
 
 export async function createIslandScene({ container, districts = [], initialHour = 10, initialRegion = 'company', onSelect = () => {}, onSelectPlace = () => {}, onSelectDock = () => {}, onReady = () => {}, onNearby = () => {}, onRoamChange = () => {}, onLifeUpdate = () => {} }) {
   if (!container) throw new Error('Missing island container');
@@ -28,10 +29,9 @@ export async function createIslandScene({ container, districts = [], initialHour
     throw new Error('此裝置目前無法啟用 3D 地圖，仍可從地點清單探索移動島。');
   }
   const scene = new THREE.Scene();
-  const daySea = new THREE.Color('#8fc6c2');
-  const nightSea = new THREE.Color('#263b53');
+  const daySea = new THREE.Color(ENVIRONMENTS.normal.dayWater);
   scene.background = daySea.clone();
-  scene.fog = new THREE.Fog(daySea, 65, 150);
+  scene.fog = new THREE.Fog(ENVIRONMENTS.normal.dayFog, 85, 220);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -49,7 +49,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   overlay.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden;';
   container.append(overlay);
 
-  const camera = new THREE.OrthographicCamera(-24, 24, 24, -24, .1, 250);
+  const camera = new THREE.OrthographicCamera(-24, 24, 24, -24, .1, 1400);
   let currentRegion=Object.hasOwn(REGIONS,initialRegion)?initialRegion:'company', voyage=null;
   const homeTarget = new THREE.Vector3(REGIONS[currentRegion].center.x, 1, REGIONS[currentRegion].center.z);
   const homeOffset = new THREE.Vector3(34, 42, 42);
@@ -77,6 +77,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   const hemisphere = new THREE.HemisphereLight('#fff9df', '#749894', 2.5);
   scene.add(hemisphere);
   const sun = new THREE.DirectionalLight('#fff0d4', 3.6);
+  scene.add(sun.target);
   sun.position.set(-19, 35, 17);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
@@ -806,23 +807,24 @@ export async function createIslandScene({ container, districts = [], initialHour
   const districtGround=['#bac994','#a6bfab','#c3bc9c','#c4c999','#b3c2ae','#c8bd99','#bdc89a','#9fbda4','#c8c4a0','#c2c5c7','#b9c9ba','#b9c4c9','#c6c0d5','#b2c5c5'];
   for (let index = 0; index < LAYOUT.length; index++) {
     const config = LAYOUT[index];
+    const cyberShore = config.id === 'omega-city';
     const previousDecorationSeed=seed;
     const tile = group(scene, config.x, 0, config.z);
     tile.userData.district = config.id;
     tileGroups.set(config.id, tile);
-    const bottom = cylinder(tile, palette.darkSand, 0, -.19, 0, 4.27, 1.02, 6); bottom.rotation.y = Math.PI / 6;
-    const cliff = cylinder(tile, palette.sand, 0, .22, 0, 4.52, .98, 6); cliff.rotation.y = Math.PI / 6;
-    const edge = cylinder(tile, palette.cream, 0, .73, 0, 4.62, .25, 6); edge.rotation.y = Math.PI / 6;
-    const rim=cylinder(tile,mat(new THREE.Color(config.color).lerp(new THREE.Color('#f2e6ca'),.6).getStyle()),0,.79,0,4.64,.085,6);rim.rotation.y=Math.PI/6;
+    const bottom = cylinder(tile, cyberShore ? mat('#203744') : palette.darkSand, 0, -.19, 0, 4.27, 1.02, 6); bottom.rotation.y = Math.PI / 6;
+    const cliff = cylinder(tile, cyberShore ? mat('#455f69') : palette.sand, 0, .22, 0, 4.52, .98, 6); cliff.rotation.y = Math.PI / 6;
+    const edge = cylinder(tile, cyberShore ? mat('#8ba3a5') : palette.cream, 0, .73, 0, 4.62, .25, 6); edge.rotation.y = Math.PI / 6;
+    const rim=cylinder(tile,cyberShore ? mat('#8ce4d6',{emissive:'#64c9be',emissiveIntensity:.38}) : mat(new THREE.Color(config.color).lerp(new THREE.Color('#f2e6ca'),.6).getStyle()),0,.79,0,4.64,.085,6);rim.rotation.y=Math.PI/6;
     const ground = cylinder(tile, mat(districtGround[index]), 0, .95, 0, 4.36, .2, 6); ground.rotation.y = Math.PI / 6;
-    const terrace = cylinder(tile, palette.path, 0, 1.057, .2, 3.0, .025, 10);
+    const terrace = cylinder(tile, cyberShore ? mat('#8ea6a6') : palette.path, 0, 1.057, .2, 3.0, .025, 10);
     terrace.scale.z = .92;
     for (let j = 0; j < 3; j++) {
       const a = .6 + j * 2.1;
       const r = 4.15;
       ball(tile, j % 2 ? palette.sand : palette.cream, Math.cos(a)*r, .2, Math.sin(a)*r, .4 + random()*.2, 1.2, .6, 1);
     }
-    const foam = mesh(tile, geo(new THREE.RingGeometry(4.58, 4.7, 6)), mat('#d6e6cd', { transparent: true, opacity: .55, depthWrite: false, side: THREE.DoubleSide }), 0, -.04, 0);
+    const foam = mesh(tile, geo(new THREE.RingGeometry(4.58, 4.7, 6)), mat(cyberShore ? '#8ce4d6' : '#d6e6cd', { transparent: true, opacity: cyberShore ? .75 : .55, depthWrite: false, side: THREE.DoubleSide }), 0, .045, 0);
     foam.rotation.x = -Math.PI / 2; foam.rotation.z = Math.PI / 6;
     buildingFunctions[config.id](tile);
     districtKeepsakes(tile,config.id);
@@ -988,22 +990,76 @@ export async function createIslandScene({ container, districts = [], initialHour
   }
   const passengerBoat=makeFerryBoat();
 
-  const waterMaterial = mat('#8fc6c2', { roughness: .48, metalness: .05 });
-  const waterUniforms = { uTime: { value: 0 } };
-  waterMaterial.onBeforeCompile = (shader) => {
-    shader.uniforms.uTime = waterUniforms.uTime;
-    shader.vertexShader = 'uniform float uTime; varying vec3 vWaterPosition;\n' + shader.vertexShader;
-    shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed.y += sin(position.x * 0.22 + uTime * 0.55) * cos(position.z * 0.2 + uTime * 0.35) * 0.055; vWaterPosition = position;');
-    shader.fragmentShader = 'uniform float uTime; varying vec3 vWaterPosition;\n' + shader.fragmentShader;
-    shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\nfloat ripple = sin(vWaterPosition.x * 1.35 + vWaterPosition.z * 0.6 + uTime * 0.6) * sin(vWaterPosition.z * 1.2 - uTime * 0.35); diffuseColor.rgb += ripple * 0.014;');
+  const waterMaterial = mat(ENVIRONMENTS.normal.dayWater, { roughness: .42, metalness: .12, flatShading: false });
+  const waterUniforms = {
+    uTime: { value: 0 }, uWaterOrigin: { value: new THREE.Vector2() },
+    uCrestColor: { value: new THREE.Color(ENVIRONMENTS.normal.dayCrest) },
+    uRippleStrength: { value: ENVIRONMENTS.normal.rippleStrength },
+    uCrestStrength: { value: ENVIRONMENTS.normal.crestStrength },
   };
-  const waterGeometry = geo(new THREE.PlaneGeometry(220, 220, 80, 80)); waterGeometry.rotateX(-Math.PI / 2);
-  const water = mesh(scene, waterGeometry, waterMaterial, 0, -.08, 0);
+  waterMaterial.onBeforeCompile = (shader) => {
+    Object.assign(shader.uniforms, waterUniforms);
+    shader.vertexShader = 'uniform float uTime; uniform vec2 uWaterOrigin; varying vec2 vOceanWorld;\n' + shader.vertexShader;
+    shader.vertexShader = shader.vertexShader.replace('#include <beginnormal_vertex>', [
+      '#include <beginnormal_vertex>',
+      'vec2 normalWorld = position.xz + uWaterOrigin;',
+      'float oceanDx = 0.22 * cos(normalWorld.x * 0.22 + uTime * 0.55) * cos(normalWorld.y * 0.2 + uTime * 0.35) * 0.055;',
+      'float oceanDz = -0.2 * sin(normalWorld.x * 0.22 + uTime * 0.55) * sin(normalWorld.y * 0.2 + uTime * 0.35) * 0.055;',
+      'objectNormal = normalize(vec3(-oceanDx, 1.0, -oceanDz));',
+    ].join('\n'));
+    shader.vertexShader = shader.vertexShader.replace('#include <begin_vertex>', [
+      '#include <begin_vertex>',
+      'vOceanWorld = position.xz + uWaterOrigin;',
+      'transformed.y += sin(vOceanWorld.x * 0.22 + uTime * 0.55) * cos(vOceanWorld.y * 0.2 + uTime * 0.35) * 0.055;',
+    ].join('\n'));
+    shader.fragmentShader = 'uniform float uTime; uniform vec3 uCrestColor; uniform float uRippleStrength; uniform float uCrestStrength; varying vec2 vOceanWorld;\n' + shader.fragmentShader;
+    shader.fragmentShader = shader.fragmentShader.replace('#include <color_fragment>', [
+      '#include <color_fragment>',
+      'float ripple = sin(vOceanWorld.x * 1.35 + vOceanWorld.y * 0.6 + uTime * 0.6) * sin(vOceanWorld.y * 1.2 - uTime * 0.35);',
+      'float swell = vOceanWorld.y * 2.4 + vOceanWorld.x * 0.16 + sin(vOceanWorld.x * 0.6 + uTime * 0.15) * 0.45 - uTime * 0.3;',
+      'float crestBand = 1.0 - smoothstep(0.045, 0.14, abs(sin(swell)));',
+      'float crest = crestBand * smoothstep(0.55, 0.85, sin(vOceanWorld.x * 1.7 + vOceanWorld.y * 0.2 + uTime * 0.08));',
+      'diffuseColor.rgb = mix(diffuseColor.rgb, uCrestColor, (0.5 + 0.5 * ripple) * uRippleStrength);',
+      'diffuseColor.rgb = mix(diffuseColor.rgb, uCrestColor, crest * uCrestStrength);',
+    ].join('\n'));
+    shader.fragmentShader = shader.fragmentShader.replace('#include <emissivemap_fragment>',
+      '#include <emissivemap_fragment>\ntotalEmissiveRadiance += uCrestColor * crest * uCrestStrength * 0.04;');
+  };
+  const waterGeometry = geo(new THREE.PlaneGeometry(OCEAN_SIZE, OCEAN_SIZE, OCEAN_SEGMENTS, OCEAN_SEGMENTS)); waterGeometry.rotateX(-Math.PI / 2);
+  const water = mesh(scene, waterGeometry, waterMaterial, 0, OCEAN_LEVEL, 0);
   water.castShadow = false;
+  const oceanDirection = new THREE.Vector3();
+  const environmentColors = Object.fromEntries(Object.entries(ENVIRONMENTS).map(([id, preset]) => [id,
+    Object.fromEntries(Object.entries(preset).filter(([,value])=>typeof value === 'string').map(([key,value])=>[key,new THREE.Color(value)]))]));
+  const seaColor = new THREE.Color(), skyColor = new THREE.Color(), fogColor = new THREE.Color(), crestColor = new THREE.Color(), nextColor = new THREE.Color();
+  let environmentHour = 10, environmentDaylight = 1;
+  const environmentRoot = container.closest('#map-area');
+  const tideRings = [];
   for (let i = 0; i < 65; i++) {
     const x = (random()-.5)*65, z = (random()-.5)*60;
     const points = [[x,-.002,z], [x+.3,-.002,z+.04], [x+.7,-.002,z+.02]];
     line(scene, points, '#badbd1');
+  }
+  // Original marine details: quiet navigation lights and tide bands, never
+  // walking surfaces or obstacles. Their positions keep ferry lanes clear.
+  const omegaCenter = REGIONS['omega-city'].center;
+  for (let i=0;i<3;i++) {
+    const material = mat('#83d7ca',{emissive:'#397b75',emissiveIntensity:.28,transparent:true,opacity:.3-i*.06,depthWrite:false,side:THREE.DoubleSide});
+    const ring = mesh(scene,geo(new THREE.RingGeometry(5.15+i*.64,5.19+i*.64,72,1,0,Math.PI*1.42)),material,omegaCenter.x,.045+i*.006,omegaCenter.z);
+    ring.rotation.x=-Math.PI/2;ring.castShadow=false;ring.receiveShadow=false;
+    tideRings.push({object:ring,material,phase:i*1.7,opacity:.3-i*.06});
+  }
+  for (const [index, marker] of OMEGA_SEA_MARKERS.entries()) {
+    const buoy = group(scene,marker.x,.08,marker.z);
+    const shell=mat('#284a59'), light=mat('#8ce4d6',{emissive:'#8ce4d6',emissiveIntensity:.7});
+    cylinder(buoy,shell,0,.06,0,.46,.15,8);
+    cylinder(buoy,palette.cream,0,.2,0,.31,.15,8);
+    cylinder(buoy,shell,0,.55,0,.065,.65,7);
+    ball(buoy,light,0,.91,0,.13);
+    const halo=mesh(buoy,geo(new THREE.TorusGeometry(.24,.025,6,24)),light,0,.87,0);halo.rotation.x=Math.PI/2;
+    box(buoy,palette.navy,0,.39,0,.64,.04,.32,.3);
+    buoy.scale.setScalar(marker.size);
+    moving.push({type:'boat',object:buoy,anchored:true,phase:index*1.9});
   }
 
   function makePerson(index, tile, options = {}) {
@@ -1456,6 +1512,33 @@ export async function createIslandScene({ container, districts = [], initialHour
       element.style.transform=`translate(${x}px, ${y}px) translate(-50%, -50%)`;
     }
   }
+  function applyEnvironment(from=currentRegion,to=from,progress=0) {
+    const amount=THREE.MathUtils.clamp(progress,0,1);
+    const fromKey=from==='omega-city'?'omega-city':'normal',toKey=to==='omega-city'?'omega-city':'normal';
+    const source=ENVIRONMENTS[fromKey],destination=ENVIRONMENTS[toKey];
+    const blend=(kind,color)=>{
+      color.copy(environmentColors[fromKey]['night'+kind]).lerp(environmentColors[fromKey]['day'+kind],environmentDaylight);
+      nextColor.copy(environmentColors[toKey]['night'+kind]).lerp(environmentColors[toKey]['day'+kind],environmentDaylight);
+      color.lerp(nextColor,amount);
+    };
+    blend('Water',seaColor);blend('Sky',skyColor);blend('Fog',fogColor);blend('Crest',crestColor);
+    scene.background.copy(skyColor);scene.fog.color.copy(fogColor);waterMaterial.color.copy(seaColor);
+    waterUniforms.uCrestColor.value.copy(crestColor);
+    waterUniforms.uRippleStrength.value=THREE.MathUtils.lerp(source.rippleStrength,destination.rippleStrength,amount);
+    waterUniforms.uCrestStrength.value=THREE.MathUtils.lerp(source.crestStrength,destination.crestStrength,amount);
+    const cyber=THREE.MathUtils.lerp(fromKey==='omega-city'?1:0,toKey==='omega-city'?1:0,amount);
+    hemisphere.intensity=THREE.MathUtils.lerp(.7+environmentDaylight*1.8,.65+environmentDaylight*1.05,cyber);
+    sun.intensity=THREE.MathUtils.lerp(.7+environmentDaylight*2.9,.7+environmentDaylight*1.4,cyber);
+    fill.intensity=THREE.MathUtils.lerp(.3+environmentDaylight*.4,.45+environmentDaylight*.3,cyber);
+    sun.color.set(environmentDaylight>.8?'#fff0d4':environmentDaylight>.2?'#ffb87b':'#a0b8ed');
+    nextColor.set(environmentDaylight>.2?'#b6e4e2':'#709fbd');sun.color.lerp(nextColor,cyber);
+    const anchorX=omegaCenter.x*cyber,anchorZ=omegaCenter.z*cyber;
+    sun.target.position.set(anchorX,0,anchorZ);
+    sun.position.set(anchorX-19+(environmentHour-12)*1.2,22+environmentDaylight*13,anchorZ+17);
+    renderer.toneMappingExposure=THREE.MathUtils.lerp(1.1+environmentDaylight*.17,1+environmentDaylight*.12,cyber);
+    if(environmentRoot)environmentRoot.dataset.environment=amount>=.5?to:from;
+    needsRender=true;
+  }
   function setHour(hour){
     const value=Number(hour);
     if(!Number.isFinite(value))return;
@@ -1463,13 +1546,8 @@ export async function createIslandScene({ container, districts = [], initialHour
     const h=((value%24)+24)%24;
     npcLife.setHour(h);lastLifePublished=-Infinity;
     const daylight=THREE.MathUtils.smoothstep(Math.sin((h-6)/12*Math.PI),-.1,.7);
-    const dusk=1-Math.abs(Math.sin((h-6)/12*Math.PI));
-    const waterColor=nightSea.clone().lerp(daySea,daylight);
-    scene.background.copy(waterColor);scene.fog.color.copy(waterColor);waterMaterial.color.copy(waterColor);
-    hemisphere.intensity=.7+daylight*1.8;sun.intensity=.7+daylight*2.9;fill.intensity=.3+daylight*.4;
-    sun.color.set(daylight>.8?'#fff0d4':daylight>.2?'#ffb87b':'#a0b8ed');
-    sun.position.set(-19+(h-12)*1.2,22+daylight*13,17);
-    renderer.toneMappingExposure=1.1+daylight*.17;
+    environmentHour=h;environmentDaylight=daylight;
+    applyEnvironment(voyage?.from||currentRegion,voyage?.to||currentRegion,voyage?.progress||0);
     for(const material of windowMaterials){material.emissive.set('#f6bc67');material.emissiveIntensity=(1-daylight)*.7;}
     for(const material of lampMaterials)material.emissiveIntensity=.05+(1-daylight)*1.8;
   }
@@ -1483,6 +1561,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     const trip=voyage;if(!trip)return;voyage=null;passengerBoat.visible=false;
     for(const boat of mooredFerries.values())boat.visible=true;
     if(success){currentRegion=trip.to;const region=REGIONS[currentRegion];homeTarget.set(region.center.x,1,region.center.z);playerPosition={...DOCKS[currentRegion].landing};ensurePlayerSpace();}
+    applyEnvironment();
     player.object.visible=roaming;playerRing.visible=roaming;playerMarker.style.display=roaming?'':'none';
     player.object.position.set(playerPosition.x,WALK_HEIGHT,playerPosition.z);playerRing.position.set(playerPosition.x,WALK_HEIGHT+.018,playerPosition.z);
     if(success){if(roaming)moveCamera(getFollowTarget().clone(),window.innerWidth<=780?3.15:2.65,homeOffset);else focusRegion(currentRegion);try{trip.onProgress?.(1);}catch{}}
@@ -1493,7 +1572,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     if(regionId===currentRegion){try{onProgress?.(1);}catch{}return Promise.resolve(true);}
     const points=getFerryRoute(currentRegion,regionId);moveInput={x:0,z:0};standStill();transition=null;nearby=null;onNearby(null);
     return new Promise(resolve=>{
-      voyage={from:currentRegion,to:regionId,points,length:ferryRouteLength(points),start:performance.now(),onProgress,resolve};
+      voyage={from:currentRegion,to:regionId,points,length:ferryRouteLength(points),start:performance.now(),onProgress,resolve,progress:0};
       for(const [id,boat] of mooredFerries)boat.visible=id!==currentRegion&&id!==regionId;
       player.object.visible=false;playerRing.visible=false;playerMarker.style.display='none';passengerBoat.visible=true;needsRender=true;
       try{onProgress?.(0);}catch{}
@@ -1503,6 +1582,7 @@ export async function createIslandScene({ container, districts = [], initialHour
   function updateVoyage(time) {
     if(!voyage)return;
     const progress=Math.min(1,Math.max(0,(time-voyage.start)/(PLAYER_SAIL_SECONDS*1000))),point=ferryPoint(voyage.points,voyage.length*progress);
+    voyage.progress=progress;applyEnvironment(voyage.from,voyage.to,progress);
     passengerBoat.position.set(point.x,.05,point.z);passengerBoat.rotation.y=point.heading;
     const target=new THREE.Vector3(point.x,1,point.z);controls.target.copy(target);camera.position.copy(target).add(homeOffset);
     camera.zoom=1.3;camera.updateProjectionMatrix();needsRender=true;
@@ -1518,6 +1598,11 @@ export async function createIslandScene({ container, districts = [], initialHour
     if(!ambientPaused)elapsed+=dt;
     if(!ambientPaused||!renderedOnce){
     waterUniforms.uTime.value=elapsed;
+    for(const tide of tideRings){
+      const scale=1+Math.sin(elapsed*.35+tide.phase)*.015;
+      tide.object.scale.set(scale,scale,scale);
+      tide.material.opacity=tide.opacity*(.82+Math.sin(elapsed*.45+tide.phase)*.18);
+    }
     for(const item of moving){
       if(item.type==='boat'){
         item.object.position.y=.08+Math.sin(elapsed*1.2+item.phase)*.045;item.object.rotation.z=Math.sin(elapsed*.8+item.phase)*.025;
@@ -1536,6 +1621,10 @@ export async function createIslandScene({ container, districts = [], initialHour
     const controlsChanged=controls.update();
     if(ambientPaused&&!needsRender&&!controlsChanged&&!transition)return;
     camera.updateMatrixWorld();
+    camera.getWorldDirection(oceanDirection);
+    const oceanCenter=getOceanViewCenter(camera.position,oceanDirection,controls.target);
+    water.position.set(oceanCenter.x,OCEAN_LEVEL,oceanCenter.z);
+    waterUniforms.uWaterOrigin.value.set(oceanCenter.x,oceanCenter.z);
     for(const item of labelItems){
       const v=item.position.clone().project(camera);
       const closeEnough=!roaming&&!voyage&&getRegionForDistrict(item.id)===currentRegion&&focusedDistrict!==item.id;

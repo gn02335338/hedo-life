@@ -32,3 +32,17 @@
 .project-port[data-project-port="omega-city"]{background:#e8f4f0;border-color:#b5d7cc}
 .project-port[data-project-port="omega-city"] .eyebrow{color:#326c67}
 .project-port[data-project-port="omega-city"] .project-port-link{background:#265c59;color:#f3fff9}
+
+/* The future harbor needs readable map labels against its darker open sea. */
+#map-area[data-environment="omega-city"] .map-caption{color:#d4eee8;text-shadow:0 1px 4px #07191db3}
+#map-area[data-environment="omega-city"] .map-caption small{color:#b3d6cf}
+#map-area[data-environment="omega-city"] .weather,#map-area[data-environment="omega-city"] .compass{color:#c2e8dd;text-shadow:0 1px 4px #07191db3}
+#map-area[data-environment="omega-city"] .region-chip{background:#102b32ed;border-color:#8ce4d673;color:#d7fff1;box-shadow:0 3px 14px #030f1c33}
+#map-area[data-environment="omega-city"] .map-dock-label[data-dock-region="omega-city"]{--dock-ink:#a2f0df;--dock-paper:#102b32;box-shadow:0 4px 0 #030f1c33,0 7px 18px #030f1c40}
+#map-area[data-environment="omega-city"] .map-dock-icon{color:#102b32}
+#map-area[data-environment="omega-city"] .map-dock-label:not(:disabled):hover,#map-area[data-environment="omega-city"] .map-dock-label.is-nearby{box-shadow:0 0 0 3px #8ce4d640,0 7px 18px #030f1c40}
+#map-area[data-environment="omega-city"] .map-dock-label:focus-visible{outline-color:#a2f0df}
+#map-area[data-environment="omega-city"] .map-controls{background:#102b32ed;color:#d2f4e9;box-shadow:0 6px 18px #030f1c33}
+#map-area[data-environment="omega-city"] .map-controls button[aria-pressed=true]{background:#8ce4d6;color:#102b32}
+
+#map-area[data-environment="omega-city"]{background:#193e50}
