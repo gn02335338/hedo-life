@@ -55,7 +55,7 @@ test('a passenger pauses on the boat and completes the crossing before taking a 
     assert.ok(gap(jack.position,previous.position)<=(jack.ferry||previous.ferry?FERRY_SPEED:1.35)*.1+1e-8);
     previous=jack;if(jack.state==='sailing'){seenFirst=true;break;}
   }
-  assert.equal(seenFirst,true);assert.deepEqual([jack.ferry.from,jack.ferry.to,jack.ferry.emergency],['company','life',true]);
+  assert.equal(seenFirst,true);assert.deepEqual([jack.ferry.from,jack.ferry.to,jack.ferry.emergency],['oneira','life',true]);
   const pose=jack.position,trip=jack.ferry;
   for(const flag of ['paused','hidden','reducedMotion'])for(let n=0;n<5;n++){jack=life.update(.1,{[flag]:true}).find(row=>row.id==='jack');assert.deepEqual(jack.position,pose);assert.equal(jack.ferry.progress,trip.progress);}
   life.setDispositions([{id:'jack',status:'exile',districtId:'exile',placeId:'cold-palace'}]);

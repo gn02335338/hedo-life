@@ -51,15 +51,15 @@ test('emergency cases retain current bodies then board visible boats before reac
   }
 });
 
-test('facility holds survive clock changes and release sails from the facility before walking to work',()=>{
+test('facility holds survive clock changes and release sails back to the current project-host destination',()=>{
   const life=createNpcLife({hour:10});life.setDispositions([disposition('jack','hospital','hospital-er')]);settle(life);
   const held=life.getState().find(row=>row.id==='jack');
   for(const hour of [12.25,15.25,18,19.25,10]){life.setHour(hour);const actor=life.getState().find(row=>row.id==='jack');assert.deepEqual(actor.position,held.position);assert.equal(actor.destinationPlaceId,'hospital-er');assert.equal(actor.disposition.status,'hospital');}
   const released=life.setDispositions([]).find(row=>row.id==='jack');
-  assert.equal(released.disposition,null);assert.equal(released.destinationPlaceId,'research-center');assert.equal(released.traveling,true);assert.deepEqual(released.position,held.position);
-  assert.equal(findNpcRoute(released.position,PLACE_ENTRANCES['research-center']),null,'the sea has no walking route');
+  assert.equal(released.disposition,null);assert.equal(released.destinationPlaceId,'oneira-hub');assert.equal(released.traveling,true);assert.deepEqual(released.position,held.position);
+  assert.equal(findNpcRoute(released.position,PLACE_ENTRANCES['oneira-hub']),null,'the sea has no walking route');
   assert.ok(settle(life).has('jack'),'release needs a real return ferry');
-  const final=life.getState().find(row=>row.id==='jack');assert.equal(final.districtId,'lab');assert.equal(final.disposition,null);
+  const final=life.getState().find(row=>row.id==='jack');assert.equal(final.districtId,'oneira');assert.equal(final.disposition,null);
 });
 
 test('all34 official colleagues can queue, sail and settle safely at each full facility',()=>{

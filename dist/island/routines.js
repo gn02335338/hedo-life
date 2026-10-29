@@ -15,6 +15,14 @@ const clockLabel = minutes => `${String(Math.floor(minutes / 60)).padStart(2, '0
 const story = (title, opening, choices) => Object.freeze({ title, opening,
   choices: Object.freeze(choices.map(([label, response]) => Object.freeze({ label, response }))) });
 
+// Project hosts keep their company affiliation in cast.js; these are their
+// authored places to meet visitors while exploring the friend islands.
+export const PROJECT_HOSTS = Object.freeze({
+  alice: Object.freeze({ districtId: 'omega-city', placeId: 'omega-terminal', restPlaceId: 'omega-overlook', activity: '在市民登記站介紹《終末之都》' }),
+  jack: Object.freeze({ districtId: 'oneira', placeId: 'oneira-hub', restPlaceId: 'oneira-library', activity: '在 Oneira 航站迎接來訪的朋友' }),
+  johnny: Object.freeze({ districtId: 'oneira', placeId: 'oneira-library', restPlaceId: 'oneira-hub', activity: '在開源靈感館分享今天的靈感' }),
+});
+
 export const MYSTERY_TRIP = Object.freeze({
   hostId: 'kind',
   // Includes the host; these five walk to the gathering point independently.
@@ -35,6 +43,21 @@ function routine(phase, placeId, activity, label, timeLabel, extra = {}) {
   return Object.freeze({ phase, placeId, districtId: PLACE_BY_ID.get(placeId).districtId, activity, label, timeLabel, ...extra });
 }
 
+function projectHostRoutine(host, minutes, seed) {
+  const extra = { projectHost: true }, main = PLACE_BY_ID.get(host.placeId), rest = PLACE_BY_ID.get(host.restPlaceId);
+  if (minutes >= 18 * 60 || minutes < 6 * 60) return routine('afterwork', host.restPlaceId,
+    `在${rest.name}吹海風、聊聊今天`, '友島晚間歇腳', '18:00–06:00', extra);
+  if (minutes < 9 * 60) return routine('arrival', host.placeId,
+    `到${main.name}準備迎接來訪的朋友`, '友島早安', '06:00–09:00', extra);
+  const lunchStart = 12 * 60 + (seed % 3) * 15;
+  const teaStart = 15 * 60 + (Math.floor(seed / 3) % 3) * 15;
+  if (minutes >= lunchStart && minutes < lunchStart + 45) return routine('break', host.restPlaceId,
+    `在${rest.name}歇腳、喝水，看看海`, '友島午間休息', `${clockLabel(lunchStart)}–${clockLabel(lunchStart + 45)}`, extra);
+  if (minutes >= teaStart && minutes < teaStart + 45) return routine('break', host.restPlaceId,
+    `到${rest.name}換換心情、聊聊靈感`, '友島午後歇腳', `${clockLabel(teaStart)}–${clockLabel(teaStart + 45)}`, extra);
+  return routine('work', host.placeId, host.activity, '專案島接待', '09:00–18:00 · 休息時間除外', extra);
+}
+
 /** Current destination and activity for one public colleague; unknown IDs stay out. */
 export function getPersonRoutine(id, hour = 12) {
   const person = castById.get(id);
@@ -47,6 +70,8 @@ export function getPersonRoutine(id, hour = 12) {
         : id === MYSTERY_TRIP.hostId ? '帶大家沿碼頭散步' : '和阿良一起逛碼頭',
       gathering ? '神秘行程集合' : '神秘行程散步', gathering ? '19:00–19:30' : '19:30–20:00', { tripStage: gathering ? 'gathering' : 'stroll' });
   }
+  const host = PROJECT_HOSTS[id];
+  if (host) return projectHostRoutine(host, minutes, seed);
   if (minutes >= 18 * 60 || minutes < 6 * 60) {
     const court = courtRegulars.has(id);
     return routine('afterwork', court ? 'basketball-court' : 'izakaya',
