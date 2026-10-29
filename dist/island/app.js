@@ -11,7 +11,7 @@ import { getPersonRoutine, getIslandRoutine, MYSTERY_TRIP } from './routines.js'
 import { createIslandConflicts } from './conflicts.js';
 import { createIslandChallenge } from './challenge.js';
 import { REGIONS, DOCKS, getRegionForDistrict } from './archipelago.js';
-import { ONEIRA_PORT, getOneiraArrival } from './friend-islands.js';
+import { ONEIRA_PORT, OMEGA_CITY_PORT, getOneiraArrival } from './friend-islands.js';
 
 const $ = (selector) => document.querySelector(selector);
 const byId = new Map(DISTRICTS.map(d => [d.id, d]));
@@ -109,18 +109,23 @@ function button(className, text, action) {
   node.addEventListener('click', action);
   return node;
 }
-function oneiraGateway() {
+function projectGateway(id) {
+  const omega = id === OMEGA_CITY_PORT.id;
+  const port = omega ? OMEGA_CITY_PORT : ONEIRA_PORT;
   const card = element('section', 'project-port');
-  const link = element('a', 'project-port-link', '走進 Oneira 官網 →');
-  link.href = ONEIRA_PORT.harborUrl;
+  card.dataset.projectPort = port.id;
+  const link = element('a', 'project-port-link', omega ? '前往終末之都，開始另一段人生 ↗' : '走進 Oneira 官網 →');
+  link.href = omega ? port.gameUrl : port.harborUrl;
   link.referrerPolicy = 'no-referrer';
-  link.dataset.projectPort = ONEIRA_PORT.id;
-  card.append(element('span', 'eyebrow', 'ONEIRA · 想像成真的地方'),
-    element('h3', '', '好點子，從另一座島開始。'),
-    element('p', '', '到官網發現開源工具與創作者作品，也能從那裡搭船回移動島。'), link,
-    element('small', 'project-port-domain', 'oneirahub.com'));
+  link.dataset.projectPort = port.id;
+  if (omega) { link.target = '_blank'; link.rel = 'noopener noreferrer'; }
+  card.append(element('span', 'eyebrow', omega ? 'OMEGA CITY LIFE · 手遊王愛麗絲製作' : 'ONEIRA · 想像成真的地方'),
+    element('h3', '', omega ? '下一段人生，從終末之都開始。' : '好點子，從另一座島開始。'),
+    element('p', '', omega ? '走進 AI 維持秩序的未來城市，體驗愛麗絲的賽博龐克人生遊戲。遊戲將另開分頁，這座島會留在原處等你回來。' : '到官網發現開源工具與創作者作品，也能從那裡搭船回移動島。'), link,
+    element('small', 'project-port-domain', omega ? 'omegacity-life.vercel.app' : 'oneirahub.com'));
   return card;
 }
+
 function toast(text) {
   clearTimeout(toastTimer);
   $('#toast').textContent = text;
@@ -336,6 +341,7 @@ const iconPaths = {
   exile: 'M4 21V7h16v14M2 21h20M8 7V3h8v4M10 21v-6h4v6m-7-4h.1m10 0h.1',
   hospital: 'M4 21V6h16v15M2 21h20M10 9h4m-2-2v4m-2 10v-6h4v6',
   police: 'M12 3 3 7v5c0 5 9 9 9 9s9-4 9-9V7l-9-4m0 5v8m-4-4h8',
+  'omega-city': 'M3 21h18M5 21V9h5v12m0 0V3h6v18m0 0V12h4v9M12 7h2m-2 4h2m-2 4h2M6 12h2m9 3h2',
   oneira: 'm12 3 2.3 5.7L20 11l-5.7 2.3L12 19l-2.3-5.7L4 11l5.7-2.3L12 3m6 14 1.2 2.8L22 21l-2.8 1.2',
 };
 function districtIcon(d) {
@@ -715,7 +721,7 @@ function renderEncounter(target) {
   }
   const title = element('h2', '', story.title); title.id = 'encounter-title';
   content.append(title, element('p', 'encounter-opening', story.opening));
-  if (place?.id === ONEIRA_PORT.placeId) content.append(oneiraGateway());
+  if (place?.id === ONEIRA_PORT.placeId || place?.id === OMEGA_CITY_PORT.placeId) content.append(projectGateway(place.districtId));
   const choicesMap = isRoutine ? routineChoices : isPerson ? encounterChoices : place ? placeChoices : districtChoices;
   const choiceKey = isRoutine || isPerson || place ? target.id : district.id;
   const selected = choicesMap.get(choiceKey);
@@ -850,7 +856,7 @@ function renderDistrictPeople() {
   if (!activeId) return;
   const list = $('#detail-people'); if (!list) return;
   const people = peopleInDistrict(activeId), signature = people.map(person => person.id).join(',');
-  $('#detail-people-title').textContent = activeId === ONEIRA_PORT.id ? '在靈感島，慢慢走' : lifeAvailable ? '此刻，在這個園區' : '這個時段的行程';
+  $('#detail-people-title').textContent = activeId === OMEGA_CITY_PORT.id ? '另一座城市，另一段人生' : activeId === ONEIRA_PORT.id ? '在靈感島，慢慢走' : lifeAvailable ? '此刻，在這個園區' : '這個時段的行程';
   if (list.dataset.roster === signature) return;
   const focusedId = document.activeElement?.dataset?.personId;
   list.dataset.roster = signature; list.replaceChildren();
@@ -862,7 +868,7 @@ function renderDistrictPeople() {
     chip.append(portrait, element('span', '', persona.name)); list.append(chip);
     if (id === focusedId) chip.focus({ preventScroll: true });
   }
-  if (!people.length) list.append(element('p', 'people-empty', activeId === ONEIRA_PORT.id ? '從航站走進 Oneira，或去開源靈感館坐坐；下一個好點子，也許就在這趟旅行裡。' : '大家暫時到別處走走了，從人物名冊看看他們在哪裡。'));
+  if (!people.length) list.append(element('p', 'people-empty', activeId === OMEGA_CITY_PORT.id ? '到市民登記站認識愛麗絲的遊戲，或先去城市觀景台看看四方燈火。原本的同事，仍在自己的島上生活。' : activeId === ONEIRA_PORT.id ? '從航站走進 Oneira，或去開源靈感館坐坐；下一個好點子，也許就在這趟旅行裡。' : '大家暫時到別處走走了，從人物名冊看看他們在哪裡。'));
 }
 function renderLifeStatus() {
   const actors = [...lifeActors.values()];
@@ -1017,7 +1023,7 @@ function renderDetail(d) {
   const related = element('div', 'related-list');
   d.related.forEach(id => related.append(button('', `${byId.get(id).name} ↗`, () => selectDistrict(id))));
   detail.append(back, hero);
-  if (d.id === ONEIRA_PORT.id) detail.append(oneiraGateway());
+  if (d.id === ONEIRA_PORT.id || d.id === OMEGA_CITY_PORT.id) detail.append(projectGateway(d.id));
   detail.append(element('p', 'detail-summary', d.summary), units, peopleTitle, people, story, element('h3', 'related-title', '順路，再去看看'), related, element('p', 'detail-stamp', `✓ ${d.number} 號島章已蓋進小島護照`));
   renderDistrictPeople();
 }

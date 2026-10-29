@@ -1,10 +1,11 @@
-// Stable district identities, separated into four sea regions. No sea route is
+// Stable district identities, separated into five sea regions. No sea route is
 // part of the walking surface; the same ports drive UI, boats and NPC commutes.
 export const REGIONS = Object.freeze({
   company: Object.freeze({ id: 'company', name: '公司本島', subtitle: '上班的七個生活圈', districts: Object.freeze(['lobby','lab','meeting','hr','finance','cafe','plaza']), center: Object.freeze({x:0,z:0}) }),
   life: Object.freeze({ id: 'life', name: '下班生活島', subtitle: '球場、居酒屋、醫院與警局', districts: Object.freeze(['court','harbor','hospital','police']), center: Object.freeze({x:51.5,z:.5}) }),
   exile: Object.freeze({ id: 'exile', name: '遠海流放島', subtitle: '看門值班亭與冷宮', districts: Object.freeze(['exile']), center: Object.freeze({x:-50,z:-28}) }),
   oneira: Object.freeze({ id: 'oneira', name: 'Oneira 島', subtitle: '想像成真的地方 · 靈感與開源作品', districts: Object.freeze(['oneira']), center: Object.freeze({x:28,z:-48}) }),
+  'omega-city': Object.freeze({ id: 'omega-city', name: '終末之都島', subtitle: '手遊王愛麗絲的賽博龐克人生遊戲', districts: Object.freeze(['omega-city']), center: Object.freeze({x:-26,z:-66}) }),
 });
 const districtRegions = new Map(Object.values(REGIONS).flatMap(region => region.districts.map(id => [id, region.id])));
 export function getRegionForDistrict(id) { return districtRegions.get(id) || null; }
@@ -14,6 +15,7 @@ export const DOCKS = Object.freeze({
   life: dock('life','harbor','生活島渡船口',57,8.1,57,13),
   exile: dock('exile','exile','流放島孤燈碼頭',-50,-24.9,-50,-21),
   oneira: dock('oneira','oneira','Oneira 靈感碼頭',28,-44.9,28,-40.5),
+  'omega-city': dock('omega-city','omega-city','終末之都霓虹碼頭',-26,-62.9,-26,-58.5),
 });
 export const FERRY_SPEED = 8;
 export const PLAYER_SAIL_SECONDS = 2.8;
@@ -24,6 +26,10 @@ const middle = {
   'company:oneira': [{x:25,z:17},{x:30,z:-32}],
   'life:oneira': [{x:35,z:17},{x:30,z:-32}],
   'exile:oneira': [{x:-35,z:-19},{x:-31,z:-32},{x:18,z:-36}],
+  'company:omega-city': [{x:-23,z:18},{x:-29,z:-18},{x:-30,z:-46}],
+  'life:omega-city': [{x:29,z:19},{x:-23,z:18},{x:-29,z:-18},{x:-30,z:-46}],
+  'exile:omega-city': [{x:-35,z:-19},{x:-31,z:-32},{x:-30,z:-46}],
+  'oneira:omega-city': [{x:18,z:-36},{x:-14,z:-44}],
 };
 export function getFerryRoute(from, to) {
   if (!Object.hasOwn(DOCKS,from) || !Object.hasOwn(DOCKS,to) || from===to) return null;

@@ -675,6 +675,54 @@ export async function createIslandScene({ container, districts = [], initialHour
     cylinder(p,ink,2.9,1.9,-1.6,.035,1.6,7);
   }
 
+  function omegaCity(p) {
+    const ink=mat('#182c37'),slate=mat('#355061'),mist=mat('#d9e3df');
+    const neon=mat('#8ce4d6',{emissive:'#8ce4d6',emissiveIntensity:.42});
+    const violet=mat('#a59acb',{emissive:'#776695',emissiveIntensity:.2});
+    // An original miniature skyline evokes the linked game's future city.
+    // Ground footprints match navigation; the southern promenade stays open.
+    const terminal=group(p,-.65,1.05,-.7);
+    box(terminal,mist,0,.06,0,2.55,.12,2.05);
+    box(terminal,ink,0,.8,0,2.3,1.6,1.8);
+    box(terminal,slate,0,1.66,0,2.55,.16,2.02);
+    for(const x of [-.8,.8])box(terminal,neon,x,.85,.92,.34,.76,.035);
+    box(terminal,slate,0,.65,.92,.7,1.3,.04);
+    box(terminal,palette.glass,0,.65,.96,.53,1.15,.025);
+    box(terminal,neon,0,1.38,1.02,1.4,.07,.16);
+    textSign(terminal,'OMEGA CITY',0,1.94,1.02,2.36,.4,'#8ce4d6','#182c37');
+    textSign(terminal,'市民登記站',0,1.18,1.14,1.2,.27,'#182c37','#d9e3df');
+    const tower=group(p,-1.8,1.05,-2);
+    box(tower,ink,0,1.8,0,1.1,3.6,1.05);
+    box(tower,slate,0,3.65,0,1.24,.14,1.18);
+    for(let floor=0;floor<6;floor++){
+      for(const x of [-.32,0,.32])box(tower,floor%3===0?violet:neon,x,.42+floor*.51,.538,.15,.2,.026);
+      box(tower,neon,.565,.42+floor*.51,0,.025,.14,.65);
+    }
+    cylinder(tower,slate,0,4.06,0,.035,.7,7);
+    ball(tower,neon,0,4.45,0,.08);
+    const northTower=group(p,.7,1.05,-2.4);
+    box(northTower,slate,0,1.38,0,1.1,2.76,.8);
+    box(northTower,ink,0,2.85,0,1.22,.18,.94);
+    for(let floor=0;floor<5;floor++)box(northTower,floor%2?neon:violet,0,.38+floor*.49,.418,.74,.11,.025);
+    const beacon=mesh(northTower,geo(new THREE.TorusGeometry(.28,.035,7,24)),neon,0,3.34,0);
+    beacon.rotation.x=.2;
+    const overlook=group(p,2,1.05,-.4);
+    box(overlook,mist,0,.08,0,1.38,.16,1.58);
+    box(overlook,slate,0,.54,0,1.2,.92,1.4);
+    for(const x of [-.55,.55])box(overlook,ink,x,1.27,0,.08,.62,1.37);
+    box(overlook,ink,0,1.61,0,1.48,.12,1.68);
+    box(overlook,neon,0,1.68,.86,1.15,.055,.03);
+    textSign(overlook,'城市觀景台',0,1.17,.76,1.35,.27,'#182c37','#d9e3df');
+    // Four small panes recall the city's four districts without copying art.
+    for(let i=0;i<4;i++)box(overlook,i%2?violet:neon,-.36+(i%2)*.72,.45+Math.floor(i/2)*.3,.72,.48,.19,.025);
+    for(const z of [1.7,2.2,2.7]){
+      box(p,mist,-.65,1.08,z,.6,.03,.19);
+      box(p,neon,-1.03,1.1,z,.045,.025,.19);
+    }
+    bench(p,-2.5,1.15,.15);
+    textSign(p,'手遊王愛麗絲・終末之都',.35,1.66,2.18,2.05,.29,'#355061','#e4eeea');
+  }
+
   function districtKeepsakes(p,id) {
     if(id==='lobby'){
       for(let i=0;i<3;i++){box(p,palette.teal,.75,6.27,-1.02+i*.36,.29,.13,.26);ball(p,palette.leafLight,.75,6.42,-1.02+i*.36,.18,1,.7,1);}
@@ -753,8 +801,8 @@ export async function createIslandScene({ container, districts = [], initialHour
     for (const geometry of originals) { geometry.dispose(); allGeometries.delete(geometry); }
   }
 
-  const buildingFunctions = { lobby: office, lab: laboratory, meeting, hr: humanResources, finance, cafe, plaza, court, harbor, exile, hospital, police, oneira };
-  const districtGround=['#bac994','#a6bfab','#c3bc9c','#c4c999','#b3c2ae','#c8bd99','#bdc89a','#9fbda4','#c8c4a0','#c2c5c7','#b9c9ba','#b9c4c9','#c6c0d5'];
+  const buildingFunctions = { lobby: office, lab: laboratory, meeting, hr: humanResources, finance, cafe, plaza, court, harbor, exile, hospital, police, oneira, 'omega-city': omegaCity };
+  const districtGround=['#bac994','#a6bfab','#c3bc9c','#c4c999','#b3c2ae','#c8bd99','#bdc89a','#9fbda4','#c8c4a0','#c2c5c7','#b9c9ba','#b9c4c9','#c6c0d5','#b2c5c5'];
   for (let index = 0; index < LAYOUT.length; index++) {
     const config = LAYOUT[index];
     const previousDecorationSeed=seed;
@@ -777,7 +825,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     foam.rotation.x = -Math.PI / 2; foam.rotation.z = Math.PI / 6;
     buildingFunctions[config.id](tile);
     districtKeepsakes(tile,config.id);
-    const treePositions = config.id === 'court' ? [[-2.9,-2.1],[2.8,-2.2],[3.25,.6]] : [[-2.9,-1.55],[2.65,-2],[-2.9,.1],[1.0,-3.1],[3.0,.85]];
+    const treePositions = config.id === 'court' ? [[-2.9,-2.1],[2.8,-2.2],[3.25,.6]] : config.id === 'omega-city' ? [[-3,.1],[2.75,-2.05],[3.1,.8]] : [[-2.9,-1.55],[2.65,-2],[-2.9,.1],[1.0,-3.1],[3.0,.85]];
     for (let i = 0; i < treePositions.length; i++) {
       const [x,z] = treePositions[i];
       const tx=x+(random()-.5)*.24;
@@ -829,7 +877,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     labelItems.push({ id: config.id, element: button, position: new THREE.Vector3(config.x + config.label[0], config.label[1], config.z + config.label[2]) });
     // The appended project shore must not reroll the established colleagues'
     // skin tones or the original sea decorations that use the following stream.
-    if(config.id==='oneira')seed=previousDecorationSeed;
+    if(config.id==='oneira'||config.id==='omega-city')seed=previousDecorationSeed;
   }
 
   // Short boardwalks connect the shorelines, with a generous opening for water.
@@ -867,7 +915,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     }
     return boat;
   }
-  const portAccents={company:{material:palette.teal,color:'#477b70',flag:'01'},life:{material:palette.brick,color:'#ad6e44',flag:'02'},exile:{material:palette.lilac,color:'#68657e',flag:'03'},oneira:{material:mat('#8072b1'),color:'#514875',flag:'04'}};
+  const portAccents={company:{material:palette.teal,color:'#477b70',flag:'01'},life:{material:palette.brick,color:'#ad6e44',flag:'02'},exile:{material:palette.lilac,color:'#68657e',flag:'03'},oneira:{material:mat('#8072b1'),color:'#514875',flag:'04'},'omega-city':{material:mat('#355061'),color:'#355061',flag:'05'}};
   for(const port of Object.values(DOCKS)) {
     const dx=port.sea.x-port.position.x,dz=port.sea.z-port.position.z,length=Math.hypot(dx,dz),heading=Math.atan2(dx,dz);
     const accent=portAccents[port.regionId],terminal=group(scene,port.position.x,.96,port.position.z,heading);
@@ -1282,7 +1330,7 @@ export async function createIslandScene({ container, districts = [], initialHour
       controls.listenToKeyEvents(renderer.domElement);
       controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN};
       for(const colleague of people)if(colleague.label)colleague.label.style.display='none';
-      moveCamera(homeTarget,currentRegion==='oneira'?2.15:1,homeOffset);
+      moveCamera(homeTarget,currentRegion==='oneira'||currentRegion==='omega-city'?2.15:1,homeOffset);
     }
     updateNearby();onRoamChange(next);
   }
@@ -1308,7 +1356,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     if(roaming)setRoaming(false);
     focusedDistrict=null;focusedPerson=null;
     for(const item of labelItems)item.element.setAttribute('aria-pressed','false');
-    selectRing.visible=false;topView=false;moveCamera(homeTarget,currentRegion==='oneira'?2.15:1,homeOffset);
+    selectRing.visible=false;topView=false;moveCamera(homeTarget,currentRegion==='oneira'||currentRegion==='omega-city'?2.15:1,homeOffset);
   }
   function updateWalking(dt) {
     if(!roaming||voyage)return;
@@ -1428,7 +1476,7 @@ export async function createIslandScene({ container, districts = [], initialHour
     if(destroyed||contextLost||voyage||regionId!==currentRegion||!Object.hasOwn(REGIONS,regionId))return false;
     const region=REGIONS[regionId];homeTarget.set(region.center.x,1,region.center.z);
     focusedDistrict=null;focusedPerson=null;selectRing.visible=false;
-    moveCamera(homeTarget,regionId==='exile'||regionId==='oneira'?2.15:regionId==='life'?1.35:1,homeOffset);return true;
+    moveCamera(homeTarget,regionId==='exile'||regionId==='oneira'||regionId==='omega-city'?2.15:regionId==='life'?1.35:1,homeOffset);return true;
   }
   function endVoyage(success) {
     const trip=voyage;if(!trip)return;voyage=null;passengerBoat.visible=false;

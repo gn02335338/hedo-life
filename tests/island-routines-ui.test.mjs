@@ -12,7 +12,7 @@ import * as routines from '../dist/island/routines.js';
 import { createIslandConflicts } from '../dist/island/conflicts.js';
 import { createIslandChallenge, CHALLENGE_STORAGE_KEY } from '../dist/island/challenge.js';
 import { getRegionForDistrict, REGIONS, DOCKS } from '../dist/island/archipelago.js';
-import { ONEIRA_PORT, getOneiraArrival } from '../dist/island/friend-islands.js';
+import { ONEIRA_PORT, OMEGA_CITY_PORT, getOneiraArrival } from '../dist/island/friend-islands.js';
 
 // Execute the real app controller against a small DOM, replacing only renderer,
 // network and timers. This exercises user-visible controls and event handlers;
@@ -177,7 +177,7 @@ async function fixture({ fallback = false, reducedMotion = false, conflictRandom
   const context = vm.createContext({
     createIslandConflicts: () => createIslandConflicts({ random: conflictRandom }),
     ...routines, DISTRICTS, TOUR, PLACES, PLACE_BY_ID, ISLAND_CAST, ENCOUNTERS, displayPersona, displayIslandPersona, readProgress, writeProgress,
-    createIslandChallenge, getRegionForDistrict, REGIONS, DOCKS, ONEIRA_PORT, getOneiraArrival,
+    createIslandChallenge, getRegionForDistrict, REGIONS, DOCKS, ONEIRA_PORT, OMEGA_CITY_PORT, getOneiraArrival,
     document, window, URLSearchParams, matchMedia: media, history, location, createIslandScene, mountIslandBrawl, brawlImportWait, mountIslandPvp, pvpImportWait,
     bindWalkControls: () => ({ clear() {}, destroy() {} }), bindApplications: () => ({ getResidents: () => [] }),
     createIslandAdminSummary: () => ({ refresh: async () => {} }), residentAvatar: () => document.createElement('span'),
@@ -822,7 +822,7 @@ test('Oneira website links appear only after local arrival and use the fixed pub
 
 test('each arrived island dock opens boarding without sailing, while stale remote markers and mid-voyage clicks are ignored', async () => {
   const f = await fixture({ sailDeferred: true });
-  const journey = ['company', 'life', 'exile', 'oneira', 'company'];
+  const journey = ['company', 'life', 'exile', 'oneira', 'omega-city', 'company'];
   for (const [index, regionId] of journey.entries()) {
     const progress = [...f.bytes], voyages = f.voyages.length;
     assert.equal(f.api.getTravelState().currentRegion, regionId);
@@ -1043,4 +1043,56 @@ test('a boss can accept an ordinary duel without story unlocks, and their absenc
   f.api.visitPlace('general-manager-office'); await f.node('[data-sail-region="company"]').dispatch('click');
   assert.equal(f.node('[data-company-task-hold]'), null); assert.ok(f.node('[data-encounter-choice="0"]'));
   assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER'); assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+});
+
+test('Alice game links wait for arrival and keep the island open while using only the fixed external URL', async () => {
+  for (const entry of ['district', 'place']) {
+    const f = await fixture({ initialSearch: '?redirect=https%3A%2F%2Fevil.example%2F&token=TEST_IDENTITY', sailDeferred: true });
+    const links = () => f.document.querySelectorAll('a').filter(link => link.dataset.projectPort === 'omega-city');
+    if (entry === 'district') f.api.selectDistrict('omega-city');
+    else f.api.visitPlace('omega-terminal');
+    assert.equal(f.node('#ferry-dialog').open, true);
+    assert.equal(links().length, 0, 'requesting a faraway game does not skip the boat');
+    assert.equal(f.api.getVisited().includes('omega-city'), false);
+    const sailing = f.node('[data-sail-region="omega-city"]').dispatch('click');
+    assert.equal(links().length, 0);
+    f.resolveSail(true); await sailing;
+    assert.equal(f.api.getTravelState().currentRegion, 'omega-city');
+    assert.ok(links().length >= 1, entry);
+    for (const link of links()) {
+      assert.equal(link.href, OMEGA_CITY_PORT.gameUrl);
+      assert.equal(link.target, '_blank');
+      assert.equal(link.rel, 'noopener noreferrer');
+      assert.equal(link.referrerPolicy, 'no-referrer');
+      assert.ok(link.textContent.includes('終末之都'));
+    }
+    const container = f.node(entry === 'district' ? '#detail-panel' : '#encounter-content');
+    assert.ok(container.textContent.includes('手遊王愛麗絲製作'));
+    assert.equal(f.voyages.length, 1);
+    assert.equal(f.bytes.get('hedo-anonymous-v1'), 'TEST_IDENTITY');
+    assert.equal(f.bytes.get('hedo-life-v1'), 'UNCHANGED_CAREER');
+  }
+});
+
+test('an interrupted trip to Alice island grants no visit or external game link', async () => {
+  const f = await fixture({ sailDeferred: true });
+  const originalPassport = f.bytes.get('hedo-island-v1');
+  f.api.visitPlace('omega-terminal');
+  const sailing = f.node('[data-sail-region="omega-city"]').dispatch('click');
+  f.resolveSail(false); await sailing;
+  assert.equal(f.api.getTravelState().currentRegion, 'company');
+  assert.equal(f.bytes.get('hedo-island-v1'), originalPassport);
+  assert.equal(f.document.querySelectorAll('a').filter(link => link.dataset.projectPort === 'omega-city').length, 0);
+});
+
+test('non-WebGL navigation retains Alice boarding and arrived game access', async () => {
+  const f = await fixture({ fallback: true, initialHash: '#omega-terminal' });
+  assert.equal(f.api.getTravelState().currentRegion, 'company');
+  assert.equal(f.node('#ferry-dialog').open, true);
+  assert.equal(f.document.querySelectorAll('a').filter(link => link.dataset.projectPort === 'omega-city').length, 0);
+  await f.node('[data-sail-region="omega-city"]').dispatch('click');
+  assert.equal(f.api.getTravelState().currentRegion, 'omega-city');
+  assert.equal(f.node('#encounter-dialog').open, true);
+  assert.ok(f.node('#encounter-content').textContent.includes('手遊王愛麗絲製作'));
+  assert.equal(f.document.querySelectorAll('a').filter(link => link.dataset.projectPort === 'omega-city').at(-1).href, OMEGA_CITY_PORT.gameUrl);
 });

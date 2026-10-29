@@ -1,6 +1,6 @@
 // Original public island scenes. A label never contains its selected response.
 // These places do not unlock or change the career game's private story paths.
-const categories = { lobby: 'department', lab: 'department', plaza: 'department', meeting: 'department', finance: 'department', hr: 'department', cafe: 'shared', court: 'afterwork', harbor: 'afterwork', exile: 'special', hospital: 'special', police: 'special', oneira: 'project' };
+const categories = { lobby: 'department', lab: 'department', plaza: 'department', meeting: 'department', finance: 'department', hr: 'department', cafe: 'shared', court: 'afterwork', harbor: 'afterwork', exile: 'special', hospital: 'special', police: 'special', oneira: 'project', 'omega-city': 'project' };
 function place(id, districtId, name, shortName, summary, tags, title, opening, choices) {
   return Object.freeze({ id, districtId, name, shortName, category: categories[districtId], summary,
     tags: Object.freeze([name, ...tags]), story: Object.freeze({ title, opening,
@@ -181,6 +181,18 @@ export const PLACES = Object.freeze([
       ['先挑一件真正要解決的小事', '你把需求縮成一句話，再挑能用得上的工具。書架沒有變矮，選擇卻終於不必一次全背回家。'],
       ['讀一讀作者與授權說明', '你把原作的名字和使用條件一起記下來。靈感可以接著走，來時的路也留得清楚。'],
       ['替還沒決定的點子留張書籤', '書籤夾在你想再看的那一頁。今天先不用選完，下一次回來，也不必重新找起。'],
+    ]),
+  place('omega-terminal', 'omega-city', '市民登記站', '市民登記站', '手遊王愛麗絲的《終末之都》從這裡出發；另一段人生，等你親自選擇。', ['終末之都', 'Omega City', '愛麗絲', '手遊王', '登記', '遊戲'],
+    '進城之前，先看看門口', '市民登記站的青色燈條剛剛亮起，螢幕顯示「2480」。櫃台放著手遊王愛麗絲的遊戲介紹，旁邊有一張城市入口卡。你可以先在島上看看，再決定何時走進《終末之都》。', [
+      ['讀讀這座城市的人生介紹', '介紹卡寫著出生、職業與抉擇。你把它放回原位，想好進城後要先看看哪個角落；真正的故事，留到遊戲裡慢慢經歷。'],
+      ['把想問城市的一個問題記下來', '你寫下「在這裡，什麼算是自己的選擇？」霓虹燈映在紙上，問題還沒有答案，卻已經有了可以開始的地方。'],
+      ['先在渡船票背面畫一個新人生', '你畫了一個提著便當的小人，替未來城市留下一點平凡日常。碼頭仍在身後，想回移動島隨時都有下一班船。'],
+    ]),
+  place('omega-overlook', 'omega-city', '城市觀景台', '城市觀景台', '從海邊望向微縮城市，看看四個區域藏著哪些不同日常。', ['終末之都', 'Omega City', '觀景', '賽博龐克', '城市'],
+    '霓虹底下，還有人的生活', '觀景台的城市索引分成東、西、南、北四格。遠方是高塔與燈光，近處卻放著一張普通長椅。你坐下時，忽然很好奇：如果住在那裡，下班後會去哪裡？', [
+      ['從四個方向找一個想認識的地方', '你沿著索引看過港區、行政中心、生活街區與夜間街道。每個名字都像另一種日常，值得在真正的城市裡走一走。'],
+      ['在長椅上看一會兒燈光', '青色和紫色的光倒映在海面，船燈慢慢越過它們。再遙遠的未來城市，也先從眼前這一小段安靜開始。'],
+      ['替微縮城市畫一個午休角落', '你在草圖空白處補了一棵樹和一張椅子。再高的樓也能讓人停下來，這是你想帶進下一段人生的小小願望。'],
     ]),
 ]);
 export const PLACE_BY_ID = new Map(PLACES.map(row => [row.id, row]));

@@ -15,6 +15,7 @@ export const LAYOUT = [
   { id: 'hospital', x: 46, z: -4, color: '#d28483', label: [0, 1.7, 3.4] },
   { id: 'police', x: 57, z: -4, color: '#738fae', label: [0, 1.7, 3.4] },
   { id: 'oneira', x: 28, z: -48, color: '#8072b1', label: [0, 1.7, 3.4] },
+  { id: 'omega-city', x: -26, z: -66, color: '#597e9c', label: [0, 1.7, 3.4] },
 ];
 export const LINKS = [
   ['lab', 'meeting'], ['meeting', 'finance'], ['lab', 'hr'],
@@ -46,6 +47,7 @@ const placeEntrances = {
   'exile-gate':['exile',1.8,1.35], 'cold-palace':['exile',-.65,.7],
   'hospital-er':['hospital',0,1.35], 'police-desk':['police',0,1.25],
   'oneira-hub':['oneira',-.55,1.05], 'oneira-library':['oneira',2.35,1.05],
+  'omega-terminal':['omega-city',-.65,1.1], 'omega-overlook':['omega-city',2,1.15],
 };
 export const PLACE_ENTRANCES = Object.freeze(Object.fromEntries(Object.entries(placeEntrances)
   .map(([id,[districtId,x,z]])=>[id,Object.freeze(world(districtId,x,z))])));
@@ -162,6 +164,10 @@ const terrainObstacles = [
   { id: 'police', x: 2.35, z: 1.4, width: .85, depth: 1.3 },
   { id: 'oneira', x: -.55, z: -.65, width: 2.4, depth: 2.0 },
   { id: 'oneira', x: 2.35, z: -.25, width: 1.05, depth: 1.15 },
+  { id: 'omega-city', x: -.65, z: -.7, width: 2.3, depth: 1.8 },
+  { id: 'omega-city', x: 2, z: -.4, width: 1.2, depth: 1.4 },
+  { id: 'omega-city', x: -1.8, z: -2, width: 1.1, depth: 1.05 },
+  { id: 'omega-city', x: .7, z: -2.4, width: 1.1, depth: .8 },
   ...[-2.15, 2.15].map(x => ({ id: 'court', x: x * Math.cos(-.06), z: -.3 - x * Math.sin(-.06), radius: .055 })),
 ].map(obstacle => ({ ...obstacle, ...world(obstacle.id, obstacle.x, obstacle.z) }));
 const castObstacles = Object.values(CAST_POSITIONS).map(position => ({ ...position, radius: CAST_RADIUS }));
