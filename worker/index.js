@@ -9,6 +9,7 @@ import { AchievementStore } from './achievements.js';
 import { CharacterStore } from './characters.js';
 import { ObservationStore } from './observations.js';
 import { AdminPrivateStore } from './admin-private.js';
+import { OfficeStore } from './office.js';
 import { IslandApplicationStore, validateIslandApplication } from './island-applications.js';
 import { LeaderboardStore, validateLeaderboardFilter, validateLeaderboardNickname } from './leaderboards.js';
 import { deriveLeaderboardScoreV56, leaderboardEligibilityV56, SCORE_VERSION_V56 } from '../dist/leaderboard-score-v56.js';
@@ -334,6 +335,10 @@ export class HedoArchive extends DurableObject {
   async fetch(request) {
     try {
       const path = new URL(request.url).pathname;
+      if (path === '/api/office' || path.startsWith('/api/office/')) {
+        this.office ||= new OfficeStore(this.sql, this.ctx.storage, this.feedbackEnv);
+        return await this.office.fetch(request);
+      }
       if (path.startsWith('/api/admin/')) {
         this.adminPrivate ||= new AdminPrivateStore(this.sql, this.feedbackEnv, { getIslandStore: () => this.islandStore() });
         return await this.adminPrivate.fetch(request);

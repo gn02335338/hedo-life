@@ -43,3 +43,5 @@
 @media(prefers-reduced-motion:reduce){.home-game-card{transition:none}.home-game-card:hover{transform:none}}
 
 .home-game-card.attachment{--game-ink:#234c43;--game-tint:#f7f4ec;border-color:#d9ddce;grid-column:1/-1}
+
+.home-game-card.office{--game-ink:#bd365c;--game-tint:#fff0f3;border-color:#f0d1da;grid-column:1/-1}
