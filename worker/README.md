@@ -1771,3 +1771,9 @@ key is added. The existing anonymous proof APIs perform canonical replay, prefix
 ownership checks, deduplication and public projections. Focused checks are
 `node --test tests/*duel*v75.test.mjs tests/typhoon-story-v75.test.mjs` in addition
 to the standard full test and dry-run build commands.
+
+## Attachment reflection static experience
+
+`/attachment/` is served by the existing `dist/` asset binding. It makes no API calls and uses no server-side session, analytics, contact collection or database migration. Original office questions and authored scoring are browser-only reflection rules, not a validated psychological instrument.
+
+Only `hedo-attachment-v1` is read/written/removed. Its version 1 record projects onto 24 integer answers (1–5 or null), a bounded cursor and an intro/quiz/result phase. Unknown fields are discarded; incomplete answers cannot restore a result screen. Malformed or oversized storage records fall back to fresh progress. Storage denial and quota failure leave the current in-memory quiz usable. Restart removes only this key. The experience never reads career proofs, anonymous credentials, collections or archive state. Player-initiated copy/download shares a summary, with no answers encoded into a link.

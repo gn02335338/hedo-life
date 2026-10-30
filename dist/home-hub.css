@@ -41,3 +41,5 @@
 @media(max-width:800px){.home-game-card.omega{grid-template-columns:62px minmax(0,1fr);gap:16px}.home-game-card.omega .home-game-cta{grid-column:2;border-top:1px solid #171c3112;padding-top:14px}.home-game-card.omega .home-game-icon{align-self:start}}
 @media(max-width:560px){.home-game-card.omega{display:flex;gap:0;margin-top:14px;align-items:stretch}.home-game-card.omega .home-game-cta{margin-top:16px;gap:12px}.home-game-credit{font-size:9px;letter-spacing:0;line-height:1.7;margin-bottom:5px}}
 @media(prefers-reduced-motion:reduce){.home-game-card{transition:none}.home-game-card:hover{transform:none}}
+
+.home-game-card.attachment{--game-ink:#234c43;--game-tint:#f7f4ec;border-color:#d9ddce;grid-column:1/-1}
