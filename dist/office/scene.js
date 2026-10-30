@@ -1,13 +1,15 @@
 /** Original procedural office. All furniture and people are local geometry. */
 import * as THREE from '../island/vendor/three.module.js';
 import { OrbitControls } from '../island/vendor/OrbitControls.js';
+import { OFFICE_FLOORS, isOfficeFloor } from './floors.js';
 
+const FLOOR_HEIGHT = 4.3;
 const ZONE_CENTERS = Object.freeze({ studio: [-4.9, 2.4], meeting: [5.5, -3.7], focus: [-7.3, -5.1], lounge: [5.8, 4.7] });
 const ZONE_BOUNDS = Object.freeze({ studio: [-10.2, .4, -1.7, 7.6], meeting: [1.6, 10.1, -7.1, .2], focus: [-10.2, -4.1, -7.1, -3.3], lounge: [1.6, 10.1, 1.4, 7.6] });
 const hash = value => [...String(value)].reduce((n, letter) => (n * 31 + letter.codePointAt(0)) >>> 0, 7);
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-export async function createOfficeScene({ container, onSelect = () => {}, roster = [] }) {
+export async function createOfficeScene({ container, onSelect = () => {}, onFloorSelect = () => {}, roster = [] }) {
   if (!container) throw new Error('缺少辦公室場景容器。');
   let renderer;
   try {
@@ -25,16 +27,19 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
   renderer.toneMappingExposure = 1.25;
   const canvas = renderer.domElement;
   canvas.setAttribute('role', 'img');
-  canvas.setAttribute('aria-label', '禾多辦公室立體場景：共同工作區、會議室、專注區與茶水間。可拖曳旋轉、捲動縮放；所有成員也可從旁邊清單選取。');
+  canvas.setAttribute('aria-label', '禾多總部七層立體辦公大樓。點選樓層進入部門剖面，可拖曳旋轉、捲動縮放；成員也可從旁邊清單選取。');
   canvas.style.touchAction = 'none';
   container.append(canvas);
   const labels = document.createElement('div');
   labels.className = 'scene-labels';
   container.append(labels);
 
-  const camera = new THREE.OrthographicCamera(-16, 16, 12, -12, .1, 180);
+  let activeFloor = 1, buildingView = true, fullRoster = Array.isArray(roster) ? roster : [];
+  const camera = new THREE.OrthographicCamera(-16, 16, 12, -12, .1, 220);
   const homeTarget = new THREE.Vector3(0, .65, .6);
   const homeOffset = new THREE.Vector3(25, 28, 30);
+  const buildingTarget = new THREE.Vector3(0, FLOOR_HEIGHT * 3.5, .5);
+  const buildingOffset = new THREE.Vector3(32, 24, 38);
   camera.position.copy(homeTarget).add(homeOffset);
   camera.lookAt(homeTarget);
   const controls = new OrbitControls(camera, canvas);
@@ -61,7 +66,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
   sun.shadow.bias = -.0004;
   sun.shadow.normalBias = .04;
   sun.shadow.radius = 3;
-  scene.add(sun);
+  scene.add(sun, sun.target);
   const fill = new THREE.DirectionalLight('#c3dcd9', .7);
   fill.position.set(14, 14, -8);
   scene.add(fill);
@@ -69,7 +74,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
   warmLamp.position.set(0, 5, 1);
   scene.add(warmLamp);
 
-  const geometries = new Set(), materials = new Map();
+  const geometries = new Set(), materials = new Map(), textures = new Set();
   const geometry = item => { geometries.add(item); return item; };
   const boxGeometry = geometry(new THREE.BoxGeometry(1, 1, 1));
   const cylinderGeometry = geometry(new THREE.CylinderGeometry(1, 1, 1, 16));
@@ -94,6 +99,10 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
   };
   const room = new THREE.Group();
   scene.add(room);
+  const building = new THREE.Group();
+  scene.add(building);
+  const floorDetails = new Map(), buildingLabels = [], floorHitTargets = [];
+  const accentMaterial = material('#79947e', { roughness: .64 });
   const obstacles = [];
   const solid = (x, z, width, depth, padding = .30) => obstacles.push({ minX: x - width / 2 - padding, maxX: x + width / 2 + padding, minZ: z - depth / 2 - padding, maxZ: z + depth / 2 + padding });
   function mesh(parent, shape, mat, x, y, z, sx = 1, sy = 1, sz = 1, ry = 0) {
@@ -108,6 +117,18 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
   const group = (parent, x, y, z, rotation = 0) => {
     const value = new THREE.Group(); value.position.set(x, y, z); value.rotation.y = rotation; parent.add(value); return value;
   };
+
+  function sign(parent, text, x, y, z, width, height, color = '#526d61') {
+    const surface = document.createElement('canvas'); surface.width = 1024; surface.height = 256;
+    const context = surface.getContext('2d');
+    if (!context) return null;
+    context.fillStyle = color; context.fillRect(0, 0, surface.width, surface.height);
+    context.fillStyle = '#fffaf0'; context.font = '700 70px system-ui, sans-serif';
+    context.textAlign = 'center'; context.textBaseline = 'middle'; context.fillText(text, 512, 131, 960);
+    const texture = new THREE.CanvasTexture(surface); texture.colorSpace = THREE.SRGBColorSpace; textures.add(texture);
+    const mat = new THREE.MeshBasicMaterial({ map: texture }); materials.set(`sign:${materials.size}`, mat);
+    return mesh(parent, geometry(new THREE.PlaneGeometry(width, height)), mat, x, y, z);
+  }
 
   // Wood platform, tiny staggered seams and two open sides keep the plan legible.
   box(room, palette.woodDark, 0, -.26, .5, 22.4, .5, 17.4);
@@ -247,9 +268,119 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
   solid(10.35, -.35, 1.0, 3.6, .24);
   // Two warm pendant lamps, high enough to keep their supports out of sight.
   for (const [x, z] of [[5.5, -4.15], [5.4, 4.2]]) {
-    cylinder(room, palette.trim, x, 4.25, z, .025, .65);
-    cylinder(room, palette.lamp, x, 3.87, z, .44, .12);
+    cylinder(room, palette.trim, x, 3.9, z, .025, .7);
+    cylinder(room, palette.lamp, x, 3.52, z, .44, .12);
   }
+
+  // Every selected floor uses the same navigable core, with a different
+  // department frontage, equipment and Chinese sign. Only its detail group is
+  // shown; the seven lightweight exterior shells belong to the overview.
+  box(room, accentMaterial, 0, .055, 8.82, 21.9, .035, .24);
+  box(room, accentMaterial, 0, .42, -7.9, 21.9, .18, .06);
+  // Include the counter overhangs and a walking body's radius, not just feet.
+  // The shared clearance also keeps floor changes from opening blocked routes.
+  solid(-10.1, 5.5, .8, 1.6, .32);
+  solid(-.5, 2.1, 3.1, .75, .32);
+  solid(.1, -6.1, 2.2, .4, .32);
+  for (const floor of OFFICE_FLOORS) {
+    const detail = group(room, 0, 0, 0); floorDetails.set(floor.id, detail);
+    const color = material(floor.color, { roughness: .72 });
+    sign(detail, `${floor.id}F  ${floor.department || floor.name}`, 4.5, 2.85, -7.7, 9.3, 1.15, floor.color);
+    // The cabinet by the studio changes from a public information stand to
+    // folders, a safe, sales brochures, prototypes, servers and an award shelf.
+    if (floor.id === 1) {
+      box(detail, color, -.5, .57, 2.1, 3, 1.14, .6);
+      box(detail, palette.woodLight, -.5, 1.17, 2.1, 3.1, .12, .72);
+      box(detail, palette.charcoal, -.9, 1.43, 2.03, .65, .4, .06);
+      sign(detail, '接待 · RECEPTION', -.45, .7, 2.415, 2.3, .55, floor.color);
+      for (let i = 0; i < 3; i++) box(detail, [palette.rose, palette.gold, palette.sage][i], -10.1, .55 + i * .32, 5.5, .65, .15, 1.2);
+      cylinder(detail, palette.white, .35, 1.31, 2.12, .09, .2);
+    } else if (floor.id === 2) {
+      box(detail, palette.white, -10.1, .85, 5.5, .8, 1.7, 1.5);
+      for (let i = 0; i < 4; i++) {
+        box(detail, color, -9.675, .35 + i * .39, 5.5, .035, .29, 1.33);
+        box(detail, palette.gold, -9.645, .35 + i * .39, 5.5, .025, .05, .24);
+      }
+      box(detail, palette.white, .1, 1.4, -6.1, 2.2, 1.65, .13);
+      for (let i = 0; i < 6; i++) box(detail, i % 2 ? color : palette.gold, -.59 + (i % 3) * .65, 1.1 + Math.floor(i / 3) * .6, -6.02, .48, .38, .02);
+    } else if (floor.id === 3) {
+      box(detail, palette.charcoal, -10.1, .82, 5.5, .8, 1.64, 1.4);
+      box(detail, palette.dark, -9.68, .82, 5.5, .04, 1.35, 1.14);
+      cylinder(detail, palette.gold, -9.64, .92, 5.5, .15, .07).rotation.z = Math.PI / 2;
+      box(detail, color, .1, .52, -6.1, 2.2, 1.04, .38);
+      for (let i = 0; i < 7; i++) box(detail, [palette.cream, palette.rose, palette.gold][i % 3], -.73 + i * .27, 1.18, -6.1, .18, .37, .3);
+      cylinder(detail, palette.gold, -.5, 1.62, -6.1, .025, .5);
+      box(detail, palette.gold, -.5, 1.86, -6.1, .95, .045, .045);
+      for (const x of [-.87, -.13]) cylinder(detail, palette.gold, x, 1.56, -6.1, .14, .035);
+    } else if (floor.id === 4) {
+      box(detail, palette.white, .1, 1.4, -6.1, 2.2, 1.65, .13);
+      for (let i = 0; i < 5; i++) {
+        const dot = ball(detail, i % 2 ? color : palette.gold, -.7 + i * .38, 1.15 + Math.sin(i) * .3, -6.0, .08);
+        dot.scale.z = .35;
+      }
+      box(detail, color, -10.1, .55, 5.5, .8, 1.1, 1.5);
+      for (let i = 0; i < 4; i++) box(detail, i % 2 ? palette.cream : palette.gold, -10.1, 1.16 + i * .035, 5.5, .62, .03, 1.1, -.08 + i * .04);
+    } else if (floor.id === 5) {
+      box(detail, palette.white, .1, 1.4, -6.1, 2.2, 1.65, .13);
+      for (let i = 0; i < 9; i++) box(detail, [color, palette.rose, palette.gold][i % 3], -.6 + (i % 3) * .65, .9 + Math.floor(i / 3) * .43, -6.015, .48, .29, .02);
+      box(detail, palette.woodLight, -10.1, .6, 5.5, .8, 1.2, 1.5);
+      for (let i = 0; i < 3; i++) box(detail, [color, palette.rose, palette.gold][i], -10.1, 1.38, 5.05 + i * .45, .45, .35, .33, i * .4);
+    } else if (floor.id === 6) {
+      box(detail, palette.charcoal, -10.1, 1.2, 5.5, .8, 2.4, 1.5);
+      for (let i = 0; i < 7; i++) {
+        box(detail, palette.dark, -9.675, .28 + i * .3, 5.5, .035, .23, 1.3);
+        for (const z of [5.1, 5.35, 5.6]) ball(detail, palette.screen, -9.64, .28 + i * .3, z, .035);
+      }
+      box(detail, palette.charcoal, .1, 1.4, -6.1, 2.2, 1.65, .13);
+      for (let i = 0; i < 5; i++) box(detail, palette.screen, -.65 + i * .36, .9 + i * .14, -6.02, .2, .3 + i * .16, .018);
+    } else {
+      box(detail, color, -.5, .7, 2.1, 2.5, 1.4, .6);
+      box(detail, palette.woodLight, -.5, 1.43, 2.1, 2.7, .12, .75);
+      box(detail, palette.white, -10.1, .75, 5.5, .8, 1.5, 1.5);
+      for (let i = 0; i < 3; i++) {
+        cylinder(detail, palette.woodDark, -10.1, 1.57, 5.05 + i * .45, .14, .08);
+        cylinder(detail, palette.gold, -10.1, 1.79, 5.05 + i * .45, .05, .38);
+        ball(detail, palette.gold, -10.1, 2.04, 5.05 + i * .45, .16);
+      }
+    }
+  }
+
+  // A real stack of seven storeys, rather than repeated labels over one room.
+  // Exterior geometry is inexpensive and is hidden in the furnished cutaway.
+  const facade = material('#d8e0d5'), facadeGlass = material('#95b7bf', { transparent: true, opacity: .25, depthWrite: false, roughness: .2, side: THREE.DoubleSide });
+  box(building, palette.cream, 0, -.85, .5, 25.5, .65, 20.2);
+  box(building, palette.woodDark, 0, -.46, .5, 23.2, .16, 18.2);
+  for (const floor of OFFICE_FLOORS) {
+    const base = (floor.id - 1) * FLOOR_HEIGHT, shell = group(building, 0, base, 0);
+    const color = material(floor.color, { roughness: .72 });
+    const slab = box(shell, palette.cream, 0, -.12, .5, 22.5, .3, 17.6); slab.userData.floor = floor.id; floorHitTargets.push(slab);
+    box(shell, facade, 0, 1.95, -8.1, 22.3, 3.9, .18);
+    box(shell, facade, -11.1, 1.95, .5, .18, 3.9, 17.1);
+    const frontage = box(shell, facadeGlass, 0, 1.96, 9.02, 22.1, 3.35, .045); frontage.userData.floor = floor.id; floorHitTargets.push(frontage);
+    const side = box(shell, facadeGlass, 11.1, 1.96, .5, .045, 3.35, 17.1); side.userData.floor = floor.id; floorHitTargets.push(side);
+    box(shell, color, 0, .29, 9.06, 22.4, .24, .12);
+    box(shell, color, 11.16, .29, .5, .12, .24, 17.2);
+    for (let x = -11; x <= 11; x += 3.67) box(shell, palette.white, x, 1.95, 9.06, .085, 3.8, .095);
+    for (let z = -8; z <= 9; z += 4.25) box(shell, palette.white, 11.16, 1.95, z, .095, 3.8, .085);
+    // A few silhouettes make each storey read as an occupied department.
+    for (const x of [-7, 0, 7]) {
+      box(shell, color, x, .63, 4.9, 2.9, 1.2, .75);
+      box(shell, palette.charcoal, x, 1.45, 4.9, .72, .47, .055);
+    }
+    sign(shell, `${floor.id}F  ${floor.department || floor.name}`, -6.4, 1.92, 9.1, 6.5, .95, floor.color);
+    const element = document.createElement('button'); element.type = 'button'; element.className = 'building-floor-label';
+    element.style.cssText = 'position:absolute;pointer-events:auto;transform:translateY(-50%);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;';
+    element.addEventListener('click', () => chooseFloor(floor.id)); labels.append(element);
+    buildingLabels.push({ floor, element, position: new THREE.Vector3(12.3, base + 1.7, -.5) });
+  }
+  const roof = FLOOR_HEIGHT * 7;
+  box(building, palette.cream, 0, roof, .5, 22.8, .25, 17.8);
+  box(building, palette.sage, -4.8, roof + .16, .2, 10, .08, 11);
+  for (const [x, z] of [[-8, -3], [-3, 3.5], [7.6, -4], [7.6, 5]]) {
+    box(building, palette.white, x, roof + .38, z, 1.1, .65, 1.1);
+    for (let i = 0; i < 3; i++) mesh(building, leafGeometry, i % 2 ? palette.green : palette.sage, x + Math.sin(i * 2.2) * .3, roof + 1.0 + i * .14, z + Math.cos(i * 2.2) * .3, .6, .6, .6);
+  }
+  sign(building, '禾多總部 · HEDO', 0, roof + 1.1, 7.9, 10.5, 1.4, '#526d61');
 
   // A half-meter navigation grid keeps feet on the floor and outside furniture.
   const step = .5, minX = -10.25, minZ = -7.25, columns = 42, rows = 32;
@@ -321,9 +452,24 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
     return { id: person.id, data: person, object: p, torso, leftLeg, rightLeg, leftArm, rightArm, ring, label, path: [], target: null, heading: 0, walkTime: seed % 100, priority: seed, zone: null };
   }
   function choose(id) {
-    if (!people.has(id)) return;
+    if (buildingView || !people.has(id)) return;
     selectedId = id; refreshLabels(); onSelect(id);
   }
+  function memberFloor(person) {
+    return isOfficeFloor(person.floor) ? person.floor : isOfficeFloor(person.departmentFloor) ? person.departmentFloor : 1;
+  }
+  function updateBuildingLabels() {
+    for (const item of buildingLabels) {
+      const count = fullRoster.filter(person => person && memberFloor(person) === item.floor.id && (person.kind === 'character' || person.online === true)).length;
+      item.element.textContent = `${item.floor.id}F ${item.floor.name} · ${count}`;
+      item.element.setAttribute('aria-label', `進入${item.floor.id}樓，${item.floor.name}，${count}位同事`);
+      item.element.title = `${item.floor.department} · ${count}位同事`;
+      item.element.classList.toggle('is-active', item.floor.id === activeFloor);
+      item.element.setAttribute('aria-pressed', String(!buildingView && item.floor.id === activeFloor));
+      item.element.style.setProperty('--floor-color', item.floor.color);
+    }
+  }
+  function chooseFloor(id) { if (setFloor(id)) onFloorSelect(id); }
   function refreshLabels() {
     const list = [...people.values()];
     const visible = new Set(list.filter(person => person.data.kind !== 'character' && person.data.online).slice(0, 6).map(person => person.id));
@@ -343,7 +489,9 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
   }
   function setRoster(nextRoster) {
     if (disposed) return;
-    const next = (Array.isArray(nextRoster) ? nextRoster : []).filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && (person.kind === 'character' || person.online === true));
+    fullRoster = Array.isArray(nextRoster) ? nextRoster : [];
+    updateBuildingLabels();
+    const next = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && memberFloor(person) === activeFloor && (person.kind === 'character' || person.online === true));
     const ids = new Set(next.map(person => person.id));
     for (const [id, person] of people) if (!ids.has(id)) {
       room.remove(person.object, person.ring); person.label.remove(); people.delete(id);
@@ -390,16 +538,45 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
     labels.append(element); roomLabels.push({ id, element, position: new THREE.Vector3(x, .08, z) });
   }
   function focusZone(id = 'all') {
+    if (buildingView) setFloor(activeFloor);
     activeZone = Object.hasOwn(ZONE_CENTERS, id) ? id : 'all';
-    const target = activeZone === 'all' ? homeTarget : new THREE.Vector3(ZONE_CENTERS[activeZone][0], .7, ZONE_CENTERS[activeZone][1]);
+    const target = activeZone === 'all' ? homeTarget : new THREE.Vector3(ZONE_CENTERS[activeZone][0], room.position.y + .7, ZONE_CENTERS[activeZone][1]);
     const offset = camera.position.clone().sub(controls.target);
     controls.target.copy(target); camera.position.copy(target).add(offset);
     camera.zoom = activeZone === 'all' ? 1 : 1.55; camera.updateProjectionMatrix(); controls.update();
     refreshLabels();
   }
   function reset() {
+    if (buildingView) { showBuilding(); return; }
     activeZone = 'all'; camera.position.copy(homeTarget).add(homeOffset); controls.target.copy(homeTarget);
     camera.zoom = 1; camera.updateProjectionMatrix(); controls.update(); refreshLabels();
+  }
+  function placeLights(overview) {
+    const base = overview ? 12 : room.position.y;
+    sun.position.set(overview ? -22 : -8, base + (overview ? 43 : 24), overview ? 30 : 12);
+    sun.target.position.set(0, base, .5);
+    Object.assign(sun.shadow.camera, { left: overview ? -28 : -17, right: overview ? 28 : 17, top: overview ? 29 : 15, bottom: overview ? -29 : -15, near: 1, far: overview ? 110 : 65 });
+    sun.shadow.camera.updateProjectionMatrix();
+    fill.position.set(14, base + 14, -8); warmLamp.position.set(0, room.position.y + 5, 1);
+  }
+  function setFloor(id) {
+    if (disposed || !isOfficeFloor(id)) return false;
+    activeFloor = id; buildingView = false; building.visible = false; room.visible = true;
+    room.position.y = (id - 1) * FLOOR_HEIGHT;
+    homeTarget.set(0, room.position.y + .65, .6);
+    for (const [floor, detail] of floorDetails) detail.visible = floor === id;
+    accentMaterial.color.set(OFFICE_FLOORS.find(floor => floor.id === id).color);
+    if (selectedId && !fullRoster.some(person => person.id === selectedId && memberFloor(person) === id)) selectedId = null;
+    placeLights(false); setRoster(fullRoster); resize(); reset();
+    canvas.setAttribute('aria-label', `禾多總部${id}樓，${OFFICE_FLOORS.find(floor => floor.id === id).name}的立體剖面。可拖曳旋轉、捲動縮放，點選同層成員。`);
+    return true;
+  }
+  function showBuilding() {
+    if (disposed) return;
+    buildingView = true; activeZone = 'all'; building.visible = true; room.visible = false;
+    camera.position.copy(buildingTarget).add(buildingOffset); controls.target.copy(buildingTarget); camera.zoom = 1;
+    placeLights(true); resize(); controls.update(); updateBuildingLabels();
+    canvas.setAttribute('aria-label', '禾多總部完整七層辦公大樓；點選各樓層標籤，進入該部門的立體剖面。');
   }
   function setNight(value) {
     const night = Boolean(value);
@@ -411,13 +588,15 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
     palette.screen.emissiveIntensity = night ? 1.2 : .26;
     windowGlow.material.color.set(night ? '#456578' : '#c8dedb');
     windowGlow.material.emissiveIntensity = night ? .35 : .12;
+    facadeGlass.emissive.set(night ? '#6eabc4' : '#000000');
+    facadeGlass.emissiveIntensity = night ? .22 : 0;
     renderer.toneMappingExposure = night ? 1.15 : 1.25;
   }
 
   let width = 1, height = 1;
   function resize() {
     width = Math.max(1, container.clientWidth); height = Math.max(1, container.clientHeight);
-    const aspect = width / height, viewHeight = Math.max(23, 31 / aspect);
+    const aspect = width / height, viewHeight = buildingView ? Math.max(46, 54 / aspect) : Math.max(23, 31 / aspect);
     camera.left = -viewHeight * aspect / 2; camera.right = viewHeight * aspect / 2;
     camera.top = viewHeight / 2; camera.bottom = -viewHeight / 2; camera.updateProjectionMatrix();
     renderer.setSize(width, height, false);
@@ -432,11 +611,12 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
     const bounds = canvas.getBoundingClientRect();
     pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, -(event.clientY - bounds.top) / bounds.height * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    const target = raycaster.intersectObjects(hitTargets)[0];
-    if (target) choose(target.object.userData.personId);
+    const target = raycaster.intersectObjects(buildingView ? floorHitTargets : hitTargets)[0];
+    if (target) { if (buildingView) chooseFloor(target.object.userData.floor); else choose(target.object.userData.personId); }
   }
   canvas.addEventListener('pointerdown', onPointerDown); canvas.addEventListener('pointerup', onPointerUp);
-  canvas.addEventListener('pointercancel', () => { down = null; });
+  const onPointerCancel = () => { down = null; };
+  canvas.addEventListener('pointercancel', onPointerCancel);
   const project = new THREE.Vector3();
   let lastTime = performance.now(), frame = 0;
   function animate(now) {
@@ -444,7 +624,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
     frame = requestAnimationFrame(animate);
     const delta = Math.min(.05, Math.max(0, (now - lastTime) / 1000)); lastTime = now;
     controls.update();
-    const motion = !paused && !reducedMotion.matches && !document.hidden;
+    const motion = !buildingView && !paused && !reducedMotion.matches && !document.hidden;
     for (const person of people.values()) {
       let walking = false;
       if (motion && person.path.length) {
@@ -472,8 +652,8 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
     // win placement; all 28 characters remain available in the member list.
     const labelOrder = [...people.values()].sort((a, b) => (b.id === selectedId) - (a.id === selectedId) || (b.data.kind !== 'character') - (a.data.kind !== 'character') || a.priority - b.priority);
     for (const person of labelOrder) {
-      if (!person.showLabel) { person.label.style.display = 'none'; continue; }
-      project.copy(person.object.position); project.y += 1.4; project.project(camera);
+      if (buildingView || !person.showLabel) { person.label.style.display = 'none'; continue; }
+      person.object.getWorldPosition(project); project.y += 1.4; project.project(camera);
       const x = (project.x + 1) * width / 2, y = (1 - project.y) * height / 2;
       const labelWidth = Math.max(35, person.data.name.length * 9 + 18);
       const collision = person.id !== selectedId && placed.some(other => Math.abs(other.x - x) < (other.width + labelWidth) / 2 + 3 && Math.abs(other.y - y) < 20);
@@ -482,15 +662,27 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
       if (visible) { person.label.style.left = `${x}px`; person.label.style.top = `${y}px`; placed.push({ x, y, width: labelWidth }); }
     }
     for (const label of roomLabels) {
-      project.copy(label.position).project(camera);
+      project.copy(label.position).add(room.position).project(camera);
       label.element.style.left = `${(project.x + 1) * width / 2}px`;
       label.element.style.top = `${(1 - project.y) * height / 2}px`;
-      label.element.style.display = project.z < -1 || project.z > 1 || activeZone !== 'all' && activeZone !== label.id ? 'none' : '';
+      label.element.style.display = buildingView || project.z < -1 || project.z > 1 || activeZone !== 'all' && activeZone !== label.id ? 'none' : '';
+    }
+    for (const label of buildingLabels) {
+      if (!buildingView) { label.element.style.display = 'none'; continue; }
+      project.copy(label.position).project(camera);
+      const x = (project.x + 1) * width / 2, y = (1 - project.y) * height / 2;
+      const labelWidth = width < 500 ? 130 : 180;
+      label.element.style.maxWidth = `${labelWidth}px`;
+      label.element.style.left = `${clamp(x + 5, 8, Math.max(8, width - labelWidth - 8))}px`;
+      label.element.style.top = `${y}px`;
+      label.element.style.display = project.z < -1 || project.z > 1 || y < 18 || y > height - 18 ? 'none' : '';
     }
   }
-  setRoster(roster); requestAnimationFrame(animate);
+  setRoster(roster); showBuilding(); requestAnimationFrame(animate);
   return {
     setRoster,
+    setFloor,
+    showBuilding,
     focusZone,
     setNight,
     setPaused(value) { paused = Boolean(value); },
@@ -500,8 +692,10 @@ export async function createOfficeScene({ container, onSelect = () => {}, roster
       if (disposed) return;
       disposed = true; cancelAnimationFrame(frame); resizeObserver.disconnect(); controls.dispose();
       canvas.removeEventListener('pointerdown', onPointerDown); canvas.removeEventListener('pointerup', onPointerUp);
+      canvas.removeEventListener('pointercancel', onPointerCancel);
       for (const shape of geometries) shape.dispose();
       for (const mat of materials.values()) mat.dispose();
+      for (const texture of textures) texture.dispose();
       renderer.dispose(); canvas.remove(); labels.remove();
     },
   };

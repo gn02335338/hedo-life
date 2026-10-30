@@ -20,7 +20,7 @@ const password = 'synthetic-office-review-password';
 function verifier() { const salt = randomBytes(16); return JSON.stringify({ v: 1, iterations: 100000, salt: salt.toString('hex'), hash: pbkdf2Sync(password, salt, 100000, 32, 'sha256').toString('hex') }); }
 const token = () => randomBytes(32).toString('hex');
 const input = (value = token(), extra = {}) => ({ token: value, kind: 'human', name: '測試同事', role: '設計', intro: '一起做可以交付的工作。', contact: 'private@example.test', ...extra });
-function harness(t, { configured = true, throughWorker = false } = {}) {
+function harness(t, { configured = true, throughWorker = false, setup = () => {} } = {}) {
   const db = new DatabaseSync(':memory:'); t.after(() => db.close()); let currentTime = Date.now();
   const sql = { exec(query, ...values) {
     let rows = [];
@@ -29,6 +29,7 @@ function harness(t, { configured = true, throughWorker = false } = {}) {
     return { toArray: () => rows, one: () => { assert.equal(rows.length, 1); return rows[0]; } };
   } };
   const storage = { sql, transactionSync(fn) { db.exec('BEGIN'); try { const result = fn(); db.exec('COMMIT'); return result; } catch (error) { db.exec('ROLLBACK'); throw error; } }, async getAlarm() { return null; }, async setAlarm() {} };
+  setup(sql);
   const env = configured ? { ADMIN_PASSWORD_VERIFIER: verifier() } : {};
   const create = () => new OfficeStore(sql, storage, env, { now: () => currentTime }); let office = throughWorker ? null : create();
   let archive, createArchive;
@@ -139,11 +140,13 @@ test('approved humans and server-side agents share real presence with expiry and
 });
 
 test('work ownership, conflict checks, completion and retries are authoritative and persistent', async t => {
-  const h = harness(t), auth = await h.login(), a = input(), b = input(token(), { kind: 'agent', name: 'Worker B' }); await h.approve(a, auth); await h.approve(b, auth);
+  const h = harness(t), auth = await h.login(), a = input(), b = input(token(), { kind: 'agent', name: 'Worker B', departmentFloor: 4 }); await h.approve(a, auth); await h.approve(b, auth);
+  assert.equal((await h.call('/api/office/presence', { method: 'POST', body: { floor: 2, zone: 'lounge', status: 'break' }, bearer: b.token })).status, 200);
   const created = await h.call('/api/office/tasks', { method: 'POST', body: { title: '整理公開資料', description: '產出摘要' }, bearer: a.token }); assert.equal(created.status, 201); const task = (await created.json()).task;
   const claim = who => h.call(`/api/office/tasks/${task.id}/claim`, { method: 'POST', body: {}, bearer: who });
   assert.equal((await claim(b.token)).status, 200);
   const claimedPresence = (await (await h.call('/api/office/me', { bearer: b.token })).json()).application;
+  assert.equal(claimedPresence.floor, 4); assert.equal(claimedPresence.departmentFloor, 4);
   assert.equal(claimedPresence.zone, 'studio'); assert.equal(claimedPresence.presenceStatus, 'working'); assert.equal(claimedPresence.activity, '正在處理：整理公開資料');
   h.advance(1000); assert.equal((await claim(b.token)).status, 200);
   assert.deepEqual((await (await h.call('/api/office/me', { bearer: b.token })).json()).application, claimedPresence);
@@ -152,6 +155,7 @@ test('work ownership, conflict checks, completion and retries are authoritative 
   const completed = () => h.call(`/api/office/tasks/${task.id}/complete`, { method: 'POST', body: { result: '公開摘要已整理' }, bearer: b.token });
   assert.equal((await completed()).status, 200);
   const deliveredPresence = (await (await h.call('/api/office/me', { bearer: b.token })).json()).application;
+  assert.equal(deliveredPresence.floor, 7); assert.equal(deliveredPresence.departmentFloor, 4);
   assert.equal(deliveredPresence.zone, 'focus'); assert.equal(deliveredPresence.presenceStatus, 'idle'); assert.equal(deliveredPresence.activity, '已交付：整理公開資料');
   h.advance(1000); assert.equal((await completed()).status, 200);
   assert.deepEqual((await (await h.call('/api/office/me', { bearer: b.token })).json()).application, deliveredPresence);
@@ -216,4 +220,62 @@ test('reapproval atomically respects unfinished board capacity without deleting 
   assert.equal(h.sql.exec("SELECT COUNT(*) AS n FROM office_activity WHERE member_id=? AND type='joined'", returning.id).one().n, events);
   h.reopen(); const restored = await (await h.call('/api/office')).json(); assert.equal(restored.tasks.filter(row => row.status !== 'completed').length, 100);
   assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM office_tasks').one().n, 200);
+});
+
+test('department admission supports all seven numeric floors, defaults legacy clients to one and rejects forged floor fields', async t => {
+  const h = harness(t), legacy = input(), application = await h.apply(legacy);
+  assert.equal(application.departmentFloor, 1); assert.equal(application.floor, 1);
+  assert.equal((await h.call('/api/office/apply', { method: 'POST', body: legacy })).status, 200);
+  for (let floor = 1; floor <= 7; floor++) {
+    const body = input(token(), { departmentFloor: floor }), created = await h.call('/api/office/apply', { method: 'POST', body, ip: '192.0.2.' + (floor + 30) });
+    assert.equal(created.status, 202); const row = (await created.json()).application;
+    assert.equal(row.departmentFloor, floor); assert.equal(row.floor, floor);
+    assert.equal((await h.call('/api/office/apply', { method: 'POST', body })).status, 200);
+    if (floor !== 1) assert.equal((await h.call('/api/office/apply', { method: 'POST', body: { ...body, departmentFloor: undefined } })).status, 409);
+  }
+  for (const floor of [0, 8, -1, 1.5, '2', null, true, {}, []]) {
+    const rejected = await h.call('/api/office/apply', { method: 'POST', body: input(token(), { departmentFloor: floor }) }); assert.equal(rejected.status, 400);
+  }
+  assert.equal((await h.call('/api/office/apply', { method: 'POST', body: input(token(), { floor: 7 }) })).status, 400);
+  assert.equal((await h.call('/api/office/presence', { method: 'POST', bearer: legacy.token, body: { floor: 7, zone: 'focus', status: 'working' } })).status, 403);
+  assert.equal((await (await h.call('/api/office/me', { bearer: legacy.token })).json()).application.floor, 1);
+});
+
+test('approved floor movement survives restart, omission preserves current floor, and revocation prevents further movement', async t => {
+  const h = harness(t), auth = await h.login(), body = input(token(), { departmentFloor: 5 }); const applicant = await h.approve(body, auth);
+  for (const floor of [0, 8, -1, 1.5, '2', null, true, {}, []]) assert.equal((await h.call('/api/office/presence', { method: 'POST', bearer: body.token, body: { floor, zone: 'studio', status: 'working' } })).status, 400);
+  assert.equal((await h.call('/api/office/presence', { method: 'POST', bearer: body.token, body: { departmentFloor: 2, zone: 'studio', status: 'working' } })).status, 400);
+  for (let floor = 1; floor <= 7; floor++) {
+    const moved = await h.call('/api/office/presence', { method: 'POST', bearer: body.token, body: { floor, zone: 'meeting', status: 'working', activity: '跨樓層協作' } });
+    assert.equal(moved.status, 200); const member = (await moved.json()).member; assert.equal(member.floor, floor); assert.equal(member.departmentFloor, 5);
+  }
+  assert.equal((await h.call('/api/office/presence', { method: 'POST', bearer: body.token, body: { zone: 'lounge', status: 'break' } })).status, 200);
+  h.reopen(); const own = (await (await h.call('/api/office/me', { bearer: body.token })).json()).application;
+  assert.equal(own.floor, 7); assert.equal(own.departmentFloor, 5);
+  const member = (await (await h.call('/api/office')).json()).members[0]; assert.equal(member.floor, 7); assert.equal(member.departmentFloor, 5); assert.equal(member.zone, 'lounge');
+  assert.equal((await h.review(applicant.id, 'revoked', auth)).status, 200);
+  assert.equal((await h.call('/api/office/presence', { method: 'POST', bearer: body.token, body: { floor: 2, zone: 'studio', status: 'working' } })).status, 403);
+  assert.equal((await (await h.call('/api/office/me', { bearer: body.token })).json()).application.floor, 7);
+});
+
+test('additive floor initialization preserves legacy credentials, admission, timestamps and retained work across repeated restarts', async t => {
+  const legacyToken = token(), hash = await http.tokenHash(legacyToken), id = crypto.randomUUID(), createdAt = '2026-10-30T00:00:00.000Z';
+  const h = harness(t, { setup(sql) {
+    sql.exec(`CREATE TABLE office_members (
+      id TEXT PRIMARY KEY,token_hash TEXT NOT NULL UNIQUE,kind TEXT NOT NULL,name TEXT NOT NULL,role TEXT NOT NULL,intro TEXT NOT NULL,contact TEXT NOT NULL,
+      admission_status TEXT NOT NULL,zone TEXT NOT NULL DEFAULT 'studio',presence_status TEXT NOT NULL DEFAULT 'idle',activity TEXT NOT NULL DEFAULT '',
+      last_seen_at INTEGER,approved_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL
+    );`);
+    sql.exec("INSERT INTO office_members (id,token_hash,kind,name,role,intro,contact,admission_status,zone,presence_status,activity,approved_at,created_at,updated_at) VALUES (?,?,'agent','Legacy agent','研究','Before seven floors','private-legacy@example.test','approved','meeting','working','Original work',?,?,?)", id, hash, createdAt, createdAt, createdAt);
+  } });
+  const before = h.sql.exec('SELECT * FROM office_members WHERE id=?', id).one();
+  assert.equal(before.token_hash, hash); assert.equal(before.department_floor, 1); assert.equal(before.floor, 1);
+  const own = (await (await h.call('/api/office/me', { bearer: legacyToken })).json()).application;
+  assert.equal(own.id, id); assert.equal(own.status, 'approved'); assert.equal(own.createdAt, createdAt); assert.equal(own.updatedAt, createdAt); assert.equal(own.activity, 'Original work');
+  const made = await h.call('/api/office/tasks', { method: 'POST', bearer: legacyToken, body: { title: 'Retained work after migration' } }); assert.equal(made.status, 201); const task = (await made.json()).task;
+  assert.equal((await h.call('/api/office/messages', { method: 'POST', bearer: legacyToken, body: { text: 'Retained message' } })).status, 201);
+  h.reopen(); h.reopen(); assert.deepEqual(h.sql.exec('SELECT * FROM office_members WHERE id=?', id).one(), before);
+  const snapshot = await (await h.call('/api/office')).json(); assert.equal(snapshot.members[0].id, id); assert.equal(snapshot.tasks[0].id, task.id); assert.equal(snapshot.messages[0].text, 'Retained message');
+  assert.equal(JSON.stringify(snapshot).includes('private-legacy@example.test'), false); assert.equal(JSON.stringify(snapshot).includes(legacyToken), false);
+  assert.equal(h.sql.exec('PRAGMA table_info(office_members)').toArray().filter(row => ['floor', 'department_floor'].includes(row.name)).length, 2);
 });

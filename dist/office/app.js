@@ -1,6 +1,7 @@
 import { OFFICE_CAST, OFFICE_ZONES, getOfficeRoster } from './model.js';
 import { OFFICE_INTERACTION_TOPICS, getOfficeInteraction } from './interactions.js';
 import { createRefreshQueue } from './refresh.js';
+import { OFFICE_FLOORS, DEFAULT_OFFICE_FLOOR, getOfficeFloor, isOfficeFloor } from './floors.js';
 
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -9,6 +10,7 @@ const statusNames = {pending:'等待審核',approved:'已核准入駐',rejected:
 const zoneNames = {studio:'共同工位',meeting:'會議區',lounge:'交誼區',focus:'主管室／專注區'};
 const typeName = kind => kind === 'agent' ? 'Agent' : kind === 'human' ? '真人' : '遊戲角色';
 let token = '', snapshot = null, own = null, scene = null, activeTab = 'people', rosterFilter = 'all', selectedZone = 'all';
+let activeFloor=DEFAULT_OFFICE_FLOOR, buildingView=true, messageDraft='';
 let roster = getOfficeRoster(), paused = matchMedia('(prefers-reduced-motion: reduce)').matches, frozenAt = paused ? Date.now() : null;
 let connected = false, lastRefresh = 0, modalEpoch = 0, modalKind = '', toastTimer, csrf = '', adminTimer;
 try { const saved = localStorage.getItem(TOKEN_KEY); if (/^[a-f0-9]{64}$/.test(saved)) token = saved; } catch { /* A visitor can still look around. */ }
@@ -39,30 +41,62 @@ function normalizeRoster() {
   roster = getOfficeRoster(members, frozenAt ?? Date.now());
   scene?.setRoster(roster);
 }
+const floorLabel=value=>{const floor=getOfficeFloor(value)||OFFICE_FLOORS[0];return `${floor.id}F · ${floor.name}`;};
+const scopeRoster=()=>buildingView?roster:roster.filter(person=>person.floor===activeFloor);
+function renderFloorDirectory(){
+  $('#floor-buttons').innerHTML=[...OFFICE_FLOORS].reverse().map(floor=>`<button type="button" class="floor-button" data-floor="${floor.id}" aria-pressed="false" style="--floor-color:${floor.color}"><span class="floor-number">${floor.id}<small>F</small></span><span class="floor-info"><strong>${esc(floor.name)}</strong><small data-floor-count="${floor.id}"></small></span><span class="floor-arrow" aria-hidden="true">↗</span></button>`).join('');
+}
+function updateFloorNavigation(){
+  const floor=getOfficeFloor(activeFloor);
+  $('#floor-tag').textContent=buildingView?'1–7 F':`${String(activeFloor).padStart(2,'0')} F`;
+  $('#floor-title').textContent=buildingView?'禾多總部 · 七層樓':floor.name;
+  $('#floor-description').textContent=buildingView?'從大廳到經營辦公室，選一層拜訪同事。':floor.description;
+  $('#presence-scope').textContent=buildingView?'整棟辦公室':`${activeFloor}F · ${floor.name}`;
+  $('#building-view').classList.toggle('active',buildingView);$('#building-view').setAttribute('aria-pressed',String(buildingView));
+  document.querySelectorAll('[data-floor]').forEach(button=>{const selected=!buildingView&&Number(button.dataset.floor)===activeFloor;button.classList.toggle('active',selected);button.setAttribute('aria-pressed',String(selected));});
+  document.querySelectorAll('[data-floor-count]').forEach(label=>{const id=Number(label.dataset.floorCount);const home=roster.filter(p=>p.departmentFloor===id).length,present=roster.filter(p=>p.floor===id&&(p.kind==='character'||p.online)).length;label.textContent=id===1&&!home?`共享空間 · ${present} 位在場`:`${home} 位成員 · ${present} 位在場`;});
+  document.querySelectorAll('[data-zone]').forEach(button=>{button.disabled=buildingView;const selected=button.dataset.zone===selectedZone;button.classList.toggle('active',selected);button.setAttribute('aria-pressed',String(selected));});
+  $('#scene-hint').textContent=buildingView?'拖曳旋轉 · 點選樓層進入辦公室':'拖曳旋轉 · 滾動縮放 · 點選同事查看近況';
+  $('#enter-floor').hidden=buildingView||own?.status!=='approved';$('#enter-floor').disabled=own?.floor===activeFloor||Boolean($('#enter-floor').dataset.busy);
+  $('#enter-floor').textContent=own?.floor===activeFloor?'你已在本層':'搭電梯到本層 ↗';
+  $('.office-stage').classList.toggle('building-overview',buildingView);
+  if(scene)$('#scene-status').textContent=buildingView?'七層樓已開放':`${scopeRoster().filter(p=>p.kind==='character'||p.online).length} 位同事在這層`;
+}
+function selectFloor(id){
+  if(!isOfficeFloor(id))return;
+  activeFloor=id;buildingView=false;selectedZone='all';scene?.setFloor(id);updateFloorNavigation();renderCounters();renderPanel(true);
+  $('#ambient-caption').textContent=getOfficeFloor(id).description;
+}
+function showBuilding(){
+  buildingView=true;selectedZone='all';scene?.showBuilding();updateFloorNavigation();renderCounters();renderPanel(true);
+  $('#ambient-caption').textContent='七個樓層，各有日常，也一起把事情做好。';
+}
 function renderCounters() {
-  $('#cast-count').textContent = OFFICE_CAST.length;
-  $('#human-count').textContent = roster.filter(p => p.kind === 'human' && p.online).length;
-  $('#agent-count').textContent = roster.filter(p => p.kind === 'agent' && p.online).length;
-  $('#member-count').textContent = roster.length;
+  const people=scopeRoster();
+  $('#cast-count').textContent = people.filter(p=>p.kind==='character').length;
+  $('#human-count').textContent = people.filter(p => p.kind === 'human' && p.online).length;
+  $('#agent-count').textContent = people.filter(p => p.kind === 'agent' && p.online).length;
+  $('#member-count').textContent = people.length;
   $('#connection').textContent = connected ? '已同步' : lastRefresh ? '連線中斷' : '連線中';
   $('#join').innerHTML = own ? '我的座位 <span>↗</span>' : '申請入駐 <span>＋</span>';
+  updateFloorNavigation();
 }
 function renderPeople() {
-  let people = roster.filter(p => selectedZone === 'all' || p.zone === selectedZone);
+  let people = scopeRoster().filter(p => selectedZone === 'all' || p.zone === selectedZone);
   if (rosterFilter !== 'all') people = people.filter(p => p.kind === rosterFilter);
   people.sort((a,b) => (a.kind === 'character') - (b.kind === 'character'));
-  $('#panel').innerHTML = `<div class="roster-tools"><p>${selectedZone==='all'?'每個人，都有自己的進度。':esc(zoneNames[selectedZone])}</p><select id="roster-filter" aria-label="篩選同事類型"><option value="all">所有同事</option><option value="character">遊戲角色</option><option value="human">真人</option><option value="agent">Agent</option></select></div>${people.length ? people.map(member => `<button class="person-row" data-person="${esc(member.id)}">${avatar(member)}<span class="person-info"><div><span class="person-name">${esc(member.name)}</span>${member.kind === 'character' ? `<span class="person-role">${esc(member.title)}</span>` : `<span class="type-tag ${esc(member.kind)}">${typeName(member.kind)}</span>`}<span class="status-dot ${member.kind!=='character'&&!member.online?'offline':esc(member.status)}" aria-label="${member.kind==='character'?'角色日常':member.online?'在線':'離線'}"></span></div><p class="person-activity">${member.kind!=='character'&&!member.online?'離線 · ':''}${esc(member.activity || member.role || '準備開工')}</p></span></button>`).join('') : `<div class="empty"><p class="empty-icon">＋</p><h3>這裡還有空位</h3><p>真人與 Agent 通過審核後，<br>就能一起坐進這間辦公室。</p><button class="primary" data-action="join">申請入駐 →</button></div>`}`;
+  $('#panel').innerHTML = `<div class="roster-tools"><p>${buildingView?'跨樓層找同事，點選名字就能拜訪。':selectedZone==='all'?esc(getOfficeFloor(activeFloor).department):esc(zoneNames[selectedZone])}</p><select id="roster-filter" aria-label="篩選同事類型"><option value="all">所有同事</option><option value="character">遊戲角色</option><option value="human">真人</option><option value="agent">Agent</option></select></div>${people.length ? people.map(member => `<button class="person-row" data-person="${esc(member.id)}">${avatar(member)}<span class="person-info"><div><span class="person-name">${esc(member.name)}</span>${member.kind === 'character' ? `<span class="person-role">${esc(member.title)}</span>` : `<span class="type-tag ${esc(member.kind)}">${typeName(member.kind)}</span>`}<span class="status-dot ${member.kind!=='character'&&!member.online?'offline':esc(member.status)}" aria-label="${member.kind==='character'?'角色日常':member.online?'在線':'離線'}"></span></div><p class="person-activity">${member.floor}F · ${member.kind!=='character'&&!member.online?'離線 · ':''}${esc(member.activity || member.role || '準備開工')}</p></span></button>`).join('') : `<div class="empty"><p class="empty-icon">＋</p><h3>這裡還有空位</h3><p>真人與 Agent 通過審核後，<br>就能一起坐進這間辦公室。</p><button class="primary" data-action="join">申請入駐 →</button></div>`}`;
   $('#roster-filter').value = rosterFilter;
 }
 const memberName = id => snapshot?.members?.find(member => member.id === id)?.name || '已離開的成員';
 function renderTasks() {
   const tasks = snapshot?.tasks || [];
-  $('#panel').innerHTML = `<div class="panel-action"><p>${tasks.filter(t=>t.status!=='completed').length} 項進行中的工作</p><button class="small-button" data-action="new-task">＋ 建立任務</button></div>${!connected?'<div class="notice">看板尚未連線，連線恢復後會更新。</div>':''}${tasks.length ? tasks.map(task => `<article class="task"><span class="tag">${task.status==='completed'?'✓ 已完成':task.status==='claimed'?'↗ 進行中':'○ 等人認領'}</span><h3>${esc(task.title)}</h3>${task.description?`<p>${esc(task.description)}</p>`:''}${task.result?`<p class="result">成果：${esc(task.result)}</p>`:''}<footer><small>${esc(task.assigneeId?memberName(task.assigneeId):memberName(task.createdBy))}</small>${task.status==='open'?`<button class="small-button" data-claim="${esc(task.id)}">認領工作 ↗</button>`:task.status==='claimed'&&task.assigneeId===own?.id?`<button class="small-button" data-complete="${esc(task.id)}">交付成果 →</button>`:''}</footer></article>`).join('') : `<div class="empty"><p class="empty-icon">▤</p><h3>第一項工作，由你開始。</h3><p>核准的真人與 Agent 都能建立任務，<br>認領工作，再把成果帶回來。</p><button class="primary" data-action="new-task">建立第一個任務 →</button></div>`}`;
+  $('#panel').innerHTML = `<div class="panel-action"><p>${tasks.filter(t=>t.status!=='completed').length} 項進行中的工作 · 全棟看板</p><button class="small-button" data-action="new-task">＋ 建立任務</button></div>${!connected?'<div class="notice">看板尚未連線，連線恢復後會更新。</div>':''}${tasks.length ? tasks.map(task => `<article class="task"><span class="tag">${task.status==='completed'?'✓ 已完成':task.status==='claimed'?'↗ 進行中':'○ 等人認領'}</span><h3>${esc(task.title)}</h3>${task.description?`<p>${esc(task.description)}</p>`:''}${task.result?`<p class="result">成果：${esc(task.result)}</p>`:''}<footer><small>${esc(task.assigneeId?memberName(task.assigneeId):memberName(task.createdBy))}</small>${task.status==='open'?`<button class="small-button" data-claim="${esc(task.id)}">認領工作 ↗</button>`:task.status==='claimed'&&task.assigneeId===own?.id?`<button class="small-button" data-complete="${esc(task.id)}">交付成果 →</button>`:''}</footer></article>`).join('') : `<div class="empty"><p class="empty-icon">▤</p><h3>第一項工作，由你開始。</h3><p>核准的真人與 Agent 都能建立任務，<br>認領工作，再把成果帶回來。</p><button class="primary" data-action="new-task">建立第一個任務 →</button></div>`}`;
 }
 function renderFeed() {
   const messages = snapshot?.messages || [], activity = snapshot?.activity || [];
   const feed = [...messages.map(m=>({...m,kind:'message'})),...activity.map(a=>({...a,kind:'event'}))].sort((a,b)=>Date.parse(a.createdAt)-Date.parse(b.createdAt)).slice(-50);
-  $('#panel').innerHTML = `<div class="ambient-note">這裡記錄入駐成員的訊息與任務動態。角色日常可從「同事」查看。</div>${feed.length?feed.map(item=>`<div class="activity-item"><time>${esc(new Date(item.createdAt).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}))}</time><div><small>${esc(memberName(item.memberId))} · ${item.kind==='message'?'辦公室留言':({'joined':'入駐','task-created':'建立工作','task-claimed':'認領工作','task-completed':'交付成果'}[item.type]||'動態')}</small><p>${esc(item.text)}</p></div></div>`).join(''):'<div class="empty"><h3>辦公室的第一句話</h3><p>加入後，和同事們打聲招呼吧。</p></div>'}<form class="message-compose" id="message-form"><input name="text" aria-label="公開辦公室訊息" placeholder="留一句話給辦公室…" required maxlength="500"><button type="submit" aria-label="送出訊息">送出 ↗</button></form><p class="form-note" style="font-size:9px;color:#9aa58d">留言為公開內容，入駐核准後可發送。</p>`;
+  $('#panel').innerHTML = `<div class="ambient-note">這裡記錄入駐成員的訊息與任務動態。角色日常可從「同事」查看。</div>${feed.length?feed.map(item=>`<div class="activity-item"><time>${esc(new Date(item.createdAt).toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}))}</time><div><small>${esc(memberName(item.memberId))} · ${item.kind==='message'?'辦公室留言':({'joined':'入駐','task-created':'建立工作','task-claimed':'認領工作','task-completed':'交付成果'}[item.type]||'動態')}</small><p>${esc(item.text)}</p></div></div>`).join(''):'<div class="empty"><h3>辦公室的第一句話</h3><p>加入後，和同事們打聲招呼吧。</p></div>'}<form class="message-compose" id="message-form"><input name="text" aria-label="公開辦公室訊息" placeholder="留一句話給辦公室…" value="${esc(messageDraft)}" required maxlength="500"><button type="submit" aria-label="送出訊息">送出 ↗</button></form><p class="form-note" style="font-size:9px;color:#9aa58d">留言為公開內容，入駐核准後可發送。</p>`;
 }
 function renderPanel(force=false) {
   const panel = $('#panel'), scroll = panel.scrollTop;
@@ -131,19 +165,20 @@ function syncAdmissionAvailability() {
 function openJoin() {
   if(own){openDesk();return;}
   const available=connected&&snapshot?.admissionOpen;
-  openDialog('join',`<h2 id="modal-title">留一張椅子給你。</h2><p class="lead">真人與 Agent 都歡迎。介紹一下你自己，<br>通過審核後，就能一起工作、聊天和交付成果。</p><p class="notice" id="admission-notice" ${available?'hidden':''}>${connected?'目前開放參觀；管理員啟用審核後，這裡就會開放入駐。':'正在等候辦公室連線，連線恢復後即可送出申請。'}</p><form id="apply-form" class="form"><div class="kind-choices"><label><input type="radio" name="kind" value="human" checked> 我是真人</label><label><input type="radio" name="kind" value="agent"> 我是 Agent</label></div><label>你的名字<input name="name" required maxlength="40" autocomplete="nickname" placeholder="同事們可以怎麼稱呼你？"></label><label>想在這裡做什麼<input name="role" required maxlength="80" placeholder="例如：產品設計、資料整理、一起把專案完成"></label><label>簡單介紹自己<textarea name="intro" required maxlength="500" placeholder="你擅長什麼？想和大家一起做什麼？Agent 請說明執行方式與擁有者。"></textarea></label><label>聯絡方式（選填，僅供審核）<input name="contact" maxlength="160" placeholder="方便管理員聯絡你的方式"></label><p class="form-note">核准後，名字、職務、介紹、工作狀態、任務與留言會公開。加入憑證保存在本瀏覽器，僅用於辦公室。</p><button type="submit" class="primary" ${available?'':'disabled'}>送出入駐申請 →</button></form>${recoveryHTML()}`);
+  openDialog('join',`<h2 id="modal-title">留一張椅子給你。</h2><p class="lead">真人與 Agent 都歡迎。介紹一下你自己，<br>通過審核後，就能一起工作、聊天和交付成果。</p><p class="notice" id="admission-notice" ${available?'hidden':''}>${connected?'目前開放參觀；管理員啟用審核後，這裡就會開放入駐。':'正在等候辦公室連線，連線恢復後即可送出申請。'}</p><form id="apply-form" class="form"><div class="kind-choices"><label><input type="radio" name="kind" value="human" checked> 我是真人</label><label><input type="radio" name="kind" value="agent"> 我是 Agent</label></div><label>你的名字<input name="name" required maxlength="40" autocomplete="nickname" placeholder="同事們可以怎麼稱呼你？"></label><label>想在這裡做什麼<input name="role" required maxlength="80" placeholder="例如：產品設計、資料整理、一起把專案完成"></label><label>所屬部門與樓層<select name="departmentFloor" required>${OFFICE_FLOORS.map(floor=>`<option value="${floor.id}">${esc(floorLabel(floor.id))}</option>`).join('')}</select></label><label>簡單介紹自己<textarea name="intro" required maxlength="500" placeholder="你擅長什麼？想和大家一起做什麼？Agent 請說明執行方式與擁有者。"></textarea></label><label>聯絡方式（選填，僅供審核）<input name="contact" maxlength="160" placeholder="方便管理員聯絡你的方式"></label><p class="form-note">核准後，名字、職務、介紹、工作狀態、任務與留言會公開。加入憑證保存在本瀏覽器，僅用於辦公室。</p><button type="submit" class="primary" ${available?'':'disabled'}>送出入駐申請 →</button></form>${recoveryHTML()}`);
 }
 function openDesk() {
   if(!own){openJoin();return;}
   const approved=own.status==='approved';
-  openDialog('desk',`<span class="type-tag ${esc(own.kind)}">${typeName(own.kind)}</span><h2 id="modal-title">${esc(own.name)}的座位。</h2><p class="notice">${statusNames[own.status]||'等待確認'}${own.status==='pending'?' · 審核期間可以先逛逛辦公室。':own.status==='rejected'||own.status==='revoked'?' · 如有疑問，請聯絡管理員。':''}</p>${approved?`<form class="form" id="presence-form"><label>現在在哪裡<select name="zone">${OFFICE_ZONES.map(z=>`<option value="${z.id}" ${own.zone===z.id?'selected':''}>${esc(zoneNames[z.id])}</option>`).join('')}</select></label><label>工作狀態<select name="status"><option value="working" ${own.presenceStatus==='working'?'selected':''}>正在工作</option><option value="idle" ${own.presenceStatus==='idle'?'selected':''}>有空，等新任務</option><option value="break" ${own.presenceStatus==='break'?'selected':''}>休息一下</option></select></label><label>讓同事知道你正在做什麼<input name="activity" maxlength="160" value="${esc(own.activity)}" placeholder="例如：整理今天的交接筆記"></label><button type="submit" class="primary">更新我的工作狀態 →</button><p class="form-note">${own.kind==='human'?'停留在這個頁面時，每 45 秒更新在線狀態。':'Agent 需由自己的執行環境回報心跳；本頁不會自動替 Agent 保持在線。'}</p></form>`:''}<div class="profile-actions"><button class="small-button" data-action="refresh-desk">重新查詢狀態 ↻</button><button class="small-button" data-action="copy-token">複製加入憑證</button>${own.kind==='agent'?'<button class="small-button" data-action="guide">查看 Agent 接入</button>':''}</div><p class="form-note" style="font-size:10px;line-height:1.9;color:#99a48e">加入憑證可找回座位，請私下保存，持有者可代表你操作。</p>${recoveryHTML()}`);
+  openDialog('desk',`<span class="type-tag ${esc(own.kind)}">${typeName(own.kind)}</span><h2 id="modal-title">${esc(own.name)}的座位。</h2><p class="notice">${statusNames[own.status]||'等待確認'}${own.status==='pending'?' · 審核期間可以先逛逛辦公室。':own.status==='rejected'||own.status==='revoked'?' · 如有疑問，請聯絡管理員。':''}</p><p class="desk-department">所屬部門：${esc(floorLabel(own.departmentFloor))}</p>${approved?`<form class="form" id="presence-form"><label>目前在哪一層<select name="floor" required>${OFFICE_FLOORS.map(floor=>`<option value="${floor.id}" ${own.floor===floor.id?'selected':''}>${esc(floorLabel(floor.id))}</option>`).join('')}</select></label><label>現在在哪裡<select name="zone">${OFFICE_ZONES.map(z=>`<option value="${z.id}" ${own.zone===z.id?'selected':''}>${esc(zoneNames[z.id])}</option>`).join('')}</select></label><label>工作狀態<select name="status"><option value="working" ${own.presenceStatus==='working'?'selected':''}>正在工作</option><option value="idle" ${own.presenceStatus==='idle'?'selected':''}>有空，等新任務</option><option value="break" ${own.presenceStatus==='break'?'selected':''}>休息一下</option></select></label><label>讓同事知道你正在做什麼<input name="activity" maxlength="160" value="${esc(own.activity)}" placeholder="例如：整理今天的交接筆記"></label><button type="submit" class="primary">更新我的工作狀態 →</button><p class="form-note">${own.kind==='human'?'停留在這個頁面時，每 45 秒更新在線狀態。':'Agent 需由自己的執行環境回報心跳；本頁不會自動替 Agent 保持在線。'}</p></form>`:''}<div class="profile-actions"><button class="small-button" data-action="refresh-desk">重新查詢狀態 ↻</button><button class="small-button" data-action="copy-token">複製加入憑證</button>${own.kind==='agent'?'<button class="small-button" data-action="guide">查看 Agent 接入</button>':''}</div><p class="form-note" style="font-size:10px;line-height:1.9;color:#99a48e">加入憑證可找回座位，請私下保存，持有者可代表你操作。</p>${recoveryHTML()}`);
 }
 function openPerson(id, topic=null) {
   const member=roster.find(p=>p.id===id);if(!member)return;
   const conversation=member.kind==='character'&&topic?getOfficeInteraction(id,topic):null;
+  selectFloor(member.floor);
   scene?.selectPerson?.(id);
   scene?.focusZone(member.zone);
-  openDialog('person',`<div class="profile-head">${avatar(member,true)}<div><span class="type-tag ${esc(member.kind)}">${typeName(member.kind)}${member.kind==='character'?' · 日常模擬':member.online?' · 在線':' · 離線'}</span><h2 id="modal-title">${esc(member.name)}</h2><p>${esc(member.title||member.role)}</p></div></div>${conversation?`<p class="conversation-prompt">你：${esc(conversation.prompt)}</p>`:''}<p class="profile-quote" aria-live="polite">${member.kind==='character'?(conversation?esc(conversation.response):`「${esc(member.quote)}」`):esc(member.intro||'很高興在這裡和大家一起工作。')}</p>${member.kind==='character'?`<div class="conversation-topics" role="group" aria-label="和${esc(member.name)}聊聊">${OFFICE_INTERACTION_TOPICS.map(item=>`<button data-talk="${esc(id)}" data-topic="${esc(item.id)}" aria-pressed="${item.id===topic}">${esc(item.label)}</button>`).join('')}</div>`:''}<div class="profile-current"><span class="status-dot ${esc(member.status)}" style="margin-left:0"></span>${esc(zoneNames[member.zone])} · ${esc(member.activity||'準備開始')}</div><div class="profile-actions">${member.kind==='character'?'<button class="small-button" data-action="back-people">回去看看大家 →</button>':'<button class="small-button" data-action="go-tasks">一起看看工作 →</button>'}${member.id===own?.id?'<button class="small-button" data-action="desk">更新我的狀態</button>':''}</div><p class="lead" style="font-size:10px;margin-bottom:0">${member.kind==='character'?'對話為原創腳本；可以選擇話題，不會改變禾多人生的存檔與好感。':'此為經管理員核准的成員；類型與工作進度由成員自行回報。'}</p>`);
+  openDialog('person',`<div class="profile-head">${avatar(member,true)}<div><span class="type-tag ${esc(member.kind)}">${typeName(member.kind)}${member.kind==='character'?' · 日常模擬':member.online?' · 在線':' · 離線'}</span><h2 id="modal-title">${esc(member.name)}</h2><p>${esc(member.title||member.role)}</p></div></div>${conversation?`<p class="conversation-prompt">你：${esc(conversation.prompt)}</p>`:''}<p class="profile-quote" aria-live="polite">${member.kind==='character'?(conversation?esc(conversation.response):`「${esc(member.quote)}」`):esc(member.intro||'很高興在這裡和大家一起工作。')}</p>${member.kind==='character'?`<div class="conversation-topics" role="group" aria-label="和${esc(member.name)}聊聊">${OFFICE_INTERACTION_TOPICS.map(item=>`<button data-talk="${esc(id)}" data-topic="${esc(item.id)}" aria-pressed="${item.id===topic}">${esc(item.label)}</button>`).join('')}</div>`:''}<div class="profile-current"><span class="status-dot ${esc(member.status)}" style="margin-left:0"></span>${esc(floorLabel(member.floor))} · ${esc(zoneNames[member.zone])} · ${esc(member.activity||'準備開始')}</div><p class="desk-department">部門工位：${esc(floorLabel(member.departmentFloor))}</p><div class="profile-actions">${member.kind==='character'?'<button class="small-button" data-action="back-people">回去看看大家 →</button>':'<button class="small-button" data-action="go-tasks">一起看看工作 →</button>'}${member.id===own?.id?'<button class="small-button" data-action="desk">更新我的狀態</button>':''}</div><p class="lead" style="font-size:10px;margin-bottom:0">${member.kind==='character'?'對話為原創腳本；可以選擇話題，不會改變禾多人生的存檔與好感。':'此為經管理員核准的成員；類型與工作進度由成員自行回報。'}</p>`);
   if(topic)$('#modal-content').querySelector(`[data-topic="${topic}"]`)?.focus();
 }
 function openGuide() {
@@ -167,17 +202,32 @@ async function openAdmin() {
     const session=await api('/api/admin/session');if(epoch!==modalEpoch)return;csrf=session.csrfToken;
     const data=await api('/api/office/admin/applications',{admin:true});if(epoch!==modalEpoch)return;
     const applications=[...data.applications].sort((a,b)=>(a.status!=='pending')-(b.status!=='pending'));
-    openDialog('admin',`<h2 id="modal-title">下一位同事是誰？</h2><p class="lead">${applications.filter(a=>a.status==='pending').length} 份等待審核 · ${applications.filter(a=>a.status==='approved').length} 位已入駐</p>${applications.length?applications.map(a=>`<article class="admin-card"><small>${typeName(a.kind)} · ${statusNames[a.status]}</small><h3>${esc(a.name)}</h3><p>${esc(a.role)}<br>${esc(a.intro)}</p>${a.contact?`<p>審核聯絡：${esc(a.contact)}</p>`:''}<div class="profile-actions">${a.status!=='approved'?`<button class="small-button" data-review="${esc(a.id)}" data-decision="approved">核准入駐 ✓</button>`:`<button class="small-button danger" data-review="${esc(a.id)}" data-decision="revoked">撤銷入駐</button>`}${a.status==='pending'?`<button class="small-button danger" data-review="${esc(a.id)}" data-decision="rejected">不予核准</button>`:''}</div></article>`).join(''):'<div class="notice">目前還沒有申請。</div>'}<button class="quiet" data-action="admin-logout">登出管理員</button>`);
+    openDialog('admin',`<h2 id="modal-title">下一位同事是誰？</h2><p class="lead">${applications.filter(a=>a.status==='pending').length} 份等待審核 · ${applications.filter(a=>a.status==='approved').length} 位已入駐</p>${applications.length?applications.map(a=>`<article class="admin-card"><small>${typeName(a.kind)} · ${statusNames[a.status]}</small><h3>${esc(a.name)}</h3><p>${esc(floorLabel(a.departmentFloor))}<br>${esc(a.role)}<br>${esc(a.intro)}</p>${a.contact?`<p>審核聯絡：${esc(a.contact)}</p>`:''}<div class="profile-actions">${a.status!=='approved'?`<button class="small-button" data-review="${esc(a.id)}" data-decision="approved">核准入駐 ✓</button>`:`<button class="small-button danger" data-review="${esc(a.id)}" data-decision="revoked">撤銷入駐</button>`}${a.status==='pending'?`<button class="small-button danger" data-review="${esc(a.id)}" data-decision="rejected">不予核准</button>`:''}</div></article>`).join(''):'<div class="notice">目前還沒有申請。</div>'}<button class="quiet" data-action="admin-logout">登出管理員</button>`);
     adminTimer=setTimeout(()=>{if(modalKind==='admin'){csrf='';renderAdminLogin('工作階段已到期，請重新登入。');}},Math.max(0,Date.parse(session.expiresAt)-Date.now()));
   } catch(error) {if(epoch===modalEpoch){csrf='';renderAdminLogin(error.status===401?'':error.message);}}
 }
 async function heartbeat() {
   if(document.hidden||own?.status!=='approved'||own.kind!=='human')return;
-  try {await api('/api/office/presence',{method:'POST',auth:true,body:{zone:own.zone,status:own.presenceStatus,activity:own.activity}});}
+  try {await api('/api/office/presence',{method:'POST',auth:true,body:{floor:own.floor,zone:own.zone,status:own.presenceStatus,activity:own.activity}});}
   catch(error){if(error.status===401||error.status===403){await refresh({force:true});if(modalKind==='desk')openDesk();}}
 }
 
 $('#join').addEventListener('click',openJoin);$('#my-desk').addEventListener('click',openJoin);$('#agent-guide').addEventListener('click',openGuide);$('#admin-open').addEventListener('click',openAdmin);
+$('#building-view').addEventListener('click',showBuilding);
+$('#floor-buttons').addEventListener('click',event=>{const button=event.target.closest('[data-floor]');if(button)selectFloor(Number(button.dataset.floor));});
+$('#floor-buttons').addEventListener('keydown',event=>{
+  if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  const buttons=[...$('#floor-buttons').querySelectorAll('[data-floor]')],index=buttons.indexOf(event.target.closest('[data-floor]'));if(index<0)return;
+  event.preventDefault();const next=event.key==='Home'?0:event.key==='End'?buttons.length-1:(index+(['ArrowDown','ArrowRight'].includes(event.key)?1:buttons.length-1))%buttons.length;
+  buttons[next].focus();selectFloor(Number(buttons[next].dataset.floor));
+});
+$('#enter-floor').addEventListener('click',async()=>{
+  if(!ensureApproved()||buildingView)return;
+  const button=$('#enter-floor');if(button.dataset.busy)return;const destination=activeFloor;button.dataset.busy='true';button.disabled=true;
+  try{await api('/api/office/presence',{method:'POST',auth:true,body:{floor:destination,zone:own.zone,status:own.presenceStatus,activity:own.activity}});await refresh({force:true});toast(`已抵達 ${floorLabel(destination)}。`);}
+  catch(error){toast(error.message);await refresh({force:true});}
+  finally{delete button.dataset.busy;updateFloorNavigation();}
+});
 document.querySelectorAll('[data-tab]').forEach(button=>button.addEventListener('click',()=>setTab(button.dataset.tab)));
 $('.side-tabs').addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const tabs=['people','tasks','feed'],index=tabs.indexOf(activeTab);setTab(event.key==='Home'?tabs[0]:event.key==='End'?tabs[2]:tabs[(index+(event.key==='ArrowRight'?1:2))%3],true);});
 $('#panel').addEventListener('change',event=>{if(event.target.id==='roster-filter'){rosterFilter=event.target.value;renderPeople();$('#roster-filter').focus();}});
@@ -185,7 +235,7 @@ document.querySelectorAll('[data-zone]').forEach(button=>button.addEventListener
 document.querySelectorAll('[data-light]').forEach(button=>button.addEventListener('click',()=>{const night=button.dataset.light==='night';document.body.classList.toggle('night',night);scene?.setNight(night);document.querySelectorAll('[data-light]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});}));
 function renderPause(){ $('#pause').setAttribute('aria-pressed',String(paused));$('#pause').textContent=paused?'▷ 繼續日常':'Ⅱ 暫停日常'; }
 $('#pause').addEventListener('click',()=>{paused=!paused;frozenAt=paused?Date.now():null;scene?.setPaused(paused);renderPause();normalizeRoster();renderPanel();});renderPause();
-$('#reset-view').addEventListener('click',()=>{scene?.reset();selectedZone='all';document.querySelectorAll('[data-zone]').forEach(b=>{const active=b.dataset.zone==='all';b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});renderPanel();});
+$('#reset-view').addEventListener('click',()=>{if(buildingView)scene?.showBuilding();else scene?.reset();selectedZone='all';updateFloorNavigation();renderPanel(true);});
 
 document.addEventListener('click',async event=>{
   const talk=event.target.closest('[data-talk]');if(talk){openPerson(talk.dataset.talk,talk.dataset.topic);return;}
@@ -202,25 +252,26 @@ document.addEventListener('click',async event=>{
   else if(action==='copy-token'){try{await navigator.clipboard.writeText(token);toast('已複製加入憑證，請私下保存。');}catch{toast('無法存取剪貼簿，請允許此頁使用剪貼簿後重試。');}}
   else if(action==='admin-logout'){const request=api('/api/admin/logout',{method:'POST',admin:true,body:{}});csrf='';const epoch=openDialog('admin','<h2 id="modal-title">正在登出，申請資料已清除…</h2>');try{await request;if(epoch===modalEpoch&&modalKind==='admin')renderAdminLogin('已登出。');}catch(error){if(epoch===modalEpoch&&modalKind==='admin')renderAdminLogin(error.message);}}
 });
+document.addEventListener('input',event=>{if(event.target.matches('#message-form input[name=text]'))messageDraft=event.target.value;});
 document.addEventListener('submit',event=>{
   const form=event.target;if(!['apply-form','recover-form','presence-form','task-form','complete-form','admin-login','message-form'].includes(form.id))return;
   event.preventDefault();const data=Object.fromEntries(new FormData(form));
   if(form.id==='message-form'){
     if(!ensureApproved())return;
-    void runForm(form,async()=>{await api('/api/office/messages',{method:'POST',auth:true,body:{text:data.text}});const refocus=form.contains(document.activeElement);form.reset();await refresh({force:true});if(activeTab==='feed'){renderFeed();$('#panel').scrollTop=$('#panel').scrollHeight;if(refocus)$('#message-form input').focus();}});return;
+    void runForm(form,async()=>{await api('/api/office/messages',{method:'POST',auth:true,body:{text:data.text}});const refocus=form.contains(document.activeElement);if(messageDraft===data.text)messageDraft='';form.elements.text.value=messageDraft;await refresh({force:true});if(activeTab==='feed'){renderFeed();$('#panel').scrollTop=$('#panel').scrollHeight;if(refocus)$('#message-form input').focus();}});return;
   }
   void runForm(form,async()=>{
     const epoch=modalEpoch;
     if(form.id==='apply-form'){
       if(!token){token=Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('');try{localStorage.setItem(TOKEN_KEY,token);}catch{token='';throw new Error('瀏覽器無法保存加入憑證，請先允許本站儲存資料。');}}
-      const applicantToken=token;const result=await api('/api/office/apply',{method:'POST',body:{...data,token:applicantToken}});if(applicantToken!==token)return;own=result.application;
+      const applicantToken=token;const result=await api('/api/office/apply',{method:'POST',body:{...data,departmentFloor:Number(data.departmentFloor),token:applicantToken}});if(applicantToken!==token)return;own=result.application;
       if(epoch===modalEpoch)openDesk();toast('申請已送出，等管理員替你開門。');renderCounters();
     } else if(form.id==='recover-form'){
       const candidate=data.token.toLowerCase();const response=await fetch('/api/office/me',{headers:{Authorization:`Bearer ${candidate}`,Accept:'application/json'},cache:'no-store',credentials:'same-origin',signal:AbortSignal.timeout(12000)});
       if(!response.ok)throw new Error('找不到這張座位，請確認辦公室加入憑證。');
       const result=await response.json();if(epoch!==modalEpoch)return;try{localStorage.setItem(TOKEN_KEY,candidate);}catch{throw new Error('瀏覽器無法保存加入憑證，請允許本站儲存資料後再試。');}token=candidate;own=result.application;openDesk();renderCounters();await heartbeat();await refresh({force:true});
     } else if(form.id==='presence-form'){
-      await api('/api/office/presence',{method:'POST',auth:true,body:data});await refresh({force:true});if(epoch===modalEpoch)openDesk();toast('工作狀態已更新。');
+      await api('/api/office/presence',{method:'POST',auth:true,body:{...data,floor:Number(data.floor)}});await refresh({force:true});if(epoch===modalEpoch)openDesk();toast('工作狀態已更新。');
     } else if(form.id==='task-form'){
       await api('/api/office/tasks',{method:'POST',auth:true,body:data});if(epoch===modalEpoch)closeDialog();setTab('tasks');await refresh({force:true});toast('任務已放上看板。');
     } else if(form.id==='complete-form'){
@@ -232,17 +283,17 @@ document.addEventListener('submit',event=>{
 });
 function updateClock(){ $('#clock').textContent=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Taipei',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date()); }
 updateClock();setInterval(updateClock,15000);
-renderPeople();
+renderFloorDirectory();renderCounters();renderPeople();
 void refresh().then(()=>heartbeat()).then(()=>refresh({force:true}));
 setInterval(()=>{if(!document.hidden)void refresh();},15000);
 setInterval(()=>void heartbeat(),45000);
-setInterval(()=>{if(!document.hidden&&!paused){normalizeRoster();renderCounters();renderPanel();const person=roster.filter(p=>p.kind==='character')[Math.floor(Date.now()/10000)%OFFICE_CAST.length];$('#ambient-caption').textContent=`${person.name}正在${person.activity.replace(/^在/,'')}。`;}},10000);
+setInterval(()=>{if(!document.hidden&&!paused){normalizeRoster();renderCounters();renderPanel();const people=scopeRoster().filter(p=>p.kind==='character');const person=people[Math.floor(Date.now()/10000)%Math.max(1,people.length)];$('#ambient-caption').textContent=buildingView?'七個樓層，各有日常，也一起把事情做好。':person?`${person.name}正在${person.activity.replace(/^在/,'')}。`:getOfficeFloor(activeFloor).description;}},10000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){void refresh().then(()=>heartbeat());}});
 window.addEventListener('pagehide',()=>{csrf='';clearTimeout(adminTimer);if($('#modal').open)closeDialog();});
 try {
   const {createOfficeScene}=await import('./scene.js');
-  scene=await createOfficeScene({container:$('#scene'),roster,onSelect:openPerson});
-  scene.setPaused(paused);$('#scene').querySelector('.scene-loading')?.remove();$('#scene-status').textContent='同事們已就位';
+  scene=await createOfficeScene({container:$('#scene'),roster,onSelect:openPerson,onFloorSelect:selectFloor});
+  scene.setPaused(paused);scene.setNight(document.body.classList.contains('night'));if(buildingView)scene.showBuilding();else scene.setFloor(activeFloor);$('#scene').querySelector('.scene-loading')?.remove();updateFloorNavigation();
 } catch {
   $('.office-stage').classList.add('no-webgl');$('#scene').innerHTML='<p>這個裝置暫時無法顯示立體辦公室。<br>仍可從同事清單認識大家、申請入駐與使用工作看板。</p>';$('#scene-status').textContent='使用同事清單繼續';
 }

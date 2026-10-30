@@ -1,4 +1,5 @@
 import { PERSONAS, displayPersona } from '../persona.js';
+import { DEFAULT_OFFICE_FLOOR, getCharacterFloor, isOfficeFloor } from './floors.js';
 
 // These are public, fictional office moments. They are independent of a saved
 // life, its RNG, relationships and undiscovered stories or endings. An ambient
@@ -196,7 +197,7 @@ const safeTime = now => Number.isFinite(now) ? now : 0;
 export const OFFICE_CAST = Object.freeze(Object.keys(PERSONAS).map((id, index) => {
   const person = displayPersona(id);
   const [zone, , activity, quote] = MOMENTS[id][0];
-  return Object.freeze({ id, name: person.name, title: person.title, portrait: person.image.replace(/^\.\//, '/'), color: PALETTE[index % PALETTE.length], zone, activity, quote });
+  return Object.freeze({ id, name: person.name, title: person.title, portrait: person.image.replace(/^\.\//, '/'), color: PALETTE[index % PALETTE.length], departmentFloor: getCharacterFloor(id), zone, activity, quote });
 }));
 
 export function getCastMoment(personaId, nowMs = Date.now()) {
@@ -205,7 +206,7 @@ export function getCastMoment(personaId, nowMs = Date.now()) {
   const tick = Math.floor(safeTime(nowMs) / 30_000);
   const index = ((tick + phaseFor(personaId)) % rows.length + rows.length) % rows.length;
   const [zone, status, activity, quote] = rows[index];
-  return { zone, status, activity, quote };
+  return { zone, status, activity, quote, floor: status === 'break' ? DEFAULT_OFFICE_FLOOR : getCharacterFloor(personaId) };
 }
 
 const shortText = (value, max) => typeof value === 'string' ? value.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, max) : '';
@@ -233,6 +234,8 @@ export function getOfficeRoster(remoteMembers = [], now = Date.now()) {
     members.push({
       id, name, role, title: role, kind: member.kind, source: 'connected',
       intro: shortText(member.intro, 500),
+      floor: isOfficeFloor(member.floor) ? member.floor : DEFAULT_OFFICE_FLOOR,
+      departmentFloor: isOfficeFloor(member.departmentFloor) ? member.departmentFloor : DEFAULT_OFFICE_FLOOR,
       zone: zoneIds.has(member.zone) ? member.zone : 'studio',
       status: online && statusIds.has(member.status) ? member.status : 'idle',
       activity: shortText(member.activity, 160),

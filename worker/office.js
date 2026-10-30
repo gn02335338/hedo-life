@@ -1,5 +1,6 @@
 import { ApiError, assertSameOrigin, bearerToken, errorResponse, json, readJson, tokenHash, validToken } from './http.js';
 import { AdminPrivateStore } from './admin-private.js';
+import { DEFAULT_OFFICE_FLOOR, isOfficeFloor } from '../dist/office/floors.js';
 
 export const OFFICE_PRESENCE_MS = 120000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -18,12 +19,14 @@ function text(value, maximum, optional = false) {
 }
 function publicMember(row, now) {
   return { id: row.id, kind: row.kind, name: row.name, role: row.role, intro: row.intro,
+    departmentFloor: row.department_floor, floor: row.floor,
     zone: row.zone, status: row.presence_status, activity: row.activity,
     online: row.last_seen_at !== null && now - row.last_seen_at < OFFICE_PRESENCE_MS,
     lastSeenAt: row.last_seen_at === null ? null : new Date(row.last_seen_at).toISOString(), joinedAt: row.approved_at };
 }
 function application(row) {
   return { id: row.id, kind: row.kind, name: row.name, role: row.role, intro: row.intro, contact: row.contact,
+    departmentFloor: row.department_floor, floor: row.floor,
     status: row.admission_status, zone: row.zone, presenceStatus: row.presence_status, activity: row.activity,
     createdAt: row.created_at, updatedAt: row.updated_at, approvedAt: row.approved_at };
 }
@@ -40,6 +43,7 @@ export class OfficeStore {
       id TEXT PRIMARY KEY, token_hash TEXT NOT NULL UNIQUE, kind TEXT NOT NULL,
       name TEXT NOT NULL, role TEXT NOT NULL, intro TEXT NOT NULL, contact TEXT NOT NULL,
       admission_status TEXT NOT NULL, zone TEXT NOT NULL DEFAULT 'studio', presence_status TEXT NOT NULL DEFAULT 'idle',
+      department_floor INTEGER NOT NULL DEFAULT 1, floor INTEGER NOT NULL DEFAULT 1,
       activity TEXT NOT NULL DEFAULT '', last_seen_at INTEGER, approved_at TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL
     );
     CREATE TABLE IF NOT EXISTS office_tasks (
@@ -51,6 +55,12 @@ export class OfficeStore {
     CREATE TABLE IF NOT EXISTS office_limits (bucket TEXT PRIMARY KEY, count INTEGER NOT NULL, until_at INTEGER NOT NULL);
     CREATE INDEX IF NOT EXISTS office_members_status ON office_members(admission_status);
     CREATE INDEX IF NOT EXISTS office_tasks_status ON office_tasks(status);`);
+    // Existing approved identities and their history stay in the same archive.
+    // Each additive column can also resume independently after an interrupted rollout.
+    const columns = new Set(sql.exec('PRAGMA table_info(office_members)').toArray().map(column => column.name));
+    for (const name of ['department_floor', 'floor']) {
+      if (!columns.has(name)) sql.exec(`ALTER TABLE office_members ADD COLUMN ${name} INTEGER NOT NULL DEFAULT 1`);
+    }
   }
   limit(bucket, maximum, window = 60000) {
     const now = this.now();
@@ -93,10 +103,12 @@ export class OfficeStore {
   }
   async apply(request) {
     const config = await this.admin.configuration();
-    const body = await readJson(request, { maxBytes: 8192 }); fields(body, ['token', 'kind', 'name', 'role', 'intro', 'contact']);
+    const body = await readJson(request, { maxBytes: 8192 }); fields(body, ['token', 'kind', 'name', 'role', 'intro', 'contact', 'departmentFloor']);
     const hash = await tokenHash(validToken(body.token));
     if (!['human', 'agent'].includes(body.kind)) throw invalid();
-    const values = { kind: body.kind, name: text(body.name, 40), role: text(body.role, 80), intro: text(body.intro, 500), contact: text(body.contact, 160, true) };
+    const departmentFloor = body.departmentFloor === undefined ? DEFAULT_OFFICE_FLOOR : body.departmentFloor;
+    if (!isOfficeFloor(departmentFloor)) throw invalid();
+    const values = { kind: body.kind, name: text(body.name, 40), role: text(body.role, 80), intro: text(body.intro, 500), contact: text(body.contact, 160, true), department_floor: departmentFloor };
     const bucket = await this.admin.signature(config, 'office-application:' + (request.headers.get('CF-Connecting-IP') || 'local'));
     const existing = this.sql.exec('SELECT * FROM office_members WHERE token_hash = ?', hash).toArray()[0];
     if (existing) {
@@ -107,7 +119,7 @@ export class OfficeStore {
     this.storage.transactionSync(() => {
       this.limit(`apply:${bucket}`, 5, 3600000); this.limit('apply:global', 100, 3600000);
       if (this.sql.exec('SELECT COUNT(*) AS n FROM office_members').one().n >= 2000) throw new ApiError(503, 'office_admission_full', '目前的申請名額已滿，請稍後再試。');
-      this.sql.exec('INSERT INTO office_members (id,token_hash,kind,name,role,intro,contact,admission_status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)', id, hash, values.kind, values.name, values.role, values.intro, values.contact, 'pending', now, now);
+      this.sql.exec('INSERT INTO office_members (id,token_hash,kind,name,role,intro,contact,admission_status,department_floor,floor,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', id, hash, values.kind, values.name, values.role, values.intro, values.contact, 'pending', values.department_floor, values.department_floor, now, now);
     });
     return response({ application: application(this.sql.exec('SELECT * FROM office_members WHERE id = ?', id).one()) }, 202);
   }
@@ -153,10 +165,11 @@ export class OfficeStore {
       const body = await readJson(request, { maxBytes: 8192 });
       const member = await this.identify(request, true), now = new Date(this.now()).toISOString();
       if (path === '/api/office/presence') {
-        fields(body, ['zone', 'status', 'activity']);
+        fields(body, ['zone', 'status', 'activity', 'floor']);
         if (!ZONES.includes(body.zone) || !STATUSES.includes(body.status)) throw invalid();
+        if (body.floor !== undefined && !isOfficeFloor(body.floor)) throw invalid();
         const activity = text(body.activity, 160, true);
-        this.mutation(member.id, () => this.sql.exec('UPDATE office_members SET zone=?,presence_status=?,activity=?,last_seen_at=?,updated_at=? WHERE id=?', body.zone, body.status, activity, this.now(), now, member.id));
+        this.mutation(member.id, () => this.sql.exec('UPDATE office_members SET floor=COALESCE(?,floor),zone=?,presence_status=?,activity=?,last_seen_at=?,updated_at=? WHERE id=?', body.floor ?? null, body.zone, body.status, activity, this.now(), now, member.id));
         return response({ member: publicMember(this.assertApproved(member.id), this.now()) });
       }
       if (path === '/api/office/messages') {
@@ -191,14 +204,14 @@ export class OfficeStore {
             if (row.status === 'claimed' && row.assignee_id === member.id) return;
             if (row.status !== 'open') throw new ApiError(409, 'office_task_taken', '這項工作已有人認領或已完成。');
             this.sql.exec("UPDATE office_tasks SET status='claimed',assignee_id=?,updated_at=? WHERE id=?", member.id, now, row.id);
-            this.sql.exec("UPDATE office_members SET zone='studio',presence_status='working',activity=?,last_seen_at=?,updated_at=? WHERE id=?", `正在處理：${row.title}`, this.now(), now, member.id);
+            this.sql.exec("UPDATE office_members SET floor=department_floor,zone='studio',presence_status='working',activity=?,last_seen_at=?,updated_at=? WHERE id=?", `正在處理：${row.title}`, this.now(), now, member.id);
             this.event('task-claimed', member.id, row.title);
           } else {
             if (row.assignee_id !== member.id) throw new ApiError(403, 'office_task_owner', '只有認領工作的人能回報完成。');
             if (row.status === 'completed' && row.result === result) return;
             if (row.status !== 'claimed') throw new ApiError(409, 'office_task_state', '請先認領這項工作。');
             this.sql.exec("UPDATE office_tasks SET status='completed',result=?,updated_at=? WHERE id=?", result, now, row.id);
-            this.sql.exec("UPDATE office_members SET zone='focus',presence_status='idle',activity=?,last_seen_at=?,updated_at=? WHERE id=?", `已交付：${row.title}`, this.now(), now, member.id);
+            this.sql.exec("UPDATE office_members SET floor=7,zone='focus',presence_status='idle',activity=?,last_seen_at=?,updated_at=? WHERE id=?", `已交付：${row.title}`, this.now(), now, member.id);
             this.event('task-completed', member.id, row.title);
           }
         });
