@@ -26,6 +26,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.25;
   const canvas = renderer.domElement;
+  canvas.tabIndex = 0;
   canvas.setAttribute('role', 'img');
   canvas.setAttribute('aria-label', '禾多總部七層立體辦公大樓。點選樓層進入部門剖面，可拖曳旋轉、捲動縮放；成員也可從旁邊清單選取。');
   canvas.style.touchAction = 'none';
@@ -74,7 +75,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   warmLamp.position.set(0, 5, 1);
   scene.add(warmLamp);
 
-  const geometries = new Set(), materials = new Map(), textures = new Set();
+  const geometries = new Set(), materials = new Map(), textures = new Set(), instancedMeshes = new Set();
   const geometry = item => { geometries.add(item); return item; };
   const boxGeometry = geometry(new THREE.BoxGeometry(1, 1, 1));
   const cylinderGeometry = geometry(new THREE.CylinderGeometry(1, 1, 1, 16));
@@ -153,6 +154,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   box(room, palette.trim, 0, 1.45, -8, 22.2, .08, .12);
   // Window panes are subtly blue by day and softly lit after dark.
   const windowGlow = box(room, material('#c8dedb', { emissive: '#adcdd3', emissiveIntensity: .12 }), 0, 2.5, -8.12, 22, 1.98, .03);
+  const overviewFurnitureStart = room.children.length;
 
   function plant(x, z, scale = 1) {
     const p = group(room, x, 0, z);
@@ -282,6 +284,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   solid(-10.1, 5.5, .8, 1.6, .32);
   solid(-.5, 2.1, 3.1, .75, .32);
   solid(.1, -6.1, 2.2, .4, .32);
+  const commonOverviewFurniture = room.children.slice(overviewFurnitureStart);
   for (const floor of OFFICE_FLOORS) {
     const detail = group(room, 0, 0, 0); floorDetails.set(floor.id, detail);
     const color = material(floor.color, { roughness: .72 });
@@ -345,42 +348,83 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     }
   }
 
-  // A real stack of seven storeys, rather than repeated labels over one room.
-  // Exterior geometry is inexpensive and is hidden in the furnished cutaway.
-  const facade = material('#d8e0d5'), facadeGlass = material('#95b7bf', { transparent: true, opacity: .25, depthWrite: false, roughness: .2, side: THREE.DoubleSide });
-  box(building, palette.cream, 0, -.85, .5, 25.5, .65, 20.2);
-  box(building, palette.woodDark, 0, -.46, .5, 23.2, .16, 18.2);
+  // The envelope is deliberately transparent from every side, including the
+  // slabs and roof. It never writes depth or casts an opaque shadow over the
+  // occupied floors. Thin colored edges still make the seven storeys legible.
+  const ghost = (color, opacity) => material(color, { transparent: true, opacity, depthWrite: false, roughness: .32, side: THREE.DoubleSide, forceSinglePass: true });
+  const facade = ghost('#c4d5cd', .035), facadeGlass = ghost('#95b7bf', .025);
+  const slabMaterial = ghost('#d7b68a', .055), roofMaterial = ghost('#d9e5d5', .035);
+  const frameMaterial = ghost('#6f8982', .20), gardenMaterial = ghost('#7e9c80', .10);
+  function envelope(parent, mat, role, floor, x, y, z, w, h, d) {
+    const value = box(parent, mat, x, y, z, w, h, d);
+    value.userData.buildingRole = role;
+    if (isOfficeFloor(floor)) value.userData.floor = floor;
+    return value;
+  }
+  envelope(building, ghost('#ddd4bc', .14), 'podium', 1, 0, -.85, .5, 25.5, .65, 20.2);
+  envelope(building, frameMaterial, 'foundation-edge', 1, 0, -.46, .5, 23.2, .12, 18.2);
   for (const floor of OFFICE_FLOORS) {
     const base = (floor.id - 1) * FLOOR_HEIGHT, shell = group(building, 0, base, 0);
-    const color = material(floor.color, { roughness: .72 });
-    const slab = box(shell, palette.cream, 0, -.12, .5, 22.5, .3, 17.6); slab.userData.floor = floor.id; floorHitTargets.push(slab);
-    box(shell, facade, 0, 1.95, -8.1, 22.3, 3.9, .18);
-    box(shell, facade, -11.1, 1.95, .5, .18, 3.9, 17.1);
-    const frontage = box(shell, facadeGlass, 0, 1.96, 9.02, 22.1, 3.35, .045); frontage.userData.floor = floor.id; floorHitTargets.push(frontage);
-    const side = box(shell, facadeGlass, 11.1, 1.96, .5, .045, 3.35, 17.1); side.userData.floor = floor.id; floorHitTargets.push(side);
-    box(shell, color, 0, .29, 9.06, 22.4, .24, .12);
-    box(shell, color, 11.16, .29, .5, .12, .24, 17.2);
-    for (let x = -11; x <= 11; x += 3.67) box(shell, palette.white, x, 1.95, 9.06, .085, 3.8, .095);
-    for (let z = -8; z <= 9; z += 4.25) box(shell, palette.white, 11.16, 1.95, z, .095, 3.8, .085);
-    // A few silhouettes make each storey read as an occupied department.
-    for (const x of [-7, 0, 7]) {
-      box(shell, color, x, .63, 4.9, 2.9, 1.2, .75);
-      box(shell, palette.charcoal, x, 1.45, 4.9, .72, .47, .055);
-    }
-    sign(shell, `${floor.id}F  ${floor.department || floor.name}`, -6.4, 1.92, 9.1, 6.5, .95, floor.color);
+    shell.userData.floor = floor.id;
+    const color = ghost(floor.color, .65);
+    floorHitTargets.push(
+      envelope(shell, slabMaterial, 'floor-slab', floor.id, 0, -.12, .5, 22.5, .18, 17.6),
+      envelope(shell, facade, 'back-wall', floor.id, 0, 1.95, -8.1, 22.3, 3.9, .08),
+      envelope(shell, facade, 'left-wall', floor.id, -11.1, 1.95, .5, .08, 3.9, 17.1),
+      envelope(shell, facadeGlass, 'front-wall', floor.id, 0, 1.96, 9.02, 22.1, 3.35, .025),
+      envelope(shell, facadeGlass, 'right-wall', floor.id, 11.1, 1.96, .5, .025, 3.35, 17.1),
+    );
+    for (const z of [-8.12, 9.06]) envelope(shell, color, 'floor-edge', floor.id, 0, .12, z, 22.4, .09, .07);
+    for (const x of [-11.14, 11.16]) envelope(shell, color, 'floor-edge', floor.id, x, .12, .5, .07, .09, 17.2);
+    for (let x = -11; x <= 11; x += 3.67) envelope(shell, frameMaterial, 'window-frame', floor.id, x, 1.95, 9.06, .045, 3.8, .055);
+    for (let z = -8; z <= 9; z += 4.25) envelope(shell, frameMaterial, 'window-frame', floor.id, 11.16, 1.95, z, .055, 3.8, .045);
     const element = document.createElement('button'); element.type = 'button'; element.className = 'building-floor-label';
     element.style.cssText = 'position:absolute;pointer-events:auto;transform:translateY(-50%);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;';
     element.addEventListener('click', () => chooseFloor(floor.id)); labels.append(element);
     buildingLabels.push({ floor, element, position: new THREE.Vector3(12.3, base + 1.7, -.5) });
   }
   const roof = FLOOR_HEIGHT * 7;
-  box(building, palette.cream, 0, roof, .5, 22.8, .25, 17.8);
-  box(building, palette.sage, -4.8, roof + .16, .2, 10, .08, 11);
+  envelope(building, roofMaterial, 'roof', 7, 0, roof, .5, 22.8, .10, 17.8);
+  envelope(building, ghost('#91ac8a', .035), 'roof-garden', 7, -4.8, roof + .09, .2, 10, .025, 11);
   for (const [x, z] of [[-8, -3], [-3, 3.5], [7.6, -4], [7.6, 5]]) {
-    box(building, palette.white, x, roof + .38, z, 1.1, .65, 1.1);
-    for (let i = 0; i < 3; i++) mesh(building, leafGeometry, i % 2 ? palette.green : palette.sage, x + Math.sin(i * 2.2) * .3, roof + 1.0 + i * .14, z + Math.cos(i * 2.2) * .3, .6, .6, .6);
+    envelope(building, ghost('#dce6d2', .12), 'roof-planter', 7, x, roof + .38, z, 1.1, .65, 1.1);
+    for (let i = 0; i < 3; i++) {
+      const leaf = mesh(building, leafGeometry, gardenMaterial, x + Math.sin(i * 2.2) * .3, roof + 1.0 + i * .14, z + Math.cos(i * 2.2) * .3, .6, .6, .6);
+      leaf.userData.buildingRole = 'roof-plant';
+    }
   }
-  sign(building, '禾多總部 · HEDO', 0, roof + 1.1, 7.9, 10.5, 1.4, '#526d61');
+  const roofSign = sign(building, '禾多總部 · HEDO', 0, roof + 1.1, 7.9, 10.5, 1.4, '#526d61');
+  if (roofSign) { roofSign.material.transparent = true; roofSign.material.opacity = .55; roofSign.material.depthWrite = false; roofSign.castShadow = false; roofSign.userData.buildingRole = 'roof-sign'; }
+
+  // Share actual room furnishings across floors by geometry/material batches.
+  // This keeps the real desk/chair, meeting, focus and lounge arrangement while
+  // avoiding thousands of separately cloned meshes and opaque rug-sized lids.
+  const overviewFurnitureBatches = [], furnitureRecords = new Map();
+  const overviewFocusGlass = ghost('#9abbb5', .055);
+  room.updateMatrixWorld(true);
+  function collectFurniture(root, floor) {
+    root.traverse(object => {
+      if (!object.isMesh || object.material === accentMaterial) return;
+      const bounds = new THREE.Box3().setFromObject(object), size = bounds.getSize(new THREE.Vector3());
+      if (bounds.max.y < .15 && size.x * size.z > 1) return;
+      const mat = object.material.transparent ? overviewFocusGlass : object.material;
+      const key = `${object.geometry.uuid}:${mat.uuid}`;
+      if (!furnitureRecords.has(key)) furnitureRecords.set(key, { geometry: object.geometry, material: mat, entries: [] });
+      const matrix = new THREE.Matrix4().makeTranslation(0, (floor - 1) * FLOOR_HEIGHT, 0).multiply(object.matrixWorld);
+      furnitureRecords.get(key).entries.push({ floor, matrix });
+    });
+  }
+  for (const floor of OFFICE_FLOORS) {
+    for (const furniture of commonOverviewFurniture) collectFurniture(furniture, floor.id);
+    collectFurniture(floorDetails.get(floor.id), floor.id);
+  }
+  for (const record of furnitureRecords.values()) {
+    const batch = new THREE.InstancedMesh(record.geometry, record.material, record.entries.length);
+    record.entries.forEach((entry, index) => batch.setMatrixAt(index, entry.matrix));
+    batch.instanceMatrix.needsUpdate = true; batch.castShadow = false; batch.receiveShadow = false;
+    batch.userData.buildingRole = 'floor-furniture'; batch.userData.floors = record.entries.map(entry => entry.floor);
+    batch.computeBoundingSphere(); building.add(batch); instancedMeshes.add(batch); overviewFurnitureBatches.push(batch);
+  }
 
   // A half-meter navigation grid keeps feet on the floor and outside furniture.
   const step = .5, minX = -10.25, minZ = -7.25, columns = 42, rows = 32;
@@ -415,6 +459,91 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   let selectedId = null, activeZone = 'all', paused = false, disposed = false;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const hitTargets = [];
+  const overviewPeople = new Map(), overviewCapacity = 256;
+  let overviewOrder = [];
+  const overviewPersonMaterial = material('#ffffff', { roughness: .72, emissive: '#354f49', emissiveIntensity: .12 });
+  const overviewParts = [
+    { name: 'legs', geometry: boxGeometry, y: .25, scale: [.29, .45, .22] },
+    { name: 'body', geometry: cylinderGeometry, y: .67, scale: [.28, .62, .28] },
+    { name: 'head', geometry: sphereGeometry, y: 1.14, scale: [.25, .26, .25] },
+    { name: 'hair', geometry: hairGeometry, y: 1.18, scale: [.27, .28, .27] },
+  ].map(part => {
+    const batch = new THREE.InstancedMesh(part.geometry, overviewPersonMaterial, overviewCapacity);
+    batch.count = 0; batch.instanceMatrix.setUsage(THREE.DynamicDrawUsage); batch.frustumCulled = false;
+    batch.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 15, .5), 28);
+    batch.castShadow = false; batch.receiveShadow = false;
+    batch.userData.buildingRole = 'overview-person'; batch.userData.personPart = part.name;
+    batch.userData.memberIds = []; batch.userData.floors = [];
+    building.add(batch); instancedMeshes.add(batch);
+    return { ...part, batch };
+  });
+  const overviewHitTargets = overviewParts.map(part => part.batch);
+  const miniTransform = new THREE.Object3D();
+  function paintOverviewPeople(delta = 0, motion = false) {
+    for (let index = 0; index < overviewOrder.length; index++) {
+      const person = overviewOrder[index];
+      let walking = false;
+      if (motion && person.path.length) {
+        const next = person.path[0], dx = next.x - person.x, dz = next.z - person.z, distance = Math.hypot(dx, dz), travel = delta * .9;
+        if (distance <= travel + .015) { person.x = next.x; person.z = next.z; person.path.shift(); }
+        else { person.x += dx / distance * travel; person.z += dz / distance * travel; }
+        if (distance > .01) person.heading = Math.atan2(dx, dz);
+        walking = true; person.walkTime += delta * 8;
+      }
+      const base = (person.floor - 1) * FLOOR_HEIGHT;
+      const bob = walking ? Math.abs(Math.sin(person.walkTime)) * .025 : 0;
+      for (const part of overviewParts) {
+        miniTransform.position.set(person.x, base + part.y + bob, person.z);
+        miniTransform.rotation.set(0, person.heading, 0); miniTransform.scale.set(...part.scale); miniTransform.updateMatrix();
+        part.batch.setMatrixAt(index, miniTransform.matrix);
+      }
+    }
+    for (const part of overviewParts) part.batch.instanceMatrix.needsUpdate = true;
+  }
+  function syncOverviewPeople() {
+    const members = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && (person.kind === 'character' || person.online === true)).slice(0, overviewCapacity);
+    const ids = new Set(members.map(person => person.id)), occupied = [];
+    for (const id of overviewPeople.keys()) if (!ids.has(id)) overviewPeople.delete(id);
+    overviewOrder = members.map(data => {
+      const floor = memberFloor(data), zone = Object.hasOwn(ZONE_CENTERS, data.zone) ? data.zone : 'studio';
+      let person = overviewPeople.get(data.id);
+      const isNew = !person, changedFloor = person && person.floor !== floor;
+      if (!person) person = { id: data.id, x: 0, z: 0, floor, zone: null, target: null, path: [], heading: hash(data.id) % 6, walkTime: 0 };
+      if (isNew || changedFloor || person.zone !== zone) {
+        const candidates = zoneNodes[zone];
+        const clearNodes = candidates.filter(node => !occupied.some(other => other.floor === floor && Math.hypot(other.x - node.x, other.z - node.z) < .86));
+        const pool = [...(clearNodes.length ? clearNodes : candidates)].sort((a, b) => hash(`${data.id}:${a.key}`) - hash(`${data.id}:${b.key}`));
+        const target = pool[hash(data.id) % Math.min(pool.length, 15)] || nearestNode(...ZONE_CENTERS[zone]);
+        person.target = target;
+        if (target) {
+          if (isNew || changedFloor || reducedMotion.matches || paused) { person.x = target.x; person.z = target.z; person.path = []; }
+          else person.path = findPath(person, target);
+          if (!person.path.length) { person.x = target.x; person.z = target.z; }
+        }
+      }
+      person.data = data; person.floor = floor; person.zone = zone;
+      if (person.target) occupied.push({ floor, x: person.target.x, z: person.target.z });
+      overviewPeople.set(data.id, person); return person;
+    });
+    const memberIds = overviewOrder.map(person => person.id), floors = overviewOrder.map(person => person.floor);
+    for (const part of overviewParts) {
+      part.batch.count = overviewOrder.length; part.batch.userData.memberIds = memberIds; part.batch.userData.floors = floors;
+      overviewOrder.forEach((person, index) => {
+        const seed = hash(person.id);
+        const color = part.name === 'body' ? (/^#[0-9a-f]{3,8}$/i.test(person.data.color || '') ? person.data.color : '#71988a')
+          : part.name === 'head' ? ['#e5b693', '#bf8e6c', '#d3a17e', '#f0cbb0'][seed % 4]
+          : part.name === 'hair' ? person.data.kind === 'agent' ? '#79b7ca' : ['#454641', '#6e5745', '#4b5054', '#8a6a50'][seed % 4]
+          : '#52616a';
+        part.batch.setColorAt(index, new THREE.Color(color));
+      });
+      if (part.batch.instanceColor) part.batch.instanceColor.needsUpdate = true;
+    }
+    paintOverviewPeople();
+  }
+  function chooseOverviewPerson(id) {
+    const person = overviewPeople.get(id); if (!person) return;
+    setFloor(person.floor); selectedId = id; refreshLabels(); onSelect(id);
+  }
   function makePerson(person) {
     const seed = hash(person.id), p = group(room, 0, .055, 0);
     const jacket = material(/^#[0-9a-f]{3,8}$/i.test(person.color || '') ? person.color : '#718d88');
@@ -491,6 +620,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     if (disposed) return;
     fullRoster = Array.isArray(nextRoster) ? nextRoster : [];
     updateBuildingLabels();
+    syncOverviewPeople();
     const next = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && memberFloor(person) === activeFloor && (person.kind === 'character' || person.online === true));
     const ids = new Set(next.map(person => person.id));
     for (const [id, person] of people) if (!ids.has(id)) {
@@ -590,6 +720,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     windowGlow.material.emissiveIntensity = night ? .35 : .12;
     facadeGlass.emissive.set(night ? '#6eabc4' : '#000000');
     facadeGlass.emissiveIntensity = night ? .22 : 0;
+    overviewPersonMaterial.emissiveIntensity = night ? .45 : .12;
     renderer.toneMappingExposure = night ? 1.15 : 1.25;
   }
 
@@ -611,8 +742,19 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     const bounds = canvas.getBoundingClientRect();
     pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, -(event.clientY - bounds.top) / bounds.height * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
-    const target = raycaster.intersectObjects(buildingView ? floorHitTargets : hitTargets)[0];
-    if (target) { if (buildingView) chooseFloor(target.object.userData.floor); else choose(target.object.userData.personId); }
+    if (buildingView) {
+      // The envelope is see-through, so a nearer pane/slab must not swallow a
+      // click on a visible colleague inside a different storey.
+      const person = raycaster.intersectObjects(overviewHitTargets)[0];
+      if (person && Number.isInteger(person.instanceId)) {
+        chooseOverviewPerson(person.object.userData.memberIds[person.instanceId]); return;
+      }
+      const floor = raycaster.intersectObjects(floorHitTargets)[0];
+      if (floor) chooseFloor(floor.object.userData.floor);
+    } else {
+      const target = raycaster.intersectObjects(hitTargets)[0];
+      if (target) choose(target.object.userData.personId);
+    }
   }
   canvas.addEventListener('pointerdown', onPointerDown); canvas.addEventListener('pointerup', onPointerUp);
   const onPointerCancel = () => { down = null; };
@@ -624,6 +766,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     frame = requestAnimationFrame(animate);
     const delta = Math.min(.05, Math.max(0, (now - lastTime) / 1000)); lastTime = now;
     controls.update();
+    if (buildingView) paintOverviewPeople(delta, !paused && !reducedMotion.matches && !document.hidden);
     const motion = !buildingView && !paused && !reducedMotion.matches && !document.hidden;
     for (const person of people.values()) {
       let walking = false;
@@ -696,6 +839,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
       for (const shape of geometries) shape.dispose();
       for (const mat of materials.values()) mat.dispose();
       for (const texture of textures) texture.dispose();
+      for (const batch of instancedMeshes) batch.dispose();
       renderer.dispose(); canvas.remove(); labels.remove();
     },
   };

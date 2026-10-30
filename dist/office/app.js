@@ -2,6 +2,7 @@ import { OFFICE_CAST, OFFICE_ZONES, getOfficeRoster } from './model.js';
 import { OFFICE_INTERACTION_TOPICS, getOfficeInteraction } from './interactions.js';
 import { createRefreshQueue } from './refresh.js';
 import { OFFICE_FLOORS, DEFAULT_OFFICE_FLOOR, getOfficeFloor, isOfficeFloor } from './floors.js';
+import { adjacentOfficeFloor } from './view-navigation.js';
 
 const $ = selector => document.querySelector(selector);
 const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -45,22 +46,26 @@ const floorLabel=value=>{const floor=getOfficeFloor(value)||OFFICE_FLOORS[0];ret
 const scopeRoster=()=>buildingView?roster:roster.filter(person=>person.floor===activeFloor);
 function renderFloorDirectory(){
   $('#floor-buttons').innerHTML=[...OFFICE_FLOORS].reverse().map(floor=>`<button type="button" class="floor-button" data-floor="${floor.id}" aria-pressed="false" style="--floor-color:${floor.color}"><span class="floor-number">${floor.id}<small>F</small></span><span class="floor-info"><strong>${esc(floor.name)}</strong><small data-floor-count="${floor.id}"></small></span><span class="floor-arrow" aria-hidden="true">↗</span></button>`).join('');
+  $('#quick-floor').innerHTML='<option value="all">全棟透視 · 七層樓</option>'+[...OFFICE_FLOORS].reverse().map(floor=>`<option value="${floor.id}">${esc(floorLabel(floor.id))}</option>`).join('');
 }
 function updateFloorNavigation(){
   const floor=getOfficeFloor(activeFloor);
   $('#floor-tag').textContent=buildingView?'1–7 F':`${String(activeFloor).padStart(2,'0')} F`;
-  $('#floor-title').textContent=buildingView?'禾多總部 · 七層樓':floor.name;
-  $('#floor-description').textContent=buildingView?'從大廳到經營辦公室，選一層拜訪同事。':floor.description;
+  $('#floor-title').textContent=buildingView?'禾多總部 · 全棟透視':floor.name;
+  $('#floor-description').textContent=buildingView?'透過半透明外牆，看見七層同事的日常。點樓層或用上下樓拜訪。':floor.description;
   $('#presence-scope').textContent=buildingView?'整棟辦公室':`${activeFloor}F · ${floor.name}`;
   $('#building-view').classList.toggle('active',buildingView);$('#building-view').setAttribute('aria-pressed',String(buildingView));
   document.querySelectorAll('[data-floor]').forEach(button=>{const selected=!buildingView&&Number(button.dataset.floor)===activeFloor;button.classList.toggle('active',selected);button.setAttribute('aria-pressed',String(selected));});
   document.querySelectorAll('[data-floor-count]').forEach(label=>{const id=Number(label.dataset.floorCount);const home=roster.filter(p=>p.departmentFloor===id).length,present=roster.filter(p=>p.floor===id&&(p.kind==='character'||p.online)).length;label.textContent=id===1&&!home?`共享空間 · ${present} 位在場`:`${home} 位成員 · ${present} 位在場`;});
   document.querySelectorAll('[data-zone]').forEach(button=>{button.disabled=buildingView;const selected=button.dataset.zone===selectedZone;button.classList.toggle('active',selected);button.setAttribute('aria-pressed',String(selected));});
-  $('#scene-hint').textContent=buildingView?'拖曳旋轉 · 點選樓層進入辦公室':'拖曳旋轉 · 滾動縮放 · 點選同事查看近況';
+  $('#scene-hint').textContent=buildingView?'拖曳旋轉 · 點樓層或同事 · 上下樓快速切換':'拖曳旋轉 · 上下樓／PageUp、PageDown 切層';
+  if(document.activeElement!==$('#quick-floor'))$('#quick-floor').value=buildingView?'all':String(activeFloor);
+  $('#floor-up').disabled=!buildingView&&activeFloor===OFFICE_FLOORS.length;
+  $('#floor-down').disabled=!buildingView&&activeFloor===1;
   $('#enter-floor').hidden=buildingView||own?.status!=='approved';$('#enter-floor').disabled=own?.floor===activeFloor||Boolean($('#enter-floor').dataset.busy);
   $('#enter-floor').textContent=own?.floor===activeFloor?'你已在本層':'搭電梯到本層 ↗';
   $('.office-stage').classList.toggle('building-overview',buildingView);
-  if(scene)$('#scene-status').textContent=buildingView?'七層樓已開放':`${scopeRoster().filter(p=>p.kind==='character'||p.online).length} 位同事在這層`;
+  if(scene)$('#scene-status').textContent=buildingView?'七層日常看得見':`${scopeRoster().filter(p=>p.kind==='character'||p.online).length} 位同事在這層`;
 }
 function selectFloor(id){
   if(!isOfficeFloor(id))return;
@@ -69,8 +74,9 @@ function selectFloor(id){
 }
 function showBuilding(){
   buildingView=true;selectedZone='all';scene?.showBuilding();updateFloorNavigation();renderCounters();renderPanel(true);
-  $('#ambient-caption').textContent='七個樓層，各有日常，也一起把事情做好。';
+  $('#ambient-caption').textContent='半透明的七層樓，每個部門的日常都看得見。';
 }
+function stepFloor(direction){const next=adjacentOfficeFloor(activeFloor,direction,buildingView);if(!buildingView&&next===activeFloor)return;selectFloor(next);}
 function renderCounters() {
   const people=scopeRoster();
   $('#cast-count').textContent = people.filter(p=>p.kind==='character').length;
@@ -214,6 +220,14 @@ async function heartbeat() {
 
 $('#join').addEventListener('click',openJoin);$('#my-desk').addEventListener('click',openJoin);$('#agent-guide').addEventListener('click',openGuide);$('#admin-open').addEventListener('click',openAdmin);
 $('#building-view').addEventListener('click',showBuilding);
+$('#floor-up').addEventListener('click',()=>stepFloor('up'));
+$('#floor-down').addEventListener('click',()=>stepFloor('down'));
+$('#quick-floor').addEventListener('change',event=>{if(event.target.value==='all')showBuilding();else selectFloor(Number(event.target.value));});
+document.addEventListener('keydown',event=>{
+  if($('#modal').open||event.ctrlKey||event.metaKey||event.altKey||!['PageUp','PageDown'].includes(event.key))return;
+  if(!event.target.closest?.('.office-stage,.floor-directory')||event.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+  event.preventDefault();stepFloor(event.key==='PageUp'?'up':'down');
+});
 $('#floor-buttons').addEventListener('click',event=>{const button=event.target.closest('[data-floor]');if(button)selectFloor(Number(button.dataset.floor));});
 $('#floor-buttons').addEventListener('keydown',event=>{
   if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
@@ -287,7 +301,7 @@ renderFloorDirectory();renderCounters();renderPeople();
 void refresh().then(()=>heartbeat()).then(()=>refresh({force:true}));
 setInterval(()=>{if(!document.hidden)void refresh();},15000);
 setInterval(()=>void heartbeat(),45000);
-setInterval(()=>{if(!document.hidden&&!paused){normalizeRoster();renderCounters();renderPanel();const people=scopeRoster().filter(p=>p.kind==='character');const person=people[Math.floor(Date.now()/10000)%Math.max(1,people.length)];$('#ambient-caption').textContent=buildingView?'七個樓層，各有日常，也一起把事情做好。':person?`${person.name}正在${person.activity.replace(/^在/,'')}。`:getOfficeFloor(activeFloor).description;}},10000);
+setInterval(()=>{if(!document.hidden&&!paused){normalizeRoster();renderCounters();renderPanel();const people=scopeRoster().filter(p=>p.kind==='character');const person=people[Math.floor(Date.now()/10000)%Math.max(1,people.length)];$('#ambient-caption').textContent=buildingView?'半透明的七層樓，每個部門的日常都看得見。':person?`${person.name}正在${person.activity.replace(/^在/,'')}。`:getOfficeFloor(activeFloor).description;}},10000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){void refresh().then(()=>heartbeat());}});
 window.addEventListener('pagehide',()=>{csrf='';clearTimeout(adminTimer);if($('#modal').open)closeDialog();});
 try {
