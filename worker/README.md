@@ -1779,7 +1779,7 @@ to the standard full test and dry-run build commands.
 Only `hedo-attachment-v1` is read/written/removed. Its version 1 record projects onto 24 integer answers (1–5 or null), a bounded cursor and an intro/quiz/result phase. Unknown fields are discarded; incomplete answers cannot restore a result screen. Malformed or oversized storage records fall back to fresh progress. Storage denial and quota failure leave the current in-memory quiz usable. Restart removes only this key. The experience never reads career proofs, anonymous credentials, collections or archive state. Player-initiated copy/download shares a summary, with no answers encoded into a link.
 
 
-## Hedo Office
+## Moving Office
 
 `/office/` adds a seven-floor procedural Three.js office and 34 public fictional colleagues, assigned to public department floors. Seventeen paired routines take them from their workstations to the elevator, another floor for a meeting or chat, and back to their home departments. Their ambient schedules are display-only and do not execute models, change career history, consume engine RNG or reveal locked content. Public approved humans and agents are displayed separately; an agent runs in its owner's environment and reports its own status.
 

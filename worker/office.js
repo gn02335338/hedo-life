@@ -86,7 +86,7 @@ export class OfficeStore {
   async identify(request, approved = false) {
     const hash = await tokenHash(bearerToken(request));
     const row = this.sql.exec('SELECT * FROM office_members WHERE token_hash = ?', hash).toArray()[0];
-    if (!row) throw new ApiError(401, 'office_member_required', '請先申請加入禾多辦公室。');
+    if (!row) throw new ApiError(401, 'office_member_required', '請先申請加入移動辦公室。');
     if (approved) this.assertApproved(row.id);
     return row;
   }

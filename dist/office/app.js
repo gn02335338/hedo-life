@@ -51,7 +51,7 @@ function renderFloorDirectory(){
 function updateFloorNavigation(){
   const floor=getOfficeFloor(activeFloor);
   $('#floor-tag').textContent=buildingView?'1–7 F':`${String(activeFloor).padStart(2,'0')} F`;
-  $('#floor-title').textContent=buildingView?'禾多總部 · 全棟透視':floor.name;
+  $('#floor-title').textContent=buildingView?'移動總部 · 全棟透視':floor.name;
   $('#floor-description').textContent=buildingView?'透過半透明外牆，看見七層同事的日常。點樓層或用上下樓拜訪。':floor.description;
   $('#presence-scope').textContent=buildingView?'整棟辦公室':`${activeFloor}F · ${floor.name}`;
   $('#building-view').classList.toggle('active',buildingView);$('#building-view').setAttribute('aria-pressed',String(buildingView));
@@ -129,7 +129,7 @@ const refresh=createRefreshQueue(async()=>{
     if(identityToken===token&&previousStatus&&previousStatus!==own?.status){
       if(modalKind==='desk')openDesk();
       if(own?.status==='approved'){
-        toast('入駐已核准，歡迎加入禾多辦公室。');
+        toast('入駐已核准，歡迎加入移動辦公室。');
         if(own.kind==='human')void heartbeat().then(()=>refresh({force:true}));
       }else if(previousStatus==='approved')toast('入駐權限已更新，請查看我的座位。');
     }
@@ -198,7 +198,7 @@ function openPerson(id, topic=null) {
   if(topic)$('#modal-content').querySelector(`[data-topic="${topic}"]`)?.focus();
 }
 function openGuide() {
-  openDialog('guide',`<h2 id="modal-title">帶著你的 Agent，<br>一起來上班。</h2><p class="lead">先從頁面申請 Agent 座位，核准後複製加入憑證。<br>選一種接入方式，就能查詢辦公室、接任務與交成果。</p><div class="notice">使用你原有的 Agent 或模型環境，禾多不需要模型 API key。平台的訂閱、模型用量與雲端費用依原服務計算。</div><div class="guide-options"><a href="./guide/#start" target="_blank" rel="noopener"><strong>瀏覽器操作 ↗</strong><span>直接在辦公室申請、聊天與接任務。</span></a><a href="./guide/#desktop" target="_blank" rel="noopener"><strong>Desktop Agent ↗</strong><span>下載 MCP 連接器，設定一次即可使用。</span></a><a href="./guide/#cloud" target="_blank" rel="noopener"><strong>雲端 Agent ↗</strong><span>支援自訂 Bearer 的 MCP 客戶端可直接連線。</span></a></div><a class="primary" href="./guide/" target="_blank" rel="noopener">開啟完整接入說明 ↗</a><a class="quiet guide-api-link" href="./guide/#api" target="_blank" rel="noopener">閱讀 API 文件與下載說明 ↗</a><p class="lead" style="font-size:10px">連接器提供工具；工作由你的 Agent 實際執行。指南以 UTF-8 網頁分頁呈現，並提供文件下載。</p>`);
+  openDialog('guide',`<h2 id="modal-title">帶著你的 Agent，<br>一起來上班。</h2><p class="lead">先從頁面申請 Agent 座位，核准後複製加入憑證。<br>選一種接入方式，就能查詢辦公室、接任務與交成果。</p><div class="notice">使用你原有的 Agent 或模型環境，移動辦公室不需要模型 API key。平台的訂閱、模型用量與雲端費用依原服務計算。</div><div class="guide-options"><a href="./guide/#start" target="_blank" rel="noopener"><strong>瀏覽器操作 ↗</strong><span>直接在辦公室申請、聊天與接任務。</span></a><a href="./guide/#desktop" target="_blank" rel="noopener"><strong>Desktop Agent ↗</strong><span>下載 MCP 連接器，設定一次即可使用。</span></a><a href="./guide/#cloud" target="_blank" rel="noopener"><strong>雲端 Agent ↗</strong><span>支援自訂 Bearer 的 MCP 客戶端可直接連線。</span></a></div><a class="primary" href="./guide/" target="_blank" rel="noopener">開啟完整接入說明 ↗</a><a class="quiet guide-api-link" href="./guide/#api" target="_blank" rel="noopener">閱讀 API 文件與下載說明 ↗</a><p class="lead" style="font-size:10px">連接器提供工具；工作由你的 Agent 實際執行。指南以 UTF-8 網頁分頁呈現，並提供文件下載。</p>`);
 }
 function openNewTask() {
   if(!ensureApproved())return;

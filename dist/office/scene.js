@@ -29,7 +29,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   const canvas = renderer.domElement;
   canvas.tabIndex = 0;
   canvas.setAttribute('role', 'img');
-  canvas.setAttribute('aria-label', '禾多總部七層立體辦公大樓。點選樓層進入部門剖面，可拖曳旋轉、捲動縮放；成員也可從旁邊清單選取。');
+  canvas.setAttribute('aria-label', '移動總部七層立體辦公大樓。點選樓層進入部門剖面，可拖曳旋轉、捲動縮放；成員也可從旁邊清單選取。');
   canvas.style.touchAction = 'none';
   container.append(canvas);
   const labels = document.createElement('div');
@@ -406,7 +406,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
       leaf.userData.buildingRole = 'roof-plant';
     }
   }
-  const roofSign = sign(building, '禾多總部 · HEDO', 0, roof + 1.1, 7.9, 10.5, 1.4, '#526d61');
+  const roofSign = sign(building, '移動辦公室 · MOVING', 0, roof + 1.1, 7.9, 10.5, 1.4, '#526d61');
   if (roofSign) { roofSign.material.transparent = true; roofSign.material.opacity = .55; roofSign.material.depthWrite = false; roofSign.castShadow = false; roofSign.userData.buildingRole = 'roof-sign'; }
 
   // Share actual room furnishings across floors by geometry/material batches.
@@ -801,7 +801,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     accentMaterial.color.set(OFFICE_FLOORS.find(floor => floor.id === id).color);
     if (selectedId && !fullRoster.some(person => person.id === selectedId && memberFloor(person) === id)) selectedId = null;
     placeLights(false); setRoster(fullRoster); resize(); reset();
-    canvas.setAttribute('aria-label', `禾多總部${id}樓，${OFFICE_FLOORS.find(floor => floor.id === id).name}的立體剖面。可拖曳旋轉、捲動縮放，點選同層成員。`);
+    canvas.setAttribute('aria-label', `移動總部${id}樓，${OFFICE_FLOORS.find(floor => floor.id === id).name}的立體剖面。可拖曳旋轉、捲動縮放，點選同層成員。`);
     return true;
   }
   function showBuilding() {
@@ -809,7 +809,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     buildingView = true; activeZone = 'all'; building.visible = true; room.visible = false;
     camera.position.copy(buildingTarget).add(buildingOffset); controls.target.copy(buildingTarget); camera.zoom = 1;
     placeLights(true); resize(); controls.update(); updateBuildingLabels();
-    canvas.setAttribute('aria-label', '禾多總部完整七層辦公大樓；點選各樓層標籤，進入該部門的立體剖面。');
+    canvas.setAttribute('aria-label', '移動總部完整七層辦公大樓；點選各樓層標籤，進入該部門的立體剖面。');
   }
   function setNight(value) {
     const night = Boolean(value);

@@ -33,7 +33,7 @@ function localLinks(base, text, markdown = false) {
   }
 }
 
-function harness({ hash = '', bytes = new TextEncoder().encode('# 禾多辦公室\n中文接入指南'), ok = true } = {}) {
+function harness({ hash = '', bytes = new TextEncoder().encode('# 移動辦公室\n中文接入指南'), ok = true } = {}) {
   let document;
   class Node {
     constructor(id = '') { this.id = id; this.attributes = new Map(); this.listeners = new Map(); this.dataset = {}; this.children = []; this.textContent = ''; this.classes = new Set(); this.classList = { add: name => this.classes.add(name), remove: name => this.classes.delete(name) }; }
@@ -58,7 +58,7 @@ function harness({ hash = '', bytes = new TextEncoder().encode('# 禾多辦公�
     const button = new Node(); button.dataset.copy = id; return button;
   });
   create('status'); const download = create('download-guide');
-  download.href = 'https://hodo.bvivify.com/office/agent.md'; download.download = '禾多辦公室-Agent-入駐指南.md';
+  download.href = 'https://hodo.bvivify.com/office/agent.md'; download.download = '移動辦公室-Agent-入駐指南.md';
   document = { activeElement: null, body: new Node('body'), createElement: () => new Node(), getElementById: id => ids.get(id), querySelector: selector => selector === '.tabs' ? tablist : null,
     querySelectorAll: selector => selector === '[role="tab"]' ? tabs : selector === '[data-open-tab]' ? openLinks : selector === '[data-copy]' ? copyButtons : [] };
   const window = new Node('window'), location = { hash }, entries = [hash]; let cursor = 0;
@@ -107,7 +107,7 @@ test('office entry links land on the four existing guide panels and all guide as
   for (const path of ['../dist/office/README.md', '../dist/office/agent.md']) {
     const url = new URL(path, import.meta.url); localLinks(url, readFileSync(url, 'utf8'), true);
   }
-  for (const [path, heading] of [['../README.md', '## 禾多辦公室'], ['../worker/README.md', '## Hedo Office']]) {
+  for (const [path, heading] of [['../README.md', '## 移動辦公室'], ['../worker/README.md', '## Moving Office']]) {
     const url = new URL(path, import.meta.url), text = readFileSync(url, 'utf8');
     localLinks(url, text.slice(text.lastIndexOf(heading)), true);
   }
@@ -171,8 +171,8 @@ test('Markdown download decodes UTF-8 and adds one BOM before triggering a named
   assert.equal(h.files.length, 1); assert.equal(h.files[0].type, 'text/markdown;charset=utf-8');
   const bytes = new Uint8Array(await h.files[0].arrayBuffer());
   assert.deepEqual([...bytes.slice(0, 3)], [0xef, 0xbb, 0xbf]);
-  assert.equal(new TextDecoder('utf-8').decode(bytes), '# 禾多辦公室\n中文接入指南');
-  assert.deepEqual(h.downloads, [{ href: 'blob:guide-1', filename: '禾多辦公室-Agent-入駐指南.md' }]);
+  assert.equal(new TextDecoder('utf-8').decode(bytes), '# 移動辦公室\n中文接入指南');
+  assert.deepEqual(h.downloads, [{ href: 'blob:guide-1', filename: '移動辦公室-Agent-入駐指南.md' }]);
   assert.equal(h.download.getAttribute('aria-busy'), null);
   for (const callback of h.timers.values()) callback(); assert.deepEqual(h.revoked, ['blob:guide-1']);
 });

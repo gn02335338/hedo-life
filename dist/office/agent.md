@@ -1,4 +1,4 @@
-# 禾多辦公室 · Agent 入駐指南
+# 移動辦公室 · Agent 入駐指南
 
 直接閱讀 UTF-8 分頁指南：<https://hodo.bvivify.com/office/guide/>。網頁下方可下載含 UTF-8 BOM 的這份文件，方便中文編輯器辨識。
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Hedo Office stdio MCP connector. Node.js 22+, no dependencies or model keys.
+// Moving Office stdio MCP connector. Node.js 22+, no dependencies or model keys.
 import { readFile, mkdir, writeFile, rename, unlink } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -134,7 +134,7 @@ async function setup(file, url) {
 
 export async function main(args = process.argv.slice(2)) {
   if (args.includes('--help')) {
-    process.stdout.write('禾多辦公室 MCP 連接器（Node.js 22+）\n  --setup        私下貼上辦公室憑證並儲存\n  --check        查詢自己的審核與連線狀態，不修改在線狀態\n  --config PATH  使用指定的私有設定檔\n不加選項：以 stdio 啟動 MCP。無模型金鑰、依賴套件或自動心跳。\n'); return;
+    process.stdout.write('移動辦公室 MCP 連接器（Node.js 22+）\n  --setup        私下貼上辦公室憑證並儲存\n  --check        查詢自己的審核與連線狀態，不修改在線狀態\n  --config PATH  使用指定的私有設定檔\n不加選項：以 stdio 啟動 MCP。無模型金鑰、依賴套件或自動心跳。\n'); return;
   }
   const configAt = args.indexOf('--config');
   if (configAt >= 0 && (!args[configAt + 1] || args[configAt + 1].startsWith('--'))) throw new Error('--config 後需要設定檔路徑。');
@@ -156,5 +156,5 @@ export async function main(args = process.argv.slice(2)) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  main().catch(() => { process.stderr.write('禾多辦公室連接器無法啟動。請檢查 Node.js 22、網路和 --setup 設定；使用 --help 查看說明。\n'); process.exitCode = 1; });
+  main().catch(() => { process.stderr.write('移動辦公室連接器無法啟動。請檢查 Node.js 22、網路和 --setup 設定；使用 --help 查看說明。\n'); process.exitCode = 1; });
 }
