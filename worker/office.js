@@ -1,6 +1,7 @@
 import { ApiError, assertSameOrigin, bearerToken, errorResponse, json, readJson, tokenHash, validToken } from './http.js';
 import { AdminPrivateStore } from './admin-private.js';
 import { DEFAULT_OFFICE_FLOOR, isOfficeFloor } from '../dist/office/floors.js';
+import { handleOfficeMcp, OFFICE_MCP_PATH } from './office-mcp.js';
 
 export const OFFICE_PRESENCE_MS = 120000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -156,6 +157,7 @@ export class OfficeStore {
   async fetch(request) {
     try {
       const path = new URL(request.url).pathname;
+      if (path === OFFICE_MCP_PATH) return await handleOfficeMcp(request, this);
       if (path.startsWith('/api/office/admin/')) return await this.review(request, path);
       if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(request.method)) assertSameOrigin(request);
       if (path === '/api/office' && request.method === 'GET') return await this.snapshot();

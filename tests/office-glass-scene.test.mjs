@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import * as Three from '../dist/island/vendor/three.module.js';
 import { OFFICE_FLOORS, isOfficeFloor } from '../dist/office/floors.js';
 import { getOfficeRoster } from '../dist/office/model.js';
+import { getCharacterRoutine, OFFICE_ELEVATOR, OFFICE_ROUTINE_CYCLE_MS, OFFICE_ROUTINE_PAIRS } from '../dist/office/routine.js';
 
 // Run the production scene construction and Three.js matrices/raycasting in
 // Node. Only browser surfaces and the GPU renderer are stubbed; no browser is
@@ -12,7 +13,7 @@ const sceneSource = readFileSync(new URL('../dist/office/scene.js', import.meta.
   .replace(/^import .*;\r?\n/gm, '')
   .replace('export async function createOfficeScene', 'async function createOfficeScene');
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
-const loadScene = new AsyncFunction('THREE', 'OrbitControls', 'OFFICE_FLOORS', 'isOfficeFloor', 'window', 'document', 'ResizeObserver', 'requestAnimationFrame', 'cancelAnimationFrame', 'performance', `${sceneSource}\nreturn createOfficeScene;`);
+const loadScene = new AsyncFunction('THREE', 'OrbitControls', 'OFFICE_FLOORS', 'isOfficeFloor', 'getCharacterRoutine', 'OFFICE_ELEVATOR', 'window', 'document', 'ResizeObserver', 'requestAnimationFrame', 'cancelAnimationFrame', 'performance', `${sceneSource}\nreturn createOfficeScene;`);
 
 class Element {
   constructor(tag = 'div') {
@@ -31,9 +32,9 @@ class Element {
   getContext(kind) { assert.equal(kind, '2d'); return { fillRect() {}, fillText() {} }; }
 }
 
-async function harness(t, { roster = getOfficeRoster([], 0), width = 700, height = 556 } = {}) {
+async function harness(t, { roster = getOfficeRoster([], 0), width = 700, height = 556, initialFrame = 1000, reducedMotion = false } = {}) {
   const frames = new Map(), selected = [], selectedFloors = [];
-  let nextFrame = 0, renderer, resize;
+  let nextFrame = 0, renderer, resize, frameTime = 0;
   class Renderer {
     constructor() { renderer = this; this.domElement = new Element('canvas'); this.shadowMap = {}; }
     setPixelRatio() {}
@@ -47,19 +48,20 @@ async function harness(t, { roster = getOfficeRoster([], 0), width = 700, height
     dispose() {}
   }
   class Observer { constructor(callback) { resize = callback; } observe() {} disconnect() {} }
-  const createScene = await loadScene({ ...Three, WebGLRenderer: Renderer }, Controls, OFFICE_FLOORS, isOfficeFloor,
-    { devicePixelRatio: 1, matchMedia: () => ({ matches: false }) },
+  const createScene = await loadScene({ ...Three, WebGLRenderer: Renderer }, Controls, OFFICE_FLOORS, isOfficeFloor, getCharacterRoutine, OFFICE_ELEVATOR,
+    { devicePixelRatio: 1, matchMedia: () => ({ matches: reducedMotion }) },
     { hidden: false, createElement: tag => new Element(tag), createTextNode: text => ({ textContent: text }) },
-    Observer, callback => { const id = ++nextFrame; frames.set(id, callback); return id; }, id => frames.delete(id), { now: () => 0 });
+    Observer, callback => { const id = ++nextFrame; frames.set(id, callback); return id; }, id => frames.delete(id), { now: () => frameTime });
   const container = new Element(); container.clientWidth = width; container.clientHeight = height;
   const api = await createScene({ container, roster, onSelect: id => selected.push(id), onFloorSelect: floor => selectedFloors.push(floor) });
   function frame(time = 1000) {
+    frameTime = time;
     const [id, callback] = frames.entries().next().value;
     frames.delete(id); callback(time);
   }
-  frame();
+  frame(initialFrame);
   t.after(() => api.dispose());
-  return { api, container, renderer, selected, selectedFloors, frame, resize: (w, h) => { container.clientWidth = w; container.clientHeight = h; resize(); frame(); } };
+  return { api, container, renderer, selected, selectedFloors, frame, time: () => frameTime, resize: (w, h) => { container.clientWidth = w; container.clientHeight = h; resize(); frame(); } };
 }
 
 function meshes(root, role) { const result = []; root.traverse(object => { if (object.isMesh && (!role || object.userData.buildingRole === role)) result.push(object); }); return result; }
@@ -122,10 +124,14 @@ test('four avatar batches show every real roster entry on its current floor and 
     for (const batch of batches) {
       assert.equal(batch.count, expected.length);
       assert.deepEqual(batch.userData.memberIds, expected.map(member => member.id));
-      assert.deepEqual(batch.userData.floors, expected.map(member => member.floor));
+      assert.deepEqual(batch.userData.floors, expected.map(member => member.kind === 'character' ? getCharacterRoutine(member.id, member.routine.sampledAt + h.time()).floor : member.floor));
       for (let index = 0; index < batch.count; index++) {
-        const position = instancePosition(batch, index), base = origins.get(expected[index].floor);
-        assert.ok(position.y >= base && position.y < base + 3, expected[index].id);
+        const member = expected[index], position = instancePosition(batch, index), base = origins.get(member.floor);
+        if (member.kind === 'character') {
+          const routine = getCharacterRoutine(member.id, member.routine.sampledAt + h.time());
+          const offset = { body: .67, head: 1.14, legs: .25, hair: 1.18 }[batch.userData.personPart];
+          assert.ok(Math.abs(position.y - ((routine.elevation - 1) * 4.3 + offset)) < .03, member.id);
+        } else assert.ok(position.y >= base && position.y < base + 3, member.id);
         assert.ok(Math.abs(position.x) < 11 && position.z > -8 && position.z < 9, expected[index].id);
       }
     }
@@ -181,4 +187,92 @@ test('floor labels, overview instance clicks and handheld-sized cameras select t
   assert.equal(building.visible, false); assert.equal(room.visible, true);
   h.api.showBuilding(); h.resize(850, 556);
   assert.equal(building.visible, true); assert.equal(room.visible, false);
+});
+
+function avatarPosition(scene, id) {
+  const body = meshes(scene, 'overview-person').find(batch => batch.userData.personPart === 'body');
+  const index = body.userData.memberIds.indexOf(id); assert.ok(index >= 0, id);
+  return instancePosition(body, index);
+}
+
+test('a paired appointment walks through the elevator, changes actual height, meets face to face and returns continuously', async t => {
+  const h = await harness(t, { roster: getOfficeRoster([], 0), initialFrame: 0 });
+  const scene = h.renderer.scene, home = avatarPosition(scene, 'jack').clone();
+  // Check both journey phase boundaries and the cabin's boarding/exit edges.
+  for (const boundary of [85_000, 103_000, 104_800, 113_200, 115_000, 133_000, 178_000, 196_000, 197_800, 206_200, 208_000, 226_000]) {
+    h.frame(boundary - .001); const before = avatarPosition(scene, 'jack').clone();
+    h.frame(boundary + .001); const after = avatarPosition(scene, 'jack');
+    assert.ok(before.distanceTo(after) < .06, `Position jumped at ${boundary}`);
+  }
+  // Use a separate clock for an exact mid-journey check after the boundary pass.
+  const mid = await harness(t, { roster: getOfficeRoster([], 109_000), initialFrame: 0 });
+  const routine = getCharacterRoutine('jack', 109_000), riding = avatarPosition(mid.renderer.scene, 'jack');
+  assert.equal(routine.inElevator, true);
+  assert.ok(Math.abs(riding.y - ((routine.elevation - 1) * 4.3 + .67)) < 1e-5);
+  assert.ok(Math.abs(riding.z - OFFICE_ELEVATOR.z) < 1e-5);
+  assert.ok(meshes(mid.renderer.scene, 'elevator-car').some(batch => batch.userData.memberIds.includes('jack')));
+
+  const meeting = await harness(t, { roster: getOfficeRoster([], 145_000), initialFrame: 0 });
+  const a = avatarPosition(meeting.renderer.scene, 'jack'), b = avatarPosition(meeting.renderer.scene, 'cindy');
+  assert.equal(getCharacterRoutine('jack', 145_000).phase, 'meeting');
+  assert.ok(a.distanceTo(b) >= .85 && a.distanceTo(b) <= 1.5, 'Partners must be visibly beside each other');
+  assert.ok(Math.abs(a.y - b.y) < 1e-5);
+  assert.ok(avatarPosition(scene, 'jack').distanceTo(home) < .06, 'The journey must finish at the original work position');
+});
+
+test('the detailed floor shares the overview path and hides a colleague only after the elevator leaves that floor', async t => {
+  const h = await harness(t, { roster: getOfficeRoster([], 85_000), initialFrame: 0 });
+  const scene = h.renderer.scene;
+  h.api.setFloor(6); h.frame(0);
+  const figure = meshes(scene).find(part => part.userData.personId === 'jack').parent;
+  const original = figure.getWorldPosition(new Three.Vector3()).clone();
+  h.frame(18_000);
+  const atDoor = figure.getWorldPosition(new Three.Vector3());
+  assert.equal(figure.visible, true);
+  assert.ok(Math.hypot(atDoor.x - OFFICE_ELEVATOR.doorX, atDoor.z - OFFICE_ELEVATOR.doorZ) < .01);
+  h.frame(30_000); assert.equal(figure.visible, false);
+  h.api.setFloor(7); h.frame(30_000); assert.equal(figure.visible, true);
+  const landed = figure.getWorldPosition(new Three.Vector3()), overview = avatarPosition(scene, 'jack');
+  assert.ok(Math.hypot(landed.x - overview.x, landed.z - overview.z) < 1e-5);
+  h.frame(141_000); assert.equal(figure.visible, false);
+  h.api.setFloor(6); h.frame(141_000);
+  assert.equal(figure.visible, true);
+  assert.ok(figure.getWorldPosition(new Three.Vector3()).distanceTo(original) < .06);
+});
+
+test('every public colleague has a continuous route across every staggered walking and elevator boundary', async t => {
+  const roster = getOfficeRoster([], 0), h = await harness(t, { roster, initialFrame: 0 });
+  const phaseEdges = [85_000, 103_000, 104_800, 113_200, 115_000, 133_000, 178_000, 196_000, 197_800, 206_200, 208_000, 226_000];
+  const boundaries = new Set();
+  for (let pair = 0; pair < OFFICE_ROUTINE_PAIRS.length; pair++) for (const edge of phaseEdges) {
+    const time = ((edge - pair * 13_000) % OFFICE_ROUTINE_CYCLE_MS + OFFICE_ROUTINE_CYCLE_MS) % OFFICE_ROUTINE_CYCLE_MS;
+    boundaries.add(time || OFFICE_ROUTINE_CYCLE_MS);
+  }
+  for (const boundary of [...boundaries].sort((a, b) => a - b)) {
+    h.frame(boundary - .001);
+    const positions = roster.map(person => avatarPosition(h.renderer.scene, person.id).clone());
+    h.frame(boundary + .001);
+    for (const [index, person] of roster.entries()) assert.ok(avatarPosition(h.renderer.scene, person.id).distanceTo(positions[index]) < .06, `${person.id} jumped at ${boundary}`);
+  }
+});
+
+test('the routine clock freezes on pause, accepts seamless one-second snapshots and honors reduced motion', async t => {
+  const sample = 103_000, h = await harness(t, { roster: getOfficeRoster([], sample), initialFrame: 0 });
+  for (let tick = 1000; tick <= 5000; tick += 1000) {
+    h.frame(tick); const before = avatarPosition(h.renderer.scene, 'jack').clone();
+    h.api.setRoster(getOfficeRoster([], sample + tick)); h.frame(tick);
+    assert.ok(avatarPosition(h.renderer.scene, 'jack').distanceTo(before) < .001, 'Resampling double-counted elapsed time');
+  }
+  const frozen = avatarPosition(h.renderer.scene, 'jack').clone();
+  h.api.setPaused(true); h.frame(15_000);
+  assert.ok(avatarPosition(h.renderer.scene, 'jack').distanceTo(frozen) < 1e-5);
+  h.api.setPaused(false); h.frame(16_000);
+  assert.ok(avatarPosition(h.renderer.scene, 'jack').distanceTo(frozen) > .05);
+
+  const reduced = await harness(t, { roster: getOfficeRoster([], sample), initialFrame: 0, reducedMotion: true });
+  const still = avatarPosition(reduced.renderer.scene, 'jack').clone(); reduced.frame(10_000);
+  assert.ok(avatarPosition(reduced.renderer.scene, 'jack').distanceTo(still) < 1e-5);
+  reduced.api.setRoster(getOfficeRoster([], 109_000)); reduced.frame(10_000);
+  const routine = getCharacterRoutine('jack', 109_000);
+  assert.ok(Math.abs(avatarPosition(reduced.renderer.scene, 'jack').y - ((routine.elevation - 1) * 4.3 + .67)) < 1e-5);
 });

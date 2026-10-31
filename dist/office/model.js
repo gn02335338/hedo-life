@@ -1,5 +1,6 @@
 import { PERSONAS, displayPersona } from '../persona.js';
 import { DEFAULT_OFFICE_FLOOR, getCharacterFloor, isOfficeFloor } from './floors.js';
+import { getCharacterRoutine } from './routine.js';
 
 // These are public, fictional office moments. They are independent of a saved
 // life, its RNG, relationships and undiscovered stories or endings. An ambient
@@ -13,8 +14,8 @@ export const OFFICE_ZONES = Object.freeze([
 
 const PALETTE = ['#d09062', '#a08cc0', '#79a68d', '#6e9eb8', '#c18d9f', '#c4aa61', '#83a4a3'];
 
-// Each scene has its own task and line of dialogue. The 30-second clock only
-// changes this display model; it does not execute tasks or write game progress.
+// Each character has authored work, conversation and rest copy. The routine
+// clock moves these fictional colleagues without executing real work.
 // [zone, status, activity, quote]
 const MOMENTS = Object.freeze({
   wing: [
@@ -191,8 +192,6 @@ const MOMENTS = Object.freeze({
 
 const zoneIds = new Set(OFFICE_ZONES.map(zone => zone.id));
 const statusIds = new Set(['working', 'idle', 'break']);
-const phaseFor = id => [...id].reduce((total, letter) => total + letter.codePointAt(0), 0);
-const safeTime = now => Number.isFinite(now) ? now : 0;
 
 export const OFFICE_CAST = Object.freeze(Object.keys(PERSONAS).map((id, index) => {
   const person = displayPersona(id);
@@ -203,10 +202,22 @@ export const OFFICE_CAST = Object.freeze(Object.keys(PERSONAS).map((id, index) =
 export function getCastMoment(personaId, nowMs = Date.now()) {
   if (!Object.hasOwn(MOMENTS, personaId)) return null;
   const rows = MOMENTS[personaId];
-  const tick = Math.floor(safeTime(nowMs) / 30_000);
-  const index = ((tick + phaseFor(personaId)) % rows.length + rows.length) % rows.length;
-  const [zone, status, activity, quote] = rows[index];
-  return { zone, status, activity, quote, floor: status === 'break' ? DEFAULT_OFFICE_FLOOR : getCharacterFloor(personaId) };
+  const routine = getCharacterRoutine(personaId, nowMs, { homeZone: rows[0][0] });
+  const partner = displayPersona(routine.partnerId).name, destination = `${routine.destinationFloor}F`, home = `${routine.homeFloor}F`;
+  const visit = routine.visitKind === 'meeting' ? '開會' : '聊天';
+  const activities = {
+    'home-work': rows[0][2],
+    'to-elevator': `前往電梯，準備到${destination}找${partner}${visit}`,
+    'outbound-lift': `搭電梯${routine.toFloor > routine.fromFloor ? '上行' : '下行'}：${home} → ${destination}，與${partner}有約`,
+    'to-visit': `抵達${destination}，走去找${partner}${visit}`,
+    meeting: `正在${destination}和${partner}開會`,
+    chat: `正在${destination}和${partner}聊天`,
+    'return-to-elevator': `與${partner}談完，前往電梯回${home}`,
+    'return-lift': `搭電梯${routine.toFloor > routine.fromFloor ? '上行' : '下行'}：${destination} → ${home}，返回部門`,
+    'return-to-work': `回到${home}，走回部門繼續工作`,
+  };
+  const copy = routine.phase === 'home-work' ? rows[0] : routine.phase === 'chat' ? rows[2] : rows[1];
+  return { zone: routine.zone, status: routine.phase === 'chat' ? 'break' : 'working', activity: activities[routine.phase], quote: copy[3], floor: routine.floor, routine };
 }
 
 const shortText = (value, max) => typeof value === 'string' ? value.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, max) : '';

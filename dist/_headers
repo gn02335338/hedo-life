@@ -1,0 +1,8 @@
+/office/*.md
+  Content-Type: text/plain; charset=utf-8
+  X-Content-Type-Options: nosniff
+
+/office/hedo-office-mcp.mjs
+  Content-Type: application/javascript; charset=utf-8
+  Content-Disposition: attachment; filename="hedo-office-mcp.mjs"
+  X-Content-Type-Options: nosniff

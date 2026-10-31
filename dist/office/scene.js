@@ -2,6 +2,7 @@
 import * as THREE from '../island/vendor/three.module.js';
 import { OrbitControls } from '../island/vendor/OrbitControls.js';
 import { OFFICE_FLOORS, isOfficeFloor } from './floors.js';
+import { getCharacterRoutine, OFFICE_ELEVATOR } from './routine.js';
 
 const FLOOR_HEIGHT = 4.3;
 const ZONE_CENTERS = Object.freeze({ studio: [-4.9, 2.4], meeting: [5.5, -3.7], focus: [-7.3, -5.1], lounge: [5.8, 4.7] });
@@ -279,6 +280,18 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   // shown; the seven lightweight exterior shells belong to the overview.
   box(room, accentMaterial, 0, .055, 8.82, 21.9, .035, .24);
   box(room, accentMaterial, 0, .42, -7.9, 21.9, .18, .06);
+  // The landing is part of the navigable office, not a teleport marker. Doors
+  // face the common corridor, while the transparent bank continues upstairs.
+  const elevatorDoor = { x: OFFICE_ELEVATOR.doorX, z: OFFICE_ELEVATOR.doorZ };
+  const elevator = group(room, OFFICE_ELEVATOR.x, 0, OFFICE_ELEVATOR.z);
+  for (const x of [-1.15, 1.15]) box(elevator, palette.trim, x, 1.75, -.66, .07, 3.5, .07);
+  box(elevator, palette.trim, 0, 3.48, -.66, 2.36, .08, .08);
+  const landing = box(elevator, palette.glass, 0, 1.5, -.66, 2.2, 3, .025);
+  landing.userData.buildingRole = 'elevator-door';
+  for (const x of [-1.16, 1.16]) box(elevator, palette.glass, x, 1.75, 0, .025, 3.5, 1.35);
+  const elevatorSign = sign(elevator, '電梯 ↑ ↓', 0, 3.13, -.71, 1.75, .36, '#627d73');
+  if (elevatorSign) elevatorSign.userData.buildingRole = 'elevator-sign';
+  solid(OFFICE_ELEVATOR.x, OFFICE_ELEVATOR.z, 2.4, 1.4, .30);
   // Include the counter overhangs and a walking body's radius, not just feet.
   // The shared clearance also keeps floor changes from opening blocked routes.
   solid(-10.1, 5.5, .8, 1.6, .32);
@@ -455,6 +468,71 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     for (let current = end; current && current !== start; current = previous.get(current.key)) path.unshift(current);
     return path;
   }
+  const routineRoutes = new Map(), pairPlaces = new Map(), routinePoses = new Map();
+  let routineSampleTime = null, routineElapsedMs = 0, routineLastFrame = performance.now(), poseTime = null;
+  function adoptRoutineClock(nextRoster) {
+    const sample = nextRoster.find(person => person?.kind === 'character' && Number.isFinite(person.routine?.sampledAt))?.routine.sampledAt;
+    if (sample !== undefined && sample !== routineSampleTime) {
+      routineSampleTime = sample; routineElapsedMs = 0; routineLastFrame = performance.now(); poseTime = null;
+    }
+    routinePoses.clear();
+  }
+  const routineNow = () => (routineSampleTime ?? 0) + routineElapsedMs;
+  function walkRoute(points) {
+    const lengths = [0];
+    for (let i = 1; i < points.length; i++) lengths.push(lengths[i - 1] + Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z));
+    return { points, lengths, length: lengths.at(-1) || 0 };
+  }
+  function alongRoute(route, progress) {
+    const distance = clamp(progress, 0, 1) * route.length;
+    let index = 1;
+    while (index < route.lengths.length - 1 && route.lengths[index] < distance) index++;
+    const from = route.points[index - 1], to = route.points[index] || from;
+    const segment = (route.lengths[index] || 0) - (route.lengths[index - 1] || 0);
+    const t = segment ? clamp((distance - route.lengths[index - 1]) / segment, 0, 1) : 0;
+    return { x: from.x + (to.x - from.x) * t, z: from.z + (to.z - from.z) * t, heading: Math.atan2(to.x - from.x, to.z - from.z) };
+  }
+  function routineStops(data, routine) {
+    const key = `${data.id}:${routine.meetingId}:${routine.homeZone}`;
+    if (routineRoutes.has(key)) return routineRoutes.get(key);
+    const homes = [...zoneNodes[routine.homeZone]].sort((a, b) => hash(`${data.id}:home:${a.key}`) - hash(`${data.id}:home:${b.key}`));
+    const home = homes[hash(data.id) % Math.min(homes.length, 20)], door = nearestNode(elevatorDoor.x, elevatorDoor.z);
+    const pairKey = `${routine.meetingId}:${routine.visitZone}`;
+    if (!pairPlaces.has(pairKey)) {
+      const candidates = [...zoneNodes[routine.visitZone]].sort((a, b) => hash(`${pairKey}:${a.key}`) - hash(`${pairKey}:${b.key}`));
+      const first = candidates[0];
+      const second = candidates.filter(node => Math.hypot(node.x - first.x, node.z - first.z) >= .86).sort((a, b) => Math.hypot(a.x - first.x, a.z - first.z) - Math.hypot(b.x - first.x, b.z - first.z))[0];
+      pairPlaces.set(pairKey, [first, second || candidates[1] || first]);
+      if (pairPlaces.size > 64) pairPlaces.delete(pairPlaces.keys().next().value);
+    }
+    const partners = pairPlaces.get(pairKey), visit = partners[routine.side], other = partners[1 - routine.side];
+    const homePoints = [home, ...findPath(home, door)], visitPoints = [door, ...findPath(door, visit)];
+    const stops = { home, door, visit, other, homeDoor: walkRoute(homePoints), doorHome: walkRoute([...homePoints].reverse()), doorVisit: walkRoute(visitPoints), visitDoor: walkRoute([...visitPoints].reverse()) };
+    routineRoutes.set(key, stops);
+    if (routineRoutes.size > 128) routineRoutes.delete(routineRoutes.keys().next().value);
+    return stops;
+  }
+  function routinePose(data, time = routineNow()) {
+    if (data.kind !== 'character' || !data.routine) return null;
+    if (poseTime !== time) { routinePoses.clear(); poseTime = time; }
+    if (routinePoses.has(data.id)) return routinePoses.get(data.id);
+    const routine = getCharacterRoutine(data.id, time, { homeZone: data.routine.homeZone });
+    if (!routine) return null;
+    const stops = routineStops(data, routine);
+    let point = { ...stops.home, heading: hash(data.id) % 6 }, walking = false;
+    const routes = { 'to-elevator': stops.homeDoor, 'to-visit': stops.doorVisit, 'return-to-elevator': stops.visitDoor, 'return-to-work': stops.doorHome };
+    if (routes[routine.phase]) { point = alongRoute(routes[routine.phase], routine.progress); walking = true; }
+    else if (routine.phase === 'meeting' || routine.phase === 'chat') point = { ...stops.visit, heading: Math.atan2(stops.other.x - stops.visit.x, stops.other.z - stops.visit.z) };
+    else if (routine.inElevator) {
+      const cabin = { x: OFFICE_ELEVATOR.x + (routine.liftLane - 1) * OFFICE_ELEVATOR.laneSpacing, z: OFFICE_ELEVATOR.z };
+      let from = cabin, to = cabin, t = 0;
+      if (routine.progress < .15) { from = stops.door; to = cabin; t = routine.progress / .15; walking = true; }
+      else if (routine.progress > .85) { from = cabin; to = stops.door; t = (routine.progress - .85) / .15; walking = true; }
+      point = { x: from.x + (to.x - from.x) * t, z: from.z + (to.z - from.z) * t, heading: walking ? Math.atan2(to.x - from.x, to.z - from.z) : Math.PI };
+    }
+    const pose = { ...point, y: (routine.elevation - 1) * FLOOR_HEIGHT + .055, floor: routine.floor, routine, walking };
+    routinePoses.set(data.id, pose); return pose;
+  }
   const people = new Map();
   let selectedId = null, activeZone = 'all', paused = false, disposed = false;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -478,19 +556,32 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     return { ...part, batch };
   });
   const overviewHitTargets = overviewParts.map(part => part.batch);
+  const elevatorCars = [building, room].map(parent => {
+    const batch = new THREE.InstancedMesh(boxGeometry, ghost('#a6c5c4', .09), overviewCapacity);
+    batch.count = 0; batch.frustumCulled = false; batch.castShadow = false;
+    batch.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    batch.userData.buildingRole = 'elevator-car'; batch.userData.memberIds = []; batch.userData.floors = [];
+    parent.add(batch); instancedMeshes.add(batch); return batch;
+  });
   const miniTransform = new THREE.Object3D();
   function paintOverviewPeople(delta = 0, motion = false) {
+    const riders = [];
     for (let index = 0; index < overviewOrder.length; index++) {
       const person = overviewOrder[index];
+      const pose = routinePose(person.data);
       let walking = false;
-      if (motion && person.path.length) {
+      if (pose) {
+        person.x = pose.x; person.z = pose.z; person.floor = pose.floor; person.heading = pose.heading;
+        walking = motion && pose.walking; person.walkTime = routineNow() / 1000 * 8;
+        if (pose.routine.inElevator) riders.push({ person, pose });
+      } else if (motion && person.path.length) {
         const next = person.path[0], dx = next.x - person.x, dz = next.z - person.z, distance = Math.hypot(dx, dz), travel = delta * .9;
         if (distance <= travel + .015) { person.x = next.x; person.z = next.z; person.path.shift(); }
         else { person.x += dx / distance * travel; person.z += dz / distance * travel; }
         if (distance > .01) person.heading = Math.atan2(dx, dz);
         walking = true; person.walkTime += delta * 8;
       }
-      const base = (person.floor - 1) * FLOOR_HEIGHT;
+      const base = pose ? pose.y - .055 : (person.floor - 1) * FLOOR_HEIGHT;
       const bob = walking ? Math.abs(Math.sin(person.walkTime)) * .025 : 0;
       for (const part of overviewParts) {
         miniTransform.position.set(person.x, base + part.y + bob, person.z);
@@ -498,7 +589,17 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
         part.batch.setMatrixAt(index, miniTransform.matrix);
       }
     }
-    for (const part of overviewParts) part.batch.instanceMatrix.needsUpdate = true;
+    for (const part of overviewParts) { part.batch.instanceMatrix.needsUpdate = true; part.batch.userData.floors = overviewOrder.map(person => person.floor); }
+    for (const [view, batch] of elevatorCars.entries()) {
+      const visible = view === 0 ? riders : riders.filter(({ pose }) => pose.y >= room.position.y - .055 && pose.y < room.position.y + FLOOR_HEIGHT);
+      batch.count = visible.length;
+      batch.userData.memberIds = visible.map(({ person }) => person.id); batch.userData.floors = visible.map(({ pose }) => pose.floor);
+      visible.forEach(({ pose }, index) => {
+        miniTransform.position.set(OFFICE_ELEVATOR.x + (pose.routine.liftLane - 1) * OFFICE_ELEVATOR.laneSpacing, pose.y + .8 - (view === 1 ? room.position.y : 0), OFFICE_ELEVATOR.z);
+        miniTransform.rotation.set(0, 0, 0); miniTransform.scale.set(.62, 1.8, 1.05); miniTransform.updateMatrix(); batch.setMatrixAt(index, miniTransform.matrix);
+      });
+      batch.instanceMatrix.needsUpdate = true;
+    }
   }
   function syncOverviewPeople() {
     const members = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && (person.kind === 'character' || person.online === true)).slice(0, overviewCapacity);
@@ -600,7 +701,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   }
   function chooseFloor(id) { if (setFloor(id)) onFloorSelect(id); }
   function refreshLabels() {
-    const list = [...people.values()];
+    const list = [...people.values()].filter(person => person.object.visible);
     const visible = new Set(list.filter(person => person.data.kind !== 'character' && person.data.online).slice(0, 6).map(person => person.id));
     for (const person of list.filter(person => activeZone === 'all' || person.zone === activeZone).sort((a, b) => a.priority - b.priority)) {
       if (visible.size >= (activeZone === 'all' ? 10 : 7)) break;
@@ -619,26 +720,28 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   function setRoster(nextRoster) {
     if (disposed) return;
     fullRoster = Array.isArray(nextRoster) ? nextRoster : [];
+    adoptRoutineClock(fullRoster);
     updateBuildingLabels();
     syncOverviewPeople();
-    const next = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && memberFloor(person) === activeFloor && (person.kind === 'character' || person.online === true));
+    const next = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && (person.kind === 'character' || person.online === true));
     const ids = new Set(next.map(person => person.id));
     for (const [id, person] of people) if (!ids.has(id)) {
       room.remove(person.object, person.ring); person.label.remove(); people.delete(id);
       for (let i = hitTargets.length - 1; i >= 0; i--) if (hitTargets[i].userData.personId === id) hitTargets.splice(i, 1);
     }
     const occupied = [];
-    for (const person of people.values()) if (person.target && ids.has(person.id)) occupied.push({ id: person.id, x: person.target.x, z: person.target.z });
+    for (const person of people.values()) if (person.target && ids.has(person.id)) occupied.push({ id: person.id, floor: memberFloor(person.data), x: person.target.x, z: person.target.z });
     for (const data of next) {
       let person = people.get(data.id);
       const isNew = !person;
       if (!person) { person = makePerson(data); people.set(data.id, person); }
       person.data = data;
+      person.object.visible = memberFloor(data) === activeFloor;
       const zone = Object.hasOwn(ZONE_CENTERS, data.zone) ? data.zone : 'studio';
       const movementChanged = person.zone !== zone;
       if (isNew || movementChanged) {
         const center = ZONE_CENTERS[zone], candidates = zoneNodes[zone];
-        const safe = candidates.filter(node => !occupied.some(other => other.id !== data.id && Math.hypot(other.x - node.x, other.z - node.z) < .86));
+        const safe = candidates.filter(node => !occupied.some(other => other.id !== data.id && other.floor === memberFloor(data) && Math.hypot(other.x - node.x, other.z - node.z) < .86));
         const pool = safe.length ? safe : candidates;
         const ordered = [...pool].sort((a, b) => {
           const aScore = hash(`${data.id}:${a.key}`), bScore = hash(`${data.id}:${b.key}`);
@@ -646,7 +749,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
         });
         const target = ordered.length ? ordered[hash(data.id) % Math.min(ordered.length, 15)] : nearestNode(...center);
         if (target) {
-          occupied.push({ id: data.id, x: target.x, z: target.z });
+          occupied.push({ id: data.id, floor: memberFloor(data), x: target.x, z: target.z });
           person.target = target;
           if (isNew) {
             const spawn = nearestNode(target.x + (hash(data.id) % 2 ? 1.5 : -1.5), target.z + 1, candidates);
@@ -657,7 +760,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
         }
       }
       person.zone = zone;
-      person.ring.visible = data.id === selectedId || data.kind !== 'character';
+      person.ring.visible = person.object.visible && (data.id === selectedId || data.kind !== 'character');
     }
     refreshLabels();
   }
@@ -752,7 +855,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
       const floor = raycaster.intersectObjects(floorHitTargets)[0];
       if (floor) chooseFloor(floor.object.userData.floor);
     } else {
-      const target = raycaster.intersectObjects(hitTargets)[0];
+      const target = raycaster.intersectObjects(hitTargets.filter(part => people.get(part.userData.personId)?.object.visible))[0];
       if (target) choose(target.object.userData.personId);
     }
   }
@@ -765,12 +868,21 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     if (disposed) return;
     frame = requestAnimationFrame(animate);
     const delta = Math.min(.05, Math.max(0, (now - lastTime) / 1000)); lastTime = now;
+    const routineDelta = Math.max(0, now - routineLastFrame); routineLastFrame = now;
+    if (!paused && !reducedMotion.matches && !document.hidden) routineElapsedMs += routineDelta;
     controls.update();
-    if (buildingView) paintOverviewPeople(delta, !paused && !reducedMotion.matches && !document.hidden);
+    paintOverviewPeople(delta, !paused && !reducedMotion.matches && !document.hidden);
     const motion = !buildingView && !paused && !reducedMotion.matches && !document.hidden;
+    let labelsChanged = false;
     for (const person of people.values()) {
+      const pose = routinePose(person.data), wasVisible = person.object.visible;
       let walking = false;
-      if (motion && person.path.length) {
+      if (pose) {
+        person.object.position.set(pose.x, pose.y - room.position.y, pose.z); person.object.rotation.y = pose.heading;
+        person.object.visible = pose.routine.inElevator ? pose.y >= room.position.y && pose.y < room.position.y + FLOOR_HEIGHT : pose.floor === activeFloor;
+        if (person.zone !== pose.routine.zone) labelsChanged = true;
+        person.zone = pose.routine.zone; walking = motion && pose.walking; person.walkTime = routineNow() / 1000 * 8;
+      } else if (motion && person.path.length) {
         const next = person.path[0], position = person.object.position;
         const dx = next.x - position.x, dz = next.z - position.z, distance = Math.hypot(dx, dz), travel = delta * .9;
         if (distance < travel + .015) { position.x = next.x; position.z = next.z; person.path.shift(); }
@@ -785,17 +897,20 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
       const swing = walking ? Math.sin(person.walkTime) * .3 : 0;
       person.leftLeg.rotation.x = swing; person.rightLeg.rotation.x = -swing;
       person.leftArm.rotation.x = -swing * .8; person.rightArm.rotation.x = swing * .8;
-      person.object.position.y = .055 + (walking ? Math.abs(Math.sin(person.walkTime)) * .025 : 0);
-      person.ring.position.set(person.object.position.x, .06, person.object.position.z);
-      person.ring.visible = person.id === selectedId || person.data.kind !== 'character';
+      if (!pose) person.object.position.y = .055;
+      person.object.position.y += walking ? Math.abs(Math.sin(person.walkTime)) * .025 : 0;
+      person.ring.position.set(person.object.position.x, person.object.position.y + .005, person.object.position.z);
+      person.ring.visible = person.object.visible && (person.id === selectedId || person.data.kind !== 'character');
+      if (wasVisible !== person.object.visible) labelsChanged = true;
     }
+    if (labelsChanged) refreshLabels();
     renderer.render(scene, camera);
     const placed = [];
     // Labels avoid one another in screen space. Selected and connected people
     // win placement; all 28 characters remain available in the member list.
     const labelOrder = [...people.values()].sort((a, b) => (b.id === selectedId) - (a.id === selectedId) || (b.data.kind !== 'character') - (a.data.kind !== 'character') || a.priority - b.priority);
     for (const person of labelOrder) {
-      if (buildingView || !person.showLabel) { person.label.style.display = 'none'; continue; }
+      if (buildingView || !person.object.visible || !person.showLabel) { person.label.style.display = 'none'; continue; }
       person.object.getWorldPosition(project); project.y += 1.4; project.project(camera);
       const x = (project.x + 1) * width / 2, y = (1 - project.y) * height / 2;
       const labelWidth = Math.max(35, person.data.name.length * 9 + 18);
