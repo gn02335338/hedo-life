@@ -17,7 +17,7 @@ import { ENDINGS } from '../dist/endings.js';
 
 export const officeToken = () => randomBytes(32).toString('hex');
 export const initialization = protocolVersion => ({ jsonrpc: '2.0', id: 0, method: 'initialize', params: { protocolVersion, capabilities: {}, clientInfo: { name: 'synthetic-test-client', version: '1.0.0' } } });
-export function mcpHarness(t) {
+export function mcpHarness(t, { now } = {}) {
   const db = new DatabaseSync(':memory:'); t.after(() => db.close());
   const sql = { exec(query, ...values) {
     let rows = []; if (!values.length && query.includes(';')) db.exec(query);
@@ -28,7 +28,8 @@ export function mcpHarness(t) {
   const password = 'synthetic-mcp-administrator-password', salt = randomBytes(16);
   const env = { ADMIN_PASSWORD_VERIFIER: JSON.stringify({ v: 1, iterations: 100000, salt: salt.toString('hex'), hash: pbkdf2Sync(password, salt, 100000, 32, 'sha256').toString('hex') }) };
   const source = readFileSync(new URL('../worker/index.js', import.meta.url), 'utf8').replace(/^import .*;\n/gm, '').replace('export class HedoArchive', 'globalThis.HedoArchive=class HedoArchive').replace('export default', 'globalThis.worker=');
-  const scope = vm.createContext({ DurableObject: class { constructor(ctx) { this.ctx = ctx; } }, OfficeStore, AdminPrivateStore, ...http,
+  const HarnessOfficeStore = now ? class extends OfficeStore { constructor(sql, storage, env) { super(sql, storage, env, { now }); } } : OfficeStore;
+  const scope = vm.createContext({ DurableObject: class { constructor(ctx) { this.ctx = ctx; } }, OfficeStore: HarnessOfficeStore, AdminPrivateStore, ...http,
     replayRun, VERSION, MAX_TURNS, ROLE_MAP, ENDINGS, validateFeedback, validatePublisherToken, FeedbackStore, AchievementStore, CharacterStore, ObservationStore, crypto, Response, Request, URL, Date });
   vm.runInContext(source, scope); const create = () => new scope.HedoArchive({ storage, blockConcurrencyWhile: fn => fn() }, env); let archive = create();
   const call = (path, { method = 'GET', body, raw, bearer, origin = null, site, extra = {} } = {}) => {

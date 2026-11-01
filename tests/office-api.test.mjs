@@ -333,7 +333,7 @@ test('legacy message and member tables gain display columns without changing adm
   h.reopen(); const own = (await (await h.call('/api/office/me', { bearer: value })).json()).application, snapshot = await (await h.call('/api/office')).json();
   assert.equal(own.id, id); assert.equal(own.status, 'approved'); assert.equal(own.avatar.preset, 'robot'); assert.equal(own.updatedAt, timestamp); assert.equal(own.approvedAt, timestamp); assert.equal(own.presenceStatus, 'working'); assert.equal(own.activity, 'Original activity');
   assert.equal(snapshot.members[0].lastSeenAt, new Date(lastHeartbeat).toISOString()); assert.equal(snapshot.members[0].online, true);
-  assert.deepEqual(snapshot.messages, [{ id: messageId, memberId: id, text: 'Original public message', recipientId: null, createdAt: timestamp }]);
+  assert.deepEqual(snapshot.messages, [{ id: messageId, memberId: id, text: 'Original public message', recipientId: null, replyToId: null, conversationId: null, turnIndex: 0, automated: false, createdAt: timestamp }]);
   assert.equal(h.sql.exec('SELECT token_hash FROM office_members WHERE id=?', id).one().token_hash, hash);
   assert.equal(h.sql.exec('SELECT last_seen_at FROM office_members WHERE id=?', id).one().last_seen_at, lastHeartbeat);
 });

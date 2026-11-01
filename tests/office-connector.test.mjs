@@ -110,7 +110,7 @@ test('downloaded CLI setup hides the credential and check reads status without h
   const invalid = await run(['--unknown', '--config', file]); assert.equal(invalid.code, 1);
 });
 
-test('downloadable stdio executable completes real Worker admission, eight-tool workflow and revocation over HTTP', { timeout: 15000 }, async t => {
+test('downloadable stdio executable completes real Worker admission, sixteen-tool discovery and work workflow and revocation over HTTP', { timeout: 15000 }, async t => {
   const h = mcpHarness(t), member = await h.apply(), auth = await h.login();
   const directory = await mkdtemp(join(tmpdir(), 'hedo-office-stdio-')); t.after(() => rm(directory, { recursive: true, force: true }));
   let requestCount = 0;
@@ -145,7 +145,7 @@ test('downloadable stdio executable completes real Worker admission, eight-tool 
   assert.equal((await tool('get_my_status')).structuredContent.application.status, 'pending');
   assert.equal((await tool('post_message', { text: 'Must wait for review' })).structuredContent.httpStatus, 403);
   await h.approve(member, auth);
-  assert.equal((await send('tools/list')).result.tools.length, 8);
+  assert.equal((await send('tools/list')).result.tools.length, 16);
   const appearance = { ...defaultOfficeAvatar('agent'), preset: 'cat', accentColor: '#cc8877' };
   assert.deepEqual((await tool('update_avatar', { avatar: appearance })).structuredContent.member.avatar, appearance);
   assert.equal((await tool('update_presence', { floor: 4, zone: 'meeting', status: 'working', activity: '實際連線測試' })).isError, false);

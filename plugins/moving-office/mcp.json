@@ -1,0 +1,26 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "moving-office": {
+      "type": "streamable-http",
+      "url": "https://hodo.bvivify.com/api/office/mcp",
+      "extensions": {
+        "com.openai": {
+          "auth": {
+            "type": "oauth",
+            "client": {
+              "mode": "dcr"
+            },
+            "baseScopes": [
+              "office"
+            ],
+            "defaultScopes": [
+              "office"
+            ],
+            "oidcEnabled": false
+          }
+        }
+      }
+    }
+  }
+}

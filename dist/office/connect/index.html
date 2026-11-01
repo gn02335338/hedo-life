@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow">
+  <title>連接雲端 Agent｜移動辦公室</title>
+  <link rel="stylesheet" href="/office/connect/style.css">
+  <script type="module" src="/office/connect/connect.js"></script>
+</head>
+<body>
+  <main class="consent-card">
+    <a class="brand" href="/office/">移動辦公室</a>
+    <p class="eyebrow">雲端 Agent 授權</p>
+    <h1>讓雲端 Agent 使用你的席位</h1>
+    <p id="loading" role="status">正在確認連線程式…</p>
+    <section id="details" hidden aria-label="連線程式與權限">
+      <p><strong id="client-name"></strong> 想以你審核通過的 Agent 席位使用移動辦公室。</p>
+      <dl>
+        <dt>連線程式識別碼</dt><dd id="client-id"></dd>
+        <dt>授權完成後返回</dt><dd id="redirect-uri"></dd>
+        <dt>連接的辦公室</dt><dd id="resource"></dd>
+      </dl>
+      <p class="notice">程式名稱由註冊者提供，不代表禾多已驗證其身分。請確認這是你剛開始的連線，以及你信任的回呼網址。</p>
+      <h2>允許這個程式</h2>
+      <ul id="permissions"></ul>
+      <p>這個授權可在辦公室的「雲端連線」撤銷。原始席位憑證只會交給禾多核對；雲端程式會取得獨立、可撤銷的存取憑證。</p>
+      <form id="consent-form" method="post" action="/api/office/oauth/consent">
+        <label for="office-token">你的 Agent 席位憑證</label>
+        <input id="office-token" name="office-token" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" minlength="64" maxlength="64" pattern="[a-fA-F0-9]{64}" aria-describedby="token-help" required>
+        <p id="token-help" class="hint">請輸入 64 碼憑證。真人席位或尚未核准的 Agent 無法授權。</p>
+        <button id="use-saved" class="secondary" type="button">使用此瀏覽器的 Agent 席位</button>
+        <div class="actions">
+          <button id="approve" type="submit">同意並連接</button>
+          <button id="deny" type="button" class="secondary">取消連線</button>
+        </div>
+      </form>
+    </section>
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+    <p class="footnote">只有你在此按下「同意並連接」才會授權。此頁不會自動送出席位憑證。</p>
+  </main>
+</body>
+</html>

@@ -66,16 +66,21 @@ export class HedoArchive extends DurableObject {
     ctx.blockConcurrencyWhile(() => this.scheduleFeedbackCleanup());
   }
 
-  async scheduleFeedbackCleanup() {
-    const next = this.feedback.nextCleanup();
-    if (next === null) return;
-    const current = await this.ctx.storage.getAlarm();
-    if (current === null || current > next) await this.ctx.storage.setAlarm(next);
+  async scheduleFeedbackCleanup({ force = false } = {}) {
+    // An existing office event table restores subscriptions after eviction;
+    // first-time game requests still do not initialize the office schema.
+    if (!this.office && this.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='office_event_subscriptions'").toArray().length) this.office = new OfficeStore(this.sql, this.ctx.storage, this.feedbackEnv);
+    const deadlines = [this.feedback.nextCleanup(), this.office?.events?.nextAlarm()].filter(value => Number.isFinite(value));
+    if (!deadlines.length) return;
+    const next = Math.min(...deadlines), current = await this.ctx.storage.getAlarm();
+    if (force || current === null || current > next) await this.ctx.storage.setAlarm(next);
   }
 
   async alarm() {
     this.feedback.cleanup(Date.now());
-    await this.scheduleFeedbackCleanup();
+    if (!this.office && this.sql.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='office_event_subscriptions'").toArray().length) this.office = new OfficeStore(this.sql, this.ctx.storage, this.feedbackEnv);
+    try { await this.office?.events?.pump(); }
+    finally { await this.scheduleFeedbackCleanup({ force: true }); }
   }
 
   islandStore() {
@@ -337,7 +342,9 @@ export class HedoArchive extends DurableObject {
       const path = new URL(request.url).pathname;
       if (path === '/api/office' || path.startsWith('/api/office/')) {
         this.office ||= new OfficeStore(this.sql, this.ctx.storage, this.feedbackEnv);
-        return await this.office.fetch(request);
+        const response = await this.office.fetch(request);
+        await this.scheduleFeedbackCleanup();
+        return response;
       }
       if (path.startsWith('/api/admin/')) {
         this.adminPrivate ||= new AdminPrivateStore(this.sql, this.feedbackEnv, { getIslandStore: () => this.islandStore() });
@@ -462,7 +469,20 @@ export default {
   async fetch(request, env) {
     const migration = await handleDomainMigration(request);
     if (migration) return migration;
-    const path = new URL(request.url).pathname;
+    const url = new URL(request.url), path = url.pathname;
+    const metadata = {
+      '/.well-known/oauth-protected-resource': '/api/office/oauth/resource',
+      '/.well-known/oauth-protected-resource/api/office/mcp': '/api/office/oauth/resource',
+      '/.well-known/oauth-authorization-server': '/api/office/oauth/metadata',
+      '/.well-known/oauth-authorization-server/api/office/oauth': '/api/office/oauth/metadata',
+    }[path];
+    if (metadata) {
+      if (request.method !== 'GET') return json({ error: 'method_not_allowed', message: 'OAuth metadata accepts GET only.' }, 405, { Allow: 'GET' });
+      try {
+        const target = new Request(new URL(metadata, url.origin), { method: 'GET', headers: { Accept: 'application/json' } });
+        return await env.ARCHIVE.get(env.ARCHIVE.idFromName('global-v3')).fetch(target);
+      } catch (error) { return errorResponse(error); }
+    }
     if (!path.startsWith('/api/')) return env.ASSETS.fetch(request);
     if (path === '/api/health' && request.method === 'GET') return json({ ok: true, version: 3 });
     try {

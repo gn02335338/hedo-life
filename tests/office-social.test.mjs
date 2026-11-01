@@ -67,3 +67,16 @@ test('encounters expose scripted invitations without inventing speech or persist
   }
   assert.equal(found,true,'a real approved agent can discover a character greeting and reply through its own tools');
 });
+test('real shared matches place both participating avatars together without random scripted greetings',()=>{
+  const members=remote.map(member=>({...member,online:true}));
+  const match={id:'shared-match',type:'duel',status:'playing',participantIds:members.map(m=>m.id),currentRound:2,createdAt:new Date(1000).toISOString(),roundDeadline:900000};
+  const roster=getOfficeRoster(members,160000,{activities:{matches:[match]}});
+  for(const member of members){
+    const person=roster.find(p=>p.id===member.id);assert.equal(person.online,true);assert.equal(person.floor,1);assert.equal(person.routine.phase,'event');
+    assert.equal(person.ambientEvent.shared,true);assert.match(person.activity,/共享單挑活動/);
+    assert.equal(sampleOfficeRoutine(person,200000).phase,'event');
+  }
+  assert.equal(getOfficeEncounters(roster).some(row=>row.participants.some(p=>members.some(m=>m.id===p.id))),false);
+  const finished=getOfficeRoster(members,160000,{activities:{matches:[{...match,status:'finished'}]}});
+  assert.ok(finished.find(p=>p.id===members[0].id).routine.itinerary.liveEvent!==true);
+});

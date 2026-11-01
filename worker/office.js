@@ -3,7 +3,10 @@ import { AdminPrivateStore } from './admin-private.js';
 import { DEFAULT_OFFICE_FLOOR, isOfficeFloor } from '../dist/office/floors.js';
 import { handleOfficeMcp, OFFICE_MCP_PATH } from './office-mcp.js';
 import { defaultOfficeAvatar, validateOfficeAvatar } from '../dist/office/avatar-config.js';
-import { CHARACTER_IDS } from '../dist/character-stats.js';
+import { OfficeSocialStore } from './office-social.js';
+import { OfficeActivityStore } from './office-activities.js';
+import { OfficeOAuthStore } from './office-oauth.js';
+import { OfficeEventStore } from './office-events.js';
 import { getOfficeRoster } from '../dist/office/model.js';
 import { getOfficeEncounters } from '../dist/office/social.js';
 
@@ -11,7 +14,7 @@ export const OFFICE_PRESENCE_MS = 120000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const ZONES = ['studio', 'meeting', 'lounge', 'focus'];
 const STATUSES = ['working', 'idle', 'break'];
-const privateHeaders = { Vary: 'Cookie, Authorization', 'Cross-Origin-Resource-Policy': 'same-origin' };
+const privateHeaders = { Vary: 'Cookie, Authorization', 'Cross-Origin-Resource-Policy': 'same-origin', Pragma:'no-cache' };
 const response = (body, status = 200) => json(body, status, privateHeaders);
 const invalid = () => new ApiError(400, 'invalid_office_input', '請確認辦公室資料的格式與長度。');
 function fields(value, allowed) {
@@ -30,6 +33,7 @@ function publicMember(row, now) {
   return { id: row.id, kind: row.kind, name: row.name, role: row.role, intro: row.intro,
     departmentFloor: row.department_floor, floor: row.floor,
     avatar: memberAvatar(row),
+    social: { autoReply: Boolean(row.social_auto_reply), autoActivities: Boolean(row.social_auto_activities) },
     zone: row.zone, status: row.presence_status, activity: row.activity,
     online: row.last_seen_at !== null && now - row.last_seen_at < OFFICE_PRESENCE_MS,
     lastSeenAt: row.last_seen_at === null ? null : new Date(row.last_seen_at).toISOString(), joinedAt: row.approved_at };
@@ -44,6 +48,15 @@ function application(row) {
 function task(row) {
   return { id: row.id, title: row.title, description: row.description, status: row.status, createdBy: row.created_by,
     assigneeId: row.assignee_id, result: row.result, createdAt: row.created_at, updatedAt: row.updated_at };
+}
+
+async function officeForm(request) {
+  if(request.headers.get('Content-Type')?.split(';')[0].trim().toLowerCase()!=='application/x-www-form-urlencoded')throw new ApiError(415,'invalid_request','請使用表單編碼。');
+  if(Number(request.headers.get('Content-Length')||0)>8192||!request.body)throw new ApiError(400,'invalid_request','授權表單無效。');
+  const reader=request.body.getReader(),chunks=[];let size=0;
+  try{while(true){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>8192){await reader.cancel();throw new ApiError(413,'invalid_request','授權表單過大。');}chunks.push(part.value);}}finally{reader.releaseLock();}
+  const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+  try{return new URLSearchParams(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw new ApiError(400,'invalid_request','授權表單編碼無效。');}
 }
 
 export class OfficeStore {
@@ -75,6 +88,15 @@ export class OfficeStore {
     }
     if (!columns.has('avatar_json')) sql.exec('ALTER TABLE office_members ADD COLUMN avatar_json TEXT');
     if (!sql.exec('PRAGMA table_info(office_messages)').toArray().some(column => column.name === 'recipient_id')) sql.exec('ALTER TABLE office_messages ADD COLUMN recipient_id TEXT');
+    const callbacks = { now, assertApproved: id => this.assertApproved(id), mutation: (id, fn) => this.mutation(id, fn), limit: (...args) => this.limit(...args) };
+    this.social = new OfficeSocialStore(sql, storage, callbacks);
+    this.activities = new OfficeActivityStore(sql, storage, { ...callbacks, event: (...args) => this.event(...args), deliverActivity: (id, item) => this.social.deliverActivity(id, item) });
+    this.oauth = new OfficeOAuthStore(sql, storage, { now, assertApproved: id => this.assertApproved(id), event: (...args) => this.event(...args) });
+    this.events = new OfficeEventStore(sql, storage, { now, assertApproved: id => this.assertApproved(id),
+      isGrantActive:(grantId,memberId)=>this.oauth.isGrantActive(grantId,memberId),
+      materialize:memberId=>{this.social.sync(memberId,this.currentEncounters());this.activities.invitations(memberId);},
+      limit:(...args)=>this.limit(...args),
+    });
   }
   limit(bucket, maximum, window = 60000) {
     const now = this.now();
@@ -98,13 +120,53 @@ export class OfficeStore {
   }
   async identify(request, approved = false) {
     const hash = await tokenHash(bearerToken(request));
-    const row = this.sql.exec('SELECT * FROM office_members WHERE token_hash = ?', hash).toArray()[0];
+    let row = this.sql.exec('SELECT * FROM office_members WHERE token_hash = ?', hash).toArray()[0];
+    if(!row){const memberId=this.oauth.resolveAccessToken(hash,new URL(request.url).origin);if(memberId)row=this.sql.exec('SELECT * FROM office_members WHERE id=?',memberId).toArray()[0];}
     if (!row) throw new ApiError(401, 'office_member_required', '請先申請加入移動辦公室。');
     if (approved) this.assertApproved(row.id);
     return row;
   }
+  async eventOwner(request, member) {
+    const hash=await tokenHash(bearerToken(request));
+    const primary=this.sql.exec('SELECT id FROM office_members WHERE token_hash=?',hash).toArray()[0];
+    if(primary?.id===member.id)return {memberId:member.id,grantId:null};
+    const grant=this.oauth.resolveAccessGrant(hash,new URL(request.url).origin);
+    if(!grant||grant.memberId!==member.id)throw new ApiError(401,'invalid_token','雲端連線已過期或已撤銷。');
+    return grant;
+  }
+  async oauthRequest(request) {
+    const url=new URL(request.url),path=url.pathname,base=url.origin;
+    if(['/api/office/oauth/metadata','/api/office/oauth/.well-known/oauth-authorization-server'].includes(path)&&request.method==='GET')return response(this.oauth.metadata(base));
+    if(path==='/api/office/oauth/resource'&&request.method==='GET')return response({resource:`${base}/api/office/mcp`,authorization_servers:[`${base}/api/office/oauth`],scopes_supported:['office'],bearer_methods_supported:['header']});
+    if(path==='/api/office/oauth/register'&&request.method==='POST'){
+      this.limit('oauth-register-global',20,60000);this.limit('oauth-register:'+ (request.headers.get('CF-Connecting-IP')||'local'),10,3600000);
+      return response(this.oauth.register(await readJson(request,{maxBytes:32768}),base),201);
+    }
+    if(path==='/api/office/oauth/authorize'&&request.method==='GET'){
+      this.limit('oauth-authorize-global',120,60000);const result=await this.oauth.authorizationRequest(url.searchParams,base);
+      return new Response(null,{status:302,headers:{Location:result.consentUrl,'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
+    }
+    if(path==='/api/office/oauth/request'&&request.method==='GET')return response(await this.oauth.requestInfo(url.searchParams.get('request_id')));
+    if(path==='/api/office/oauth/consent'&&request.method==='POST'){
+      this.limit('oauth-consent:'+ (request.headers.get('CF-Connecting-IP')||'local'),30,60000);
+      return response(await this.oauth.consent(await readJson(request,{maxBytes:4096}),{origin:request.headers.get('Origin'),baseUrl:base}));
+    }
+    if(path==='/api/office/oauth/token'&&request.method==='POST'){
+      this.limit('oauth-token-global',600,60000);
+      const data=await this.oauth.token(await officeForm(request),base);return response(data);
+    }
+    if(path==='/api/office/oauth/revoke'&&request.method==='POST'){
+      this.limit('oauth-revoke-global',120,60000);await this.oauth.revokeToken(await officeForm(request),base);return response({});
+    }
+    throw new ApiError(404,'invalid_request','找不到這個授權端點。');
+  }
   mutation(memberId, fn) {
     return this.storage.transactionSync(() => { this.assertApproved(memberId); this.limit(`member:${memberId}`, 45); return fn(); });
+  }
+  currentEncounters() {
+    const now = this.now(), activities = this.activities.snapshot(null);
+    const members = this.sql.exec("SELECT id,kind,name,role,intro,department_floor,floor,zone,presence_status,activity,last_seen_at,approved_at,social_auto_reply,social_auto_activities FROM office_members WHERE admission_status='approved' ORDER BY approved_at,id LIMIT 200").toArray().map(row => publicMember(row, now));
+    return getOfficeEncounters(getOfficeRoster(members, now, { activities }));
   }
   async snapshot() {
     let admissionOpen = false;
@@ -112,10 +174,11 @@ export class OfficeStore {
     const now = this.now();
     const members = this.sql.exec("SELECT * FROM office_members WHERE admission_status='approved' ORDER BY approved_at,id LIMIT 200").toArray().map(row => publicMember(row, now));
     const tasks = this.sql.exec("SELECT t.* FROM office_tasks t JOIN office_members m ON m.id=t.created_by WHERE m.admission_status='approved' ORDER BY CASE WHEN t.status='completed' THEN 1 ELSE 0 END,t.rowid DESC LIMIT 150").toArray().map(task);
-    const messages = this.sql.exec("SELECT x.id,x.member_id AS memberId,x.text,x.recipient_id AS recipientId,x.created_at AS createdAt FROM office_messages x JOIN office_members m ON m.id=x.member_id WHERE m.admission_status='approved' ORDER BY x.rowid DESC LIMIT 50").toArray().reverse();
+    const messages = this.sql.exec("SELECT x.id,x.member_id AS memberId,x.text,x.recipient_id AS recipientId,x.reply_to_id AS replyToId,x.conversation_id AS conversationId,x.turn_index AS turnIndex,x.automated,x.created_at AS createdAt FROM office_messages x JOIN office_members m ON m.id=x.member_id WHERE m.admission_status='approved' ORDER BY x.rowid DESC LIMIT 50").toArray().reverse().map(row => ({ ...row, automated: Boolean(row.automated) }));
     const activity = this.sql.exec("SELECT x.id,x.type,x.member_id AS memberId,x.text,x.created_at AS createdAt FROM office_activity x JOIN office_members m ON m.id=x.member_id WHERE m.admission_status='approved' ORDER BY x.rowid DESC LIMIT 40").toArray();
-    const encounters = getOfficeEncounters(getOfficeRoster(members, now));
-    return response({ version: 1, admissionOpen, serverTime: new Date(now).toISOString(), members, tasks, messages, activity, encounters });
+    const activities = this.activities.snapshot(null);
+    const encounters = getOfficeEncounters(getOfficeRoster(members, now, { activities }));
+    return response({ version: 1, admissionOpen, serverTime: new Date(now).toISOString(), members, tasks, messages, activity, encounters, activities });
   }
   async apply(request) {
     const config = await this.admin.configuration();
@@ -162,6 +225,8 @@ export class OfficeStore {
           if (restoredTasks > 100) throw new ApiError(409, 'office_task_limit', '工作看板空間不足，請先完成目前的工作，再恢復這位成員。');
         }
         this.sql.exec('UPDATE office_members SET admission_status=?, approved_at=CASE WHEN ?=\'approved\' THEN COALESCE(approved_at,?) ELSE approved_at END, last_seen_at=CASE WHEN admission_status=? THEN last_seen_at ELSE NULL END, updated_at=? WHERE id=?', body.decision, body.decision, now, body.decision, now, id);
+        if (body.decision !== 'approved') this.sql.exec("UPDATE office_inbox SET state='pending',lease_hash=NULL,lease_until=NULL WHERE member_id=? AND state='leased'", id);
+        if (body.decision !== 'approved') for(const grant of this.sql.exec('SELECT id FROM office_oauth_grants WHERE member_id=?',id).toArray())this.oauth.revokeGrant(grant.id);
         if (body.decision !== 'approved') this.sql.exec("UPDATE office_tasks SET status='open',assignee_id=NULL,result='',updated_at=? WHERE assignee_id=? AND status='claimed'", now, id);
         if (body.decision === 'approved' && row.admission_status !== 'approved') this.event('joined', id, `${row.name}加入辦公室。`);
       });
@@ -172,12 +237,24 @@ export class OfficeStore {
   async fetch(request) {
     try {
       const path = new URL(request.url).pathname;
+      if(path.startsWith('/api/office/oauth/'))return await this.oauthRequest(request);
       if (path === OFFICE_MCP_PATH) return await handleOfficeMcp(request, this);
       if (path.startsWith('/api/office/admin/')) return await this.review(request, path);
       if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(request.method)) assertSameOrigin(request);
       if (path === '/api/office' && request.method === 'GET') return await this.snapshot();
       if (path === '/api/office/apply' && request.method === 'POST') return await this.apply(request);
       if (path === '/api/office/me' && request.method === 'GET') return response({ application: application(await this.identify(request)) });
+      if(path==='/api/office/cloud-connections'){
+        const member=await this.identify(request,true);
+        if(request.method==='GET')return response(this.oauth.connections(member.id));
+        if(request.method==='POST'){assertSameOrigin(request);const body=await readJson(request,{maxBytes:1024});fields(body,['grantId']);this.limit('member:'+member.id,45);this.oauth.revoke(member.id,body.grantId);return response(this.oauth.connections(member.id));}
+        throw new ApiError(405,'office_oauth_method','這個連線端點不接受此操作。');
+      }
+      if (path === '/api/office/social-preferences' || path === '/api/office/inbox' || path.startsWith('/api/office/inbox/')) return await this.social.fetch(request, this);
+      if (path === '/api/office/activities' && request.method === 'GET') {
+        const viewer = request.headers.has('Authorization') ? await this.identify(request, true) : null;
+        return response(this.activities.snapshot(viewer?.id || null));
+      }
       if (request.method !== 'POST') throw new ApiError(405, 'office_method', '這個辦公室端點不接受此操作。');
       const body = await readJson(request, { maxBytes: path === '/api/office/avatar' ? 32768 : 8192 });
       const member = await this.identify(request, true), now = new Date(this.now()).toISOString();
@@ -196,18 +273,13 @@ export class OfficeStore {
         return response({ member: publicMember(this.assertApproved(member.id), this.now()) });
       }
       if (path === '/api/office/messages') {
-        fields(body, ['text', 'recipientId']); const message = text(body.text, 500), id = crypto.randomUUID(); let recipientId = null;
-        this.mutation(member.id, () => {
-          if (body.recipientId !== undefined) {
-            if (typeof body.recipientId !== 'string' || !CHARACTER_IDS.includes(body.recipientId) && (!UUID.test(body.recipientId) || !this.sql.exec("SELECT id FROM office_members WHERE id=? AND admission_status='approved'", body.recipientId.toLowerCase()).toArray().length)) throw new ApiError(400, 'invalid_office_recipient', '請選擇公開角色或目前已核准的辦公室成員。');
-            recipientId = CHARACTER_IDS.includes(body.recipientId) ? body.recipientId : body.recipientId.toLowerCase();
-          }
-          this.limit('message:' + member.id, 10);
-          this.sql.exec('INSERT INTO office_messages (id,member_id,text,recipient_id,created_at) VALUES (?,?,?,?,?)', id, member.id, message, recipientId, now);
-          this.sql.exec('DELETE FROM office_messages WHERE rowid NOT IN (SELECT rowid FROM office_messages ORDER BY rowid DESC LIMIT 500)');
-        });
-        return response({ message: { id, memberId: member.id, text: message, recipientId, createdAt: now } }, 201);
+        const result = await this.social.postMessage(member.id, body);
+        return response(result, result.duplicate ? 200 : 201);
       }
+      if (path === '/api/office/activities/join') return response(this.activities.join(member.id, body));
+      if (path === '/api/office/activities/leave') return response(this.activities.leave(member.id, body));
+      const activityMove = /^\/api\/office\/activities\/([^/]+)\/move$/.exec(path);
+      if (activityMove) return response(this.activities.move(member.id, activityMove[1], body));
       if (path === '/api/office/tasks') {
         fields(body, ['title', 'description']); const title = text(body.title, 100), description = text(body.description, 1000, true), id = crypto.randomUUID();
         this.mutation(member.id, () => {

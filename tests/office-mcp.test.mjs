@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { OFFICE_MCP_TOOLS, OFFICE_MCP_VERSIONS } from '../worker/office-mcp.js';
 import { mcpHarness, initialization, officeToken } from './office-mcp-harness.mjs';
 import { defaultOfficeAvatar } from '../dist/office/avatar-config.js';
+import { getOfficeEvent, getOfficeGameActions } from '../dist/office/events.js';
 
 async function result(response) { assert.equal(response.status, 200); const message = await response.json(); assert.equal(message.jsonrpc, '2.0'); assert.ok(message.result); return message.result; }
 async function success(response) { const output = await result(response); assert.equal(output.isError, false); assert.deepEqual(JSON.parse(output.content[0].text), output.structuredContent); return output.structuredContent; }
@@ -25,7 +26,7 @@ test('legacy initialization negotiates exact supported versions, accepts initial
   const h = mcpHarness(t), member = await h.apply();
   for (const version of OFFICE_MCP_VERSIONS) {
     const response = await h.mcp(initialization(version), member.token, { extra: { 'MCP-Protocol-Version': version } });
-    assert.equal(response.headers.get('MCP-Protocol-Version'), version); const output = await result(response); assert.equal(output.protocolVersion, version); assert.deepEqual(output.capabilities, { tools: { listChanged: false } });
+    assert.equal(response.headers.get('MCP-Protocol-Version'), version); const output = await result(response); assert.equal(output.protocolVersion, version); assert.deepEqual(output.capabilities, { tools: { listChanged: false }, events: {} });
     const notice = await h.mcp({ jsonrpc: '2.0', method: 'notifications/initialized' }, member.token, { extra: { 'MCP-Protocol-Version': version } }); assert.equal(notice.status, 202); assert.equal(await notice.text(), '');
     assert.deepEqual(await result(await h.mcp({ jsonrpc: '2.0', id: 'ping-id', method: 'ping' }, member.token, { extra: { 'MCP-Protocol-Version': version } })), {});
   }
@@ -52,7 +53,7 @@ test('transport rejects unacceptable content, oversized/batched/malformed messag
 test('pending members can discover deterministic strict tool schemas and inspect only their own private status, but cannot write', async t => {
   const h = mcpHarness(t), member = await h.apply(), other = await h.apply(officeToken(), { contact: 'another@example.test' });
   const tools = (await result(await h.mcp({ jsonrpc: '2.0', id: 1, method: 'tools/list' }, member.token))).tools;
-  assert.deepEqual(tools.map(tool => tool.name), ['get_office', 'get_my_status', 'update_presence', 'update_avatar', 'post_message', 'create_task', 'claim_task', 'complete_task']);
+  assert.deepEqual(tools.map(tool => tool.name), ['get_office', 'get_my_status', 'update_presence', 'update_avatar', 'post_message', 'create_task', 'claim_task', 'complete_task', 'get_inbox', 'set_social_preferences', 'claim_inbox_item', 'reply_inbox_item', 'ack_inbox_item', 'join_activity', 'play_activity_turn', 'leave_activity']);
   assert.deepEqual(tools, OFFICE_MCP_TOOLS); assert.ok(tools.every(tool => tool.inputSchema.additionalProperties === false)); assert.equal(tools[0].annotations.readOnlyHint, true); assert.equal(tools[3].annotations.readOnlyHint, false);
   const own = await success(await h.tool('get_my_status', {}, member.token)); assert.equal(own.application.status, 'pending'); assert.equal(own.application.contact, member.payload.contact); assert.ok(!JSON.stringify(own).includes(other.payload.contact));
   const snapshot = await success(await h.tool('get_office', {}, member.token)); assert.deepEqual(snapshot.members, []); assert.ok(!JSON.stringify(snapshot).includes(member.payload.contact));
@@ -62,7 +63,7 @@ test('pending members can discover deterministic strict tool schemas and inspect
   assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM office_tasks').one().n, 0); assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM office_messages').one().n, 0);
 });
 
-test('all eight MCP tools delegate the actual API work lifecycle, ownership, floor changes, safe data and persisted revocation', async t => {
+test('the original eight MCP tools delegate the actual API work lifecycle, ownership, floor changes, safe data and persisted revocation', async t => {
   const h = mcpHarness(t), auth = await h.login(), a = await h.apply(), b = await h.apply(officeToken(), { name: 'Other worker', departmentFloor: 4 }); await h.approve(a, auth); await h.approve(b, auth);
   const presence = await success(await h.tool('update_presence', { floor: 3, zone: 'meeting', status: 'working', activity: 'Actual running work' }, a.token)); assert.equal(presence.member.floor, 3);
   const avatar = { ...defaultOfficeAvatar('agent'), preset: 'cat', bodyColor: '#556677', accessory: 'headphones' };
@@ -118,4 +119,47 @@ test('MCP public office reads preserve simulated encounters as data and never ma
   assert.ok(Array.isArray(snapshot.encounters)); assert.deepEqual(snapshot.encounters, getOfficeEncounters(getOfficeRoster(snapshot.members, Date.parse(snapshot.serverTime))));
   assert.equal(snapshot.members[0].online, false); assert.equal(snapshot.messages.length, 0);
   assert.deepEqual(h.sql.exec('SELECT * FROM office_members WHERE id=?', member.application.id).one(), before); assert.equal(h.sql.exec('SELECT COUNT(*) AS n FROM office_messages').one().n, 0);
+});
+
+test('social MCP tools lease a real directed message, publish one generated reply, and honor private state and opt-out',async t=>{
+  let now=Date.now();const h=mcpHarness(t,{now:()=>now}),auth=await h.login();
+  const human=await h.apply(officeToken(),{kind:'human',name:'Human'}),agent=await h.apply(officeToken(),{name:'Agent'});await h.approve(human,auth);await h.approve(agent,auth);
+  const prefs={autoReply:true,autoActivities:true,maxTurns:4,cooldownSeconds:30};
+  await success(await h.tool('set_social_preferences',prefs,agent.token));
+  const message=(await success(await h.tool('post_message',{text:'今天想聊什麼？',recipientId:agent.application.id,submissionId:crypto.randomUUID()},human.token))).message;
+  const inbox=await success(await h.tool('get_inbox',{},agent.token));assert.equal(inbox.socialPreferences.autoReply,true);
+  const item=inbox.items.find(item=>item.type==='message'&&item.senderId===human.application.id);assert.ok(item);assert.ok(!JSON.stringify(inbox).includes('leaseToken'));
+  const claim=await success(await h.tool('claim_inbox_item',{itemId:item.id},agent.token));assert.match(claim.leaseToken,/^[a-f0-9]{64}$/);
+  const submission={itemId:item.id,leaseToken:claim.leaseToken,text:'我想聽聽你的新點子。',submissionId:crypto.randomUUID()};
+  const replied=await success(await h.tool('reply_inbox_item',submission,agent.token));assert.equal(replied.message.recipientId,human.application.id);assert.equal(replied.message.replyToId,message.id);assert.equal(replied.message.automated,true);
+  const duplicate=await success(await h.tool('reply_inbox_item',submission,agent.token));assert.equal(duplicate.duplicate,true);assert.equal(duplicate.message.id,replied.message.id);
+  const publicData=await success(await h.tool('get_office',{},agent.token));assert.ok(!JSON.stringify(publicData).includes(claim.leaseToken));assert.equal(publicData.messages.filter(row=>row.id===replied.message.id).length,1);
+  now+=31000;
+  await success(await h.tool('post_message',{text:'再聊一個問題',recipientId:agent.application.id},human.token));
+  const next=(await success(await h.tool('get_inbox',{},agent.token))).items.find(row=>row.type==='message'&&row.state==='pending');assert.ok(next);
+  const nextLease=await success(await h.tool('claim_inbox_item',{itemId:next.id},agent.token));
+  await success(await h.tool('ack_inbox_item',{itemId:next.id,leaseToken:nextLease.leaseToken,submissionId:crypto.randomUUID()},agent.token));
+  await success(await h.tool('set_social_preferences',{...prefs,autoReply:false,autoActivities:false},agent.token));
+  const denied=await result(await h.tool('reply_inbox_item',{...submission,submissionId:crypto.randomUUID()},agent.token));assert.equal(denied.isError,true);
+  for(const args of [{...prefs,autoReply:'true'},{...prefs,maxTurns:7},{...prefs,cooldownSeconds:0}])assert.equal((await(await h.tool('set_social_preferences',args,agent.token)).json()).error.code,-32602);
+});
+
+test('shared-activity MCP tools pair a real human and agent, seal both moves, retry once and preserve the server result',async t=>{
+  const event=getOfficeEvent(Date.now());let now=event.startsAt+1000;
+  const h=mcpHarness(t,{now:()=>now}),auth=await h.login(),human=await h.apply(officeToken(),{kind:'human',name:'Human'}),agent=await h.apply(officeToken(),{name:'Agent'});
+  await h.approve(human,auth);await h.approve(agent,auth);
+  await success(await h.tool('set_social_preferences',{autoReply:false,autoActivities:true,maxTurns:4,cooldownSeconds:30},agent.token));
+  const registration=await success(await h.tool('join_activity',{eventId:event.id},human.token));assert.equal(registration.match,null);
+  let match=(await success(await h.tool('join_activity',{eventId:event.id},agent.token))).match;assert.equal(match.participantIds.length,2);assert.ok(match.participantIds.includes(human.application.id)&&match.participantIds.includes(agent.application.id));
+  const action=getOfficeGameActions(match.type)[0].id,first={matchId:match.id,round:1,action,submissionId:crypto.randomUUID()};
+  const sealed=await success(await h.tool('play_activity_turn',first,human.token));assert.equal(sealed.match.history.length,0);assert.ok(!JSON.stringify(sealed.match).includes('submissionId'));assert.equal(sealed.match.submitted.filter(Boolean).length,1);
+  match=(await success(await h.tool('play_activity_turn',{matchId:match.id,round:1,action,submissionId:crypto.randomUUID()},agent.token))).match;assert.equal(match.history.length,1);
+  const retry=await success(await h.tool('play_activity_turn',first,human.token));assert.equal(retry.duplicate,true);assert.equal(retry.match.history.length,1);
+  for(let round=2;round<=match.maxRounds;round++){
+    await success(await h.tool('play_activity_turn',{matchId:match.id,round,action,submissionId:crypto.randomUUID()},human.token));
+    match=(await success(await h.tool('play_activity_turn',{matchId:match.id,round,action,submissionId:crypto.randomUUID()},agent.token))).match;
+  }
+  assert.equal(match.status,'finished');assert.equal(match.history.length,match.maxRounds);
+  const persisted=(await success(await h.tool('get_inbox',{},agent.token))).activities.myMatches.find(row=>row.id===match.id);assert.deepEqual(persisted.scores,match.scores);
+  const leave=await success(await h.tool('leave_activity',{eventId:event.id},human.token));assert.ok(leave);
 });

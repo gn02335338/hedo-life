@@ -12,6 +12,10 @@ export function sampleOfficeRoutine(data, nowMs=Date.now()) {
   const previous=data?.routine, plan=previous?.itinerary;
   const now=Number.isFinite(nowMs)?nowMs:0;
   if(!plan)return data?.kind==='character'?getCharacterRoutine(data.id,now,{homeZone:previous?.homeZone}):null;
+  if(plan.liveEvent){
+    return {...plan,itinerary:plan,phase:'event',sampledAt:now,phaseStartedAt:plan.startedAt,phaseEndsAt:plan.endsAt,
+      progress:0,fromFloor:1,toFloor:1,elevation:1,floor:1,inElevator:false,travelProgress:0,zone:'lounge',visitKind:'event',liftLane:0};
+  }
   const rows=plan.event?eventPhases:phases;
   const elapsed=now-plan.startedAt-plan.delay;
   let start=0, phase='home-work', duration=85_000, progress=0, phaseStartedAt=plan.startedAt+plan.delay;

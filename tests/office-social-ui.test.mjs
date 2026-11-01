@@ -17,7 +17,7 @@ const functionSource = (name, next) => between(`function ${name}(`, `\nfunction 
 
 // Execute the shipped renderers and delegated handlers against small DOM
 // surfaces. This does not create a browser, start polling, or access the API.
-function harness({ now = 0, owner = null, members = [], initialRoster = null, storage = new Map(), snapshot = {} } = {}) {
+function harness({ now = 0, owner = null, members = [], initialRoster = null, storage = new Map(), snapshot = {}, inbox = null, apiHandler = null } = {}) {
   let document;
   class Node {
     constructor(id = '') { this.id = id; this.dataset = {}; this.attributes = new Map(); this.listeners = new Map(); this.innerHTML = ''; this.scrollTop = 0; this.open = false; this.classList = { toggle() {} }; }
@@ -35,19 +35,22 @@ function harness({ now = 0, owner = null, members = [], initialRoster = null, st
   document = { activeElement: null, querySelectorAll: selector => selector === '[data-tab]' ? tabs : [], addEventListener(name, fn) { this[name] = fn; } };
   const dialogs = [], requests = [], toasts = [], floors = [], refreshes = [];
   const openDialog = (kind, html) => { $('#modal').open = true; $('#modal-content').innerHTML = html; dialogs.push({ kind, html }); };
-  const api = async (path, options) => { requests.push({ path, options: structuredClone(options) }); return {}; };
+  const api = async (path, options) => { requests.push({ path, options: structuredClone(options) }); return apiHandler?apiHandler(path,options):{}; };
   let time = now, uuid = 0;
   class Clock extends Date { constructor(...args) { super(...(args.length ? args : [time])); } static now() { return time; } }
-  const deps = { $, document, Date: Clock, own: owner, snapshot, roster: initialRoster || getOfficeRoster(members, now), localStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) },
+  const deps = { $, document, Date: Clock, own: owner, snapshot, inbox, roster: initialRoster || getOfficeRoster(members, now), localStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) },
     crypto: { randomUUID: () => `local-${++uuid}` }, openDialog, api, refresh: async options => refreshes.push(options), toast: text => toasts.push(text), selectFloor: floor => floors.push(floor),
     OFFICE_CAST, OFFICE_FLOORS, getOfficeFloor, OFFICE_INTERACTION_TOPICS, getOfficeInteraction, getOfficeEvent, createOfficeGame, advanceOfficeGame, getOfficeGameActions, getOfficeEncounters };
   const clickSource = between("document.addEventListener('click',async event=>{", "\ndocument.addEventListener('input',");
   const keyboard = source.split('\n').find(line => line.startsWith("$('.side-tabs').addEventListener('keydown',"));
   assert.ok(keyboard);
   const run = new Function('deps', `
-    const {$,document,Date,localStorage,crypto,openDialog,api,refresh,toast,selectFloor,OFFICE_CAST,OFFICE_FLOORS,getOfficeFloor,OFFICE_INTERACTION_TOPICS,getOfficeInteraction,getOfficeEvent,createOfficeGame,advanceOfficeGame,getOfficeGameActions,getOfficeEncounters}=deps;
+    const {$,document,Date,localStorage,crypto,api,refresh,toast,selectFloor,OFFICE_CAST,OFFICE_FLOORS,getOfficeFloor,OFFICE_INTERACTION_TOPICS,getOfficeInteraction,getOfficeEvent,createOfficeGame,advanceOfficeGame,getOfficeGameActions,getOfficeEncounters}=deps;
     let {own,snapshot,roster}=deps;
-    let currentGame=null,currentGameEvent=null,activeTab='people',messageDraft='',messageRecipient='',selectedZone='all',rosterFilter='all';
+    let currentGame=null,currentGameEvent=null,activeTab='people',messageDraft='',messageRecipient='',messageReplyTo='',selectedZone='all',rosterFilter='all';
+    let ownInbox=deps.inbox,sharedMatchId='',sharedMatchSignature='',sharedMoveBusy=false,modalKind='';const sharedSubmissions=new Map(),seenInboxIds=new Set();
+    function openDialog(kind,html){modalKind=kind;return deps.openDialog(kind,html);}
+    const ensureApproved=()=>own?.status==='approved';
     const buildingView=true, activeFloor=1, scene=null, connected=true;
     const normalizeRoster=()=>{},scopeRoster=()=>roster,floorLabel=value=>value+'F';
     ${between('const esc =', '\nconst TOKEN_KEY')}
@@ -63,7 +66,7 @@ function harness({ now = 0, owner = null, members = [], initialRoster = null, st
     ${between('function routineHTML(', '\nfunction openGuide(')}
     ${clickSource}
     ${keyboard}
-    return {renderPeople,renderFeed,renderEvents,openPerson,recipientOptions,startOfficeGame,closeDialog,setTab,
+    return {renderPeople,renderFeed,renderEvents,renderPanel,openPerson,recipientOptions,startOfficeGame,closeDialog,setTab,openSocialSettings,renderSharedMatch,sharedMatchesHTML,
       get game(){return currentGame},get gameEvent(){return currentGameEvent},get recipient(){return messageRecipient},get tab(){return activeTab},
       setDraft(value){messageDraft=value},records:eventRecords};
   `)(deps);
@@ -189,10 +192,54 @@ test('the fourth office tab participates in End, Home, arrows and matching focus
   await h.$('.side-tabs').emit('keydown', { key: 'End' });
   assert.equal(h.ui.tab, 'events'); assert.equal(h.document.activeElement, h.tabs[3]);
   assert.equal(h.$('#panel').getAttribute('aria-labelledby'), 'tab-events');
-  assert.ok(h.$('#panel').innerHTML.includes('我的活動紀錄'));
+  assert.ok(h.$('#panel').innerHTML.includes('我的本機練習紀錄'));
   assert.deepEqual(h.tabs.map(tab => [tab.getAttribute('aria-selected'), tab.tabIndex]), [['false', -1], ['false', -1], ['false', -1], ['true', 0]]);
   await h.$('.side-tabs').emit('keydown', { key: 'ArrowRight' }); assert.equal(h.ui.tab, 'people');
   await h.$('.side-tabs').emit('keydown', { key: 'ArrowLeft' }); assert.equal(h.ui.tab, 'events');
   await h.$('.side-tabs').emit('keydown', { key: 'Home' }); assert.equal(h.ui.tab, 'people');
   const ignored = await h.$('.side-tabs').emit('keydown', { key: 'Escape' }); assert.equal(ignored.prevented, undefined);
+});
+
+test('agent social controls require an explicit opt-in and do not start a model when opened',async()=>{
+  const owner={id:agentId,kind:'agent',name:'自動助理',status:'approved'};
+  const h=harness({owner});await h.click({action:'social-settings'});
+  const html=h.dialogs.at(-1).html;
+  assert.match(html,/name="autoReply"/);assert.doesNotMatch(html,/name="autoReply" checked/);
+  assert.match(html,/社交執行器保持運作/);assert.match(html,/真正產生的回覆/);
+  assert.equal(h.requests.length,0);
+  const human=harness({owner:{...owner,kind:'human'}});human.ui.openSocialSettings();
+  assert.ok(!human.dialogs.at(-1).html.includes('id="social-settings-form"'));
+  assert.match(human.dialogs.at(-1).html,/另外申請的 Agent/);
+});
+
+test('shared activity UI submits only the own sealed action and reveals only server-resolved rounds',async()=>{
+  const owner={id:humanId,kind:'human',name:'真人',status:'approved'},event=scheduled();
+  const match={id:'0ce44a63-dd82-4805-8c92-60754e6c3e01',eventId:event.id,type:'duel',participantIds:[humanId,agentId],
+    participants:[{id:humanId,name:'真人',kind:'human'},{id:agentId,name:'真實模型助手',kind:'agent'}],status:'playing',round:0,currentRound:1,maxRounds:8,scores:[0,0],energy:[2,2],history:[],submitted:[false,false],roundDeadline:event.startsAt+45000};
+  const inbox={activities:{event,participants:[],myMatches:[match],myRegistration:{eventId:event.id,matchId:match.id}}};
+  const h=harness({now:event.startsAt,owner,inbox,apiHandler:(path)=>{if(path.endsWith('/move'))match.submitted[0]=true;return {match};}});
+  h.ui.renderEvents();assert.match(h.$('#panel').innerHTML,/data-join-shared/);assert.match(h.$('#panel').innerHTML,/兩位真實成員配對/);
+  await h.click({sharedMatch:match.id});assert.match(h.dialogs.at(-1).html,/伺服器結算/);
+  assert.match(h.dialogs.at(-1).html,/真實模型助手（Agent）/);assert.match(h.dialogs.at(-1).html,/雙方提交後/);
+  await h.click({sharedAction:'guard',match:match.id,round:'1'});
+  assert.equal(h.requests.length,1);const request=h.requests[0];
+  assert.equal(request.path,`/api/office/activities/${match.id}/move`);
+  assert.deepEqual(Object.keys(request.options.body).sort(),['action','round','submissionId']);
+  assert.equal(request.options.body.action,'guard');assert.equal(request.options.body.round,1);
+  assert.ok(!Object.hasOwn(request.options.body,'scores')&&!Object.hasOwn(request.options.body,'participantId'));
+  assert.match(h.dialogs.at(-1).html,/招式已封存/);assert.match(h.dialogs.at(-1).html,/data-shared-action="attack"[^>]*disabled/);
+  match.round=1;match.currentRound=2;match.submitted=[false,false];match.history=[{round:1,actions:['guard','attack'],scores:[2,0]}];match.scores=[2,0];
+  h.ui.renderSharedMatch(match.id,true);assert.match(h.dialogs.at(-1).html,/第 1 回合：守 \/ 攻 · 2：0/);
+});
+test('incoming real replies refresh while preserving an active message draft, focus, selection and retry ID',()=>{
+  const snapshot={messages:[]},h=harness({snapshot});h.ui.setTab('feed');h.ui.setDraft('正在打字 & 還沒送出');
+  const panel=h.$('#panel'),oldInput=h.$('#old-input'),newInput=h.$('#new-input'),form=h.$('#message-form');
+  oldInput.matches=selector=>selector==='input[name="text"]';oldInput.selectionStart=2;oldInput.selectionEnd=4;
+  form.dataset.submissionId='stable-retry';newInput.setSelectionRange=(start,end)=>{newInput.selection=[start,end];};
+  panel.contains=node=>node===oldInput;panel.querySelector=selector=>selector.includes('input')?newInput:form;
+  panel.scrollHeight=500;panel.scrollTop=300;panel.clientHeight=200;oldInput.focus();
+  snapshot.messages.push({id:'real-reply',memberId:agentId,text:'這是剛送到的回覆',automated:true,createdAt:new Date().toISOString()});
+  h.ui.renderPanel();assert.match(panel.innerHTML,/這是剛送到的回覆/);assert.match(panel.innerHTML,/Agent 自動回覆/);
+  assert.match(panel.innerHTML,/正在打字 &amp; 還沒送出/);assert.equal(h.document.activeElement,newInput);assert.deepEqual(newInput.selection,[2,4]);
+  assert.equal(form.dataset.submissionId,'stable-retry');assert.equal(h.requests.length,0);
 });

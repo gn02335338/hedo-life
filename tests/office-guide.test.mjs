@@ -4,6 +4,7 @@ import { readFileSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { relative, isAbsolute } from 'node:path';
 import { OFFICE_CAST, getCastMoment, getOfficeRoster } from '../dist/office/model.js';
+import { OFFICE_MCP_TOOLS } from '../worker/office-mcp.js';
 
 const html = readFileSync(new URL('../dist/office/guide/index.html', import.meta.url), 'utf8');
 const source = readFileSync(new URL('../dist/office/guide/guide.js', import.meta.url), 'utf8');
@@ -89,13 +90,33 @@ test('guide is UTF-8 HTML with four addressable, labelled panels and complete co
     assert.match(html, new RegExp(`href="#${name}" role="tab" id="tab-${name}" aria-controls="${name}"`));
     assert.match(html, new RegExp(`<section id="${name}" role="tabpanel" aria-labelledby="tab-${name}"`));
   }
-  for (const tool of ['get_office', 'get_my_status', 'update_presence', 'update_avatar', 'post_message', 'create_task', 'claim_task', 'complete_task']) assert.ok(html.includes(tool));
+  for (const { name } of OFFICE_MCP_TOOLS) assert.ok(html.includes(`<code>${name}</code>`), `Document the actual MCP tool ${name}`);
   assert.ok(html.includes('https://hodo.bvivify.com/api/office/mcp'));
-  assert.ok(html.includes('沒有 OAuth 登入流程'));
+  assert.ok(html.includes('OAuth 2.1') && html.includes('S256 PKCE') && html.includes('DCR public client'));
+  assert.ok(html.includes('/office/connect/') && html.includes('office.inbox.created'));
+  assert.doesNotMatch(html, /沒有 OAuth 登入流程|端點沒有 OAuth/);
   assert.ok(html.includes('--setup') && html.includes('--check'));
   assert.ok(html.includes('mcpServers') && html.includes('[mcp_servers.hedo_office]'));
   assert.doesNotMatch(html, /[?&](?:token|access_token)=/i);
   assert.ok(html.includes('另一個瀏覽器設定檔申請 Agent'));
+});
+
+test('the primary Dot route requires real linking and monitoring, documents OAuth lifecycle, and preserves alternatives', async () => {
+  const cloud = html.slice(html.indexOf('<section id="cloud"'), html.indexOf('<section id="api"'));
+  for (const text of ['Dot', '安裝、啟用私人插件', '同意並連接', 'get_my_status', 'get_inbox', 'autoReply', 'autoActivities', '端到端驗證', '沒有 45 秒執行 SLA', '我的座位 → 雲端連線', '一小時', '30 天', '32 代', '重新核准不會復活', '直接 Bearer', 'Node.js']) assert.ok(cloud.includes(text), text);
+  for (const method of ['events/list', 'events/subscribe', 'events/unsubscribe']) { assert.ok(cloud.includes(`<code>${method}</code>`)); assert.ok(!OFFICE_MCP_TOOLS.some(tool => tool.name === method), 'Event subscriptions are protocol methods, not extra tools'); }
+  for (const path of ['mcp-events', 'auth', 'plugins']) assert.ok(cloud.includes(`https://developers.openai.com/plugins/build/${path}`));
+  assert.ok(cloud.includes('https://github.com/gn02335338/hedo-life/tree/main/plugins/moving-office'));
+  const config = JSON.parse(readFileSync(new URL('../plugins/moving-office/mcp.json', import.meta.url), 'utf8'));
+  const server = Object.values(config.mcpServers)[0]; assert.equal(server.url, 'https://hodo.bvivify.com/api/office/mcp');
+  assert.equal(server.extensions['com.openai'].auth.type, 'oauth');
+  for (const path of ['../dist/office/agent.md', '../dist/office/README.md', '../worker/README.md']) assert.doesNotMatch(readFileSync(new URL(path, import.meta.url), 'utf8').split('## Moving Office').at(-1), /沒有 OAuth 登入流程|端點沒有 OAuth 流程|has no OAuth discovery\/login/);
+  const h = harness({ hash: '#cloud' }), button = h.copyButtons.find(button => button.dataset.copy === 'dot-monitor-instructions');
+  await button.emit('click'); const instruction = h.copied[0];
+  assert.ok(instruction.indexOf('get_inbox') < instruction.indexOf('claim_inbox_item'));
+  assert.ok(instruction.includes('reply_inbox_item') && instruction.includes('play_activity_turn') && instruction.includes('ack_inbox_item'));
+  assert.ok(instruction.includes('不可信資料') && instruction.includes('明確開啟'));
+  assert.doesNotMatch(instruction, /\b[a-f0-9]{64}\b/i);
 });
 
 test('office entry links land on the four existing guide panels and all guide assets stay in the public clone', () => {

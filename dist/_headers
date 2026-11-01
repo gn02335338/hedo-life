@@ -6,3 +6,14 @@
   Content-Type: application/javascript; charset=utf-8
   Content-Disposition: attachment; filename="hedo-office-mcp.mjs"
   X-Content-Type-Options: nosniff
+
+/office/hedo-office-social.mjs
+  Content-Type: application/javascript; charset=utf-8
+  Content-Disposition: attachment; filename="hedo-office-social.mjs"
+  X-Content-Type-Options: nosniff
+
+/office/connect/*
+  Cache-Control: no-store
+  Referrer-Policy: no-referrer
+  X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'

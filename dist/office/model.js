@@ -1,7 +1,7 @@
 import { PERSONAS, displayPersona } from '../persona.js';
 import { DEFAULT_OFFICE_FLOOR, getCharacterFloor, isOfficeFloor } from './floors.js';
 import { getCharacterRoutine } from './routine.js';
-import { getOfficeSocialMoments } from './social.js';
+import { getOfficeSocialMoments, sampleOfficeRoutine } from './social.js';
 import { getOfficeEvent } from './events.js';
 import { defaultOfficeAvatar, validateOfficeAvatar } from './avatar-config.js';
 
@@ -225,7 +225,7 @@ export function getCastMoment(personaId, nowMs = Date.now()) {
 
 const shortText = (value, max) => typeof value === 'string' ? value.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, max) : '';
 
-export function getOfficeRoster(remoteMembers = [], now = Date.now()) {
+export function getOfficeRoster(remoteMembers = [], now = Date.now(), { activities = null } = {}) {
   const cast = OFFICE_CAST.map(person => ({
     ...person,
     ...getCastMoment(person.id, now),
@@ -263,6 +263,7 @@ export function getOfficeRoster(remoteMembers = [], now = Date.now()) {
       reportedStatus: statusIds.has(member.status) ? member.status : 'idle',
       reportedActivity: shortText(member.activity, 160),
       avatar: appearance,
+      social: { autoReply: member.social?.autoReply === true, autoActivities: member.social?.autoActivities === true },
       online,
       lastSeenAt: shortText(member.lastSeenAt, 40) || null,
       joinedAt: shortText(member.joinedAt, 40) || null,
@@ -270,6 +271,17 @@ export function getOfficeRoster(remoteMembers = [], now = Date.now()) {
       color: member.kind === 'agent' ? '#7185a6' : '#79a68d',
     });
   }
-  const roster=[...cast, ...members], moments=getOfficeSocialMoments(roster,now,getOfficeEvent(now));
-  return roster.map(person=>({...person,...moments.get(person.id)}));
+  const roster=[...cast, ...members], liveMatches=(activities?.matches||[]).filter(match=>match.status==='playing');
+  const liveIds=new Set(liveMatches.flatMap(match=>match.participantIds||[]));
+  const moments=getOfficeSocialMoments(roster.filter(person=>!liveIds.has(person.id)),now,getOfficeEvent(now));
+  return roster.map(person=>{
+    const match=liveMatches.find(match=>match.participantIds?.includes(person.id));
+    if(!match)return {...person,...moments.get(person.id)};
+    const side=match.participantIds.indexOf(person.id),partnerId=match.participantIds[1-side],partner=roster.find(p=>p.id===partnerId);
+    const plan={liveEvent:true,event:match.type,startedAt:Date.parse(match.createdAt)||now,endsAt:match.roundDeadline,
+      side,partnerId,homeFloor:1,destinationFloor:1,homeZone:'lounge',visitZone:'lounge',meetingId:`live-${match.id}`,pairIndex:90,resting:!person.online};
+    return {...person,routine:sampleOfficeRoutine({routine:{itinerary:plan}},now),floor:1,zone:'lounge',status:'break',resting:!person.online,
+      activity:`與${partner?.name||'同伴'}參加共享${match.type==='arm-wrestling'?'腕力':match.type==='coffee'?'茶水':'單挑'}活動 · 第${match.currentRound}回合`,
+      ambientEvent:{id:match.id,type:match.type,title:'真實共享活動',shared:true},ambientChat:null};
+  });
 }
