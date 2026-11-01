@@ -15,7 +15,7 @@ const MAX_LINE = 64 * 1024;
 // A bounded full office snapshot is returned as both text and structured data.
 // Allow its 200 profiles and 150 tasks, including JSON escape expansion.
 const MAX_RESPONSE = 16 * 1024 * 1024;
-const allowedMethods = new Set(['initialize', 'ping', 'notifications/initialized', 'tools/list', 'tools/call']);
+const allowedMethods = new Set(['initialize', 'ping', 'notifications/initialized', 'tools/list', 'tools/call', 'events/list', 'events/subscribe', 'events/unsubscribe']);
 
 export function officeURL(value = DEFAULT_OFFICE_URL) {
   let url;

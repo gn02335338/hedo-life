@@ -54,6 +54,17 @@ test('connector rejects invalid messages and never retries writes or leaks crede
   assert.ok((await wrongId(rpc(4, 'ping'))).error);
 });
 
+test('stdio connector forwards exactly the three advertised event methods without changing callback secrets or adding requests',async()=>{
+  const forwarded=[];
+  const bridge=createBridge({token,fetcher:async(_url,init)=>{const body=JSON.parse(init.body);forwarded.push(body);return result(body.id,{ok:true});}});
+  for(const method of ['events/list','events/subscribe','events/unsubscribe']){
+    const params=method==='events/list'?{}:{name:'office.inbox.created',arguments:{},delivery:{mode:'webhook',url:'https://receiver.example.com/callback',secret:'whsec_synthetic'}};
+    const input=rpc(method,method,params);assert.deepEqual((await bridge(input)).result,{ok:true});assert.deepEqual(forwarded.at(-1),input);
+  }
+  assert.equal(forwarded.length,3);
+  assert.equal((await bridge(rpc('bad','events/admin',{}))).error.code,-32601);assert.equal(forwarded.length,3);
+});
+
 test('stdio framing preserves split UTF-8 and recovers from malformed and oversized lines', async () => {
   const message = JSON.stringify(rpc(1, 'tools/call', { name: 'post_message', arguments: { text: '禾多開會' } }));
   const buffer = Buffer.from(message + '\n');
