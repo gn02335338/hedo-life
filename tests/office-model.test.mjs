@@ -80,7 +80,7 @@ test('ambient cast cannot be mistaken for connected people or real agents', () =
   }
   const source = readFileSync(new URL('../dist/office/model.js', import.meta.url), 'utf8');
   const imports = [...source.matchAll(/from ['"]([^'"]+)/g)].map(match => match[1]);
-  assert.deepEqual(imports, ['../persona.js', './floors.js', './routine.js']);
+  assert.deepEqual(imports, ['../persona.js', './floors.js', './routine.js', './social.js', './events.js', './avatar-config.js']);
 });
 
 test('approved remote members keep only public display fields and cannot replace the cast', () => {
@@ -101,19 +101,26 @@ test('approved remote members keep only public display fields and cannot replace
   assert.equal(human.source, 'connected');
   assert.equal(human.status, 'working');
   assert.equal(human.online, true);
-  assert.equal(human.zone, 'meeting');
-  assert.equal(human.floor, 1);
+  assert.equal(human.reportedZone, 'meeting');
+  assert.equal(human.zone, human.routine.zone);
+  assert.equal(human.reportedFloor, 1);
+  assert.equal(human.floor, human.routine.floor);
   assert.equal(human.departmentFloor, 5);
   assert.equal(human.portrait, null);
   assert.equal(Object.hasOwn(human, 'contact'), false);
   assert.equal(Object.hasOwn(human, 'token'), false);
-  assert.equal(Object.hasOwn(human, 'routine'), false);
+  assert.ok(human.routine.itinerary);
+  assert.notEqual(human.routine.partnerId, 'jack', 'untrusted input routine is not reused');
+  assert.equal(human.avatar.preset, 'human');
   const agent = roster.find(person => person.id === 'office-agent');
   assert.equal(agent.kind, 'agent');
-  assert.equal(agent.zone, 'studio');
-  assert.equal(agent.status, 'idle');
+  assert.equal(agent.zone, 'lounge');
+  assert.equal(agent.status, 'break');
+  assert.equal(agent.resting, true);
+  assert.equal(agent.avatar.preset, 'robot');
   assert.equal(agent.online, false);
-  assert.equal(agent.floor, 7);
+  assert.equal(agent.floor, 1);
+  assert.equal(agent.reportedFloor, 7);
   assert.equal(agent.departmentFloor, 6);
   assert.deepEqual(input, snapshot);
   assert.equal(getOfficeRoster(null, 0).length, OFFICE_CAST.length);
@@ -134,6 +141,7 @@ test('legacy and malformed remote floor fields each fall back to the public firs
     assert.equal(member.departmentFloor, 1);
   }
   const [member] = getOfficeRoster([{ id: 'remote', name: '同事', kind: 'agent', floor: 3, departmentFloor: '6' }], 0).filter(person => person.kind !== 'character');
-  assert.equal(member.floor, 3);
+  assert.equal(member.floor, 1);
+  assert.equal(member.reportedFloor, 3);
   assert.equal(member.departmentFloor, 1);
 });

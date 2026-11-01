@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { relative, isAbsolute } from 'node:path';
-import { getOfficeRoster } from '../dist/office/model.js';
+import { OFFICE_CAST, getCastMoment, getOfficeRoster } from '../dist/office/model.js';
 
 const html = readFileSync(new URL('../dist/office/guide/index.html', import.meta.url), 'utf8');
 const source = readFileSync(new URL('../dist/office/guide/guide.js', import.meta.url), 'utf8');
@@ -89,7 +89,7 @@ test('guide is UTF-8 HTML with four addressable, labelled panels and complete co
     assert.match(html, new RegExp(`href="#${name}" role="tab" id="tab-${name}" aria-controls="${name}"`));
     assert.match(html, new RegExp(`<section id="${name}" role="tabpanel" aria-labelledby="tab-${name}"`));
   }
-  for (const tool of ['get_office', 'get_my_status', 'update_presence', 'post_message', 'create_task', 'claim_task', 'complete_task']) assert.ok(html.includes(tool));
+  for (const tool of ['get_office', 'get_my_status', 'update_presence', 'update_avatar', 'post_message', 'create_task', 'claim_task', 'complete_task']) assert.ok(html.includes(tool));
   assert.ok(html.includes('https://hodo.bvivify.com/api/office/mcp'));
   assert.ok(html.includes('沒有 OAuth 登入流程'));
   assert.ok(html.includes('--setup') && html.includes('--check'));
@@ -121,7 +121,7 @@ test('the colleague itinerary card renders every actual routine phase with a val
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   const phases = new Set();
   for (const now of [0, 85_000, 103_000, 115_000, 133_000, 178_000, 196_000, 208_000, 359_000]) {
-    const roster = getOfficeRoster([], now), member = roster.find(person => person.id === 'jack');
+    const roster = OFFICE_CAST.map(person => ({ ...person, ...getCastMoment(person.id, now), kind: 'character' })), member = roster.find(person => person.id === 'jack');
     const render = new Function('roster', 'esc', `${appFunction('routineHTML', 'openPerson')}\nreturn routineHTML;`)(roster, esc);
     const card = render(member), route = member.routine; phases.add(route.phase);
     assert.ok(!card.includes('undefined'));
@@ -132,6 +132,28 @@ test('the colleague itinerary card renders every actual routine phase with a val
     assert.equal(render({ kind: 'agent' }), '');
   }
   assert.deepEqual([...phases].sort(), ['chat', 'home-work', 'meeting', 'outbound-lift', 'return-lift', 'return-to-elevator', 'return-to-work', 'to-elevator', 'to-visit'].sort());
+});
+
+test('human and Agent social cards link their partner and distinguish activity attendance from resting', () => {
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+  const members = [
+    { id: 'f78f223b-a26c-4b13-b546-724ce5e81a20', kind: 'human', name: '一起喝茶的人', floor: 3, departmentFloor: 3, zone: 'studio', online: true },
+    { id: '85d6d741-4730-47c0-8aa1-20d1df2fe399', kind: 'agent', name: '茶水助手', floor: 6, departmentFloor: 6, zone: 'studio', online: false },
+  ];
+  const roster = getOfficeRoster(members, 0);
+  const render = new Function('roster', 'esc', `${appFunction('routineHTML', 'openPerson')}\nreturn routineHTML;`)(roster, esc);
+  for (const source of members) {
+    const member = roster.find(person => person.id === source.id), partner = roster.find(person => person.id === member.routine.partnerId);
+    assert.ok(partner, 'Approved members share the public encounter roster');
+    const chat = render({ ...member, routine: { ...member.routine, phase: 'chat', inElevator: false } });
+    assert.ok(chat.includes(`data-person="${partner.id}"`) && chat.includes(partner.name));
+    assert.ok(chat.includes('找同事聊聊'));
+    const event = render({ ...member, routine: { ...member.routine, phase: 'event', inElevator: false, destinationFloor: 1 } });
+    assert.ok(event.includes('參加辦公室活動') && event.includes('1F'));
+    const resting = render({ ...member, resting: true, routine: { ...member.routine, phase: 'home-work', inElevator: false, homeFloor: 1 } });
+    assert.ok(resting.includes('在休息區放鬆'));
+    assert.ok(![chat, event, resting].some(card => card.includes('undefined')));
+  }
 });
 
 test('deep links, ordinary clicks, and backward/forward navigation keep one matching panel active', async () => {

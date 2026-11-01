@@ -279,3 +279,100 @@ test('additive floor initialization preserves legacy credentials, admission, tim
   assert.equal(JSON.stringify(snapshot).includes('private-legacy@example.test'), false); assert.equal(JSON.stringify(snapshot).includes(legacyToken), false);
   assert.equal(h.sql.exec('PRAGMA table_info(office_members)').toArray().filter(row => ['floor', 'department_floor'].includes(row.name)).length, 2);
 });
+
+test('approved avatar updates are owner-only, persist safely, and never manufacture online presence', async t => {
+  const { defaultOfficeAvatar } = await import('../dist/office/avatar-config.js');
+  const h = harness(t), auth = await h.login(), a = input(token(), { kind: 'agent' }), b = input(token(), { name: 'Other avatar' }); const applicant = await h.apply(a); await h.approve(b, auth);
+  const avatar = { ...defaultOfficeAvatar('agent'), preset: 'voxel', bodyColor: '#AABBCC', hairStyle: 'mohawk', accessory: 'glasses', voxels: Array.from({ length: 96 }, () => ({ x: 0, y: .5, z: 0, w: .123456, h: .3, d: .2, color: '#123456' })) };
+  assert.equal((await h.call('/api/office/avatar', { method: 'POST', bearer: a.token, body: { avatar } })).status, 403);
+  assert.equal((await h.review(applicant.id, 'approved', auth)).status, 200);
+  const saved = await h.call('/api/office/avatar', { method: 'POST', bearer: a.token, body: { avatar } }); assert.equal(saved.status, 200); const member = (await saved.json()).member;
+  assert.equal(member.avatar.bodyColor, '#aabbcc'); assert.equal(member.avatar.voxels.length, 96); assert.equal(member.avatar.voxels[0].w, .123); assert.equal(member.online, false);
+  assert.equal((await h.call('/api/office/avatar', { method: 'POST', bearer: a.token, body: { avatar, memberId: 'someone-else' } })).status, 400);
+  assert.equal((await h.call('/api/office/avatar', { method: 'POST', bearer: a.token, origin: 'https://foreign.example', body: { avatar } })).status, 403);
+  assert.equal((await h.call('/api/office/avatar', { method: 'POST', bearer: a.token, body: { avatar: { ...avatar, voxels: [{ ...avatar.voxels[0], x: .99 }] } } })).status, 400);
+  h.reopen(); const own = (await (await h.call('/api/office/me', { bearer: a.token })).json()).application;
+  assert.deepEqual(own.avatar, member.avatar); assert.deepEqual((await (await h.call('/api/office/me', { bearer: b.token })).json()).application.avatar, defaultOfficeAvatar('human'));
+  const snapshot = await (await h.call('/api/office')).json(); assert.deepEqual(snapshot.members.find(row => row.id === applicant.id).avatar, member.avatar);
+  await h.call('/api/office/presence', { method: 'POST', bearer: a.token, body: { floor: 3, zone: 'meeting', status: 'break', activity: 'Real presence' } });
+  const before = (await (await h.call('/api/office')).json()).members.find(row => row.id === applicant.id); h.advance(120000);
+  const changed = await h.call('/api/office/avatar', { method: 'POST', bearer: a.token, body: { avatar: defaultOfficeAvatar('agent') } }); const after = (await changed.json()).member;
+  assert.equal(after.lastSeenAt, before.lastSeenAt); assert.equal(after.online, false); assert.equal(after.status, 'break'); assert.equal(after.floor, 3);
+  await h.review(applicant.id, 'revoked', auth); assert.equal((await h.call('/api/office/avatar', { method: 'POST', bearer: a.token, body: { avatar } })).status, 403);
+});
+
+test('targeted messages accept public characters and approved members, stay public, and hide private admission information', async t => {
+  const { CHARACTER_IDS } = await import('../dist/character-stats.js');
+  const h = harness(t), auth = await h.login(), a = input(), b = input(token(), { name: 'Receiver' }), pending = input(token(), { name: 'Private pending', contact: 'pending-private@example.test' });
+  await h.approve(a, auth); const receiver = await h.approve(b, auth), waiting = await h.apply(pending);
+  const untargeted = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'Everyone' } }); assert.equal((await untargeted.json()).message.recipientId, null);
+  const addressed = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'For receiver', recipientId: receiver.id.toUpperCase() } }); assert.equal((await addressed.json()).message.recipientId, receiver.id);
+  for (const [index, recipientId] of CHARACTER_IDS.entries()) {
+    if (index % 8 === 0) h.advance(60000);
+    const sent = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'For public character ' + recipientId, recipientId } }); assert.equal(sent.status, 201); assert.equal((await sent.json()).message.recipientId, recipientId);
+  }
+  let firstError;
+  for (const recipientId of [waiting.id, crypto.randomUUID(), 'private', 'admin', '../admin/archive', null, '', 7, {}]) {
+    const failed = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'Not delivered', recipientId } }); assert.equal(failed.status, 400);
+    const body = await failed.json(); firstError ||= body; assert.deepEqual(body, firstError);
+  }
+  await h.review(receiver.id, 'revoked', auth);
+  const revoked = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'Cannot target revoked member', recipientId: receiver.id } }); assert.equal(revoked.status, 400); assert.deepEqual(await revoked.json(), firstError);
+  h.reopen(); const snapshot = await (await h.call('/api/office')).json(); assert.ok(snapshot.messages.some(row => row.text === 'For receiver' && row.recipientId === receiver.id)); assert.ok(snapshot.messages.some(row => row.recipientId === 'jack'));
+  assert.equal(JSON.stringify(snapshot).includes(pending.contact), false); assert.equal(JSON.stringify(snapshot).includes(waiting.id), false); assert.equal(snapshot.messages.length, CHARACTER_IDS.length + 2);
+});
+
+test('legacy message and member tables gain display columns without changing admission, identity or original message records', async t => {
+  const value = token(), hash = await http.tokenHash(value), id = crypto.randomUUID(), messageId = crypto.randomUUID(), timestamp = '2026-10-31T00:00:00.000Z', lastHeartbeat = Date.now() - 30000;
+  const h = harness(t, { setup(sql) {
+    sql.exec(`CREATE TABLE office_members (id TEXT PRIMARY KEY,token_hash TEXT NOT NULL UNIQUE,kind TEXT NOT NULL,name TEXT NOT NULL,role TEXT NOT NULL,intro TEXT NOT NULL,contact TEXT NOT NULL,admission_status TEXT NOT NULL,zone TEXT NOT NULL DEFAULT 'studio',presence_status TEXT NOT NULL DEFAULT 'idle',activity TEXT NOT NULL DEFAULT '',last_seen_at INTEGER,approved_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);
+      CREATE TABLE office_messages(id TEXT PRIMARY KEY,member_id TEXT NOT NULL,text TEXT NOT NULL,created_at TEXT NOT NULL);`);
+    sql.exec("INSERT INTO office_members(id,token_hash,kind,name,role,intro,contact,admission_status,presence_status,activity,last_seen_at,approved_at,created_at,updated_at) VALUES(?,?,'agent','Legacy','Support','Original intro','','approved','working','Original activity',?,?,?,?)", id, hash, lastHeartbeat, timestamp, timestamp, timestamp);
+    sql.exec('INSERT INTO office_messages(id,member_id,text,created_at) VALUES(?,?,?,?)', messageId, id, 'Original public message', timestamp);
+  } });
+  h.reopen(); const own = (await (await h.call('/api/office/me', { bearer: value })).json()).application, snapshot = await (await h.call('/api/office')).json();
+  assert.equal(own.id, id); assert.equal(own.status, 'approved'); assert.equal(own.avatar.preset, 'robot'); assert.equal(own.updatedAt, timestamp); assert.equal(own.approvedAt, timestamp); assert.equal(own.presenceStatus, 'working'); assert.equal(own.activity, 'Original activity');
+  assert.equal(snapshot.members[0].lastSeenAt, new Date(lastHeartbeat).toISOString()); assert.equal(snapshot.members[0].online, true);
+  assert.deepEqual(snapshot.messages, [{ id: messageId, memberId: id, text: 'Original public message', recipientId: null, createdAt: timestamp }]);
+  assert.equal(h.sql.exec('SELECT token_hash FROM office_members WHERE id=?', id).one().token_hash, hash);
+  assert.equal(h.sql.exec('SELECT last_seen_at FROM office_members WHERE id=?', id).one().last_seen_at, lastHeartbeat);
+});
+
+test('public encounters expose only fictional invitations and approved identities without writing messages or heartbeats', async t => {
+  const { getOfficeRoster } = await import('../dist/office/model.js');
+  const { getOfficeEncounters, SOCIAL_CYCLE_MS } = await import('../dist/office/social.js');
+  const { CHARACTER_IDS } = await import('../dist/character-stats.js');
+  const h = harness(t), auth = await h.login(), agent = input(token(), { kind: 'agent', name: 'Approved encounter agent', contact: 'private-agent@example.test' });
+  const applicant = await h.approve(agent, auth), pending = await h.apply(input(token(), { name: 'PRIVATE_PENDING_NAME', contact: 'pending-encounter@example.test' }));
+  const firstTime = Date.parse(applicant.createdAt), cycle = Math.floor(firstTime / SOCIAL_CYCLE_MS);
+  const simulatedMember = { id: applicant.id, kind: agent.kind, name: agent.name, role: agent.role, intro: agent.intro, online: true, departmentFloor: 1, floor: 1, zone: 'studio', status: 'working', activity: 'Actual agent work' };
+  let moment;
+  for (let turn = 0; turn < 64 && !moment; turn++) for (let delay = 0; delay <= 49000; delay += 7000) {
+    const time = (cycle + turn) * SOCIAL_CYCLE_MS + 155000 + delay; if (time < firstTime) continue;
+    const encounter = getOfficeEncounters(getOfficeRoster([simulatedMember], time)).find(row => row.recipientId === applicant.id && CHARACTER_IDS.includes(row.speakerId));
+    if (encounter) { moment = { time, encounter }; break; }
+  }
+  assert.ok(moment, 'An approved agent can receive a public character invitation through the shared routine');
+  h.advance(moment.time - firstTime);
+  assert.equal((await h.call('/api/office/presence', { method: 'POST', bearer: agent.token, body: { floor: 1, zone: 'studio', status: 'working', activity: simulatedMember.activity } })).status, 200);
+  const before = {
+    members: h.sql.exec('SELECT * FROM office_members ORDER BY id').toArray(),
+    messages: h.sql.exec('SELECT * FROM office_messages').toArray(),
+    activity: h.sql.exec('SELECT * FROM office_activity ORDER BY rowid').toArray(),
+  };
+  const snapshot = await (await h.call('/api/office')).json(), invitation = snapshot.encounters.find(row => row.id === moment.encounter.id);
+  assert.deepEqual(invitation, moment.encounter); assert.equal(snapshot.members[0].online, true); assert.equal(snapshot.members[0].activity, 'Actual agent work');
+  const publicIds = new Set([...CHARACTER_IDS, applicant.id]);
+  for (const encounter of snapshot.encounters) {
+    assert.equal(encounter.simulated, true); assert.ok(encounter.prompt.length > 0); assert.ok(Date.parse(encounter.endsAt) > Date.parse(encounter.startsAt));
+    for (const participant of encounter.participants) { assert.deepEqual(Object.keys(participant).sort(), ['id', 'kind', 'name']); assert.ok(publicIds.has(participant.id)); }
+    if (encounter.speakerId !== null) assert.ok(CHARACTER_IDS.includes(encounter.speakerId), 'Only an authored character speaks a generated greeting');
+  }
+  const text = JSON.stringify(snapshot); assert.ok(!text.includes(agent.contact)); assert.ok(!text.includes(agent.token)); assert.ok(!text.includes(pending.id)); assert.ok(!text.includes('PRIVATE_PENDING_NAME'));
+  assert.deepEqual(h.sql.exec('SELECT * FROM office_members ORDER BY id').toArray(), before.members);
+  assert.deepEqual(h.sql.exec('SELECT * FROM office_messages').toArray(), before.messages);
+  assert.deepEqual(h.sql.exec('SELECT * FROM office_activity ORDER BY rowid').toArray(), before.activity);
+  const reply = await h.call('/api/office/messages', { method: 'POST', bearer: agent.token, body: { text: 'This is my actual reply.', recipientId: invitation.speakerId } }); assert.equal(reply.status, 201);
+  const replied = await (await h.call('/api/office')).json(); assert.equal(replied.messages.length, 1); assert.equal(replied.messages[0].recipientId, invitation.speakerId); assert.equal(replied.messages[0].text, 'This is my actual reply.');
+  assert.equal(h.sql.exec('SELECT last_seen_at FROM office_members WHERE id=?', applicant.id).one().last_seen_at, moment.time);
+});

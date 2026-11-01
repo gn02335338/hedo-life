@@ -2,6 +2,10 @@ import { ApiError, assertSameOrigin, bearerToken, errorResponse, json, readJson,
 import { AdminPrivateStore } from './admin-private.js';
 import { DEFAULT_OFFICE_FLOOR, isOfficeFloor } from '../dist/office/floors.js';
 import { handleOfficeMcp, OFFICE_MCP_PATH } from './office-mcp.js';
+import { defaultOfficeAvatar, validateOfficeAvatar } from '../dist/office/avatar-config.js';
+import { CHARACTER_IDS } from '../dist/character-stats.js';
+import { getOfficeRoster } from '../dist/office/model.js';
+import { getOfficeEncounters } from '../dist/office/social.js';
 
 export const OFFICE_PRESENCE_MS = 120000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -18,9 +22,14 @@ function text(value, maximum, optional = false) {
   if (typeof value !== 'string' || value.length > maximum || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(value) || (!optional && !value.trim())) throw invalid();
   return value.trim();
 }
+function memberAvatar(row) {
+  try { if (row.avatar_json) return validateOfficeAvatar(JSON.parse(row.avatar_json)); } catch { /* Legacy or damaged display data never changes identity or access. */ }
+  return defaultOfficeAvatar(row.kind);
+}
 function publicMember(row, now) {
   return { id: row.id, kind: row.kind, name: row.name, role: row.role, intro: row.intro,
     departmentFloor: row.department_floor, floor: row.floor,
+    avatar: memberAvatar(row),
     zone: row.zone, status: row.presence_status, activity: row.activity,
     online: row.last_seen_at !== null && now - row.last_seen_at < OFFICE_PRESENCE_MS,
     lastSeenAt: row.last_seen_at === null ? null : new Date(row.last_seen_at).toISOString(), joinedAt: row.approved_at };
@@ -28,6 +37,7 @@ function publicMember(row, now) {
 function application(row) {
   return { id: row.id, kind: row.kind, name: row.name, role: row.role, intro: row.intro, contact: row.contact,
     departmentFloor: row.department_floor, floor: row.floor,
+    avatar: memberAvatar(row),
     status: row.admission_status, zone: row.zone, presenceStatus: row.presence_status, activity: row.activity,
     createdAt: row.created_at, updatedAt: row.updated_at, approvedAt: row.approved_at };
 }
@@ -45,13 +55,14 @@ export class OfficeStore {
       name TEXT NOT NULL, role TEXT NOT NULL, intro TEXT NOT NULL, contact TEXT NOT NULL,
       admission_status TEXT NOT NULL, zone TEXT NOT NULL DEFAULT 'studio', presence_status TEXT NOT NULL DEFAULT 'idle',
       department_floor INTEGER NOT NULL DEFAULT 1, floor INTEGER NOT NULL DEFAULT 1,
+      avatar_json TEXT,
       activity TEXT NOT NULL DEFAULT '', last_seen_at INTEGER, approved_at TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL
     );
     CREATE TABLE IF NOT EXISTS office_tasks (
       id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL, status TEXT NOT NULL,
       created_by TEXT NOT NULL, assignee_id TEXT, result TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL, updated_at TEXT NOT NULL
     );
-    CREATE TABLE IF NOT EXISTS office_messages (id TEXT PRIMARY KEY, member_id TEXT NOT NULL, text TEXT NOT NULL, created_at TEXT NOT NULL);
+    CREATE TABLE IF NOT EXISTS office_messages (id TEXT PRIMARY KEY, member_id TEXT NOT NULL, text TEXT NOT NULL, recipient_id TEXT, created_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS office_activity (id TEXT PRIMARY KEY, type TEXT NOT NULL, member_id TEXT NOT NULL, text TEXT NOT NULL, created_at TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS office_limits (bucket TEXT PRIMARY KEY, count INTEGER NOT NULL, until_at INTEGER NOT NULL);
     CREATE INDEX IF NOT EXISTS office_members_status ON office_members(admission_status);
@@ -62,6 +73,8 @@ export class OfficeStore {
     for (const name of ['department_floor', 'floor']) {
       if (!columns.has(name)) sql.exec(`ALTER TABLE office_members ADD COLUMN ${name} INTEGER NOT NULL DEFAULT 1`);
     }
+    if (!columns.has('avatar_json')) sql.exec('ALTER TABLE office_members ADD COLUMN avatar_json TEXT');
+    if (!sql.exec('PRAGMA table_info(office_messages)').toArray().some(column => column.name === 'recipient_id')) sql.exec('ALTER TABLE office_messages ADD COLUMN recipient_id TEXT');
   }
   limit(bucket, maximum, window = 60000) {
     const now = this.now();
@@ -96,11 +109,13 @@ export class OfficeStore {
   async snapshot() {
     let admissionOpen = false;
     try { await this.admin.configuration(); admissionOpen = true; } catch { /* Admission fails closed until a reviewer can sign in. */ }
-    const members = this.sql.exec("SELECT * FROM office_members WHERE admission_status='approved' ORDER BY approved_at,id LIMIT 200").toArray().map(row => publicMember(row, this.now()));
+    const now = this.now();
+    const members = this.sql.exec("SELECT * FROM office_members WHERE admission_status='approved' ORDER BY approved_at,id LIMIT 200").toArray().map(row => publicMember(row, now));
     const tasks = this.sql.exec("SELECT t.* FROM office_tasks t JOIN office_members m ON m.id=t.created_by WHERE m.admission_status='approved' ORDER BY CASE WHEN t.status='completed' THEN 1 ELSE 0 END,t.rowid DESC LIMIT 150").toArray().map(task);
-    const messages = this.sql.exec("SELECT x.id,x.member_id AS memberId,x.text,x.created_at AS createdAt FROM office_messages x JOIN office_members m ON m.id=x.member_id WHERE m.admission_status='approved' ORDER BY x.rowid DESC LIMIT 50").toArray().reverse();
+    const messages = this.sql.exec("SELECT x.id,x.member_id AS memberId,x.text,x.recipient_id AS recipientId,x.created_at AS createdAt FROM office_messages x JOIN office_members m ON m.id=x.member_id WHERE m.admission_status='approved' ORDER BY x.rowid DESC LIMIT 50").toArray().reverse();
     const activity = this.sql.exec("SELECT x.id,x.type,x.member_id AS memberId,x.text,x.created_at AS createdAt FROM office_activity x JOIN office_members m ON m.id=x.member_id WHERE m.admission_status='approved' ORDER BY x.rowid DESC LIMIT 40").toArray();
-    return response({ version: 1, admissionOpen, serverTime: new Date(this.now()).toISOString(), members, tasks, messages, activity });
+    const encounters = getOfficeEncounters(getOfficeRoster(members, now));
+    return response({ version: 1, admissionOpen, serverTime: new Date(now).toISOString(), members, tasks, messages, activity, encounters });
   }
   async apply(request) {
     const config = await this.admin.configuration();
@@ -164,8 +179,14 @@ export class OfficeStore {
       if (path === '/api/office/apply' && request.method === 'POST') return await this.apply(request);
       if (path === '/api/office/me' && request.method === 'GET') return response({ application: application(await this.identify(request)) });
       if (request.method !== 'POST') throw new ApiError(405, 'office_method', '這個辦公室端點不接受此操作。');
-      const body = await readJson(request, { maxBytes: 8192 });
+      const body = await readJson(request, { maxBytes: path === '/api/office/avatar' ? 32768 : 8192 });
       const member = await this.identify(request, true), now = new Date(this.now()).toISOString();
+      if (path === '/api/office/avatar') {
+        fields(body, ['avatar']); let avatar;
+        try { avatar = validateOfficeAvatar(body.avatar); } catch { throw new ApiError(400, 'invalid_office_avatar', '請確認角色外觀的色碼、比例與方塊範圍。'); }
+        this.mutation(member.id, () => this.sql.exec('UPDATE office_members SET avatar_json=?,updated_at=? WHERE id=?', JSON.stringify(avatar), now, member.id));
+        return response({ avatar, member: publicMember(this.assertApproved(member.id), this.now()) });
+      }
       if (path === '/api/office/presence') {
         fields(body, ['zone', 'status', 'activity', 'floor']);
         if (!ZONES.includes(body.zone) || !STATUSES.includes(body.status)) throw invalid();
@@ -175,13 +196,17 @@ export class OfficeStore {
         return response({ member: publicMember(this.assertApproved(member.id), this.now()) });
       }
       if (path === '/api/office/messages') {
-        fields(body, ['text']); const message = text(body.text, 500), id = crypto.randomUUID();
+        fields(body, ['text', 'recipientId']); const message = text(body.text, 500), id = crypto.randomUUID(); let recipientId = null;
         this.mutation(member.id, () => {
+          if (body.recipientId !== undefined) {
+            if (typeof body.recipientId !== 'string' || !CHARACTER_IDS.includes(body.recipientId) && (!UUID.test(body.recipientId) || !this.sql.exec("SELECT id FROM office_members WHERE id=? AND admission_status='approved'", body.recipientId.toLowerCase()).toArray().length)) throw new ApiError(400, 'invalid_office_recipient', '請選擇公開角色或目前已核准的辦公室成員。');
+            recipientId = CHARACTER_IDS.includes(body.recipientId) ? body.recipientId : body.recipientId.toLowerCase();
+          }
           this.limit('message:' + member.id, 10);
-          this.sql.exec('INSERT INTO office_messages (id,member_id,text,created_at) VALUES (?,?,?,?)', id, member.id, message, now);
+          this.sql.exec('INSERT INTO office_messages (id,member_id,text,recipient_id,created_at) VALUES (?,?,?,?,?)', id, member.id, message, recipientId, now);
           this.sql.exec('DELETE FROM office_messages WHERE rowid NOT IN (SELECT rowid FROM office_messages ORDER BY rowid DESC LIMIT 500)');
         });
-        return response({ message: { id, memberId: member.id, text: message, createdAt: now } }, 201);
+        return response({ message: { id, memberId: member.id, text: message, recipientId, createdAt: now } }, 201);
       }
       if (path === '/api/office/tasks') {
         fields(body, ['title', 'description']); const title = text(body.title, 100), description = text(body.description, 1000, true), id = crypto.randomUUID();

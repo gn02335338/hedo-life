@@ -1,6 +1,9 @@
 import { PERSONAS, displayPersona } from '../persona.js';
 import { DEFAULT_OFFICE_FLOOR, getCharacterFloor, isOfficeFloor } from './floors.js';
 import { getCharacterRoutine } from './routine.js';
+import { getOfficeSocialMoments } from './social.js';
+import { getOfficeEvent } from './events.js';
+import { defaultOfficeAvatar, validateOfficeAvatar } from './avatar-config.js';
 
 // These are public, fictional office moments. They are independent of a saved
 // life, its RNG, relationships and undiscovered stories or endings. An ambient
@@ -230,6 +233,9 @@ export function getOfficeRoster(remoteMembers = [], now = Date.now()) {
     source: 'ambient',
     role: person.title,
     online: false,
+    homeZone: person.zone,
+    reportedActivity: person.activity,
+    status: 'working',
   }));
   const knownIds = new Set(cast.map(person => person.id));
   // The office API returns approved members only. Project just its public
@@ -242,14 +248,21 @@ export function getOfficeRoster(remoteMembers = [], now = Date.now()) {
     knownIds.add(id);
     const online = member.online === true;
     const role = shortText(member.role, 80);
+    let appearance=defaultOfficeAvatar(member.kind);
+    try { if(member.avatar)appearance=validateOfficeAvatar(member.avatar); } catch { /* Keep old/malformed profiles visible with the default model. */ }
     members.push({
       id, name, role, title: role, kind: member.kind, source: 'connected',
       intro: shortText(member.intro, 500),
       floor: isOfficeFloor(member.floor) ? member.floor : DEFAULT_OFFICE_FLOOR,
       departmentFloor: isOfficeFloor(member.departmentFloor) ? member.departmentFloor : DEFAULT_OFFICE_FLOOR,
       zone: zoneIds.has(member.zone) ? member.zone : 'studio',
-      status: online && statusIds.has(member.status) ? member.status : 'idle',
+      status: online && statusIds.has(member.status) ? member.status : 'break',
       activity: shortText(member.activity, 160),
+      reportedFloor: isOfficeFloor(member.floor) ? member.floor : DEFAULT_OFFICE_FLOOR,
+      reportedZone: zoneIds.has(member.zone) ? member.zone : 'studio',
+      reportedStatus: statusIds.has(member.status) ? member.status : 'idle',
+      reportedActivity: shortText(member.activity, 160),
+      avatar: appearance,
       online,
       lastSeenAt: shortText(member.lastSeenAt, 40) || null,
       joinedAt: shortText(member.joinedAt, 40) || null,
@@ -257,5 +270,6 @@ export function getOfficeRoster(remoteMembers = [], now = Date.now()) {
       color: member.kind === 'agent' ? '#7185a6' : '#79a68d',
     });
   }
-  return [...cast, ...members];
+  const roster=[...cast, ...members], moments=getOfficeSocialMoments(roster,now,getOfficeEvent(now));
+  return roster.map(person=>({...person,...moments.get(person.id)}));
 }

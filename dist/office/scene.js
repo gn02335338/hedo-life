@@ -3,8 +3,12 @@ import * as THREE from '../island/vendor/three.module.js';
 import { OrbitControls } from '../island/vendor/OrbitControls.js';
 import { OFFICE_FLOORS, isOfficeFloor } from './floors.js';
 import { getCharacterRoutine, OFFICE_ELEVATOR } from './routine.js';
+import { sampleOfficeRoutine } from './social.js';
+import { defaultOfficeAvatar, validateOfficeAvatar } from './avatar-config.js';
+import { buildAvatar, getAvatarLayout, createAvatarGeometry, avatarBoneRotations } from './avatar-view.js';
 
 const FLOOR_HEIGHT = 4.3;
+const AVATAR_SCALE = .86;
 const ZONE_CENTERS = Object.freeze({ studio: [-4.9, 2.4], meeting: [5.5, -3.7], focus: [-7.3, -5.1], lounge: [5.8, 4.7] });
 const ZONE_BOUNDS = Object.freeze({ studio: [-10.2, .4, -1.7, 7.6], meeting: [1.6, 10.1, -7.1, .2], focus: [-10.2, -4.1, -7.1, -3.3], lounge: [1.6, 10.1, 1.4, 7.6] });
 const hash = value => [...String(value)].reduce((n, letter) => (n * 31 + letter.codePointAt(0)) >>> 0, 7);
@@ -471,7 +475,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   const routineRoutes = new Map(), pairPlaces = new Map(), routinePoses = new Map();
   let routineSampleTime = null, routineElapsedMs = 0, routineLastFrame = performance.now(), poseTime = null;
   function adoptRoutineClock(nextRoster) {
-    const sample = nextRoster.find(person => person?.kind === 'character' && Number.isFinite(person.routine?.sampledAt))?.routine.sampledAt;
+    const sample = nextRoster.find(person => Number.isFinite(person?.routine?.sampledAt))?.routine.sampledAt;
     if (sample !== undefined && sample !== routineSampleTime) {
       routineSampleTime = sample; routineElapsedMs = 0; routineLastFrame = performance.now(); poseTime = null;
     }
@@ -493,11 +497,11 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     return { x: from.x + (to.x - from.x) * t, z: from.z + (to.z - from.z) * t, heading: Math.atan2(to.x - from.x, to.z - from.z) };
   }
   function routineStops(data, routine) {
-    const key = `${data.id}:${routine.meetingId}:${routine.homeZone}`;
+    const key = `${data.id}:${routine.meetingId}:${routine.homeZone}:${routine.homeFloor}:${routine.destinationFloor}:${routine.visitZone}`;
     if (routineRoutes.has(key)) return routineRoutes.get(key);
     const homes = [...zoneNodes[routine.homeZone]].sort((a, b) => hash(`${data.id}:home:${a.key}`) - hash(`${data.id}:home:${b.key}`));
     const home = homes[hash(data.id) % Math.min(homes.length, 20)], door = nearestNode(elevatorDoor.x, elevatorDoor.z);
-    const pairKey = `${routine.meetingId}:${routine.visitZone}`;
+    const pairKey = `${routine.meetingId}:${routine.visitZone}:${routine.destinationFloor}`;
     if (!pairPlaces.has(pairKey)) {
       const candidates = [...zoneNodes[routine.visitZone]].sort((a, b) => hash(`${pairKey}:${a.key}`) - hash(`${pairKey}:${b.key}`));
       const first = candidates[0];
@@ -507,22 +511,24 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     }
     const partners = pairPlaces.get(pairKey), visit = partners[routine.side], other = partners[1 - routine.side];
     const homePoints = [home, ...findPath(home, door)], visitPoints = [door, ...findPath(door, visit)];
-    const stops = { home, door, visit, other, homeDoor: walkRoute(homePoints), doorHome: walkRoute([...homePoints].reverse()), doorVisit: walkRoute(visitPoints), visitDoor: walkRoute([...visitPoints].reverse()) };
+    const restTarget = zoneNodes.lounge[hash(`${data.id}:rest`) % zoneNodes.lounge.length];
+    const stops = { home, door, visit, other, rest: walkRoute([home, ...findPath(home, restTarget)]), homeDoor: walkRoute(homePoints), doorHome: walkRoute([...homePoints].reverse()), doorVisit: walkRoute(visitPoints), visitDoor: walkRoute([...visitPoints].reverse()) };
     routineRoutes.set(key, stops);
     if (routineRoutes.size > 128) routineRoutes.delete(routineRoutes.keys().next().value);
     return stops;
   }
   function routinePose(data, time = routineNow()) {
-    if (data.kind !== 'character' || !data.routine) return null;
+    if (!data.routine) return null;
     if (poseTime !== time) { routinePoses.clear(); poseTime = time; }
     if (routinePoses.has(data.id)) return routinePoses.get(data.id);
-    const routine = getCharacterRoutine(data.id, time, { homeZone: data.routine.homeZone });
+    const routine = sampleOfficeRoutine(data, time);
     if (!routine) return null;
     const stops = routineStops(data, routine);
     let point = { ...stops.home, heading: hash(data.id) % 6 }, walking = false;
     const routes = { 'to-elevator': stops.homeDoor, 'to-visit': stops.doorVisit, 'return-to-elevator': stops.visitDoor, 'return-to-work': stops.doorHome };
     if (routes[routine.phase]) { point = alongRoute(routes[routine.phase], routine.progress); walking = true; }
-    else if (routine.phase === 'meeting' || routine.phase === 'chat') point = { ...stops.visit, heading: Math.atan2(stops.other.x - stops.visit.x, stops.other.z - stops.visit.z) };
+    else if (['meeting', 'chat', 'event'].includes(routine.phase)) point = { ...stops.visit, heading: Math.atan2(stops.other.x - stops.visit.x, stops.other.z - stops.visit.z) };
+    else if (routine.phase === 'home-work' && routine.resting) { point = alongRoute(stops.rest, (1 - Math.cos(routine.progress * Math.PI * 4)) / 2); walking = true; }
     else if (routine.inElevator) {
       const cabin = { x: OFFICE_ELEVATOR.x + (routine.liftLane - 1) * OFFICE_ELEVATOR.laneSpacing, z: OFFICE_ELEVATOR.z };
       let from = cabin, to = cabin, t = 0;
@@ -540,22 +546,58 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   const overviewPeople = new Map(), overviewCapacity = 256;
   let overviewOrder = [];
   const overviewPersonMaterial = material('#ffffff', { roughness: .72, emissive: '#354f49', emissiveIntensity: .12 });
-  const overviewParts = [
-    { name: 'legs', geometry: boxGeometry, y: .25, scale: [.29, .45, .22] },
-    { name: 'body', geometry: cylinderGeometry, y: .67, scale: [.28, .62, .28] },
-    { name: 'head', geometry: sphereGeometry, y: 1.14, scale: [.25, .26, .25] },
-    { name: 'hair', geometry: hairGeometry, y: 1.18, scale: [.27, .28, .27] },
-  ].map(part => {
-    const batch = new THREE.InstancedMesh(part.geometry, overviewPersonMaterial, overviewCapacity);
-    batch.count = 0; batch.instanceMatrix.setUsage(THREE.DynamicDrawUsage); batch.frustumCulled = false;
-    batch.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 15, .5), 28);
-    batch.castShadow = false; batch.receiveShadow = false;
-    batch.userData.buildingRole = 'overview-person'; batch.userData.personPart = part.name;
-    batch.userData.memberIds = []; batch.userData.floors = [];
-    building.add(batch); instancedMeshes.add(batch);
-    return { ...part, batch };
-  });
-  const overviewHitTargets = overviewParts.map(part => part.batch);
+  const overviewParts = [], overviewHitTargets = [], avatarGeometry = new Map(), avatarLayouts = new Map();
+  function personAvatar(data) {
+    const seed = hash(data.id), fallback = defaultOfficeAvatar(data.kind);
+    fallback.bodyColor = /^#[0-9a-f]{6}$/i.test(data.color || '') ? data.color : fallback.bodyColor;
+    fallback.skinColor = ['#e5b693', '#bf8e6c', '#d3a17e', '#f0cbb0'][seed % 4];
+    fallback.hairColor = ['#454641', '#6e5745', '#4b5054', '#8a6a50'][seed % 4];
+    let config;
+    try { config = data.avatar ? validateOfficeAvatar(data.avatar) : fallback; } catch { config = fallback; }
+    const key = JSON.stringify(config);
+    if (!avatarLayouts.has(key)) avatarLayouts.set(key, getAvatarLayout(config));
+    return avatarLayouts.get(key);
+  }
+  function avatarMotion(data, pose, walking, walkTime, motion) {
+    const phase = pose?.routine?.phase || data.routine?.phase;
+    const event = data.ambientEvent?.type || '';
+    return { walking, walkPhase: walkTime, time: routineNow() / 1000, talking: ['chat','meeting','event'].includes(phase), armWrestling: phase === 'event' && /arm|wrestl|腕力|duel|對決/.test(event), reducedMotion: !motion };
+  }
+  function syncAvatarBatches() {
+    const records = new Map();
+    for (const person of overviewOrder) {
+      const layout = personAvatar(person.data);
+      if (person.layout?.appearanceKey !== layout.appearanceKey) { person.layout = layout; person.boneMatrices = {}; person.boneOffsets = {}; }
+      for (const part of layout.parts) {
+        if (!records.has(part.shape)) records.set(part.shape, []);
+        records.get(part.shape).push({ person, part });
+      }
+    }
+    for (const [shape, entries] of records) {
+      let record = overviewParts.find(item => item.shape === shape);
+      if (!record || record.capacity < entries.length) {
+        if (record) { building.remove(record.batch); instancedMeshes.delete(record.batch); record.batch.dispose(); overviewParts.splice(overviewParts.indexOf(record), 1); }
+        if (!avatarGeometry.has(shape)) avatarGeometry.set(shape, geometry(createAvatarGeometry(shape)));
+        const capacity = 2 ** Math.ceil(Math.log2(Math.max(1, entries.length)));
+        const batch = new THREE.InstancedMesh(avatarGeometry.get(shape), overviewPersonMaterial, capacity);
+        batch.instanceMatrix.setUsage(THREE.DynamicDrawUsage); batch.frustumCulled = false;
+        batch.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 15, .5), 32);
+        batch.castShadow = false; batch.receiveShadow = false; batch.userData.buildingRole = 'overview-person'; batch.userData.personPart = shape;
+        building.add(batch); instancedMeshes.add(batch); record = { shape, batch, capacity, entries: [] }; overviewParts.push(record);
+      }
+      record.entries = entries; record.batch.count = entries.length;
+      record.batch.userData.memberIds = entries.map(entry => entry.person.id);
+      record.batch.userData.bones = entries.map(entry => entry.part.bone);
+      record.batch.userData.localY = entries.map(entry => entry.part.position[1]);
+      record.batch.userData.appearanceKeys = entries.map(entry => entry.person.layout.appearanceKey);
+      entries.forEach((entry, index) => record.batch.setColorAt(index, new THREE.Color(entry.part.color)));
+      if (record.batch.instanceColor) record.batch.instanceColor.needsUpdate = true;
+    }
+    for (const record of overviewParts) if (!records.has(record.shape)) { record.entries = []; record.batch.count = 0; record.batch.userData.memberIds = []; record.batch.userData.bones = []; record.batch.userData.localY = []; record.batch.userData.appearanceKeys = []; }
+    overviewHitTargets.splice(0, overviewHitTargets.length, ...overviewParts.map(record => record.batch));
+    const used = new Set(overviewOrder.map(person => person.layout.appearanceKey));
+    for (const key of avatarLayouts.keys()) if (!used.has(key)) avatarLayouts.delete(key);
+  }
   const elevatorCars = [building, room].map(parent => {
     const batch = new THREE.InstancedMesh(boxGeometry, ghost('#a6c5c4', .09), overviewCapacity);
     batch.count = 0; batch.frustumCulled = false; batch.castShadow = false;
@@ -563,11 +605,10 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     batch.userData.buildingRole = 'elevator-car'; batch.userData.memberIds = []; batch.userData.floors = [];
     parent.add(batch); instancedMeshes.add(batch); return batch;
   });
-  const miniTransform = new THREE.Object3D();
+  const miniTransform = new THREE.Object3D(), miniRoot = new THREE.Object3D(), miniBone = new THREE.Object3D(), miniMatrix = new THREE.Matrix4();
   function paintOverviewPeople(delta = 0, motion = false) {
     const riders = [];
-    for (let index = 0; index < overviewOrder.length; index++) {
-      const person = overviewOrder[index];
+    for (const person of overviewOrder) {
       const pose = routinePose(person.data);
       let walking = false;
       if (pose) {
@@ -581,15 +622,23 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
         if (distance > .01) person.heading = Math.atan2(dx, dz);
         walking = true; person.walkTime += delta * 8;
       }
-      const base = pose ? pose.y - .055 : (person.floor - 1) * FLOOR_HEIGHT;
+      const feetY = pose ? pose.y : (person.floor - 1) * FLOOR_HEIGHT + .055;
       const bob = walking ? Math.abs(Math.sin(person.walkTime)) * .025 : 0;
-      for (const part of overviewParts) {
-        miniTransform.position.set(person.x, base + part.y + bob, person.z);
-        miniTransform.rotation.set(0, person.heading, 0); miniTransform.scale.set(...part.scale); miniTransform.updateMatrix();
-        part.batch.setMatrixAt(index, miniTransform.matrix);
+      miniRoot.position.set(person.x, feetY + bob, person.z); miniRoot.rotation.set(0, person.heading, 0); miniRoot.scale.setScalar(AVATAR_SCALE); miniRoot.updateMatrix();
+      person.rootMatrix ||= new THREE.Matrix4(); person.rootMatrix.copy(miniRoot.matrix);
+      const rotations = avatarBoneRotations(avatarMotion(person.data, pose, walking, person.walkTime, motion));
+      for (const [bone, pivot] of Object.entries(person.layout.pivots)) {
+        person.boneMatrices[bone] ||= new THREE.Matrix4(); person.boneOffsets[bone] ||= new THREE.Matrix4().makeTranslation(-pivot[0], -pivot[1], -pivot[2]);
+        miniBone.position.set(...pivot); miniBone.rotation.set(...rotations[bone]); miniBone.scale.setScalar(1); miniBone.updateMatrix();
+        person.boneMatrices[bone].copy(miniBone.matrix).multiply(person.boneOffsets[bone]);
       }
     }
-    for (const part of overviewParts) { part.batch.instanceMatrix.needsUpdate = true; part.batch.userData.floors = overviewOrder.map(person => person.floor); }
+    for (const record of overviewParts) {
+      for (let index = 0; index < record.entries.length; index++) {
+        const {person,part} = record.entries[index]; miniMatrix.multiplyMatrices(person.rootMatrix, person.boneMatrices[part.bone]).multiply(part.matrix); record.batch.setMatrixAt(index, miniMatrix);
+      }
+      record.batch.instanceMatrix.needsUpdate = true; record.batch.userData.floors = record.entries.map(entry => entry.person.floor);
+    }
     for (const [view, batch] of elevatorCars.entries()) {
       const visible = view === 0 ? riders : riders.filter(({ pose }) => pose.y >= room.position.y - .055 && pose.y < room.position.y + FLOOR_HEIGHT);
       batch.count = visible.length;
@@ -602,7 +651,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     }
   }
   function syncOverviewPeople() {
-    const members = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && (person.kind === 'character' || person.online === true)).slice(0, overviewCapacity);
+    const members = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && ['character', 'human', 'agent'].includes(person.kind)).slice(0, overviewCapacity);
     const ids = new Set(members.map(person => person.id)), occupied = [];
     for (const id of overviewPeople.keys()) if (!ids.has(id)) overviewPeople.delete(id);
     overviewOrder = members.map(data => {
@@ -626,60 +675,34 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
       if (person.target) occupied.push({ floor, x: person.target.x, z: person.target.z });
       overviewPeople.set(data.id, person); return person;
     });
-    const memberIds = overviewOrder.map(person => person.id), floors = overviewOrder.map(person => person.floor);
-    for (const part of overviewParts) {
-      part.batch.count = overviewOrder.length; part.batch.userData.memberIds = memberIds; part.batch.userData.floors = floors;
-      overviewOrder.forEach((person, index) => {
-        const seed = hash(person.id);
-        const color = part.name === 'body' ? (/^#[0-9a-f]{3,8}$/i.test(person.data.color || '') ? person.data.color : '#71988a')
-          : part.name === 'head' ? ['#e5b693', '#bf8e6c', '#d3a17e', '#f0cbb0'][seed % 4]
-          : part.name === 'hair' ? person.data.kind === 'agent' ? '#79b7ca' : ['#454641', '#6e5745', '#4b5054', '#8a6a50'][seed % 4]
-          : '#52616a';
-        part.batch.setColorAt(index, new THREE.Color(color));
-      });
-      if (part.batch.instanceColor) part.batch.instanceColor.needsUpdate = true;
-    }
+    syncAvatarBatches();
     paintOverviewPeople();
   }
   function chooseOverviewPerson(id) {
     const person = overviewPeople.get(id); if (!person) return;
     setFloor(person.floor); selectedId = id; refreshLabels(); onSelect(id);
   }
-  function makePerson(person) {
-    const seed = hash(person.id), p = group(room, 0, .055, 0);
-    const jacket = material(/^#[0-9a-f]{3,8}$/i.test(person.color || '') ? person.color : '#718d88');
-    const skin = material(['#e5b693', '#bf8e6c', '#d3a17e', '#f0cbb0'][seed % 4]);
-    const hair = material(['#454641', '#6e5745', '#4b5054', '#8a6a50'][seed % 4]);
-    const pants = material(seed % 2 ? '#52616a' : '#686e5c');
-    const leftLeg = box(p, pants, -.105, .21, 0, .13, .4, .17);
-    const rightLeg = box(p, pants, .105, .21, 0, .13, .4, .17);
-    box(p, palette.charcoal, -.105, .04, .045, .15, .08, .26);
-    box(p, palette.charcoal, .105, .04, .045, .15, .08, .26);
-    const torso = cylinder(p, jacket, 0, .66, 0, .23, .5);
-    const head = ball(p, skin, 0, 1.05, 0, .235, 1, 1.06, 1);
-    mesh(p, hairGeometry, hair, 0, 1.10, -.01, .243, .254, .243);
-    const leftArm = box(p, jacket, -.28, .65, 0, .13, .4, .14);
-    const rightArm = box(p, jacket, .28, .65, 0, .13, .4, .14);
-    ball(p, skin, -.28, .43, 0, .075);
-    ball(p, skin, .28, .43, 0, .075);
-    // Small eyes face the walk direction, while hair and accessories vary.
-    for (const x of [-.07, .07]) ball(p, palette.charcoal, x, 1.07, .213, .022);
-    if (seed % 4 === 0) {
-      for (const x of [-.075, .075]) box(p, palette.charcoal, x, 1.075, .224, .12, .07, .018);
+  function installPersonAvatar(person, data) {
+    const layout = personAvatar(data);
+    if (person.model?.appearanceKey === layout.appearanceKey) return;
+    if (person.model) {
+      const targets = new Set(person.model.pickTargets);
+      for (let index = hitTargets.length - 1; index >= 0; index--) if (targets.has(hitTargets[index])) hitTargets.splice(index, 1);
+      person.object.remove(person.model.group); person.model.dispose();
     }
-    if (person.kind === 'agent') {
-      cylinder(p, palette.charcoal, 0, 1.39, 0, .025, .2);
-      ball(p, palette.screen, 0, 1.51, 0, .07);
-      box(p, palette.screen, 0, .7, .225, .14, .12, .02);
-    }
-    p.scale.setScalar(.86);
-    const ring = mesh(room, ringGeometry, material(person.kind === 'character' ? '#b7b18b' : '#5b91a4'), 0, .055, 0);
-    ring.rotation.x = Math.PI / 2; ring.visible = person.kind !== 'character';
-    for (const part of [torso, head]) { part.userData.personId = person.id; hitTargets.push(part); }
+    person.model = buildAvatar(layout.config); person.model.group.scale.setScalar(AVATAR_SCALE); person.object.add(person.model.group);
+    for (const target of person.model.pickTargets) { target.userData.personId = data.id; hitTargets.push(target); }
+    person.object.userData.appearanceKey = layout.appearanceKey;
+  }
+  function makePerson(data) {
+    const seed = hash(data.id), p = group(room, 0, .055, 0);
+    p.userData.personRoot = true; p.userData.personId = data.id;
+    const ring = mesh(room, ringGeometry, material(data.kind === 'character' ? '#b7b18b' : '#5b91a4'), 0, .055, 0);
+    ring.rotation.x = Math.PI / 2; ring.visible = data.kind !== 'character';
     const label = document.createElement('button'); label.type = 'button'; label.className = 'person-label';
-    label.addEventListener('click', () => choose(person.id));
-    labels.append(label);
-    return { id: person.id, data: person, object: p, torso, leftLeg, rightLeg, leftArm, rightArm, ring, label, path: [], target: null, heading: 0, walkTime: seed % 100, priority: seed, zone: null };
+    label.addEventListener('click', () => choose(data.id)); labels.append(label);
+    const person = { id: data.id, data, object: p, ring, label, path: [], target: null, heading: 0, walkTime: seed % 100, priority: seed, zone: null, model: null };
+    installPersonAvatar(person, data); return person;
   }
   function choose(id) {
     if (buildingView || !people.has(id)) return;
@@ -690,7 +713,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
   }
   function updateBuildingLabels() {
     for (const item of buildingLabels) {
-      const count = fullRoster.filter(person => person && memberFloor(person) === item.floor.id && (person.kind === 'character' || person.online === true)).length;
+      const count = fullRoster.filter(person => person && memberFloor(person) === item.floor.id && ['character', 'human', 'agent'].includes(person.kind)).length;
       item.element.textContent = `${item.floor.id}F ${item.floor.name} · ${count}`;
       item.element.setAttribute('aria-label', `進入${item.floor.id}樓，${item.floor.name}，${count}位同事`);
       item.element.title = `${item.floor.department} · ${count}位同事`;
@@ -709,12 +732,15 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     }
     if (selectedId) visible.add(selectedId);
     for (const person of list) {
+      const offline = person.data.kind !== 'character' && person.data.online !== true;
       person.showLabel = visible.has(person.id);
-      person.label.className = `person-label${person.data.kind !== 'character' ? ' remote' : ''}${person.id === selectedId ? ' selected' : ''}`;
+      person.label.className = `person-label${person.data.kind !== 'character' ? ' remote' : ''}${offline ? ' resting' : ''}${person.id === selectedId ? ' selected' : ''}`;
       person.label.replaceChildren();
       const dot = document.createElement('b'); dot.setAttribute('aria-hidden', 'true');
+      if (offline) dot.style.background = '#c7a15b';
       person.label.append(dot, document.createTextNode(person.data.name));
-      person.label.setAttribute('aria-label', `${person.data.name}，${person.data.kind === 'character' ? '劇情角色' : person.data.kind === 'agent' ? 'Agent' : '真人'}，${person.data.activity || ''}`);
+      person.label.setAttribute('data-online', String(person.data.online === true));
+      person.label.setAttribute('aria-label', `${person.data.name}，${person.data.kind === 'character' ? '劇情角色' : person.data.kind === 'agent' ? 'Agent' : '真人'}，${offline ? '休息中，' : ''}${person.data.activity || ''}`);
     }
   }
   function setRoster(nextRoster) {
@@ -723,10 +749,10 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
     adoptRoutineClock(fullRoster);
     updateBuildingLabels();
     syncOverviewPeople();
-    const next = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && (person.kind === 'character' || person.online === true));
+    const next = fullRoster.filter(person => person && typeof person.id === 'string' && typeof person.name === 'string' && ['character', 'human', 'agent'].includes(person.kind));
     const ids = new Set(next.map(person => person.id));
     for (const [id, person] of people) if (!ids.has(id)) {
-      room.remove(person.object, person.ring); person.label.remove(); people.delete(id);
+      room.remove(person.object, person.ring); person.label.remove(); person.model.dispose(); people.delete(id);
       for (let i = hitTargets.length - 1; i >= 0; i--) if (hitTargets[i].userData.personId === id) hitTargets.splice(i, 1);
     }
     const occupied = [];
@@ -735,7 +761,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
       let person = people.get(data.id);
       const isNew = !person;
       if (!person) { person = makePerson(data); people.set(data.id, person); }
-      person.data = data;
+      person.data = data; installPersonAvatar(person, data);
       person.object.visible = memberFloor(data) === activeFloor;
       const zone = Object.hasOwn(ZONE_CENTERS, data.zone) ? data.zone : 'studio';
       const movementChanged = person.zone !== zone;
@@ -894,9 +920,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
         }
         walking = true; person.walkTime += delta * 8;
       }
-      const swing = walking ? Math.sin(person.walkTime) * .3 : 0;
-      person.leftLeg.rotation.x = swing; person.rightLeg.rotation.x = -swing;
-      person.leftArm.rotation.x = -swing * .8; person.rightArm.rotation.x = swing * .8;
+      person.model.pose(avatarMotion(person.data, pose, walking, person.walkTime, motion));
       if (!pose) person.object.position.y = .055;
       person.object.position.y += walking ? Math.abs(Math.sin(person.walkTime)) * .025 : 0;
       person.ring.position.set(person.object.position.x, person.object.position.y + .005, person.object.position.z);
@@ -951,6 +975,7 @@ export async function createOfficeScene({ container, onSelect = () => {}, onFloo
       disposed = true; cancelAnimationFrame(frame); resizeObserver.disconnect(); controls.dispose();
       canvas.removeEventListener('pointerdown', onPointerDown); canvas.removeEventListener('pointerup', onPointerUp);
       canvas.removeEventListener('pointercancel', onPointerCancel);
+      for (const person of people.values()) person.model.dispose();
       for (const shape of geometries) shape.dispose();
       for (const mat of materials.values()) mat.dispose();
       for (const texture of textures) texture.dispose();

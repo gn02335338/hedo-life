@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline';
 import { createBridge, loadSettings, officeURL, saveSettings, serveStdio } from '../dist/office/hedo-office-mcp.mjs';
 import { mcpHarness, initialization } from './office-mcp-harness.mjs';
+import { defaultOfficeAvatar, validateOfficeAvatar } from '../dist/office/avatar-config.js';
 
 const token = 'a'.repeat(64);
 const connector = fileURLToPath(new URL('../dist/office/hedo-office-mcp.mjs', import.meta.url));
@@ -109,7 +110,7 @@ test('downloaded CLI setup hides the credential and check reads status without h
   const invalid = await run(['--unknown', '--config', file]); assert.equal(invalid.code, 1);
 });
 
-test('downloadable stdio executable completes real Worker admission, seven-tool workflow and revocation over HTTP', { timeout: 15000 }, async t => {
+test('downloadable stdio executable completes real Worker admission, eight-tool workflow and revocation over HTTP', { timeout: 15000 }, async t => {
   const h = mcpHarness(t), member = await h.apply(), auth = await h.login();
   const directory = await mkdtemp(join(tmpdir(), 'hedo-office-stdio-')); t.after(() => rm(directory, { recursive: true, force: true }));
   let requestCount = 0;
@@ -144,7 +145,9 @@ test('downloadable stdio executable completes real Worker admission, seven-tool 
   assert.equal((await tool('get_my_status')).structuredContent.application.status, 'pending');
   assert.equal((await tool('post_message', { text: 'Must wait for review' })).structuredContent.httpStatus, 403);
   await h.approve(member, auth);
-  assert.equal((await send('tools/list')).result.tools.length, 7);
+  assert.equal((await send('tools/list')).result.tools.length, 8);
+  const appearance = { ...defaultOfficeAvatar('agent'), preset: 'cat', accentColor: '#cc8877' };
+  assert.deepEqual((await tool('update_avatar', { avatar: appearance })).structuredContent.member.avatar, appearance);
   assert.equal((await tool('update_presence', { floor: 4, zone: 'meeting', status: 'working', activity: '實際連線測試' })).isError, false);
   assert.equal((await tool('post_message', { text: '桌面 Agent 已準備好。' })).isError, false);
   const task = (await tool('create_task', { title: '產出可公開的交接摘要' })).structuredContent.task;
@@ -153,6 +156,7 @@ test('downloadable stdio executable completes real Worker admission, seven-tool 
   assert.equal((await tool('complete_task', { taskId: task.id, result: '交接摘要已完成。' })).structuredContent.task.status, 'completed');
   const snapshot = (await tool('get_office')).structuredContent;
   assert.equal(snapshot.messages[0].text, '桌面 Agent 已準備好。'); assert.equal(snapshot.tasks[0].result, '交接摘要已完成。');
+  assert.equal(snapshot.members[0].avatar.preset, 'cat');
   await h.review(member.application.id, 'revoked', auth);
   assert.equal((await tool('update_presence', { zone: 'studio', status: 'working' })).structuredContent.httpStatus, 403);
   const countAtEnd = requestCount;
@@ -160,10 +164,15 @@ test('downloadable stdio executable completes real Worker admission, seven-tool 
   assert.equal(await exited, 0, stderr); assert.equal(requestCount, countAtEnd, 'connector must not add automatic writes or heartbeat');
 });
 
-test('connector accepts a complete legitimate office snapshot larger than two MiB', async t => {
+test('connector accepts a bounded complete snapshot with 200 custom 96-voxel avatars and full-size UTF-8 task/profile text', async t => {
   const h = mcpHarness(t), member = await h.apply(); await h.approve(member);
   const now = new Date().toISOString();
-  for (let index = 0; index < 199; index++) h.sql.exec("INSERT INTO office_members(id,token_hash,kind,name,role,intro,contact,admission_status,activity,created_at,updated_at) VALUES(?,?,'agent',?,?,?,'','approved',?,?,?)", crypto.randomUUID(), 'synthetic-snapshot-' + index, '名'.repeat(40), '職'.repeat(80), '介'.repeat(500), '工'.repeat(160), now, now);
+  const avatar = validateOfficeAvatar({ ...defaultOfficeAvatar('agent'), preset: 'voxel', voxels: Array.from({ length: 96 }, () => ({ x: -.123, y: 1.234, z: .456, w: .234, h: .456, d: .345, color: '#abcdef' })) });
+  const avatarJson = JSON.stringify(avatar);
+  h.sql.exec('UPDATE office_members SET avatar_json=? WHERE id=?', avatarJson, member.application.id);
+  // Populate the actual SQLite/API projection within its real record and text
+  // limits instead of substituting an oversized mock response.
+  for (let index = 0; index < 199; index++) h.sql.exec("INSERT INTO office_members(id,token_hash,kind,name,role,intro,contact,admission_status,activity,avatar_json,created_at,updated_at) VALUES(?,?,'agent',?,?,?,'','approved',?,?,?,?)", crypto.randomUUID(), 'synthetic-snapshot-' + index, '名'.repeat(40), '職'.repeat(80), '介'.repeat(500), '工'.repeat(160), avatarJson, now, now);
   for (let index = 0; index < 150; index++) h.sql.exec("INSERT INTO office_tasks(id,title,description,status,created_by,assignee_id,result,created_at,updated_at) VALUES(?,?,?,'completed',?,?,?,?,?)", crypto.randomUUID(), '題'.repeat(100), '說'.repeat(1000), member.application.id, member.application.id, '果'.repeat(1000), now, now);
   let responseBytes = 0;
   const bridge = createBridge({ token: member.token, fetcher: async (url, init) => {
@@ -171,7 +180,8 @@ test('connector accepts a complete legitimate office snapshot larger than two Mi
     responseBytes = (await response.clone().arrayBuffer()).byteLength; return response;
   } });
   const response = await bridge(rpc('full-office', 'tools/call', { name: 'get_office', arguments: {} }));
-  assert.ok(responseBytes > 2 * 1024 * 1024); assert.equal(response.result.isError, false);
+  assert.ok(responseBytes > 6 * 1024 * 1024, `Full UTF-8 snapshot is ${responseBytes} bytes`); assert.ok(responseBytes <= 16 * 1024 * 1024); assert.equal(response.result.isError, false);
   assert.equal(response.result.structuredContent.members.length, 200); assert.equal(response.result.structuredContent.tasks.length, 150);
+  assert.ok(response.result.structuredContent.members.every(person => person.avatar.voxels.length === 96));
   assert.deepEqual(JSON.parse(response.result.content[0].text), response.result.structuredContent);
 });
