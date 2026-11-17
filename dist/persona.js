@@ -4,6 +4,7 @@ import {CAST_PROFILES_V39} from './cast-v39.js';
 import {CAST_PROFILES_V65} from './cast-v65.js';
 import {ALICE_PROFILE_V71} from './career-content-v71.js';
 import {CAST_PROFILES_V74} from './cast-v74.js';
+import {FRIDAY_CAST_PROFILES_V76} from './friday-cast-v76.js';
 export { displayChronicleEvent, displayChronicleHistory } from './chronicle-scene-copy.js';
 // Short introductions belong to the character book, not the replay narrative.
 // Keep schools, personal relationships and workplace rumors out of these cards.
@@ -55,6 +56,10 @@ export const PERSONAS = Object.freeze(Object.fromEntries([
  ...Object.entries(CAST_PROFILES_V74).map(([id,p])=>[id,p.name,p.title]),
 ].map(([id,name,title])=>[id,Object.freeze({name,title,image:CAST_PROFILES_V74[id]?`./assets/avatars-v74/${id}.webp`:`./assets/${id}.png`,portrait:!['wing','spencer'].includes(id),about:CHARACTER_BIOS[id]||CAST_PROFILES_V65[id]?.about||CAST_PROFILES_V74[id]?.about||(id==='alice'?ALICE_PROFILE_V71.about:undefined)})])));
 
+// Career meetings also have reading-club guests. Keep the original company
+// roster for systems with their own authored profiles or published rules.
+export const CAREER_PERSONAS = Object.freeze({...PERSONAS,...FRIDAY_CAST_PROFILES_V76});
+
 const names = Object.freeze({
  Wing:'翅膀',WING:'翅膀',Spencer:'屎潘蛇',SPENCER:'屎潘蛇',
  Erich:'法師',ERICH:'法師',Sonny:'阿福',SONNY:'阿福',
@@ -67,13 +72,13 @@ const namePattern = new RegExp(`(?<![A-Za-z0-9_])(?:${Object.keys(names).join('|
 const displayNames = Object.freeze({Sophie:'紅茶',SOPHIE:'紅茶',Jonathan:'強哥',JONATHAN:'強哥',Owen:'歐文',OWEN:'歐文',Sam:'山姆',SAM:'山姆',Cindy:'辛蒂',CINDY:'辛蒂'});
 const displayNamePattern = new RegExp(`(?<![A-Za-z0-9_])(?:${Object.keys(displayNames).join('|')})(?![A-Za-z0-9_])`,'g');
 
-export function displayName(id){return Object.hasOwn(PERSONAS,id)?displayText(PERSONAS[id].name):id;}
+export function displayName(id){return Object.hasOwn(CAREER_PERSONAS,id)?displayText(CAREER_PERSONAS[id].name):id;}
 
 // Engine authors still read the frozen identity above. UI cards can use the
 // current public alias without altering old history, RNG or proof inputs.
 export function displayPersona(id){
- if(!Object.hasOwn(PERSONAS,id))return null;
- const person=PERSONAS[id];
+ if(!Object.hasOwn(CAREER_PERSONAS,id))return null;
+ const person=CAREER_PERSONAS[id];
  return {...person,name:displayName(id),title:id==='professor'?'電機領域教授／產學顧問':person.title};
 }
 

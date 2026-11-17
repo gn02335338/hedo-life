@@ -1,6 +1,6 @@
 // A user-supplied comic premise, adapted as original workplace fiction. This
 // scene establishes an awkward encounter, never a real person's relationship.
-export const isLifeV75=value=>/^e39-r75-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
+export const isLifeV75=value=>/^e39-r7[56]-[nsd]-[0-9a-f]{22}$/.test(typeof value==='string'?value:value?.seed||'');
 
 export const TYPHOON_STORY_V75=Object.freeze({
  title:'颱風假，好市多的冷凍櫃先輸給你們的眼神。',

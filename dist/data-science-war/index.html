@@ -23,10 +23,18 @@
   <footer class="credits"><span>禾多人生 · 獨立遊戲</span><span>角色、對白與議題案例均為遊戲改編。</span></footer>
   <dialog id="restart-dialog" aria-labelledby="restart-title" class="restart-dialog">
     <h2 id="restart-title">重新開會？</h2>
-    <p>這一局會被覆蓋，下次開場會重新抽出會議議題。</p>
+    <p>這一局會被覆蓋，下次開場會重新抽道具和會議議題。</p>
     <form method="dialog">
       <button value="cancel" autofocus>繼續這局</button>
       <button class="primary" value="restart">重新開會</button>
+    </form>
+  </dialog>
+  <dialog id="duel-dialog" aria-labelledby="duel-title" class="restart-dialog">
+    <h2 id="duel-title">確定跟山姆單挑？</h2>
+    <p>進入禾多島擂台後，勝負、平手或退賽都會結束這場會議。</p>
+    <form method="dialog">
+      <button value="cancel" autofocus>留在會議室</button>
+      <button class="combat" value="fight">去擂台</button>
     </form>
   </dialog>
 </body>

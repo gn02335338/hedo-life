@@ -1,7 +1,8 @@
 import {CAST_IDS_V74} from '../dist/cast-v74.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {CHARACTER_IDS,deriveCharacterStats,characterAffinity} from '../dist/character-stats.js';
+import {deriveCharacterStats,characterAffinity} from '../dist/character-stats.js';
+import {PERSONAS} from '../dist/persona.js';
 import {CAST_IDS_V65} from '../dist/cast-v65.js';
 
 const release=(target,kind='relationship',affinityDelta=-35)=>({
@@ -12,7 +13,7 @@ const release=(target,kind='relationship',affinityDelta=-35)=>({
 const life=(history,seed='e30-verbal-counter')=>({seed,history});
 
 test('a historical spoken outburst can sharply reduce only the selected character affinity without recording a hit',()=>{
- for(const id of CHARACTER_IDS.filter(id=>id!=='alice'&&!CAST_IDS_V74.includes(id))){
+ for(const id of Object.keys(PERSONAS).filter(id=>id!=='alice'&&!CAST_IDS_V74.includes(id))){
   const seed=CAST_IDS_V65.includes(id)?'e39-r65-n-'+'a'.repeat(22):'e30-verbal-counter';
   const run=life([release(id)],seed),rows=deriveCharacterStats(run),selected=rows.find(row=>row.id===id);
   assert.equal(selected.encounters,1);assert.equal(selected.affinityLost,35);assert.equal(selected.affinityDownEvents,1);

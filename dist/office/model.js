@@ -1,5 +1,5 @@
-import { PERSONAS, displayPersona } from '../persona.js';
-import { DEFAULT_OFFICE_FLOOR, getCharacterFloor, isOfficeFloor } from './floors.js';
+import { displayPersona } from '../persona.js';
+import { DEFAULT_OFFICE_FLOOR, OFFICE_CHARACTER_IDS, getCharacterFloor, isOfficeFloor } from './floors.js';
 import { getCharacterRoutine } from './routine.js';
 import { getOfficeSocialMoments, sampleOfficeRoutine } from './social.js';
 import { getOfficeEvent } from './events.js';
@@ -196,7 +196,7 @@ const MOMENTS = Object.freeze({
 const zoneIds = new Set(OFFICE_ZONES.map(zone => zone.id));
 const statusIds = new Set(['working', 'idle', 'break']);
 
-export const OFFICE_CAST = Object.freeze(Object.keys(PERSONAS).map((id, index) => {
+export const OFFICE_CAST = Object.freeze(OFFICE_CHARACTER_IDS.map((id, index) => {
   const person = displayPersona(id);
   const [zone, , activity, quote] = MOMENTS[id][0];
   return Object.freeze({ id, name: person.name, title: person.title, portrait: person.image.replace(/^\.\//, '/'), color: PALETTE[index % PALETTE.length], departmentFloor: getCharacterFloor(id), zone, activity, quote });

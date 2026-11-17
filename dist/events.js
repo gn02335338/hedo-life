@@ -4,6 +4,7 @@ import {CAST_EVENTS_V66} from './events-cast-v66.js';
 import {ALICE_EVENTS_V71} from './events-alice-v71.js';
 import {CAREER_EVENTS_V71} from './events-career-v71.js';
 import {CAST_EVENTS_V74} from './events-cast-v74.js';
+import {FRIDAY_CAST_EVENTS_V76} from './events-friday-v76.js';
 // Satirical adaptation of private recollections. Every Wing line, choice and outcome
 // is original fictional dialogue; sourceIds identify inspiration, never verified accusations.
 import { IMAGE_EVENTS } from './events-images.js';
@@ -1323,3 +1324,4 @@ EVENTS.push(...CAREER_EVENTS_V71);
 
 EVENTS.push(...RELATIONSHIP_EVENTS_V72);
 EVENTS.push(...CAST_EVENTS_V74);
+EVENTS.push(...FRIDAY_CAST_EVENTS_V76);

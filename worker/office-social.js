@@ -1,5 +1,5 @@
 import { ApiError, json, readJson, tokenHash } from './http.js';
-import { CHARACTER_IDS } from '../dist/character-stats.js';
+import { OFFICE_CHARACTER_IDS } from '../dist/office/floors.js';
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const TOKEN=/^[a-f0-9]{64}$/;
@@ -72,7 +72,7 @@ export class OfficeSocialStore{
   }
   return row;
  }
- limitFor(memberId,senderId){let maximum=this.preferences(memberId).maxTurns;if(senderId&&!CHARACTER_IDS.includes(senderId)){const other=this.sql.exec("SELECT social_max_turns FROM office_members WHERE id=? AND admission_status='approved'",senderId).toArray()[0];if(other)maximum=Math.min(maximum,other.social_max_turns||4);}return Math.min(6,maximum);}
+ limitFor(memberId,senderId){let maximum=this.preferences(memberId).maxTurns;if(senderId&&!OFFICE_CHARACTER_IDS.includes(senderId)){const other=this.sql.exec("SELECT social_max_turns FROM office_members WHERE id=? AND admission_status='approved'",senderId).toArray()[0];if(other)maximum=Math.min(maximum,other.social_max_turns||4);}return Math.min(6,maximum);}
  checkTurn(memberId,conversationId,senderId){
   const row=this.sql.exec('SELECT * FROM office_social_conversations WHERE id=?',conversationId).toArray()[0];
   if(!row||row.expires_at<=this.now())fail(409,'office_conversation_expired','這段對話已結束，請等候新的邀請。');
@@ -80,9 +80,9 @@ export class OfficeSocialStore{
   const previous=this.sql.exec('SELECT last_reply_at FROM office_social_turns WHERE conversation_id=? AND member_id=?',conversationId,memberId).toArray()[0],wait=previous?previous.last_reply_at+this.preferences(memberId).cooldownSeconds*1000-this.now():0;
   if(wait>0){const error=new ApiError(429,'office_social_cooldown','請稍等這段對話的冷卻時間。');error.retryAfter=Math.ceil(wait/1000);throw error;}return row;
  }
- sourceAllowed(senderId){return senderId===null||CHARACTER_IDS.includes(senderId)||this.sql.exec("SELECT id FROM office_members WHERE id=? AND admission_status='approved'",senderId).toArray().length>0;}
+ sourceAllowed(senderId){return senderId===null||OFFICE_CHARACTER_IDS.includes(senderId)||this.sql.exec("SELECT id FROM office_members WHERE id=? AND admission_status='approved'",senderId).toArray().length>0;}
  deliverMessage(row){
-  if(!row.recipient_id||row.recipient_id===row.member_id||CHARACTER_IDS.includes(row.recipient_id))return;
+  if(!row.recipient_id||row.recipient_id===row.member_id||OFFICE_CHARACTER_IDS.includes(row.recipient_id))return;
   const sender=this.sql.exec("SELECT id,name,kind FROM office_members WHERE id=? AND admission_status='approved'",row.member_id).toArray()[0];if(!sender)return;
   const expiry=Date.parse(row.created_at)+OFFICE_SOCIAL_LIMITS.messageTtlMs;
   if(expiry<=this.now())return;
@@ -94,7 +94,7 @@ export class OfficeSocialStore{
  sync(memberId,encounters=[]){
   this.cleanup(memberId);
   const rows=this.sql.exec("SELECT x.* FROM office_messages x JOIN office_members m ON m.id=x.member_id WHERE x.recipient_id=? AND m.admission_status='approved' ORDER BY x.rowid DESC LIMIT 100",memberId).toArray();for(const row of rows)this.deliverMessage(row);
-  for(const encounter of encounters){if(encounter.recipientId!==memberId||!CHARACTER_IDS.includes(encounter.speakerId))continue;
+  for(const encounter of encounters){if(encounter.recipientId!==memberId||!OFFICE_CHARACTER_IDS.includes(encounter.speakerId))continue;
    const sender=encounter.participants.find(person=>person.id===encounter.speakerId);if(!sender)continue;
    const expiry=Date.parse(encounter.endsAt)+OFFICE_SOCIAL_LIMITS.encounterGraceMs;if(!Number.isFinite(expiry)||expiry<=this.now())continue;
    const id='encounter:'+encounter.id+':'+memberId;this.conversation(id,[memberId,encounter.speakerId].sort().join(':'),expiry);
@@ -116,7 +116,7 @@ export class OfficeSocialStore{
   this.sql.exec('INSERT INTO office_social_receipts(member_id,submission_id,fingerprint,result_json,created_at) VALUES(?,?,?,?,?)',memberId,submissionId,fingerprint,JSON.stringify(compact),this.now());
  }
  validateMessage(body){fields(body,['text','recipientId','replyToId','submissionId']);if(body.recipientId===null)fail(400,'invalid_office_recipient','請選擇公開角色或目前已核准的辦公室成員。');return{text:text(body.text),recipientId:body.recipientId===undefined?null:body.recipientId,replyToId:body.replyToId===undefined?null:uuid(body.replyToId),submissionId:body.submissionId===undefined?null:uuid(body.submissionId)};}
- recipient(value){if(value===null)return null;if(typeof value!=='string'||!CHARACTER_IDS.includes(value)&&(!UUID.test(value)||!this.sql.exec("SELECT id FROM office_members WHERE id=? AND admission_status='approved'",value.toLowerCase()).toArray().length))fail(400,'invalid_office_recipient','請選擇公開角色或目前已核准的辦公室成員。');return CHARACTER_IDS.includes(value)?value:value.toLowerCase();}
+ recipient(value){if(value===null)return null;if(typeof value!=='string'||!OFFICE_CHARACTER_IDS.includes(value)&&(!UUID.test(value)||!this.sql.exec("SELECT id FROM office_members WHERE id=? AND admission_status='approved'",value.toLowerCase()).toArray().length))fail(400,'invalid_office_recipient','請選擇公開角色或目前已核准的辦公室成員。');return OFFICE_CHARACTER_IDS.includes(value)?value:value.toLowerCase();}
  commitMessage(memberId,input,{automated=false,conversationId=null,sourceMessageId=null,sourceSenderId=null}={}){
   const member=this.assertApproved(memberId),now=this.now();let recipient=this.recipient(input.recipientId),replyToId=input.replyToId,parent=null;
   if(replyToId){parent=this.sql.exec("SELECT x.* FROM office_messages x JOIN office_members m ON m.id=x.member_id WHERE x.id=? AND m.admission_status='approved'",replyToId).toArray()[0];if(!parent)fail(404,'office_reply_missing','原本的公開留言已無法使用。');if(recipient!==null&&recipient!==parent.member_id)fail(400,'office_reply_recipient','回覆對象需與原留言的發話者一致。');recipient=parent.member_id;if(member.kind==='agent'&&Date.parse(parent.created_at)+OFFICE_SOCIAL_LIMITS.messageTtlMs<=now)fail(409,'office_conversation_expired','這段對話已結束，請等候新的邀請。');if(member.kind==='agent'&&parent.recipient_id!==memberId)fail(403,'office_reply_owner','請只回覆傳給自己的對話。');}
@@ -124,7 +124,7 @@ export class OfficeSocialStore{
   const pairKey=[memberId,recipient||'public'].sort().join(':'),newId=crypto.randomUUID();
   if(member.kind==='human')conversationId=newId;
   else if(!conversationId)conversationId=parent?.conversation_id||null;
-  if(member.kind==='agent'&&!conversationId&&recipient&&!CHARACTER_IDS.includes(recipient)){conversationId=this.sql.exec('SELECT id FROM office_social_conversations WHERE pair_key=? AND expires_at>? ORDER BY created_at DESC,rowid DESC LIMIT 1',pairKey,now).toArray()[0]?.id||null;}
+  if(member.kind==='agent'&&!conversationId&&recipient&&!OFFICE_CHARACTER_IDS.includes(recipient)){conversationId=this.sql.exec('SELECT id FROM office_social_conversations WHERE pair_key=? AND expires_at>? ORDER BY created_at DESC,rowid DESC LIMIT 1',pairKey,now).toArray()[0]?.id||null;}
   let conversation;
   if(conversationId&&member.kind==='agent'){
    conversation=this.sql.exec('SELECT * FROM office_social_conversations WHERE id=?',conversationId).toArray()[0];

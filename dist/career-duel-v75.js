@@ -2,7 +2,7 @@ import { createIslandBrawl } from './island/brawl.js';
 import { getBrawlProfile } from './island/brawl-roster.js';
 import { displayPersona } from './persona.js';
 
-export const isCareerDuelV75 = value => /^e39-r75-[nsd]-[0-9a-f]{22}$/.test(typeof value === 'string' ? value : value?.seed || '');
+export const isCareerDuelV75 = value => /^e39-r7[56]-[nsd]-[0-9a-f]{22}$/.test(typeof value === 'string' ? value : value?.seed || '');
 export const DUEL_STEP_V75 = 1 / 30;
 export const DUEL_FRAME_LIMIT_V75 = 2251;
 const clamp = n => Math.max(0, Math.min(100, n));

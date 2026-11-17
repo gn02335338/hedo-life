@@ -20,8 +20,7 @@ export function getOfficeFloor(value) {
   return isOfficeFloor(value) ? OFFICE_FLOORS[value - 1] : null;
 }
 
-// Only the 34 public character-book identities belong here. Floor assignment
-// follows departments; a technical manager still works on the research floor.
+// Office characters have authored floor assignments and routines.
 export const CHARACTER_FLOORS = Object.freeze({
   wing: 7,
   spencer: 7,
@@ -58,6 +57,7 @@ export const CHARACTER_FLOORS = Object.freeze({
   henry: 6,
   mia: 2,
 });
+export const OFFICE_CHARACTER_IDS = Object.freeze(Object.keys(CHARACTER_FLOORS));
 
 export function getCharacterFloor(id) {
   return typeof id === 'string' && Object.hasOwn(CHARACTER_FLOORS, id) ? CHARACTER_FLOORS[id] : DEFAULT_OFFICE_FLOOR;

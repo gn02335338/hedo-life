@@ -21,7 +21,7 @@ const clone=value=>JSON.parse(JSON.stringify(value));
 
 test('the warehouse encounter is appended only to strict current lives, with both people actually present',()=>{
  assert.equal(isLifeV75(witness.seed),true);assert.equal(isLifeV75({seed:witness.seed}),true);
- for(const seed of [witness.seed.replace('r75','r74'),witness.seed.replace('r75','r76'),witness.seed+'a',witness.seed.toUpperCase()])assert.equal(isLifeV75(seed),false);
+ for(const seed of [witness.seed.replace('r75','r74'),witness.seed.replace('r75','r77'),witness.seed+'a',witness.seed.toUpperCase()])assert.equal(isLifeV75(seed),false);
  const run=open(),event=E.getEvent(run);
  assert.equal(E.canRequestHiddenEncounter(source()),true);
  assert.equal(run.hiddenEncounterContext.scene,31);assert.equal(event.id,'hidden45-31-0');

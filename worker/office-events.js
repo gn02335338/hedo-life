@@ -1,5 +1,5 @@
 import { tokenHash } from './http.js';
-import { CHARACTER_IDS } from '../dist/character-stats.js';
+import { OFFICE_CHARACTER_IDS } from '../dist/office/floors.js';
 
 export const OFFICE_EVENT_NAME = 'office.inbox.created';
 export const OFFICE_EVENT_LIMITS = Object.freeze({ subscriptionsPerMember: 5, subscriptionsGlobal: 1000, ttlMs: 86400000, maxTtlMs: 7 * 86400000, minTtlMs: 60000, verificationMs: 300000, rotationMs: 300000, pumpMs: 15000, outboxGlobal: 200000, outboxPerSubscription: 200, attempts: 6 });
@@ -147,7 +147,7 @@ export class OfficeEventStore {
     if (this.row(identity.id)) return;
     if (this.sql.exec('SELECT COUNT(*) AS n FROM office_event_subscriptions WHERE member_id=?', identity.memberId).one().n >= OFFICE_EVENT_LIMITS.subscriptionsPerMember || this.sql.exec('SELECT COUNT(*) AS n FROM office_event_subscriptions').one().n >= OFFICE_EVENT_LIMITS.subscriptionsGlobal) throw new OfficeEventError('Office event subscription capacity is full.', { code: -32000 });
   }
-  sourceActive(item) { return item.sender_id === null || CHARACTER_IDS.includes(item.sender_id) || this.sql.exec("SELECT id FROM office_members WHERE id=? AND admission_status='approved'", item.sender_id).toArray().length > 0; }
+  sourceActive(item) { return item.sender_id === null || OFFICE_CHARACTER_IDS.includes(item.sender_id) || this.sql.exec("SELECT id FROM office_members WHERE id=? AND admission_status='approved'", item.sender_id).toArray().length > 0; }
   collect(row) {
     for (const item of this.sql.exec("SELECT id,type,sender_id,created_at,expires_at FROM office_inbox WHERE member_id=? AND state='pending' AND expires_at>? ORDER BY created_at,id LIMIT 200", row.member_id, this.now()).toArray()) {
       if (!kinds.has(item.type) || !this.sourceActive(item) || !this.enabled(row, item.type) || this.sql.exec('SELECT id FROM office_event_outbox WHERE subscription_id=? AND item_id=?', row.id, item.id).toArray().length) continue;

@@ -15,6 +15,7 @@ import { validateFeedback, validatePublisherToken } from '../worker/feedback.js'
 import { replayRun, VERSION, MAX_TURNS } from '../dist/engine.js';
 import { ROLE_MAP } from '../dist/roles.js';
 import { ENDINGS } from '../dist/endings.js';
+import { OFFICE_CHARACTER_IDS } from '../dist/office/floors.js';
 
 const password = 'synthetic-office-review-password';
 function verifier() { const salt = randomBytes(16); return JSON.stringify({ v: 1, iterations: 100000, salt: salt.toString('hex'), hash: pbkdf2Sync(password, salt, 100000, 32, 'sha256').toString('hex') }); }
@@ -302,24 +303,23 @@ test('approved avatar updates are owner-only, persist safely, and never manufact
 });
 
 test('targeted messages accept public characters and approved members, stay public, and hide private admission information', async t => {
-  const { CHARACTER_IDS } = await import('../dist/character-stats.js');
   const h = harness(t), auth = await h.login(), a = input(), b = input(token(), { name: 'Receiver' }), pending = input(token(), { name: 'Private pending', contact: 'pending-private@example.test' });
   await h.approve(a, auth); const receiver = await h.approve(b, auth), waiting = await h.apply(pending);
   const untargeted = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'Everyone' } }); assert.equal((await untargeted.json()).message.recipientId, null);
   const addressed = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'For receiver', recipientId: receiver.id.toUpperCase() } }); assert.equal((await addressed.json()).message.recipientId, receiver.id);
-  for (const [index, recipientId] of CHARACTER_IDS.entries()) {
+  for (const [index, recipientId] of OFFICE_CHARACTER_IDS.entries()) {
     if (index % 8 === 0) h.advance(60000);
     const sent = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'For public character ' + recipientId, recipientId } }); assert.equal(sent.status, 201); assert.equal((await sent.json()).message.recipientId, recipientId);
   }
   let firstError;
-  for (const recipientId of [waiting.id, crypto.randomUUID(), 'private', 'admin', '../admin/archive', null, '', 7, {}]) {
+  for (const recipientId of [waiting.id, crypto.randomUUID(), 'private', 'admin', '../admin/archive', 'joe', 'ethan', null, '', 7, {}]) {
     const failed = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'Not delivered', recipientId } }); assert.equal(failed.status, 400);
     const body = await failed.json(); firstError ||= body; assert.deepEqual(body, firstError);
   }
   await h.review(receiver.id, 'revoked', auth);
   const revoked = await h.call('/api/office/messages', { method: 'POST', bearer: a.token, body: { text: 'Cannot target revoked member', recipientId: receiver.id } }); assert.equal(revoked.status, 400); assert.deepEqual(await revoked.json(), firstError);
   h.reopen(); const snapshot = await (await h.call('/api/office')).json(); assert.ok(snapshot.messages.some(row => row.text === 'For receiver' && row.recipientId === receiver.id)); assert.ok(snapshot.messages.some(row => row.recipientId === 'jack'));
-  assert.equal(JSON.stringify(snapshot).includes(pending.contact), false); assert.equal(JSON.stringify(snapshot).includes(waiting.id), false); assert.equal(snapshot.messages.length, CHARACTER_IDS.length + 2);
+  assert.equal(JSON.stringify(snapshot).includes(pending.contact), false); assert.equal(JSON.stringify(snapshot).includes(waiting.id), false); assert.equal(snapshot.messages.length, OFFICE_CHARACTER_IDS.length + 2);
 });
 
 test('legacy message and member tables gain display columns without changing admission, identity or original message records', async t => {
@@ -341,7 +341,6 @@ test('legacy message and member tables gain display columns without changing adm
 test('public encounters expose only fictional invitations and approved identities without writing messages or heartbeats', async t => {
   const { getOfficeRoster } = await import('../dist/office/model.js');
   const { getOfficeEncounters, SOCIAL_CYCLE_MS } = await import('../dist/office/social.js');
-  const { CHARACTER_IDS } = await import('../dist/character-stats.js');
   const h = harness(t), auth = await h.login(), agent = input(token(), { kind: 'agent', name: 'Approved encounter agent', contact: 'private-agent@example.test' });
   const applicant = await h.approve(agent, auth), pending = await h.apply(input(token(), { name: 'PRIVATE_PENDING_NAME', contact: 'pending-encounter@example.test' }));
   const firstTime = Date.parse(applicant.createdAt), cycle = Math.floor(firstTime / SOCIAL_CYCLE_MS);
@@ -349,7 +348,7 @@ test('public encounters expose only fictional invitations and approved identitie
   let moment;
   for (let turn = 0; turn < 64 && !moment; turn++) for (let delay = 0; delay <= 49000; delay += 7000) {
     const time = (cycle + turn) * SOCIAL_CYCLE_MS + 155000 + delay; if (time < firstTime) continue;
-    const encounter = getOfficeEncounters(getOfficeRoster([simulatedMember], time)).find(row => row.recipientId === applicant.id && CHARACTER_IDS.includes(row.speakerId));
+    const encounter = getOfficeEncounters(getOfficeRoster([simulatedMember], time)).find(row => row.recipientId === applicant.id && OFFICE_CHARACTER_IDS.includes(row.speakerId));
     if (encounter) { moment = { time, encounter }; break; }
   }
   assert.ok(moment, 'An approved agent can receive a public character invitation through the shared routine');
@@ -362,11 +361,11 @@ test('public encounters expose only fictional invitations and approved identitie
   };
   const snapshot = await (await h.call('/api/office')).json(), invitation = snapshot.encounters.find(row => row.id === moment.encounter.id);
   assert.deepEqual(invitation, moment.encounter); assert.equal(snapshot.members[0].online, true); assert.equal(snapshot.members[0].activity, 'Actual agent work');
-  const publicIds = new Set([...CHARACTER_IDS, applicant.id]);
+  const publicIds = new Set([...OFFICE_CHARACTER_IDS, applicant.id]);
   for (const encounter of snapshot.encounters) {
     assert.equal(encounter.simulated, true); assert.ok(encounter.prompt.length > 0); assert.ok(Date.parse(encounter.endsAt) > Date.parse(encounter.startsAt));
     for (const participant of encounter.participants) { assert.deepEqual(Object.keys(participant).sort(), ['id', 'kind', 'name']); assert.ok(publicIds.has(participant.id)); }
-    if (encounter.speakerId !== null) assert.ok(CHARACTER_IDS.includes(encounter.speakerId), 'Only an authored character speaks a generated greeting');
+    if (encounter.speakerId !== null) assert.ok(OFFICE_CHARACTER_IDS.includes(encounter.speakerId), 'Only an authored character speaks a generated greeting');
   }
   const text = JSON.stringify(snapshot); assert.ok(!text.includes(agent.contact)); assert.ok(!text.includes(agent.token)); assert.ok(!text.includes(pending.id)); assert.ok(!text.includes('PRIVATE_PENDING_NAME'));
   assert.deepEqual(h.sql.exec('SELECT * FROM office_members ORDER BY id').toArray(), before.members);

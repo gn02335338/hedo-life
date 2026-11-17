@@ -293,7 +293,7 @@
       "kind": "button",
       "refersTo": "button-primary",
       "description": "開始、出示證據和推進。",
-      "html": "<button type=\"button\" class=\"ds-action ds-action-primary\">出示證據並反駁</button>",
+      "html": "<button type=\"button\" class=\"ds-action ds-action-primary\">推進問題</button>",
       "css": ".ds-action-primary{display:inline-flex;align-items:center;justify-content:center;gap:.65rem;min-height:45px;padding:.68rem 1rem;text-align:center;font:inherit;font-weight:800;line-height:1.4;border:1px solid;border-radius:4px;transition:background-color .18s ease,color .18s ease,border-color .18s ease;background:var(--coral,#ff836e);color:var(--dark-coral,#2f1019);border-color:var(--coral,#ff836e);}\n.ds-action-primary:hover:not(:disabled){background:#ffa892;border-color:#ffa892;}\n.ds-action-primary:focus-visible{outline:3px solid var(--gold,#ffc374);outline-offset:4px;}\n.ds-action-primary:disabled{color:#d0a8b3;background:#483044;border-color:#684456;}\n@media(prefers-reduced-motion:reduce){.ds-action{transition-duration:.01ms;}}"
     },
     {
@@ -309,7 +309,7 @@
       "kind": "button",
       "refersTo": "button-combat",
       "description": "用於進入戰鬥。",
-      "html": "<button type=\"button\" class=\"ds-action ds-action-combat\">扁他 · 迎戰戰鬥大師</button>",
+      "html": "<button type=\"button\" class=\"ds-action ds-action-combat\">跟山姆單挑</button>",
       "css": ".ds-action-combat{display:inline-flex;align-items:center;justify-content:center;gap:.65rem;min-height:45px;padding:.68rem 1rem;text-align:center;font:inherit;font-weight:800;line-height:1.4;border:1px solid;border-radius:4px;transition:background-color .18s ease,color .18s ease,border-color .18s ease;background:#411c2e;color:#ffd3b2;border-color:#a35263;}\n.ds-action-combat:hover:not(:disabled){background:#552239;border-color:var(--coral,#ff836e);}\n.ds-action-combat:focus-visible{outline:3px solid var(--gold,#ffc374);outline-offset:4px;}\n@media(prefers-reduced-motion:reduce){.ds-action{transition-duration:.01ms;}}"
     },
     {

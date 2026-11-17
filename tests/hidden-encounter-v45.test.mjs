@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import * as engine from '../dist/engine.js';
 import {HIDDEN_PERSONAS_V45,HIDDEN_SCENE_COUNT_V45,getHiddenEncounterEventV45,resolveHiddenEncounterChoiceV45} from '../dist/hidden-encounter-v45.js';
-import {PERSONAS} from '../dist/persona.js';
+import {CAREER_PERSONAS,PERSONAS} from '../dist/persona.js';
 import {CHARACTER_IDS,deriveCharacterStats} from '../dist/character-stats.js';
 import {characterBookHTML} from '../dist/character-book.js';
 import {validateCompletion} from '../worker/http.js';
@@ -36,7 +36,7 @@ test('all eight previously authored scenes retain their exact titles, prose, cho
 });
 
 test('a hidden encounter is a rare side scene, absent from the public cast and stats',()=>{
- assert.equal(Object.keys(PERSONAS).length,34);assert.equal(CHARACTER_IDS.length,Object.keys(PERSONAS).length);
+ assert.equal(Object.keys(PERSONAS).length,34);assert.equal(CHARACTER_IDS.length,Object.keys(CAREER_PERSONAS).length);
  assert.equal(Object.hasOwn(PERSONAS,'hidden-visitor'),false);
  assert.equal(HIDDEN_PERSONAS_V45['hidden-visitor'].name,'魚酥姐');
  assert.equal(HIDDEN_PERSONAS_V45['hidden-visitor'].image,'./assets/hidden-visitor.png');

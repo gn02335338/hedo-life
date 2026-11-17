@@ -18,9 +18,9 @@ test('current relationship hints describe five evidence-derived tiers without ch
  }
 });
 
-test('r73–r75 keep the existing personal relationship tiers and result badges',()=>{
+test('r73–r76 keep the existing personal relationship tiers and result badges',()=>{
  const old=life([12,12,6]),row=rowFor('help');
- for(const profile of [73,74,75])for(const marker of ['n','s','d']){
+ for(const profile of [73,74,75,76])for(const marker of ['n','s','d']){
   const current={...old,seed:`e39-r${profile}-${marker}-`+'a'.repeat(22)};
   assert.equal(relationshipHintV72(current,'jack'),relationshipHintV72(old,'jack'));
   assert.equal(relationshipResultHTMLV72(current,row),relationshipResultHTMLV72(old,row));
@@ -29,7 +29,7 @@ test('r73–r75 keep the existing personal relationship tiers and result badges'
 
 test('old lives and unknown/hidden character IDs do not receive current-tier or result UI',()=>{
  const row=rowFor();
- for(const old of ['e39-r71-n-'+'a'.repeat(22),'e39-r70-s-'+'a'.repeat(22),'e39-old-ui','e38-legacy','e39-r76-n-'+'a'.repeat(22)]){
+ for(const old of ['e39-r71-n-'+'a'.repeat(22),'e39-r70-s-'+'a'.repeat(22),'e39-old-ui','e38-legacy','e39-r77-n-'+'a'.repeat(22)]){
   const run={...life([12,12,6]),seed:old};assert.equal(relationshipHintV72(run,'jack'),'');assert.equal(relationshipResultHTMLV72(run,row),'');
  }
  for(const id of ['missing','company-mystery','__proto__',null])assert.equal(relationshipHintV72(life(),'jack'===id?'missing':id),'');

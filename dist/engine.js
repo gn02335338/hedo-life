@@ -2,6 +2,7 @@ import {isCareerDuelV75,getCareerDuelEventV75,requestCareerDuelStateV75,settleCa
 import {getBrawlProfile} from './island/brawl-roster.js';
 import {isCaptainVoyageV73} from './captain-profile-v73.js';
 import {isCastV74,CAST_IDS_V74} from './cast-v74.js';
+import {FRIDAY_CAST_PROFILES_V76,fridayCastEventAllowedV76,isFridayCastV76} from './friday-cast-v76.js';
 import {MEAL_GUEST_IDS_V74,MEAL_EVENTS_V74,mealPageIdV74,getMealEventV74} from './meals-cast-v74.js';
 import {getRageV74,rageTargetForV74,withCastRageCopyV74,castVerbalLineV74,withCastVerbalScenarioV74,isPrivateCastSceneV74,privateCastSceneAllowedV74,privateCastTimingTextV74} from './cast-interactions-v74.js';
 import {selectWorkEventV74} from './work-events-v74.js';
@@ -309,7 +310,7 @@ function rawGetEvent(run){
  ],'career');
  }
  const event=EVENTS.find(e=>e.id===run.eventId)||FANTASY_EVENTS.find(e=>e.id===run.eventId);
- if(!event||(event.requiresCastV74&&!isCastV74(run))||(event.requiresRelationshipV72&&!isLifeSystemsV72(run))||(event.requiresCareerV71&&!isCareerContentV71(run))||(event.requiresCastV66&&!isExpansionV66(run))||(event.requiresCastV65&&!isExpansionV65(run))||(event.minRules??0)>contentRules(run)||(contentRules(run)>=29&&event.requireGender&&event.requireGender!==run.characterGender))throw new Error(`Unknown event ${run.eventId}`);
+ if(!event||(event.requiresFridayCastV76&&!isFridayCastV76(run))||(event.requiresCastV74&&!isCastV74(run))||(event.requiresRelationshipV72&&!isLifeSystemsV72(run))||(event.requiresCareerV71&&!isCareerContentV71(run))||(event.requiresCastV66&&!isExpansionV66(run))||(event.requiresCastV65&&!isExpansionV65(run))||(event.minRules??0)>contentRules(run)||(contentRules(run)>=29&&event.requireGender&&event.requireGender!==run.characterGender))throw new Error(`Unknown event ${run.eventId}`);
  if(event===FANTASY_EVENTS[3])return {...event,kind:'fantasy',choices:[...event.choices,c('不去交易所。我的人生另有用途。','選擇職涯、離職或隱藏結局。','你從口袋裡拿出那張舊清單，翻到背面。空白，剛好可以寫自己的。',{},'careerExit')]};
  return {...event,speaker:event.speaker||'wing',kind:FANTASY_EVENTS.includes(event)?'fantasy':isPrivateCastSceneV74(run,event)?'private-social':'daily'};
 }
@@ -376,7 +377,7 @@ function nextNormal(run){
  if(contentRules(run)>=20&&run.flags.floor_watch)return watchNextEvent(run);
  if(run.turn>=20&&run.turn<MAX_TURNS)return FANTASY_EVENTS[run.turn-20].id;
  if(run.turn>=MAX_TURNS)return contentRules(run)>=8?'rank-exit':'career-exit';
- const supported=ev=>(!ev.requiresCastV74||isCastV74(run))&&privateCastSceneAllowedV74(run,ev)&&relationshipEventAllowedV72(run,ev)&&patronageDailyAllowedV67(run,ev)&&(!ev.requiresCareerV71||isCareerContentV71(run))&&(!ev.requiresCastV66||isExpansionV66(run))&&(!ev.requiresCastV65||isExpansionV65(run))&&officeTreatDailyAllowedV61(run,ev)&&calendarDailyAllowedV46(run,ev)&&(ev.minRules??0)<=contentRules(run)&&(!ev.requireGender||contentRules(run)>=29&&ev.requireGender===run.characterGender)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0))&&(contentRules(run)<8||((ev.minRank??0)<=legacyCareerRank(run)&&(ev.maxRank??4)>=legacyCareerRank(run)));
+ const supported=ev=>(!ev.requiresFridayCastV76||fridayCastEventAllowedV76(run,ev))&&(!ev.requiresCastV74||isCastV74(run))&&privateCastSceneAllowedV74(run,ev)&&relationshipEventAllowedV72(run,ev)&&patronageDailyAllowedV67(run,ev)&&(!ev.requiresCareerV71||isCareerContentV71(run))&&(!ev.requiresCastV66||isExpansionV66(run))&&(!ev.requiresCastV65||isExpansionV65(run))&&officeTreatDailyAllowedV61(run,ev)&&calendarDailyAllowedV46(run,ev)&&(ev.minRules??0)<=contentRules(run)&&(!ev.requireGender||contentRules(run)>=29&&ev.requireGender===run.characterGender)&&(!ev.context||(ev.context==='pip'&&run.pip?.active&&run.pip.remaining>0))&&(contentRules(run)<8||((ev.minRank??0)<=legacyCareerRank(run)&&(ev.maxRank??4)>=legacyCareerRank(run)));
  const matchesRole=ev=>!ev.roles||ev.roles.includes(run.actualRoleId)||(contentRules(run)<21&&ev.roles.includes(run.roleId));
  let pool=EVENTS.filter(ev=>supported(ev)&&!run.seen.includes(ev.id)&&(ev.minTurn??0)<=run.turn&&(ev.maxTurn??99)>=run.turn&&matchesRole(ev));
  if(!pool.length)pool=EVENTS.filter(ev=>supported(ev)&&matchesRole(ev));
@@ -384,6 +385,10 @@ function nextNormal(run){
   const relationship=selectRelationshipEventV72(run,pool,()=>roll(run));
   if(relationship)return relationship;
   pool=pool.filter(event=>!event.requiresRelationshipV72);
+ }
+ if(isFridayCastV76(run)){
+  const meeting=pool.find(event=>event.requiresFridayCastV76);
+  if(meeting)return meeting.id;
  }
  if(isCastV74(run))return selectWorkEventV74(run,pool,()=>roll(run),EVENTS);
  if(isCareerContentV71(run))return selectWorkEventV71(run,pool,()=>roll(run),EVENTS);
@@ -1730,6 +1735,7 @@ function replayActions(roleId,seed,actions,count=actions.length){
 export function replayRun(roleId,seed,actions){return replayActions(roleId,seed,actions);}
 export function validRun(run){
  try {
+  if(!isFridayCastV76(run)&&(run?.eventId?.startsWith('friday76-')||run?.history?.some(row=>row?.eventId?.startsWith('friday76-')||Object.hasOwn(FRIDAY_CAST_PROFILES_V76,row?.speaker))))return false;
   if(!isCareerDuelV75(run)&&(run?.duelContextV75!==undefined||run?.history?.some(row=>row?.duelOutcome!==undefined||row?.kind==='duel')||Object.keys(run?.flags||{}).some(key=>key.startsWith('duel75_'))))return false;
   if(!isCastV74(run)&&(run?.eventId?.startsWith('cast74-')||run?.history?.some(row=>row?.kind==='private-social'||row?.eventId?.startsWith('cast74-')||CAST_IDS_V74.includes(row?.speaker))||Object.keys(run?.flags||{}).some(key=>key.startsWith('cast74_'))))return false;
   if(isCastV74(run)&&run?.flags?.cast74_private_last_turn!==undefined&&(!Number.isInteger(run.flags.cast74_private_last_turn)||run.flags.cast74_private_last_turn<1||run.flags.cast74_private_last_turn>run.turn+1))return false;

@@ -9,7 +9,7 @@ import {HIDDEN_STORIES_V66} from '../dist/hidden-stories-v66.js';
 
 const seed='e39-r74-n-'+'0'.repeat(22);
 const eligible=event=>{
- if((event.minRules??0)>39||!event.choices||event.choices.length<3)return false;
+ if((event.minRules??0)>39||event.requiresFridayCastV76||!event.choices||event.choices.length<3)return false;
  for(let turn=0;turn<20;turn++){
   if((event.minTurn??0)>turn||(event.maxTurn??99)<turn)continue;
   const run={seed,turn,flags:{activity46_enabled:1,activity44_banquet:1}};

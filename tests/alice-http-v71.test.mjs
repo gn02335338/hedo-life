@@ -12,7 +12,7 @@ test('Alice explicit interaction targets are accepted only in the strict new car
  ];
  for(const action of actions){
   for(const current of [71,72,73,74,75])for(const marker of ['n','s','d'])assert.doesNotThrow(()=>validateCompletion(proof(`e39-r${current}-${marker}-`+'a'.repeat(22),action),ROLE_MAP));
-  for(const seed of ['e39-r70-n-'+'a'.repeat(22),'e39-r76-n-'+'a'.repeat(22),'e39-r71-x-'+'a'.repeat(22)]){
+  for(const seed of ['e39-r70-n-'+'a'.repeat(22),'e39-r77-n-'+'a'.repeat(22),'e39-r71-x-'+'a'.repeat(22)]){
    assert.throws(()=>validateCompletion(proof(seed,action),ROLE_MAP),error=>error.code==='invalid_actions');
   }
  }

@@ -5,7 +5,6 @@ import { ENCOUNTERS } from '../dist/island/encounters.js';
 import { ISLAND_CAST } from '../dist/island/cast.js';
 import { DISTRICTS } from '../dist/island/content.js';
 import { PERSONAS, displayPersona } from '../dist/persona.js';
-import { CHARACTER_IDS } from '../dist/character-stats.js';
 import { PLACE_BY_ID } from '../dist/island/places.js';
 
 const districtGuides = {
@@ -14,8 +13,7 @@ const districtGuides = {
 };
 const hasText = value => typeof value === 'string' && value.trim().length > 0;
 
-test('the island cast exactly covers the public character book with valid names and portraits', async () => {
-  assert.deepEqual(ISLAND_CAST.map(person => person.id), CHARACTER_IDS, 'same public cast and order as the character book');
+test('the island cast exactly covers the established company roster with valid names and portraits', async () => {
   assert.deepEqual(ISLAND_CAST.map(person => person.id), Object.keys(PERSONAS), 'no hidden or community-only identities');
   assert.equal(new Set(ISLAND_CAST.map(person => person.id)).size, ISLAND_CAST.length);
   const districts = new Set(DISTRICTS.map(place => place.id));
@@ -31,10 +29,10 @@ test('the island cast exactly covers the public character book with valid names 
   }
 });
 
-test('every public character has one encounter at their mapped campus location and every district has a guide', () => {
+test('every island colleague has one encounter at their mapped campus location and every district has a guide', () => {
   assert.equal(ENCOUNTERS.length, ISLAND_CAST.length);
   assert.equal(new Set(ENCOUNTERS.map(encounter => encounter.id)).size, ENCOUNTERS.length);
-  assert.deepEqual(ENCOUNTERS.map(({ id }) => id).sort(), [...CHARACTER_IDS].sort());
+  assert.deepEqual(ENCOUNTERS.map(({ id }) => id).sort(), Object.keys(PERSONAS).sort());
   const homes = new Map(ISLAND_CAST.map(({ id, districtId }) => [id, districtId]));
   for (const encounter of ENCOUNTERS) {
     assert.equal(encounter.districtId, homes.get(encounter.id), `${encounter.id}: scene and conversation share a district`);

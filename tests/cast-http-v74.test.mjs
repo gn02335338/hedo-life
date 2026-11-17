@@ -28,7 +28,7 @@ test('HTTP accepts all five strict-r74 target envelopes and rejects them from ol
   for(const action of actions){
    const base={runId:randomUUID(),roleId:'system',seed:'e39-r74-n-'+'a'.repeat(22),actions:[action]};
    assert.doesNotThrow(()=>validateCompletion(base,ROLE_MAP));
-   for(const seed of ['e39-r73-n-'+'a'.repeat(22),'e39-r76-n-'+'a'.repeat(22),'e39-r74-x-'+'a'.repeat(22),'e39-r74-n-'+'a'.repeat(21),'e39-r74-n-'+'A'.repeat(22)])assert.throws(()=>validateCompletion({...base,seed},ROLE_MAP),error=>error.code==='invalid_actions');
+   for(const seed of ['e39-r73-n-'+'a'.repeat(22),'e39-r77-n-'+'a'.repeat(22),'e39-r74-x-'+'a'.repeat(22),'e39-r74-n-'+'a'.repeat(21),'e39-r74-n-'+'A'.repeat(22)])assert.throws(()=>validateCompletion({...base,seed},ROLE_MAP),error=>error.code==='invalid_actions');
   }
  }
 });
@@ -48,26 +48,26 @@ test('HTTP-admitted group rage, verbal and authority actions replay canonically 
  }
 });
 
-test('full authenticated v74 character rows are accepted and remain intact across an offline reload',async()=>{
- const current=rows().map((row,index)=>CAST_IDS_V74.includes(row.id)?{...row,encounters:index,affinityGained:8,affinityUpEvents:1}:row),live=client(()=>snapshot(current));
+test('full authenticated current character rows are accepted and remain intact across an offline reload',async()=>{
+ const current=rows().map((row,index)=>[...CAST_IDS_V74,'joe','ethan'].includes(row.id)?{...row,encounters:index,affinityGained:8,affinityUpEvents:1}:row),live=client(()=>snapshot(current));
  await live.cloud.init();assert.deepEqual(plain(live.cloud.state.characters),current);assert.equal(live.requests[0].authorization,'Bearer '+'1'.repeat(64));
- const cached=JSON.parse(live.saved.get('hedo-character-cache-v1'));assert.equal(cached.characters.length,34);assert.ok(!JSON.stringify(cached).includes('1'.repeat(64)));
+ const cached=JSON.parse(live.saved.get('hedo-character-cache-v1'));assert.equal(cached.characters.length,CHARACTER_IDS.length);assert.ok(!JSON.stringify(cached).includes('1'.repeat(64)));
  const offline=client(()=>{throw new TypeError('offline');},[...live.saved]);await offline.cloud.init();assert.deepEqual(plain(offline.cloud.state.characters),current);assert.equal(offline.cloud.state.charactersVerifiedAt,cached.verifiedAt);
 });
 
-test('historical 22- and 29-person verified caches stay sparse until an authenticated expanded snapshot arrives',async()=>{
- for(const size of [22,29]){
+test('historical 22-, 29- and 34-person caches stay sparse until an authenticated expanded snapshot arrives',async()=>{
+ for(const size of [22,29,34]){
   const legacy=rows().slice(0,size).map((row,index)=>({...row,encounters:index+1})),old=client(()=>snapshot(legacy));await old.cloud.init();
   const serialized=old.saved.get('hedo-character-cache-v1'),oldOwner=JSON.parse(serialized).ownerHash;let online=false;
   const full=[...legacy,...rows().slice(size)],next=client(()=>{if(!online)throw new TypeError('offline');return snapshot(full);},[...old.saved]);await next.cloud.init();
-  assert.deepEqual(plain(next.cloud.state.characters),legacy);assert.equal(next.saved.get('hedo-character-cache-v1'),serialized);assert.ok(CAST_IDS_V74.every(id=>!next.cloud.state.characters.some(row=>row.id===id)));
+  assert.deepEqual(plain(next.cloud.state.characters),legacy);assert.equal(next.saved.get('hedo-character-cache-v1'),serialized);assert.ok(full.slice(size).every(({id})=>!next.cloud.state.characters.some(row=>row.id===id)));
   online=true;await next.cloud.retry();assert.deepEqual(plain(next.cloud.state.characters),full);assert.equal(JSON.parse(next.saved.get('hedo-character-cache-v1')).ownerHash,oldOwner);
  }
 });
 
 test('malformed supplied new rows cannot be silently dropped or replace a verified historical snapshot',async()=>{
  const legacy=rows().slice(0,29),old=client(()=>snapshot(legacy));await old.cloud.init();const serialized=old.saved.get('hedo-character-cache-v1');
- for(const target of CAST_IDS_V74){
+ for(const target of [...CAST_IDS_V74,'joe','ethan']){
   const invalid=rows().map(row=>row.id===target?{...row,realHits:-1}:row),live=client(()=>snapshot(invalid),[...old.saved]);await live.cloud.init();
   assert.deepEqual(plain(live.cloud.state.characters),legacy);assert.equal(live.saved.get('hedo-character-cache-v1'),serialized);
   const bad={...JSON.parse(serialized),characters:invalid},offline=client(()=>{throw new TypeError('offline');},[...old.saved,['hedo-character-cache-v1',JSON.stringify(bad)]]);await offline.cloud.init();assert.deepEqual(plain(offline.cloud.state.characters),[]);

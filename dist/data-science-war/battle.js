@@ -2,26 +2,25 @@ import { createIslandBrawl } from '../island/brawl.js';
 import { mountIslandBrawl } from '../island/brawl-ui.js';
 
 const OPPONENT = 'data-science-battle-master';
-const NAME = '戰鬥大師';
 
 const SKILLS = [
   {
     id: 'runaway-loop', name: '遞迴暴走', kind: 'zone', trigger: 'always',
-    tell: '戰鬥大師鎖定你腳下的座標，錯誤訊息開始堆疊。',
+    tell: '山姆指著你腳下的座標，錯誤訊息開始堆疊。',
     line: '重試第 999 次。重試第 1,000 次。',
     counter: '離開地面的標記圈，別折返撿紙團。',
     windup: 1.35, cooldown: 13, range: 320, radius: 70, damage: 16, color: '#bf6649',
   },
   {
     id: 'prediction-burst', name: '幻覺連發', kind: 'projectile', trigger: 'always',
-    tell: '盔甲前方浮起一份沒有來源的報告。',
+    tell: '山姆抬手，眼鏡前浮起一份沒有來源的報告。',
     line: '信心百分之百。來源待補。',
     counter: '向側面移動，也可以讓花台擋住報告。',
     windup: 1, cooldown: 9, range: 420, radius: 28, damage: 11, color: '#826cb7',
   },
   {
     id: 'health-check', name: '自我修復程序', kind: 'heal', trigger: 'hurt', once: true,
-    tell: '盔甲打開散熱片，胸口亮起修復指示燈。',
+    tell: '山姆扶好眼鏡，一圈光正朝他聚攏。',
     line: '健康檢查通過，繼續剛才的誤判。',
     counter: '趁讀條還沒結束貼近攻擊，可以打斷回血。',
     windup: 1.5, cooldown: 20, range: 150, radius: 44, heal: 16, color: '#658d64',
@@ -30,7 +29,7 @@ const SKILLS = [
 
 const OVERLOAD = {
   id: 'context-overflow', name: '上下文溢出', kind: 'rush', trigger: 'time', at: 23, once: true,
-  tell: '投影的文字溢出場地，戰鬥大師擺出衝刺架勢。',
+  tell: '投影的文字溢出場地，山姆壓低身子準備衝過來。',
   line: '會議延長。剩餘議程全部載入！',
   counter: '離開長條預警的方向，等衝刺結束再靠近。',
   windup: 1.15, cooldown: 99, range: 220, radius: 41, damage: 17, color: '#b85736',
@@ -45,50 +44,105 @@ function paintShape(ctx, color, points) {
   ctx.fill();
 }
 
-function drawBattleMaster(enraged) {
-  const light = enraged ? '#ffc36d' : '#efb7ef';
-  const steel = enraged ? '#894769' : '#704b84';
+function fillEllipse(ctx, color, x, y, rx, ry) {
+  ctx.beginPath();
+  ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function drawSam(enraged) {
+  const skin = enraged ? '#cd6884' : '#eea384';
+  const shade = enraged ? '#a74868' : '#cf715e';
+  const hair = '#2e202e';
+  const jacket = '#392a43';
   return (ctx, { active, direction, step, pose }) => {
-    const frontHand = active === 'attack' || pose === 'skill' ? 65 : 42;
+    const attacking = active === 'attack' || pose === 'skill';
+    const frontHand = attacking ? 52 : 35;
+    const frontHeight = attacking ? -72 : -46;
     ctx.save();
     ctx.scale(direction, 1);
-    paintShape(ctx, '#412740', [[-28, -108], [-37, -132], [-57, -149], [-35, -143], [-14, -116]]);
-    paintShape(ctx, '#68445d', [[22, -109], [32, -142], [53, -156], [44, -134], [37, -112]]);
-    paintShape(ctx, '#2c2033', [[-30, -122], [-19, -137], [0, -132], [19, -137], [30, -122], [24, -97], [0, -89], [-24, -97]]);
-    paintShape(ctx, steel, [[-28, -91], [-40, -73], [-29, -45], [0, -29], [29, -45], [40, -73], [28, -91]]);
-    paintShape(ctx, '#343039', [[-14, -83], [14, -83], [20, -58], [0, -43], [-20, -58]]);
-    paintShape(ctx, '#343039', [[-30, -34], [-11, -26], [-12, -9 + step], [-33, -4 + step], [-37, -9 + step]]);
-    paintShape(ctx, '#343039', [[30, -34], [11, -26], [12, -9 - step], [33, -4 - step], [37, -9 - step]]);
-    paintShape(ctx, '#343039', [[-41, -79], [-47, -63], [-37, -45], [-26, -50], [-28, -71]]);
-    paintShape(ctx, '#343039', [[29, -79], [frontHand - 9, -75], [frontHand + 4, -64], [frontHand - 4, -53], [34, -57]]);
-    paintShape(ctx, light, [[-20, -118], [-3, -112], [-7, -108], [-17, -111]]);
-    paintShape(ctx, light, [[4, -112], [20, -118], [17, -111], [9, -108]]);
-    paintShape(ctx, light, [[0, -79], [10, -65], [0, -50], [-10, -65]]);
+    paintShape(ctx, '#35303c', [[-23, -34], [-5, -32], [-8, -9 + step], [-24, -9 + step]]);
+    paintShape(ctx, '#35303c', [[23, -34], [5, -32], [8, -9 - step], [24, -9 - step]]);
+    fillEllipse(ctx, '#e7d5ce', -18, -7 + step, 11, 6);
+    fillEllipse(ctx, '#e7d5ce', 18, -7 - step, 11, 6);
+    paintShape(ctx, jacket, [[-25, -81], [-38, -66], [-37, -46], [-25, -43], [-17, -76]]);
+    paintShape(ctx, jacket, [[-24, -84], [24, -84], [30, -68], [26, -33], [-25, -33], [-30, -68]]);
+    paintShape(ctx, '#b0a1b0', [[-12, -83], [12, -83], [16, -36], [-12, -36]]);
+    paintShape(ctx, '#ae4965', [[-24, -83], [-12, -85], [-3, -67], [-19, -74]]);
+    paintShape(ctx, '#eeb8ae', [[23, -83], [12, -85], [4, -67], [20, -75]]);
+    paintShape(ctx, jacket, [[23, -80], [frontHand, frontHeight - 9], [frontHand + 3, frontHeight + 5], [27, -55]]);
+    fillEllipse(ctx, skin, frontHand, frontHeight, 8, 8);
+    fillEllipse(ctx, shade, -31, -45, 7, 8);
+
+    if (enraged) {
+      paintShape(ctx, '#712e47', [[-23, -119], [-40, -136], [-48, -160], [-33, -147], [-18, -138], [-9, -122]]);
+      paintShape(ctx, '#c26867', [[18, -121], [34, -138], [43, -163], [48, -143], [40, -125], [30, -117]]);
+    }
+    fillEllipse(ctx, shade, -24, -109, 7, 10);
+    fillEllipse(ctx, skin, 4, -111, 28, 27);
+    paintShape(ctx, hair, [[-23, -107], [-27, -130], [-16, -139], [-32, -139], [-15, -150], [3, -149], [-3, -155], [24, -143], [30, -133], [27, -119], [18, -132], [5, -125], [11, -136], [-7, -126], [-7, -133], [-19, -124]]);
+    paintShape(ctx, '#8f415a', [[-16, -142], [3, -147], [19, -139], [0, -139], [-13, -132], [-9, -139]]);
+    const eye = enraged ? '#ffdc8d' : '#49303c';
+    fillEllipse(ctx, eye, -6, -112, 3.5, 3.5);
+    fillEllipse(ctx, eye, 18, -112, 3.5, 3.5);
+    ctx.strokeStyle = '#281c2c';
+    ctx.lineWidth = 3.5;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.rect(-17, -119, 20, 13);
+    ctx.rect(9, -119, 20, 13);
+    ctx.moveTo(3, -115);
+    ctx.lineTo(9, -115);
+    ctx.moveTo(-17, -116);
+    ctx.lineTo(-25, -120);
+    ctx.stroke();
+    ctx.strokeStyle = shade;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(1, -96);
+    ctx.quadraticCurveTo(10, enraged ? -104 : -91, 18, -96);
+    ctx.stroke();
     ctx.restore();
   };
 }
 
-export function startDataScienceBattle({ container, image, seed, enraged = false, onFinish }) {
+export function startDataScienceBattle({ container, image, seed, enraged = false, loadout = null, onFinish }) {
+  const name = enraged ? '山姆・戰鬥大師' : '山姆';
   const profile = {
     id: OPPONENT,
-    title: enraged ? '戰鬥大師完全體' : '戰鬥大師測試機',
-    opening: enraged ? '你聽見盔甲裡的散熱風扇越轉越快。' : '會議室的投影凝成一具盔甲。它正在等你的第一步。',
+    title: enraged ? '怒氣全開' : '讀書會主持人',
+    opening: enraged ? '山姆把眼鏡推回鼻梁，鏡片後亮著金色的光。' : '山姆捲起袖口，把剛才的講義放在場邊。',
     skills: SKILLS,
     events: [OVERLOAD],
   };
+  const hasItem = typeof loadout?.itemLabel === 'string' && loadout.itemLabel.trim() !== '';
   const model = createIslandBrawl({
     opponentId: OPPONENT,
     seed,
-    challenger: { profile, hp: enraged ? 168 : 124, energy: enraged ? 42 : 25 },
+    challenger: {
+      profile,
+      hp: enraged ? 168 : 124,
+      energy: enraged ? 42 : 25,
+      playerHp: hasItem ? loadout.maxHp ?? 224 : undefined,
+      playerEnergy: hasItem ? loadout.startingEnergy ?? 100 : undefined,
+    },
   });
   const wrapper = container.ownerDocument.createElement('div');
   wrapper.className = 'island-dialog brawl-dialog data-science-battle';
+  if (hasItem) {
+    const { player } = model.getState();
+    const note = container.ownerDocument.createElement('p');
+    note.className = 'data-science-loadout';
+    note.textContent = `已裝備 ${loadout.itemLabel}｜體力 ${player.hp} · 起始氣勢 ${player.energy}%`;
+    wrapper.append(note);
+  }
   container.append(wrapper);
 
   try {
     const battle = mountIslandBrawl({
       container: wrapper,
-      opponent: { id: OPPONENT, name: NAME, image, profile, drawBody: drawBattleMaster(enraged) },
+      opponent: { id: OPPONENT, name, image, profile, drawBody: drawSam(enraged) },
       model,
       reducedMotion: container.ownerDocument.defaultView.matchMedia('(prefers-reduced-motion: reduce)').matches,
       onFinish(outcome, summary) {

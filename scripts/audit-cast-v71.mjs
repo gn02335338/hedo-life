@@ -24,7 +24,7 @@ const eligible=event=>{
 };
 
 export function auditCastV71(){
- const authored=EVENTS.filter(event=>!event.requiresRelationshipV72&&!event.requiresCastV74),unique=new Map(authored.map(event=>[event.id,event]));
+ const authored=EVENTS.filter(event=>!event.requiresRelationshipV72&&!event.requiresCastV74&&!event.requiresFridayCastV76),unique=new Map(authored.map(event=>[event.id,event]));
  if(unique.size!==authored.length)throw Error('Duplicate authored event ID');
  const playable=[...unique.values()].filter(event=>event.choices?.length>=3&&eligible(event));
  const characters=Object.keys(PERSONAS).filter(id=>!['wine','peter','tony','henry','mia'].includes(id)).map(id=>{

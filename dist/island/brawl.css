@@ -34,6 +34,7 @@
 .brawl-shell [hidden]{display:none!important}
 
 .data-science-battle { margin-inline: auto; color-scheme: light; }
+.data-science-battle .data-science-loadout { margin: 0 0 8px; color: #4c5f43; font-size: .82rem; font-weight: 650; }
 .data-science-battle :is(.brawl-status, .brawl-control-hint) { color: #52614a; }
 .data-science-battle .brawl-overlay-panel :is(p, .brawl-ready-rules) { color: #52614a; }
 .data-science-battle .brawl-direction { border: 0; color: #4f6c47; }

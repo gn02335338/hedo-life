@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {PERSONAS} from '../dist/persona.js';
+import {CAREER_PERSONAS} from '../dist/persona.js';
 import {CHARACTER_IDS,CHARACTER_METRICS,deriveCharacterStats,characterHistoryChanges,characterAffinity} from '../dist/character-stats.js';
 import {createRun,applyChoice,advance,requestBreak,requestCareer,requestRaise,requestExit,requestRage,replayRun,validRun} from '../dist/engine.js';
 
@@ -31,7 +31,7 @@ function directPlay(roleId,seed,actions,saved=false){
 }
 
 test('character projection always returns the current public IDs and bounded integer metrics without accepting supplied totals',()=>{
- assert.deepEqual(CHARACTER_IDS,Object.keys(PERSONAS));assert.equal(CHARACTER_IDS.length,34);
+ assert.deepEqual(CHARACTER_IDS,Object.keys(CAREER_PERSONAS));assert.equal(CHARACTER_IDS.length,36);
  assert.deepEqual(CHARACTER_METRICS,['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents']);
  for(const value of [null,undefined,{},[],{history:null},{characters:[{id:'wing',realHits:999}],flags:{rage_real:999,rage_target_wing:999}}]){
   const result=deriveCharacterStats(value);assert.equal(result.length,CHARACTER_IDS.length);

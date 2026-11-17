@@ -1,5 +1,6 @@
 import {duelHistoryChangeV75} from './career-duel-v75.js';
-import { PERSONAS } from './persona.js';
+import { CAREER_PERSONAS } from './persona.js';
+import { FRIDAY_CAST_PROFILES_V76, isFridayCastV76 } from './friday-cast-v76.js';
 import { isPatronageV49, isPatronageApplicationOutcomeV49 } from './patronage-v49.js';
 import { isRecruitmentOutcomeV60 } from './recruitment-v60.js';
 import { isOfficeTreatOutcomeV61 } from './office-treats-v61.js';
@@ -15,9 +16,9 @@ import {castAvailableV74,isCastV74} from './cast-v74.js';
 // A projection of committed history, independent of game rules and RNG. A
 // character's relationship score is distinct from Wing's weather and team trust.
 export const CHARACTER_STATS_VERSION=1;
-export const CHARACTER_IDS=Object.freeze(Object.keys(PERSONAS));
+export const CHARACTER_IDS=Object.freeze(Object.keys(CAREER_PERSONAS));
 export const CHARACTER_METRICS=Object.freeze(['encounters','imaginedHits','realHits','affinityGained','affinityLost','affinityUpEvents','affinityDownEvents']);
-const known=(id,run)=>CHARACTER_IDS.includes(id)&&castAvailableV74(run,id)&&(!CAST_IDS_V65.includes(id)||isCastV65(run))&&(id!=='alice'||isCareerContentV71(run));
+const known=(id,run)=>CHARACTER_IDS.includes(id)&&castAvailableV74(run,id)&&(!CAST_IDS_V65.includes(id)||isCastV65(run))&&(id!=='alice'||isCareerContentV71(run))&&(!Object.hasOwn(FRIDAY_CAST_PROFILES_V76,id)||isFridayCastV76(run));
 const verbalKinds=new Set(['ignored','relationship','retort','support','personnel','legal']);
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 const choiceDelta=row=>{

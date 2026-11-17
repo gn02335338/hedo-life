@@ -39,6 +39,8 @@ export function createIslandBrawl({ opponentId, seed, challenger = null } = {}) 
   if (challenger) {
     if (finite(challenger.hp)) opponent.hp = opponent.maxHp = clamp(challenger.hp, 1, 240);
     if (finite(challenger.energy)) opponent.energy = clamp(challenger.energy, 0, MAX_ENERGY);
+    if (finite(challenger.playerHp)) player.hp = player.maxHp = clamp(challenger.playerHp, MAX_HP, 240);
+    if (finite(challenger.playerEnergy)) player.energy = clamp(challenger.playerEnergy, player.energy, MAX_ENERGY);
   }
   const stats = { damageDealt: 0, damageTaken: 0, maxCombo: 0, specialsUsed: 0, throwsUsed: 0, dodgesUsed: 0 };
   const pickups = [{ id: 'paper-left', type: 'paper', x: 210, y: 150, radius: 16, available: true, respawnIn: 0 },

@@ -1,14 +1,21 @@
-import { advanceMeeting, createMeeting, restoreMeeting, saveMeeting } from './game.js';
+import { advanceMeeting, createMeeting, endingFor, restoreMeeting, saveMeeting } from './game.js';
+
+import { ITEM_BY_ID } from './items.js';
 
 const main = document.getElementById('game');
 const restart = document.getElementById('reopen');
 const restartDialog = document.getElementById('restart-dialog');
+const duelDialog = document.getElementById('duel-dialog');
 const storage = {
   getItem(key) { return window.localStorage.getItem(key); },
   setItem(key, value) { window.localStorage.setItem(key, value); },
 };
-const characters = { sam: '山姆', joe: 'Joe', wine: 'Wine', ethan: 'Ethan', master: '戰鬥大師' };
-const art = (name) => new URL('./art/' + name + '.webp', import.meta.url).href;
+const characters = { sam: '山姆', joe: '鷲', wine: '紅酒', ethan: '伊森', jack: '傑克', master: '山姆・戰鬥大師' };
+const replyNames = { challenge: '推進問題', mediate: '請傑克協調', apology: '虛心認錯', scold: '大聲斥責', observe: '先聽大家說' };
+const art = (name) => {
+  const legacyPortrait = name === 'jack' || name === 'wing';
+  return new URL(legacyPortrait ? '../assets/' + name + '.png' : './art/' + name + '.webp', import.meta.url).href;
+};
 const arrow = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3 12h17m-7-7 7 7-7 7"/></svg>';
 
 let meeting = restoreMeeting(storage);
@@ -38,15 +45,37 @@ function renderIntro() {
       <div class="cover-copy">
         <h1 id="cover-title" tabindex="-1">資料科學<span>大戰</span></h1>
         <p class="cover-location">週五下午 · 會議室 B</p>
-        <p class="cover-lead">你走錯了會議室。桌上有汽水和洋芋片，門還沒關上，Joe 已經請你留下來報告 SEO。</p>
-        <button class="primary" data-action="start">推開會議室的門${arrow}</button>
+        <p class="cover-lead">你走錯了會議室。傑克替你拉了張椅子，鷲已經準備好點名你報告 SEO。進門前，你只能從桌邊帶走一件東西。</p>
+        <button class="primary" data-action="start">看看桌上的道具${arrow}</button>
       </div>
       <div class="cover-edge" aria-hidden="true"></div>
     </section>
     <aside class="intro-note">
-      <p><strong>帶證據上桌。</strong> 看會議資料、拆解主張；談不下去，也可以去禾多島打一場。</p>
+      <p><strong>目標是讓會議完美結束。</strong> 推進議題、看山姆的反應，必要時請傑克出面。</p>
       <p>單局 6 回合 · 進度留在這台瀏覽器</p>
     </aside>`;
+}
+
+function renderItems() {
+  main.innerHTML = `
+    <section class="prep" aria-labelledby="prep-title">
+      <div class="prep-note">
+        <h1 id="prep-title" tabindex="-1">進門前<br>帶一件東西</h1>
+        <p>傑克隔著門招呼你。伊森留了位子，紅酒把三樣東西放到門邊的桌上。鷲在入口等你。</p>
+      </div>
+      <div class="prep-items">
+        <h2>門邊的桌子</h2>
+        <p>選一樣，拿了就進場。</p>
+        <div class="prep-list">
+          ${meeting.itemDraw.map((item) => `
+            <button class="prep-item" type="button" data-action="pack" data-item="${item.id}">
+              <span class="prep-kind">${item.kind}</span>
+              <span class="prep-description"><strong>${item.label}</strong><span>${item.detail}</span></span>
+              ${arrow}
+            </button>`).join('')}
+        </div>
+      </div>
+    </section>`;
 }
 
 function renderRage(rage) {
@@ -71,13 +100,14 @@ function renderMeeting() {
   const report = meeting.report;
   const lastAction = meeting.actions.at(-1);
   const submitted = isReport && lastAction?.type === 'reply' ? lastAction.evidence : null;
-  const proofAccepted = submitted === scene.rebuttal;
+  const proofAccepted = report?.proof === 'hit';
+  const item = meeting.itemId ? ITEM_BY_ID[meeting.itemId] : null;
   const motion = transformed ? ' data-transformed' : '';
-  const line = transformed ? '投影開始閃爍。山姆的身影被一道黑色護甲蓋過，戰鬥大師從會議簡報裡現身。' : scene.line;
+  const line = transformed ? '山姆的眼鏡後竄出紅光，惡魔角從髮際冒出。他仍穿著剛才那件外套，但整間會議室都認出了戰鬥大師。' : scene.line;
   const evidence = `
         <aside class="evidence" aria-labelledby="evidence-title">
           <div class="paper-heading"><h2 id="evidence-title">會議資料</h2><span>${scene.evidence.length} 份</span></div>
-          <p id="evidence-guide">${isReport ? '這是本回合桌上的資料。' : '先選一份資料，再按反駁。'}</p>
+          <p id="evidence-guide">${isReport ? '這是本回合桌上的資料。' : '先選一份資料，再用它回答眼前的問題。'}</p>
           <div class="evidence-list">
             ${scene.evidence.map((item, index) => `
               <button class="slip" data-action="evidence" data-evidence="${item.id}" aria-pressed="${item.id === (isReport ? submitted : selectedEvidence)}" ${isReport ? 'disabled' : ''} aria-describedby="evidence-guide">
@@ -95,13 +125,16 @@ function renderMeeting() {
             <p>${report.text}</p>
             <dl class="deltas"><div><dt>怒氣</dt><dd>${signed(report.rage)}</dd></div><div><dt>會議信用</dt><dd>${signed(report.credibility)}</dd></div></dl>
             <div class="report-actions">
-              ${transformed ? '<button class="combat" data-action="fight">扁他 · 迎戰戰鬥大師</button>' : ''}
-              <button class="${transformed ? 'quiet' : 'primary'}" data-action="advance">${meeting.index + 1 === meeting.agenda.length ? '看看會議怎麼收場' : transformed ? '先冷靜，再繼續' : '下一個議題'}${arrow}</button>
+              ${report.repairable ? '<button class="quiet" data-action="repair">虛心認錯，收回剛才那句</button>' : ''}
+              ${transformed ? '<button class="combat" data-action="fight">單挑戰鬥大師</button>' : ''}
+              <button class="${transformed ? 'quiet' : 'primary'}" data-action="advance">${meeting.index + 1 === meeting.agenda.length ? '看看怎麼散會' : transformed ? '先冷靜，再繼續' : '下一個議題'}${arrow}</button>
             </div>
           </section>` : `
           <div class="reply-grid">
-            ${scene.replies.map((reply) => `<button class="${reply.id === 'challenge' ? 'primary' : 'quiet'}" data-action="reply" data-reply="${reply.id}" ${reply.id === 'challenge' && !selectedEvidence ? 'disabled' : ''}>${reply.id === 'challenge' ? '出示證據並反駁' : reply.label}</button>`).join('')}
-            <button class="combat" data-action="fight">扁他 <span>進入禾多島戰鬥</span></button>
+            ${scene.replies.map((reply) => `<button class="${reply.id === 'challenge' ? 'primary' : 'quiet'} action-choice" data-action="reply" data-reply="${reply.id}" ${reply.id === 'challenge' && !selectedEvidence ? 'disabled' : ''}><b>${replyNames[reply.id]}</b><span>${reply.id === 'challenge' ? '出示選好的資料' : reply.label}</span></button>`).join('')}
+            ${item && !meeting.itemUsed && !item.loadout ? `<button class="quiet action-choice" data-action="item"><b>使用道具</b><span>${item.label}</span></button>` : ''}
+            <button class="combat action-choice" data-action="fight"><b>跟山姆單挑</b><span>進入禾多島擂台</span></button>
+            ${meeting.index + 1 === meeting.agenda.length ? '<button class="quiet action-choice" data-action="wing"><b>請翅膀來收尾</b><span>讓他主持最後一段</span></button>' : ''}
           </div>`}
         </div>
   `;
@@ -114,6 +147,10 @@ function renderMeeting() {
         </div>
         ${renderRage(meeting.rage)}
       </div>
+      <div class="meeting-log">
+        <span>已推進 <b>${meeting.resolved}</b> 題</span>
+        ${item ? `<span>道具 <b>${item.label}</b>${meeting.itemUsed ? ' · 已用' : item.loadout ? ' · 單挑時生效' : ''}</span>` : ''}
+      </div>
       <div class="meeting-grid"${isReport ? ' data-report' : ''}>
         <div class="debate">
           <div class="speaker-stage"${motion}>
@@ -124,6 +161,7 @@ function renderMeeting() {
               <p>${line}</p>
             </div>
           </div>
+          ${scene.mediator && !isReport ? `<aside class="mediator"><img src="${art('jack')}" alt=""><p><strong>傑克</strong>${scene.mediator}</p></aside>` : ''}
         </div>
         ${isReport ? decisions + evidence : evidence + decisions}
       </div>
@@ -135,12 +173,16 @@ function signed(value) {
 }
 
 function renderEnding() {
+  const ending = endingFor(meeting);
+  const item = meeting.itemId ? ITEM_BY_ID[meeting.itemId] : null;
   main.innerHTML = `
-    <section class="cover ending" aria-labelledby="ending-title">
+    <section class="cover ending" aria-labelledby="ending-title"${ending.portrait ? ' data-portrait' : ''}>
+      ${ending.portrait ? `<img class="ending-portrait" src="${art(ending.portrait)}" alt="">` : ''}
       <div class="cover-copy">
-        <h1 id="ending-title" tabindex="-1">${meeting.ending.title}</h1>
-        <p class="cover-lead">${meeting.ending.text}</p>
-        <dl class="deltas"><div><dt>有效反駁</dt><dd>${meeting.correct}</dd></div><div><dt>會議信用</dt><dd>${meeting.credibility}</dd></div><div><dt>擂台勝場</dt><dd>${meeting.wins}</dd></div></dl>
+        <h1 id="ending-title" tabindex="-1">${ending.title}</h1>
+        ${ending.perfect ? '<p class="perfect">會議完美結束</p>' : ''}
+        <p class="cover-lead">${ending.text}</p>
+        <dl class="deltas"><div><dt>議題推進</dt><dd>${meeting.resolved}</dd></div><div><dt>會議信用</dt><dd>${meeting.credibility}</dd></div>${item ? `<div><dt>帶進場的道具</dt><dd>${item.label}</dd></div>` : ''}</dl>
         <button class="primary" data-action="start">再開一場會${arrow}</button>
       </div>
     </section>`;
@@ -149,7 +191,7 @@ function renderEnding() {
 async function renderBattle() {
   main.innerHTML = `
     <section class="battle-view" aria-labelledby="battle-title">
-      <div class="battle-header"><h1 id="battle-title" tabindex="-1">禾多島戰鬥</h1><button class="quiet" data-action="battle-exit">返回會議室</button></div>
+      <div class="battle-header"><h1 id="battle-title" tabindex="-1">禾多島戰鬥</h1><button class="quiet" data-action="battle-exit">放棄單挑</button></div>
       <div id="battle-container"><p>前往擂台中…</p></div>
     </section>`;
   const container = document.getElementById('battle-container');
@@ -159,13 +201,14 @@ async function renderBattle() {
     container.replaceChildren();
     battle = startDataScienceBattle({
       container,
-      image: art('master'),
+      image: art(meeting.rage === 100 ? 'master' : meeting.rage >= 75 ? 'sam-angry' : 'sam'),
+      loadout: meeting.itemId ? ITEM_BY_ID[meeting.itemId].loadout : null,
       seed: (meeting.seed ^ Math.imul(meeting.index + 1, 0x9e3779b9)) >>> 0,
       enraged: meeting.rage === 100,
       onFinish(outcome) { commit({ type: 'battle', result: outcome }); },
     });
   } catch {
-    if (container.isConnected) container.textContent = '擂台載入失敗。你可以返回會議室，或重新整理再試一次。';
+    if (container.isConnected) container.textContent = '擂台載入失敗。請重新整理再試一次，或放棄單挑結束本局。';
   }
 }
 
@@ -174,6 +217,7 @@ function render(focus = false) {
   battle = null;
   restart.hidden = !meeting || meeting.phase === 'ending' || meeting.phase === 'battle';
   if (!meeting) renderIntro();
+  else if (meeting.phase === 'items') renderItems();
   else if (meeting.phase === 'battle') renderBattle();
   else if (meeting.phase === 'ending') renderEnding();
   else renderMeeting();
@@ -189,10 +233,15 @@ function render(focus = false) {
 main.addEventListener('click', (event) => {
   const button = event.target.closest('button[data-action]');
   if (!button || button.disabled) return;
-  const { action, reply, evidence } = button.dataset;
+  const { action, reply, evidence, item } = button.dataset;
   if (action === 'start') newMeeting();
   if (action === 'reply') commit({ type: 'reply', reply, evidence: selectedEvidence });
-  if (action === 'advance' || action === 'fight') commit({ type: action });
+  if (action === 'pack') commit({ type: action, item });
+  if (['advance', 'repair', 'item', 'wing'].includes(action)) commit({ type: action });
+  if (action === 'fight') {
+    duelDialog.returnValue = '';
+    duelDialog.showModal();
+  }
   if (action === 'battle-exit' && (!battle || battle.requestExit())) commit({ type: 'battle', result: 'quit' });
   if (action === 'evidence') {
     selectedEvidence = selectedEvidence === evidence ? '' : evidence;
@@ -200,7 +249,7 @@ main.addEventListener('click', (event) => {
       slip.setAttribute('aria-pressed', String(slip.dataset.evidence === selectedEvidence));
     }
     main.querySelector('[data-reply="challenge"]').disabled = !selectedEvidence;
-    document.getElementById('evidence-guide').textContent = selectedEvidence ? '已選資料，可以出示證據並反駁。' : '先選一份資料，再按反駁。';
+    document.getElementById('evidence-guide').textContent = selectedEvidence ? '已選資料，可以按「推進問題」回答。' : '先選一份資料，再用它回答眼前的問題。';
   }
 });
 
@@ -210,5 +259,8 @@ restart.addEventListener('click', () => {
 });
 restartDialog.addEventListener('close', () => {
   if (restartDialog.returnValue === 'restart') newMeeting();
+});
+duelDialog.addEventListener('close', () => {
+  if (duelDialog.returnValue === 'fight') commit({ type: 'fight' });
 });
 render();
