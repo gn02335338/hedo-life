@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#170f21">
+  <meta name="description" content="你走錯了會議室，被點名報告 SEO。用證據反駁、調停，或轉進禾多島對戰。">
+  <title>資料科學大戰｜禾多人生</title>
+  <link rel="icon" href="./art/master.webp" type="image/webp">
+  <link rel="stylesheet" href="../island/brawl.css">
+  <link rel="stylesheet" href="./game.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#game">跳至遊戲</a>
+  <header class="masthead">
+    <a class="home-link" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m14 5-7 7 7 7M7 12h14"/></svg><span>禾多人生</span></a>
+    <span class="wordmark">資料科學大戰</span>
+    <button class="reset" id="reopen" type="button" hidden>重新開會</button>
+  </header>
+  <main id="game" tabindex="-1"></main>
+  <noscript><p class="no-script">請啟用 JavaScript 以進入會議室。</p></noscript>
+  <footer class="credits"><span>禾多人生 · 獨立遊戲</span><span>角色、對白與議題案例均為遊戲改編。</span></footer>
+  <dialog id="restart-dialog" aria-labelledby="restart-title" class="restart-dialog">
+    <h2 id="restart-title">重新開會？</h2>
+    <p>這一局會被覆蓋，下次開場會重新抽出會議議題。</p>
+    <form method="dialog">
+      <button value="cancel" autofocus>繼續這局</button>
+      <button class="primary" value="restart">重新開會</button>
+    </form>
+  </dialog>
+</body>
+</html>

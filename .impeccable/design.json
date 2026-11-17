@@ -1,0 +1,340 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-17T05:23:31.473Z",
+  "title": "資料科學大戰",
+  "extensions": {
+    "colorMeta": {
+      "night": {
+        "role": "neutral",
+        "displayName": "夜幕",
+        "tonalRamp": [
+          "oklch(15% 0.010 304)",
+          "oklch(24% 0.021 304)",
+          "oklch(35% 0.030 304)",
+          "oklch(48% 0.037 304)",
+          "oklch(61% 0.037 304)",
+          "oklch(74% 0.028 304)",
+          "oklch(85% 0.018 304)",
+          "oklch(95% 0.007 304)"
+        ]
+      },
+      "plum": {
+        "role": "neutral",
+        "displayName": "深紫",
+        "tonalRamp": [
+          "oklch(15% 0.014 314)",
+          "oklch(24% 0.028 314)",
+          "oklch(35% 0.041 314)",
+          "oklch(48% 0.050 314)",
+          "oklch(61% 0.050 314)",
+          "oklch(74% 0.038 314)",
+          "oklch(85% 0.024 314)",
+          "oklch(95% 0.010 314)"
+        ]
+      },
+      "edge": {
+        "role": "neutral",
+        "displayName": "紫灰細框",
+        "tonalRamp": [
+          "oklch(15% 0.017 322)",
+          "oklch(24% 0.034 322)",
+          "oklch(35% 0.050 322)",
+          "oklch(48% 0.061 322)",
+          "oklch(61% 0.061 322)",
+          "oklch(74% 0.047 322)",
+          "oklch(85% 0.029 322)",
+          "oklch(95% 0.012 322)"
+        ]
+      },
+      "pale": {
+        "role": "neutral",
+        "displayName": "暖白",
+        "tonalRamp": [
+          "oklch(15% 0.007 69)",
+          "oklch(24% 0.014 69)",
+          "oklch(35% 0.020 69)",
+          "oklch(48% 0.025 69)",
+          "oklch(61% 0.025 69)",
+          "oklch(74% 0.019 69)",
+          "oklch(85% 0.012 69)",
+          "oklch(95% 0.005 69)"
+        ]
+      },
+      "dim": {
+        "role": "neutral",
+        "displayName": "淡紫",
+        "tonalRamp": [
+          "oklch(15% 0.009 332)",
+          "oklch(24% 0.019 332)",
+          "oklch(35% 0.027 332)",
+          "oklch(48% 0.033 332)",
+          "oklch(61% 0.033 332)",
+          "oklch(74% 0.025 332)",
+          "oklch(85% 0.016 332)",
+          "oklch(95% 0.007 332)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "米色資料",
+        "tonalRamp": [
+          "oklch(15% 0.010 79)",
+          "oklch(24% 0.021 79)",
+          "oklch(35% 0.031 79)",
+          "oklch(48% 0.037 79)",
+          "oklch(61% 0.037 79)",
+          "oklch(74% 0.028 79)",
+          "oklch(85% 0.018 79)",
+          "oklch(95% 0.007 79)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "深紫墨色",
+        "tonalRamp": [
+          "oklch(15% 0.012 323)",
+          "oklch(24% 0.024 323)",
+          "oklch(35% 0.036 323)",
+          "oklch(48% 0.043 323)",
+          "oklch(61% 0.043 323)",
+          "oklch(74% 0.033 323)",
+          "oklch(85% 0.021 323)",
+          "oklch(95% 0.009 323)"
+        ]
+      },
+      "coral": {
+        "role": "primary",
+        "displayName": "珊瑚",
+        "tonalRamp": [
+          "oklch(15% 0.043 31)",
+          "oklch(24% 0.087 31)",
+          "oklch(35% 0.127 31)",
+          "oklch(48% 0.155 31)",
+          "oklch(61% 0.155 31)",
+          "oklch(74% 0.118 31)",
+          "oklch(85% 0.074 31)",
+          "oklch(95% 0.031 31)"
+        ]
+      },
+      "dark-coral": {
+        "role": "primary",
+        "displayName": "深酒紅",
+        "tonalRamp": [
+          "oklch(15% 0.015 4)",
+          "oklch(24% 0.029 4)",
+          "oklch(35% 0.043 4)",
+          "oklch(48% 0.052 4)",
+          "oklch(61% 0.052 4)",
+          "oklch(74% 0.039 4)",
+          "oklch(85% 0.025 4)",
+          "oklch(95% 0.010 4)"
+        ]
+      },
+      "gold": {
+        "role": "secondary",
+        "displayName": "投影金",
+        "tonalRamp": [
+          "oklch(15% 0.033 73)",
+          "oklch(24% 0.066 73)",
+          "oklch(35% 0.097 73)",
+          "oklch(48% 0.118 73)",
+          "oklch(61% 0.118 73)",
+          "oklch(74% 0.090 73)",
+          "oklch(85% 0.057 73)",
+          "oklch(95% 0.024 73)"
+        ]
+      },
+      "slip": {
+        "role": "neutral",
+        "displayName": "象牙白紙條",
+        "tonalRamp": [
+          "oklch(15% 0.006 82)",
+          "oklch(24% 0.011 82)",
+          "oklch(35% 0.017 82)",
+          "oklch(48% 0.020 82)",
+          "oklch(61% 0.020 82)",
+          "oklch(74% 0.015 82)",
+          "oklch(85% 0.010 82)",
+          "oklch(95% 0.004 82)"
+        ]
+      },
+      "slip-selected": {
+        "role": "primary",
+        "displayName": "選取暖粉",
+        "tonalRamp": [
+          "oklch(15% 0.017 44)",
+          "oklch(24% 0.034 44)",
+          "oklch(35% 0.049 44)",
+          "oklch(48% 0.060 44)",
+          "oklch(61% 0.060 44)",
+          "oklch(74% 0.045 44)",
+          "oklch(85% 0.029 44)",
+          "oklch(95% 0.012 44)"
+        ]
+      },
+      "paper-focus": {
+        "role": "primary",
+        "displayName": "紙面酒紅焦點",
+        "tonalRamp": [
+          "oklch(15% 0.029 3)",
+          "oklch(24% 0.059 3)",
+          "oklch(35% 0.086 3)",
+          "oklch(48% 0.105 3)",
+          "oklch(61% 0.105 3)",
+          "oklch(74% 0.080 3)",
+          "oklch(85% 0.050 3)",
+          "oklch(95% 0.021 3)"
+        ]
+      },
+      "quiet": {
+        "role": "neutral",
+        "displayName": "沉紫回應",
+        "tonalRamp": [
+          "oklch(15% 0.016 312)",
+          "oklch(24% 0.032 312)",
+          "oklch(35% 0.046 312)",
+          "oklch(48% 0.056 312)",
+          "oklch(61% 0.056 312)",
+          "oklch(74% 0.043 312)",
+          "oklch(85% 0.027 312)",
+          "oklch(95% 0.011 312)"
+        ]
+      },
+      "combat": {
+        "role": "tertiary",
+        "displayName": "酒紅戰鬥",
+        "tonalRamp": [
+          "oklch(15% 0.017 351)",
+          "oklch(24% 0.035 351)",
+          "oklch(35% 0.051 351)",
+          "oklch(48% 0.062 351)",
+          "oklch(61% 0.062 351)",
+          "oklch(74% 0.047 351)",
+          "oklch(85% 0.030 351)",
+          "oklch(95% 0.012 351)"
+        ]
+      },
+      "combat-text": {
+        "role": "tertiary",
+        "displayName": "戰鬥暖白",
+        "tonalRamp": [
+          "oklch(15% 0.019 59)",
+          "oklch(24% 0.037 59)",
+          "oklch(35% 0.054 59)",
+          "oklch(48% 0.066 59)",
+          "oklch(61% 0.066 59)",
+          "oklch(74% 0.050 59)",
+          "oklch(85% 0.032 59)",
+          "oklch(95% 0.013 59)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "body": {
+        "displayName": "內文",
+        "purpose": "繁中內文與說明。"
+      },
+      "dialogue": {
+        "displayName": "桌面對白",
+        "purpose": "投影場景內的角色發言。"
+      },
+      "label": {
+        "displayName": "標籤",
+        "purpose": "回合資訊與紙條摘要。"
+      },
+      "action": {
+        "displayName": "操作",
+        "purpose": "主要與次要按鈕。"
+      }
+    },
+    "shadows": [
+      {
+        "name": "portrait-shadow",
+        "value": "drop-shadow(0 10px 20px #100518a3)",
+        "purpose": "讓人物從會議室背景浮現。"
+      },
+      {
+        "name": "selected-slip-outline",
+        "value": "inset 0 0 0 1px #893e54",
+        "purpose": "加強選取紙條的輪廓。"
+      }
+    ],
+    "motion": [
+      {
+        "name": "button-state",
+        "value": "180ms ease",
+        "purpose": "按鈕底色、文字與邊框轉場。"
+      },
+      {
+        "name": "transformation",
+        "value": "580ms cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "角色變身的亮光與位移。"
+      },
+      {
+        "name": "objection-stamp",
+        "value": "280ms cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "反駁成立印記入場。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact",
+        "value": "880px"
+      },
+      {
+        "name": "stacked",
+        "value": "680px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "主要按鈕",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "開始、出示證據和推進。",
+      "html": "<button type=\"button\" class=\"ds-action ds-action-primary\">出示證據並反駁</button>",
+      "css": ".ds-action-primary{display:inline-flex;align-items:center;justify-content:center;gap:.65rem;min-height:45px;padding:.68rem 1rem;text-align:center;font:inherit;font-weight:800;line-height:1.4;border:1px solid;border-radius:4px;transition:background-color .18s ease,color .18s ease,border-color .18s ease;background:var(--coral,#ff836e);color:var(--dark-coral,#2f1019);border-color:var(--coral,#ff836e);}\n.ds-action-primary:hover:not(:disabled){background:#ffa892;border-color:#ffa892;}\n.ds-action-primary:focus-visible{outline:3px solid var(--gold,#ffc374);outline-offset:4px;}\n.ds-action-primary:disabled{color:#d0a8b3;background:#483044;border-color:#684456;}\n@media(prefers-reduced-motion:reduce){.ds-action{transition-duration:.01ms;}}"
+    },
+    {
+      "name": "一般回應",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "用於其餘會議回應。",
+      "html": "<button type=\"button\" class=\"ds-action ds-action-quiet\">先坐下，看看會議在吵什麼</button>",
+      "css": ".ds-action-quiet{display:inline-flex;align-items:center;justify-content:center;gap:.65rem;min-height:45px;padding:.68rem 1rem;text-align:center;font:inherit;font-weight:800;line-height:1.4;border:1px solid;border-radius:4px;transition:background-color .18s ease,color .18s ease,border-color .18s ease;background:#34223f;color:var(--pale,#fff1e2);border-color:#745677;}\n.ds-action-quiet:hover:not(:disabled){background:#4c3152;}\n.ds-action-quiet:focus-visible{outline:3px solid var(--gold,#ffc374);outline-offset:4px;}\n@media(prefers-reduced-motion:reduce){.ds-action{transition-duration:.01ms;}}"
+    },
+    {
+      "name": "戰鬥按鈕",
+      "kind": "button",
+      "refersTo": "button-combat",
+      "description": "用於進入戰鬥。",
+      "html": "<button type=\"button\" class=\"ds-action ds-action-combat\">扁他 · 迎戰戰鬥大師</button>",
+      "css": ".ds-action-combat{display:inline-flex;align-items:center;justify-content:center;gap:.65rem;min-height:45px;padding:.68rem 1rem;text-align:center;font:inherit;font-weight:800;line-height:1.4;border:1px solid;border-radius:4px;transition:background-color .18s ease,color .18s ease,border-color .18s ease;background:#411c2e;color:#ffd3b2;border-color:#a35263;}\n.ds-action-combat:hover:not(:disabled){background:#552239;border-color:var(--coral,#ff836e);}\n.ds-action-combat:focus-visible{outline:3px solid var(--gold,#ffc374);outline-offset:4px;}\n@media(prefers-reduced-motion:reduce){.ds-action{transition-duration:.01ms;}}"
+    },
+    {
+      "name": "證據紙條",
+      "kind": "card",
+      "refersTo": "evidence-slip",
+      "description": "選取後才可出示證據，並在回合結果保留送出的紙條。",
+      "html": "<button type=\"button\" class=\"ds-slip\" aria-pressed=\"true\"><span class=\"ds-slip-index\">01</span><span><strong>Joe 的提問紙</strong><span>兩個特徵幾乎線性相依。</span></span></button>",
+      "css": ".ds-slip{width:100%;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:start;gap:7px;padding:12px;text-align:left;background:#fff7e9;border:1px solid #be9f90;border-radius:4px;color:var(--ink,#352337);font:inherit;}\n.ds-slip:hover:not(:disabled){border-color:#8c4259;background:#fffaf1;}\n.ds-slip[aria-pressed=\"true\"],.ds-slip[aria-pressed=\"true\"]:hover:not(:disabled){border-color:#893e54;background:#ffd0bc;box-shadow:inset 0 0 0 1px #893e54;}\n.ds-slip:focus-visible{outline:3px solid #893e54;outline-offset:4px;}\n.ds-slip-index{color:#8c4055;font-size:.76rem;font-weight:850;font-variant-numeric:tabular-nums;padding-top:2px;}\n.ds-slip strong,.ds-slip strong+span{display:block;}\n.ds-slip strong{margin-bottom:4px;line-height:1.3;}\n.ds-slip strong+span{color:#634955;line-height:1.45;font-size:.875rem;}"
+    },
+    {
+      "name": "重新開會確認框",
+      "kind": "custom",
+      "refersTo": "restart-dialog",
+      "description": "確認要覆蓋這一局進度。",
+      "html": "<dialog class=\"ds-restart\" open aria-labelledby=\"ds-restart-title\"><h2 id=\"ds-restart-title\">重新開會？</h2><p>這一局會被覆蓋，下次開場會重新抽出會議議題。</p><form method=\"dialog\"><button class=\"ds-action ds-cancel\">繼續這局</button><button class=\"ds-action ds-confirm\">重新開會</button></form></dialog>",
+      "css": ".ds-restart{position:relative;margin:0 auto;box-sizing:border-box;max-width:min(100%,430px);background:var(--plum,#26162e);color:var(--pale,#fff1e2);border:1px solid var(--edge,#583d5c);padding:25px;border-radius:8px;}\n.ds-restart h2{margin:0;line-height:1.15;}\n.ds-restart p{margin:.85rem 0 1.25rem;color:var(--dim,#ccb7c8);}\n.ds-restart form{display:flex;justify-content:end;flex-wrap:wrap;gap:.65rem;}\n.ds-restart button{display:inline-flex;align-items:center;justify-content:center;gap:.65rem;min-height:45px;padding:.68rem 1rem;text-align:center;font:inherit;font-weight:800;line-height:1.4;border:1px solid;border-radius:4px;transition:background-color .18s ease,color .18s ease,border-color .18s ease;}\n.ds-restart button:focus-visible{outline:3px solid var(--gold,#ffc374);outline-offset:4px;}\n.ds-cancel{background:#34223f;border-color:#745677;color:var(--pale,#fff1e2);}\n.ds-cancel:hover{background:#4c3152;}\n.ds-confirm{color:var(--dark-coral,#2f1019);background:var(--coral,#ff836e);border-color:var(--coral,#ff836e);}\n.ds-confirm:hover{background:#ffa892;border-color:#ffa892;}\n@media(prefers-reduced-motion:reduce){.ds-action{transition-duration:.01ms;}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "會議投影下的辯論",
+    "overview": "這份規格適用於 [《資料科學大戰》](dist/data-science-war/index.html)。會議室插畫延續到對話場景，深紫語框承接人物發言，桌上的米色資料供玩家查證。確認反駁成立時，珊瑚色印記短暫打斷畫面。",
+    "dos": [
+      "維持先讀發言、再看資料、最後選擇回應的閱讀順序。",
+      "搭配文字、數值和選取狀態來呈現進度與回饋。"
+    ]
+  }
+}

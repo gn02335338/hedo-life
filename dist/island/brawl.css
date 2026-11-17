@@ -32,3 +32,47 @@
 .brawl-shell[data-reduced-motion="true"] *{animation:none!important;transition:none!important}
 /* The renderer also mounts inside career pages without island.css's reset. */
 .brawl-shell [hidden]{display:none!important}
+
+.data-science-battle { margin-inline: auto; color-scheme: light; }
+.data-science-battle :is(.brawl-status, .brawl-control-hint) { color: #52614a; }
+.data-science-battle .brawl-overlay-panel :is(p, .brawl-ready-rules) { color: #52614a; }
+.data-science-battle .brawl-direction { border: 0; color: #4f6c47; }
+
+@media (min-width: 641px) and (pointer: coarse) {
+  .data-science-battle .brawl-keyboard-note { display: none; }
+  .data-science-battle .brawl-pad {
+    display: block;
+    position: relative;
+    width: 132px;
+    height: 132px;
+    flex: 0 0 132px;
+    border: 1px solid #c6d0b7;
+    border-radius: 50%;
+    background: #e9eedc;
+    touch-action: none;
+  }
+  .data-science-battle .brawl-stick {
+    position: absolute;
+    inset: 47px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #d1ddc1;
+    transform: translate(var(--brawl-stick-x, 0), var(--brawl-stick-y, 0));
+    pointer-events: none;
+  }
+  .data-science-battle .brawl-direction {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    font-size: 22px;
+    touch-action: none;
+  }
+  .data-science-battle .brawl-direction.is-up { left: 44px; top: 0; }
+  .data-science-battle .brawl-direction.is-down { left: 44px; bottom: 0; }
+  .data-science-battle .brawl-direction.is-left { left: 0; top: 44px; }
+  .data-science-battle .brawl-direction.is-right { right: 0; top: 44px; }
+}

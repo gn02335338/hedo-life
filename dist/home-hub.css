@@ -45,3 +45,25 @@
 .home-game-card.attachment{--game-ink:#234c43;--game-tint:#f7f4ec;border-color:#d9ddce;grid-column:1/-1}
 
 .home-game-card.office{--game-ink:#bd365c;--game-tint:#fff0f3;border-color:#f0d1da;grid-column:1/-1}
+
+.home-game-card.data-science {
+  --game-ink: #ffab98;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 190px;
+  padding: 0;
+  margin-bottom: 18px;
+  border-color: #573f58;
+  overflow: hidden;
+  background: #27162d;
+  color: #fff1e2;
+}
+.home-game-card.data-science img { width: 100%; height: 100%; max-height: 250px; object-fit: cover; }
+.home-game-card.data-science .home-game-copy { align-self: center; padding: 24px 28px; }
+.home-game-card.data-science p { margin: 7px 0 17px; color: #dfc9d7; }
+.home-game-card.data-science .home-game-cta { border-color: #705268; }
+@media (max-width: 560px) {
+  .home-game-card.data-science { grid-template-columns: 1fr; }
+  .home-game-card.data-science img { height: 126px; }
+  .home-game-card.data-science .home-game-copy { padding: 15px 20px 18px; }
+}

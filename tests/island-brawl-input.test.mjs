@@ -137,3 +137,17 @@ test('the skill dossier keeps native Enter and Space disclosure keys without sta
     f.controls.destroy();
   }
 });
+
+test('a focused button keeps Enter and Space activation instead of starting or dodging', () => {
+  const f = fixture();
+  const button = { closest: selector => selector.startsWith('button,') ? button : null };
+  f.setPhase('ready');
+  assert.equal(keyboard(f.document, 'keydown', 'Enter', { target: button }).prevented, false);
+  assert.equal(f.getStarts(), 0);
+  f.setPhase('playing');
+  for (const type of ['keydown', 'keyup']) {
+    assert.equal(keyboard(f.document, type, 'Space', { target: button }).prevented, false);
+  }
+  assert.equal(f.controls.read().dodge, false);
+  f.controls.destroy();
+});

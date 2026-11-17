@@ -6,6 +6,8 @@ import { getBrawlProfile } from './brawl-roster.js';
 const keyDirections = { KeyW: [0, -1], ArrowUp: [0, -1], KeyS: [0, 1], ArrowDown: [0, 1], KeyA: [-1, 0], ArrowLeft: [-1, 0], KeyD: [1, 0], ArrowRight: [1, 0] };
 const keyActions = { KeyJ: 'attack', Space: 'dodge', KeyK: 'special', KeyL: 'throw' };
 const keyCode = event => event.code || ({ w: 'KeyW', a: 'KeyA', s: 'KeyS', d: 'KeyD', j: 'KeyJ', k: 'KeyK', l: 'KeyL', p: 'KeyP', ' ': 'Space' }[event.key?.toLowerCase()] || event.key);
+const nativeActivation = (event, code) => (code === 'Enter' || code === 'Space') &&
+  event.target?.closest?.('button, a[href], input, select, textarea, [contenteditable]');
 const swallow = event => { event.preventDefault(); event.stopImmediatePropagation?.(); event.stopPropagation?.(); };
 
 /** One input owner per mounted fight. Losing focus or a pointer clears every
@@ -27,7 +29,7 @@ export function bindIslandBrawlInput({ document: doc, window: view, pad, buttons
     // A not-yet-started bout follows the dialog's normal cancel behavior.
     if (code === 'Escape' && phase === 'ready') return;
     if (code === 'Escape' || code === 'KeyP') { swallow(event); pause(); return; }
-    if (event.target?.closest?.('summary, [data-brawl-dossier]')) return;
+    if (nativeActivation(event, code) || event.target?.closest?.('summary, [data-brawl-dossier]')) return;
     if (code === 'Enter' && phase === 'ready') { swallow(event); if (!event.repeat) onStart(); return; }
     if (!(code in keyDirections) && !(code in keyActions) && code !== 'Home') return;
     swallow(event);
@@ -42,7 +44,7 @@ export function bindIslandBrawlInput({ document: doc, window: view, pad, buttons
   listen(doc, 'keyup', event => {
     const code = keyCode(event);
     keys.delete(code);
-    if (event.target?.closest?.('summary, [data-brawl-dossier]')) return;
+    if (nativeActivation(event, code) || event.target?.closest?.('summary, [data-brawl-dossier]')) return;
     if (!(code in keyDirections) && !(code in keyActions)) return;
     swallow(event);
   }, true);
@@ -223,7 +225,7 @@ export function mountIslandBrawl({ container, opponent, onFinish, story = null, 
   const node = (tag, className = '', value) => { const item = doc.createElement(tag); if (className) item.className = className; if (value !== undefined) item.textContent = value; return item; };
   const button = (className, label, action) => { const item = node('button', className, label); item.type = 'button'; if (action) item.addEventListener('click', action); return item; };
   const root = node('section', 'brawl-shell'); root.dataset.brawlRoot = ''; root.dataset.reducedMotion = String(reducedMotion);
-  const profile = getBrawlProfile(opponent.id);
+  const profile = opponent.profile ?? getBrawlProfile(opponent.id);
   const moveById = new Map([...profile.skills, ...profile.events].map(skill => [skill.id, skill]));
   const head = node('div', 'brawl-heading'), titles = node('div');
   titles.append(node('span', 'brawl-eyebrow', 'AFTER HOURS · ISLAND DUEL'));
@@ -367,7 +369,7 @@ export function mountIslandBrawl({ container, opponent, onFinish, story = null, 
     }
     const sorted = [...(state.obstacles || []).map(obstacle => ({ y: obstacle.y, draw: () => drawObstacle(ctx, obstacle) })),
       { y: state.player.y, draw: () => drawBrawlCharacter(ctx, state.player, { isPlayer: true, name: '我', elapsed: state.elapsed, reducedMotion }) },
-      { y: state.opponent.y, draw: () => drawBrawlCharacter(ctx, state.opponent, { isPlayer: false, name: opponent.name, elapsed: state.elapsed, reducedMotion }) }].sort((a, b) => a.y - b.y);
+      { y: state.opponent.y, draw: () => drawBrawlCharacter(ctx, state.opponent, { isPlayer: false, name: opponent.name, elapsed: state.elapsed, reducedMotion, drawBody: opponent.drawBody }) }].sort((a, b) => a.y - b.y);
     for (const item of sorted) item.draw();
     for (const projectile of state.projectiles || []) { ellipse(ctx, projectile.x + 2, projectile.y + 5, 8, 4, '#5b6a5626'); ellipse(ctx, projectile.x, projectile.y - 8, 10, 9, projectile.color || '#fffae6'); text(ctx, projectile.label || '⌁', projectile.x, projectile.y - 4, projectile.label ? 10 : 15, projectile.owner === 'opponent' ? '#fff6e7' : '#b4a484'); }
     for (const effect of state.effects || []) drawEffect(ctx, effect, reducedMotion);

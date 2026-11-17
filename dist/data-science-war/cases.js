@@ -1,0 +1,193 @@
+export const OPENING = [
+  {
+    id: 'friday-club',
+    category: '讀書會',
+    title: '推錯一扇門',
+    speaker: 'sam',
+    line: '你走錯會議室了？既然門都開了，汽水自己拿。星期五讀書會先講線性代數，基礎弄懂以前，工作上的問題一律先不談。',
+    evidence: [
+      { id: 'blocker', title: 'Joe 的提問紙', text: 'Joe 把卡住的預測問題寫在紙上。兩個特徵幾乎線性相依，係數一換資料就大幅波動。' },
+      { id: 'handout', title: '讀書會講義', text: '本週讀矩陣的秩。Ethan 在頁腳寫著「聽得懂定義，可是要在哪裡用？」' },
+      { id: 'soda', title: '桌上的汽水', text: '桌上有四瓶汽水和一包洋芋片。任何人都可以拿一瓶。' },
+    ],
+    rebuttal: 'blocker',
+    replies: [
+      { id: 'challenge', label: '反駁「基礎和工作得分開學」', result: '你把 Joe 的資料問題和矩陣的秩放在同一張白板上。Ethan 往前坐了一格，山姆把筆蓋扣得很響。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '提議講完一個觀念就看一個例子', result: '山姆留了十分鐘給實例。Wine 把洋芋片移到白板旁，說這樣兩派都會過來。', rage: -12, cred: 1 },
+      { id: 'observe', label: '先坐下，看看會議在吵什麼', result: 'Joe 問有沒有人願意分享工作上的卡點。你剛好抬頭，和他對上了眼。', rage: 4, cred: 0 },
+    ],
+  },
+  {
+    id: 'seo-at-the-table',
+    category: '讀書會',
+    title: '突然被點名的 SEO',
+    speaker: 'joe',
+    line: '你剛才說在看搜尋流量？給你一分鐘。山姆要是連這個都不讓問，講義帶回家念就好了吧。',
+    evidence: [
+      { id: 'new-title', title: '改版預覽', text: '新標題比舊標題短九個字，排版也整齊一些。預覽頁沒有流量紀錄。' },
+      { id: 'home', title: 'Ethan 的讀書進度', text: '他讀了三頁，最後卡在一個符號，想當面問山姆。' },
+      { id: 'search-data', title: '你的搜尋報表', text: '改完標題後總點擊變多，但品牌與非品牌查詢的占比也變了。光看總量，還分不出標題和流量組成的影響。' },
+    ],
+    rebuttal: 'search-data',
+    replies: [
+      { id: 'challenge', label: '用報表回應「SEO 沒有資料科學問題」', result: '你圈出流量組成改變的地方。山姆承認這裡有個歸因問題，轉頭問 Joe 昨晚到底有沒有打開講義。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '先把 SEO 的問題寫成一句話', result: 'Ethan 把你的問題改寫成「哪些查詢真的多了點擊？」山姆點頭，答應先聽這一題。', rage: -12, cred: 1 },
+      { id: 'observe', label: '請 Ethan 先說他卡在哪裡', result: 'Ethan 解釋符號卡在哪一頁。Wine 悄悄把紙杯往桌中央推，免得兩人敲桌的時候翻倒。', rage: 4, cred: 0 },
+    ],
+  },
+];
+
+export const TOPICS = [
+  {
+    id: 'training-leak',
+    category: '資料科學',
+    title: '好得太早的成績',
+    speaker: 'ethan',
+    line: '我用驗證集跑出 98%。測試資料還沒拿去訓練模型，這個分數應該可以當上線依據吧？',
+    evidence: [
+      { id: 'settings', title: '訓練設定', text: '隨機種子固定為 17，兩次執行得到相同結果。' },
+      { id: 'preprocessing', title: '前處理筆記', text: '缺值填補與標準化的參數，都是切分前用整份資料算的。' },
+      { id: 'ticket', title: '上線工單', text: '測試環境通過啟動檢查，還沒有部署到正式環境。' },
+    ],
+    rebuttal: 'preprocessing',
+    replies: [
+      { id: 'challenge', label: '指出切分前已經看過驗證資料', result: 'Ethan 把填補和標準化搬進訓練流程，每個訓練摺各自估計參數，驗證和測試只套用轉換。山姆盯著待重跑的計時器。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '先保留測試集，重跑一版再決定', result: 'Ethan 把結果改標為「初步」。會議先留出重跑的時間，原分數等下一版一起比較。', rage: -12, cred: 1 },
+      { id: 'observe', label: '記下 98%，暫時不投票', result: 'Wine 在 98% 後面畫了一個問號。山姆以為那個問號是畫給他的。', rage: 4, cred: 0 },
+    ],
+    citation: { label: 'scikit-learn', url: 'https://scikit-learn.org/stable/common_pitfalls.html#data-leakage' },
+  },
+  {
+    id: 'ab-imbalance',
+    category: '資料科學',
+    title: '消失的 A 組',
+    speaker: 'joe',
+    line: 'B 組轉換率比 A 高 12%。我們已經跑了一萬人，現在就全量吧？',
+    evidence: [
+      { id: 'assignment', title: '分流與埋點日誌', text: '設定是五五分流，分析表卻收到 A 組 4,200 人、B 組 5,800 人。只有 B 組使用新追蹤。' },
+      { id: 'survey', title: '客服問卷', text: '兩組各有五位使用者留言，沒有提到看不懂新版。' },
+      { id: 'launch', title: '全量時間表', text: '預留了週一早上的部署時間。下次會議是週五。' },
+    ],
+    rebuttal: 'assignment',
+    replies: [
+      { id: 'challenge', label: '先查樣本比例為什麼對不上', result: 'Joe 暫停全量決策，開始比對分派、曝光和分析表。山姆把白板上的「贏 12%」擦到只剩下一個百分號。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '把全量改成待確認，先請追蹤團隊覆核', result: 'Joe 保住了部署時段。Ethan 把分派人數和收到事件的人數列成兩欄，等追蹤團隊回覆。', rage: -12, cred: 1 },
+      { id: 'observe', label: '只記轉換率，先聽下一題', result: 'Wine 在會議記錄空出樣本數一欄。還沒人填，山姆已經翻到下一頁。', rage: 4, cred: 0 },
+    ],
+    citation: { label: 'Microsoft Research', url: 'https://www.microsoft.com/en-us/research/publication/diagnosing-sample-ratio-mismatch-in-online-controlled-experiments-a-taxonomy-and-rules-of-thumb-for-practitioners/' },
+  },
+  {
+    id: 'promo-drift',
+    category: '資料科學',
+    title: '警報響在促銷日',
+    speaker: 'sam',
+    line: '輸入分布變了，還等什麼？今天重訓，明天把舊模型撤掉。',
+    evidence: [
+      { id: 'runtime', title: '服務指標', text: '預測服務沒有逾時，CPU 使用率也和平常差不多。' },
+      { id: 'cohorts', title: '促銷日流量切片', text: '新客比例翻倍。結果標籤三天後回填，目前只有輸入和模型預測。' },
+      { id: 'model-size', title: '模型檔案資訊', text: '目前版本用了三十個特徵，檔案大小比上版小。' },
+    ],
+    rebuttal: 'cohorts',
+    replies: [
+      { id: 'challenge', label: '先確認是哪一群在變，等真實結果再評估', result: 'Ethan 分開畫新舊客的分布，約好等標籤回填後比較各群表現。山姆問那今晚誰來看警報。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '保留現版，設一個帶標籤的複查時間', result: '山姆同意今晚加看關鍵指標。Joe 把三天後的複查排進行事曆。', rage: -12, cred: 1 },
+      { id: 'observe', label: '轉貼警報，先不提處置', result: '群組裡多了一張一模一樣的紅色圖。山姆收到通知，抬頭看了你一眼。', rage: 4, cred: 0 },
+    ],
+    citation: { label: 'Google Cloud', url: 'https://docs.cloud.google.com/architecture/guidelines-for-developing-high-quality-ml-solutions' },
+  },
+  {
+    id: 'rag-citation',
+    category: 'LLM',
+    title: '引用有字，答案多了一句',
+    speaker: 'wine',
+    line: '這個客服模型說，滿五百元就能免運到所有離島。下面有引用，洋芋片是不是也能寄了？',
+    evidence: [
+      { id: 'latency', title: '測試紀錄', text: '這一題一秒多就出現第一個字，比沒有搜尋的版本慢一些。' },
+      { id: 'rating', title: '試用回饋', text: '試用者說回覆清楚易讀。沒有人用離島地址測試下單。' },
+      { id: 'passage', title: '引用的運費頁', text: '頁面只寫「免運門檻為 500 元」。找不到適用地區，也沒有離島條款。' },
+    ],
+    rebuttal: 'passage',
+    replies: [
+      { id: 'challenge', label: '對照原文，圈出「所有離島」', result: 'Ethan 把「有沒有找到適用範圍」和「答案有沒有超出證據」分開驗。Wine 把洋芋片留在桌上。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '先拿掉離島承諾，請客服查適用地區', result: 'Wine 同意客服模型先回覆已確認的門檻。適用地區等拿到完整條款再補。', rage: -12, cred: 1 },
+      { id: 'observe', label: '收錄成一題客服測試', result: '你把問題貼進測試表，預期答案那一欄還空著。', rage: 4, cred: 0 },
+    ],
+    citation: { label: 'RAGVUE 論文', url: 'https://aclanthology.org/2026.eacl-demo.35/' },
+  },
+  {
+    id: 'agent-refund',
+    category: 'Agent',
+    title: '草稿旁邊是真退款',
+    speaker: 'joe',
+    line: '客服 Agent 已經能寫退款草稿了。用現在這個工具直接退，省得同事還要按一次。',
+    evidence: [
+      { id: 'draft', title: '草稿範本', text: '草稿有退款原因欄和問候語。試讀的同事說語氣自然。' },
+      { id: 'permissions', title: '工具權限表', text: '查詢和退款走同一組權限。Agent 可以拿訂單號直接發動實際退款。' },
+      { id: 'queue', title: '客服佇列', text: '週一上午的待處理件數最高。部分工單只問退款進度。' },
+    ],
+    rebuttal: 'permissions',
+    replies: [
+      { id: 'challenge', label: '拆開查單與退款，讓人確認這一筆', result: 'Joe 讓查單流程繼續自動跑。實際退款會先顯示訂單和金額，等人核可後才執行。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '先讓 Agent 寫草稿，沿用人工退款', result: '客服少打一段重複文字，付款流程照舊。山姆終於有空拿一瓶汽水。', rage: -12, cred: 1 },
+      { id: 'observe', label: '等下一次客服現場展示', result: 'Joe 關掉展示畫面，計時器停在四十秒。那一筆退款還沒有人按。', rage: 4, cred: 0 },
+    ],
+    citation: { label: 'OpenAI 人工審核指南', url: 'https://developers.openai.com/api/docs/guides/agents/guardrails-approvals' },
+  },
+  {
+    id: 'agent-outcome',
+    category: 'Agent',
+    title: '機器人說辦好了',
+    speaker: 'ethan',
+    line: '二十次試跑，它有二十次都回答「工單已結案」。我們可以把完成率填 100% 嗎？',
+    evidence: [
+      { id: 'state', title: '沙盒工單和工具紀錄', text: '回覆說結案，工單卻仍是待處理。更新工具的紀錄顯示逾時。' },
+      { id: 'style', title: '回覆評分', text: '語氣清楚，沒有錯字，客服同事給了五分。' },
+      { id: 'prompt', title: '試跑版本表', text: '所有試跑都使用同一個提示版本和同一批測試工單。' },
+    ],
+    rebuttal: 'state',
+    replies: [
+      { id: 'challenge', label: '直接查工單結案了沒', result: 'Ethan 改用工單的實際狀態計分，並保留工具紀錄找出逾時原因。山姆把投影片的「100%」框起來，請他重跑。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '先撤掉完成率，請 Ethan 手動覆核幾筆', result: 'Ethan 留下原始紀錄，和客服同事約好用沙盒重做。那一格數字暫時留白。', rage: -12, cred: 1 },
+      { id: 'observe', label: '記下二十次都有回覆', result: 'Wine 在「有回覆」下面畫了線。山姆問這行到底能不能放進週報。', rage: 4, cred: 0 },
+    ],
+    citation: { label: 'Anthropic Agent 評測指南', url: 'https://www.anthropic.com/research/demystifying-evals-for-ai-agents' },
+  },
+  {
+    id: 'agent-routing',
+    category: 'Agent',
+    title: '開會的 Agent 比人還多',
+    speaker: 'joe',
+    line: '我讓三個 Agent 替每筆工單開會。既然難題有改善，簡單題也一起交給它們吧？',
+    evidence: [
+      { id: 'diagram', title: '新版流程圖', text: '新版多了分類、覆核和協調三個方塊，箭頭都畫好了。' },
+      { id: 'demo', title: '試玩錄影', text: '錄影選了一張難題。三個 Agent 對最後分類都同意。' },
+      { id: 'benchmark', title: '同批工單的測試表', text: '八成工單格式固定。多 Agent 的改善集中在疑難單，尖峰時段的 P95 延遲翻倍。' },
+    ],
+    rebuttal: 'benchmark',
+    replies: [
+      { id: 'challenge', label: '簡單題走短流程，疑難才升級', result: 'Joe 把固定格式和疑難拆成兩條路，用同一批工單重測分類品質、成本和 P95。山姆問下一個會議可以也分流嗎。', rage: 23, cred: 2 },
+      { id: 'mediate', label: '多 Agent 先保留給人工挑出的疑難單', result: 'Joe 保留有改善的用法，讓 Ethan 繼續量看看什麼時候值得自動分流。', rage: -12, cred: 1 },
+      { id: 'observe', label: '先把困難案例放進下次 Demo', result: 'Wine 看著三個方塊，問它們開會的時候需不需要多買一包零食。', rage: 4, cred: 0 },
+    ],
+    citation: { label: 'Anthropic Agent 架構指南', url: 'https://www.anthropic.com/research/building-effective-agents' },
+  },
+];
+
+export const CLOSING = {
+  id: 'rotating-hosts',
+  category: '讀書會',
+  title: '下個星期五，誰來主持？',
+  speaker: 'wine',
+  line: '剩最後一口汽水。下週輪一個人主持吧。每人出一道問題，帶一份能查的東西。先排題目，還是再吵五分鐘？',
+  evidence: [
+    { id: 'attendance', title: '下週行事曆', text: '週五的會議室有人預約了。預約欄沒有主持人。' },
+    { id: 'minutes', title: '今晚的白板', text: '一欄是山姆想教的基礎，一欄是 Joe 的工作卡點。Ethan 在兩欄之間畫了箭頭，旁邊留著下週驗證的問題。' },
+    { id: 'chips', title: '最後一包洋芋片', text: '袋子還沒拆。山姆已經把它移到自己那一側。' },
+  ],
+  rebuttal: 'minutes',
+  replies: [
+    { id: 'challenge', label: '提案輪流主持，議題交給能查的證據決定', result: 'Ethan 把連得上的兩欄抄進議程。山姆瞪著白板看了幾秒，伸手去拿桌角的洋芋片。', rage: 23, cred: 2 },
+    { id: 'mediate', label: '下週先試一題基礎、一題實務', result: 'Wine 把兩位主持人寫在同一天。山姆說如果準時結束，他會再帶一包零食。', rage: -12, cred: 1 },
+    { id: 'observe', label: '把白板留給他們，先去關投影機', result: '投影機暗了，輪值欄仍空白。山姆夾著洋芋片先走，Joe 留下來擦白板。', rage: 4, cred: 0 },
+  ],
+};

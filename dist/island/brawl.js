@@ -25,16 +25,21 @@ function actor(id, x, y, facing) {
     shield: 0, shieldRemaining: 0, slowRemaining: 0, activeSkillId: null, skillName: null, castKind: null, pose: null };
 }
 
-export function createIslandBrawl({ opponentId, seed } = {}) {
-  if (!PEOPLE.has(opponentId)) throw new RangeError('Unknown island opponent');
+export function createIslandBrawl({ opponentId, seed, challenger = null } = {}) {
+  const character = challenger ? challenger.profile : getBrawlProfile(opponentId);
+  const allowedOpponent = challenger ? character?.id === opponentId : PEOPLE.has(opponentId);
+  if (!character || !allowedOpponent) throw new RangeError('Unknown island opponent');
   let randomState = hash(seed === undefined ? `island-brawl:${opponentId}` : seed) || 1;
   const random = () => { randomState ^= randomState << 13; randomState ^= randomState >>> 17; randomState ^= randomState << 5; return (randomState >>> 0) / 4294967296; };
   const profile = hash(opponentId) % 3;
-  const character = getBrawlProfile(opponentId);
   const signatureSkills = character.skills.map(skill => ({ skill, remaining: 0, uses: 0 }));
   const signatureEvents = character.events.map(skill => ({ skill, remaining: 0, uses: 0 }));
   const player = actor('player', 250, 270, 0), opponent = actor(opponentId, 710, 270, Math.PI);
   if (opponentId === HIDDEN_BRAWL_ID) { opponent.hp = 240; opponent.maxHp = 240; opponent.energy = 40; }
+  if (challenger) {
+    if (finite(challenger.hp)) opponent.hp = opponent.maxHp = clamp(challenger.hp, 1, 240);
+    if (finite(challenger.energy)) opponent.energy = clamp(challenger.energy, 0, MAX_ENERGY);
+  }
   const stats = { damageDealt: 0, damageTaken: 0, maxCombo: 0, specialsUsed: 0, throwsUsed: 0, dodgesUsed: 0 };
   const pickups = [{ id: 'paper-left', type: 'paper', x: 210, y: 150, radius: 16, available: true, respawnIn: 0 },
     { id: 'paper-right', type: 'paper', x: 750, y: 390, radius: 16, available: true, respawnIn: 0 }];

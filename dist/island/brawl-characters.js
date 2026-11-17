@@ -216,10 +216,9 @@ export function drawBrawlAvatar(ctx, { id, isPlayer = false }) {
   head(ctx, look, 1); ctx.restore();
 }
 
-export function drawBrawlCharacter(ctx, actor, { isPlayer, name, elapsed = 0, reducedMotion = false, lookOverride = null }) {
+export function drawBrawlCharacter(ctx, actor, { isPlayer, name, elapsed = 0, reducedMotion = false, lookOverride = null, drawBody = null }) {
   const { x, y } = actor, active = actor.action;
   const pose = actor.pose || active;
-  const look = lookOverride || (isPlayer ? ISLAND_VISITOR_LOOK : getIslandCharacterLook(actor.id));
   const direction = Math.cos(actor.facing) < 0 ? -1 : 1;
   if ((active === 'windup' || actor.telegraphRemaining > 0) && (!actor.telegraphKind || actor.telegraphKind === 'cone')) {
     ctx.save(); ctx.translate(x, y); ctx.rotate(actor.facing);
@@ -236,7 +235,11 @@ export function drawBrawlCharacter(ctx, actor, { isPlayer, name, elapsed = 0, re
   if (actor.invulnerable && !reducedMotion) ctx.globalAlpha = .65 + Math.sin(elapsed * 35) * .12;
   const step = active === 'walk' && !reducedMotion ? Math.sin(elapsed * 15) * 5 : 0;
   if (!reducedMotion) { ctx.translate(active === 'attack' || pose === 'skill' || pose === 'kick' ? direction * 10 : 0, active === 'walk' ? -Math.abs(step) : 0); ctx.rotate(active === 'hit' ? -direction * .08 : active === 'attack' ? direction * .06 : step * .005); }
-  doll(ctx, look, active, direction, step, pose);
+  if (drawBody) drawBody(ctx, { active, direction, step, pose });
+  else {
+    const look = lookOverride || (isPlayer ? ISLAND_VISITOR_LOOK : getIslandCharacterLook(actor.id));
+    doll(ctx, look, active, direction, step, pose);
+  }
   if (actor.paper) { ctx.save(); ctx.translate(-direction * 34, -55); ctx.rotate(.22); ctx.fillStyle = '#fff8e5'; ctx.fillRect(-7, -9, 14, 18); ctx.strokeStyle = '#b3aa91'; ctx.strokeRect(-7, -9, 14, 18); ctx.restore(); }
   ctx.restore();
   if (isPlayer) { ctx.fillStyle = '#426b50'; ctx.beginPath(); ctx.moveTo(-6, -173); ctx.lineTo(6, -173); ctx.lineTo(0, -165); ctx.fill(); }
