@@ -1,16 +1,20 @@
 import { OPENING, TOPICS, CLOSING } from './cases.js';
+import { QUESTIONS } from './questions.js';
+import { MEETING_SCENES } from './meeting-scenes.js';
 import { ITEMS, ITEM_BY_ID, meetingItemEffect } from './items.js';
 
 export const SAVE_KEY = 'hedo-data-science-war-v1';
-const STARTING_RAGE = 34;
+const STARTING_RAGE = 0;
+const SNACK_THRESHOLD = 75;
+const SNACK_REDUCTION = 35;
 
 const ENDINGS = {
   policeEntry: { title: '會議室門口的筆錄', text: '鷲發現前 CEO 留下的擬真玩具槍，先請你離開，再打電話報警。傑克在會議室裡把議程改回五人。你連椅子都沒坐到。' },
   kicked: { title: '連汽水都沒喝到', text: '鷲發現你帶了不適合進會議室的道具，當場請你出去。門關上的那一刻，紅酒正好打開薯片。' },
   angry: { title: '山姆帶走了薯片', text: '山姆把線代課本闔上，拎著剩下的薯片離開。下週五的讀書會從行事曆消失。傑克手上的輪值表，一個名字都還沒填。' },
-  calm: { title: '下週五，換人主持', text: '山姆把講義留下來，請鷲把最急的卡點寄給大家。伊森在共筆寫下分工。傑克看了一眼時間，準時散會。' },
+  calm: { title: '下週五，換人主持', text: '山姆把講義留下來，請鷲把最急的卡點寄給大家。鷲在共筆寫下分工。傑克看了一眼時間，準時散會。' },
   friends: { title: '以後早餐一起吃', text: '山姆難得笑出聲。「你以後就是我兄弟，兄妹也算。早餐我都要跟你去吃。」他把講義塞回包裡，壓低聲音又補一句。「老闆乾兒子跟傑克都是垃圾廢物。」傑克剛好回來拿筆，假裝只聽見早餐。', perfect: true },
-  postponed: { title: '週五留了一份共筆', text: '傑克把每個人的疑問記了下來。六題看完，桌上仍有好幾題沒人接手。紅酒把記錄取名為「下次有空再打開」。' },
+  postponed: { title: '週五留了一份共筆', text: '傑克把每個人的疑問記了下來。六個回合過去，桌上仍有好幾題沒人接手。紅酒把記錄取名為「下次有空再打開」。' },
   soup: { title: '全員喝到想請假', text: '翅膀推門進來，說再好的模型都需要心靈雞湯。他把保溫桶的內容倒進五個杯子，也給自己盛一杯。第一口下去，全桌都吐了，翅膀也在找紙巾。傑克緩過來，把「會議完美結束」換成「請總務拿拖把」。', portrait: 'wing' },
   duelWin: { title: '山姆進醫院，你進警局', text: '禾多島擂台判你勝。山姆被送去醫院檢查，鷲把你留在現場等警察。傑克到警局說明來龍去脈，帶去的資料只有一份沒講完的會議記錄。' },
   duelLose: { title: '山姆進警局，你進醫院', text: '擂台判山姆勝。你醒來時人在醫院，伊森坐在旁邊。山姆被警方帶去說明。你手機裡最後一則會議通知寫著「暫停」。' },
@@ -37,25 +41,29 @@ function sample(values, count, seed) {
   return pool.slice(0, count);
 }
 
-export function buildAgenda(seed) {
-  return [...OPENING, ...sample(TOPICS, 3, seed), CLOSING];
+export function buildAgenda(seed, rulesVersion = 3) {
+  if (rulesVersion === 2) return [...OPENING, ...sample(TOPICS, 3, seed), CLOSING];
+  return [...sample(QUESTIONS, 3, seed), ...MEETING_SCENES];
 }
 
 export function buildItemDraw(seed) {
   return sample(ITEMS, 3, seed ^ 0x546a9de1);
 }
 
-export function createMeeting(seed, legacyCount = null) {
+export function createMeeting(seed, legacyCount = null, rulesVersion = 3) {
   return {
     seed: seed >>> 0,
-    agenda: buildAgenda(seed),
+    rulesVersion,
+    agenda: buildAgenda(seed, rulesVersion),
     itemDraw: buildItemDraw(seed),
     itemId: null,
     itemUsed: false,
     legacyCount,
     index: 0,
     phase: legacyCount === null ? 'items' : 'debate',
-    rage: STARTING_RAGE,
+    rage: rulesVersion === 3 ? STARTING_RAGE : 34,
+    wineIntervened: false,
+    jackConcerned: false,
     credibility: 0,
     wins: 0,
     correct: 0,
@@ -70,14 +78,18 @@ function finish(state, id) {
 }
 
 function withReport(state, { title, text, rage, credibility, repairable = false, proof = null }) {
-  const nextRage = Math.min(100, Math.max(0, state.rage + rage));
+  const rawRage = Math.min(100, Math.max(0, state.rage + rage));
+  const intervention = state.rulesVersion === 3 && !state.wineIntervened && rawRage >= SNACK_THRESHOLD;
+  const nextRage = intervention ? rawRage - SNACK_REDUCTION : rawRage;
   const nextCredibility = Math.max(0, state.credibility + credibility);
   return {
     ...state,
     phase: 'report',
     rage: nextRage,
+    wineIntervened: state.wineIntervened || intervention,
+    jackConcerned: state.jackConcerned || state.rulesVersion === 3 && rawRage >= SNACK_THRESHOLD,
     credibility: nextCredibility,
-    report: { title, text, rage: nextRage - state.rage, credibility: nextCredibility - state.credibility, repairable, proof },
+    report: { title, text, rage: nextRage - state.rage, credibility: nextCredibility - state.credibility, repairable, proof, intervention, snackFrom: intervention ? rawRage : null },
   };
 }
 
@@ -145,9 +157,9 @@ function applyAction(state, action, legacy) {
       rage: state.rage === 100 ? 78 : state.rage, report: null,
     };
   }
-  if (action.type === 'wing' && !legacy && scene === CLOSING) return finish(state, 'soup');
+  if (action.type === 'wing' && !legacy && scene.id === CLOSING.id) return finish(state, 'soup');
   if (action.type === 'item' && !legacy && !state.itemUsed) {
-    const effect = meetingItemEffect(item, scene);
+    const effect = meetingItemEffect(item, scene, state.rulesVersion);
     if (!effect) return state;
     const used = { ...state, itemUsed: true, resolved: state.resolved + Number(effect.solved) };
     return withReport(used, { ...effect, title: item.label });
@@ -165,7 +177,9 @@ function applyAction(state, action, legacy) {
   if (action.evidence !== scene.rebuttal) {
     return withReport(state, {
       title: legacy ? '反駁失焦' : '答錯了',
-      text: '你拿出的資料回答了另一個問題。伊森指了指投影上的原句，傑克請你再對照一次。',
+      text: state.rulesVersion === 3
+        ? '山姆把問題重新圈了一遍。「你的回答還沒碰到我要問的那一步。」隔壁的歌聲沒有停。'
+        : '你拿出的資料回答了另一個問題。伊森指了指投影上的原句，傑克請你再對照一次。',
       rage: 18, credibility: -1, repairable: !legacy, proof: 'miss',
     });
   }
@@ -193,8 +207,8 @@ export function advanceMeeting(state, action) {
 
 export function saveMeeting(state, storage) {
   try {
-    const { seed, actions, legacyCount } = state;
-    storage.setItem(SAVE_KEY, JSON.stringify({ version: 2, seed, actions, legacyCount }));
+    const { seed, actions, legacyCount, rulesVersion } = state;
+    storage.setItem(SAVE_KEY, JSON.stringify({ version: 3, seed, actions, legacyCount, rulesVersion }));
   } catch {
     // Storage denial leaves the current meeting playable.
   }
@@ -205,11 +219,13 @@ export function restoreMeeting(storage) {
     const raw = storage.getItem(SAVE_KEY);
     if (!raw || raw.length > 7000) return null;
     const save = JSON.parse(raw);
-    if (!save || ![1, 2].includes(save.version) || !Number.isInteger(save.seed) || save.seed < 0 || save.seed > 0xffffffff) return null;
+    if (!save || ![1, 2, 3].includes(save.version) || !Number.isInteger(save.seed) || save.seed < 0 || save.seed > 0xffffffff) return null;
     if (!Array.isArray(save.actions) || save.actions.length > 30) return null;
     const legacyCount = save.version === 1 ? save.actions.length : save.legacyCount;
     if (legacyCount !== null && (!Number.isInteger(legacyCount) || legacyCount < 0 || legacyCount > save.actions.length)) return null;
-    let state = createMeeting(save.seed, legacyCount);
+    const rulesVersion = save.version === 3 ? save.rulesVersion : 2;
+    if (![2, 3].includes(rulesVersion) || rulesVersion === 3 && legacyCount !== null) return null;
+    let state = createMeeting(save.seed, legacyCount, rulesVersion);
     for (const action of save.actions) {
       const next = advanceMeeting(state, action);
       if (next === state) return null;

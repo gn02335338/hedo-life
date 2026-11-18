@@ -342,6 +342,34 @@ svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.7; stroke-linecap: round;
 .restart-dialog .combat { background: #411c2e; border-color: #a35263; color: #ffd3b2; }
 .restart-dialog .combat:hover { background: #552239; }
 
+.meeting-company { border-bottom: 1px solid var(--edge); background: var(--plum); }
+.company-person, .wine-reaction {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  padding: 8px 12px;
+}
+.company-person + .company-person { padding-top: 0; }
+.company-person img, .wine-reaction img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  object-position: center top;
+}
+.company-person p { font-size: .81rem; color: var(--dim); line-height: 1.5; }
+.company-person strong, .wine-reaction strong { color: var(--gold); margin-inline-end: 8px; }
+.wine-reaction { margin-top: 12px; padding: 9px 0; border-block: 1px solid var(--edge); }
+.wine-reaction p { font-size: .86rem; }
+.wine-reaction span { display: block; margin-top: 4px; }
+.sam-rules { margin: 1px 0 12px; padding-block: 8px; border-block: 1px solid var(--edge); color: var(--dim); font-size: .84rem; }
+.sam-rules summary { width: fit-content; cursor: pointer; color: var(--gold); }
+.sam-rules summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+.sam-rules p { margin-top: 8px; max-width: 70ch; }
+.ending-song, .battle-song { color: var(--dim); font-size: .83rem; }
+.ending-song { margin-top: 14px; }
+.battle-song { margin-bottom: 12px; }
+
 @media (max-width: 880px) {
   .masthead, #game, .credits { width: calc(100% - 36px); }
   .meeting-grid { grid-template-columns: minmax(0, 1.3fr) minmax(260px, 1fr); gap: 12px; }
@@ -386,6 +414,11 @@ svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.7; stroke-linecap: round;
   .prep-item { grid-template-columns: 3.15rem minmax(0, 1fr) auto; gap: 7px; padding: 9px 7px; }
   .prep-description > span { font-size: .80rem; }
   .meeting-log { gap: 4px 12px; padding-bottom: 7px; }
+  .company-person { grid-template-columns: 32px minmax(0, 1fr); gap: 7px; padding: 6px 8px; }
+  .company-person img { width: 32px; height: 32px; }
+  .company-person p { font-size: .77rem; }
+  .wine-reaction { grid-template-columns: 32px minmax(0, 1fr); }
+  .wine-reaction img { width: 32px; height: 32px; }
   .mediator { grid-template-columns: 41px minmax(0, 1fr); gap: 8px; padding: 7px; }
   .mediator img { width: 41px; height: 41px; }
   .mediator p { font-size: .79rem; }

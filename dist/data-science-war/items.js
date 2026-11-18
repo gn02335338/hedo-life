@@ -55,16 +55,22 @@ export const ITEMS = [
 
 export const ITEM_BY_ID = Object.fromEntries(ITEMS.map(item => [item.id, item]));
 
-export function meetingItemEffect(item, scene) {
+export function meetingItemEffect(item, scene, rulesVersion = 2) {
   if (!item || item.loadout) return null;
-  if (item.fit && !item.fit.some(match => match === scene.id || match === scene.category)) {
+  if (item.fit && !item.fit.some(match => match === scene.id || match === scene.itemTopic || match === scene.category)) {
     return {
       text: '傑克翻了幾頁。這件資料或許別題用得上，他先把它挪到投影旁，請大家回到手上的問題。',
       rage: 6, credibility: 0, solved: false,
     };
   }
   return {
-    text: item.result,
+    text: rulesVersion === 3 ? ({
+      'search-print': '你拿出計算機，分開核對不同查詢的點擊。鷲把「已證明」改成「先查組成」。',
+      stamp: '你把還沒做的事逐項指出來，親手加上負責人和驗收證據。傑克朝白板點了一下頭。',
+      manual: '你沿著手冊翻到原始條款。這次大家先確認文字，再改投影上的答案。',
+      'bubble-tea': '紅酒把吸管遞給山姆。開口前得先嚼珍珠，房間裡暫時只剩旁邊的歌聲。',
+      'pineapple-cake': '你把鳳梨酥分給大家。山姆放下筆，空出一個能把話講完的空檔。',
+    })[item.id] ?? item.result : item.result,
     rage: item.rage ?? -9,
     credibility: item.cred ?? 2,
     solved: Boolean(item.fit),

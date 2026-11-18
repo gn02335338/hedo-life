@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { QUESTIONS } from '../dist/data-science-war/questions.js';
 import { CLOSING, OPENING, TOPICS } from '../dist/data-science-war/cases.js';
+import { MEETING_SCENES } from '../dist/data-science-war/meeting-scenes.js';
 import { ITEMS, ITEM_BY_ID, meetingItemEffect } from '../dist/data-science-war/items.js';
 import { SAVE_KEY, advanceMeeting, buildAgenda, buildItemDraw, createMeeting, endingFor, restoreMeeting, saveMeeting } from '../dist/data-science-war/game.js';
 
@@ -25,11 +27,10 @@ test('both draws are deterministic, distinct and varied, with the original seque
   for (let seed = 0; seed < 128; seed++) {
     const agenda = buildAgenda(seed);
     assert.equal(agenda.length, 6);
-    assert.deepEqual(agenda.slice(0, 2), OPENING);
-    assert.equal(agenda.at(-1), CLOSING);
-    const modern = agenda.slice(2, 5);
+    assert.deepEqual(agenda.slice(3), MEETING_SCENES);
+    const modern = agenda.slice(0, 3);
     assert.equal(new Set(modern).size, 3);
-    assert.ok(modern.every((scene) => TOPICS.includes(scene)));
+    assert.ok(modern.every((scene) => QUESTIONS.includes(scene) && scene.speaker === 'sam'));
     agendas.add(modern.map(({ id }) => id).join(','));
     const draw = buildItemDraw(seed);
     assert.equal(draw.length, 3);
@@ -38,7 +39,7 @@ test('both draws are deterministic, distinct and varied, with the original seque
     draws.add(draw.map(item => item.id).join(','));
   }
   assert.ok(agendas.size > 10 && draws.size > 10);
-  for (const scene of [...OPENING, ...TOPICS, CLOSING]) {
+  for (const scene of [...OPENING, ...TOPICS, CLOSING, ...QUESTIONS]) {
     assert.equal(new Set(scene.evidence.map(({ id }) => id)).size, 3);
     assert.ok(scene.evidence.some(({ id }) => id === scene.rebuttal));
     assert.deepEqual(scene.replies.map(({ id }) => id), ['challenge', 'mediate', 'apology', 'scold', 'observe']);
@@ -67,21 +68,24 @@ test('packing is a single irrevocable choice and weapon checks can expel, call p
 
 test('meeting items are contextual, can backfire, and are spent once', () => {
   const useItem = (state) => advanceMeeting(state, { type: 'item' });
-  const active = seeded('textbook');
+  const active = seeded('textbook', state => ['friday-club', 'training-leak'].includes(state.agenda[0].itemTopic));
   const used = useItem(active);
   assert.equal(used.resolved, 1);
   assert.equal(used.itemUsed, true);
   const nextRound = advance(used);
   assert.equal(useItem(nextRound), nextRound);
   assert.equal(meetingItemEffect(ITEM_BY_ID['search-print'], OPENING[0]).solved, false);
-  assert.ok(useItem(seeded('cola')).rage < active.rage);
+  const impatient = advance(reply(seeded('cola'), 'scold'));
+  assert.ok(useItem(impatient).rage < impatient.rage);
   assert.ok(useItem(seeded('empty-cookie-tin')).rage > active.rage);
 });
 
 test('wrong answers and scolding can be withdrawn once before moving on', () => {
   const start = seeded('cola');
   assert.equal(reply(start, 'challenge'), start);
-  const wrong = reply(start, 'challenge', 'soda');
+  assert.equal(start.rage, 0);
+  const wrongId = start.agenda[0].evidence.find(entry => entry.id !== start.agenda[0].rebuttal).id;
+  const wrong = reply(start, 'challenge', wrongId);
   assert.equal(wrong.report.title, '答錯了');
   assert.equal(wrong.report.repairable, true);
   assert.equal(wrong.correct, 0);
@@ -92,7 +96,18 @@ test('wrong answers and scolding can be withdrawn once before moving on', () => 
   assert.equal(answer(start).resolved, 1);
   const firstScold = reply(start, 'scold');
   const nextScold = reply(advance(firstScold), 'scold');
-  const transformed = reply(advance(nextScold), 'scold');
+  const rescued = reply(advance(nextScold), 'scold');
+  assert.equal(rescued.rage, 49);
+  assert.equal(rescued.report.snackFrom, 84);
+  assert.equal(rescued.report.intervention, true);
+  assert.equal(rescued.wineIntervened, true);
+  assert.equal(rescued.jackConcerned, true);
+  const afterSnack = advance(rescued);
+  assert.equal(afterSnack.index, 3);
+  assert.equal(afterSnack.agenda[3].speaker, 'joe');
+  const fourth = reply(afterSnack, 'scold');
+  assert.equal(fourth.report.intervention, false);
+  const transformed = reply(advance(fourth), 'scold');
   assert.equal(transformed.rage, 100);
   assert.equal(advance(transformed).rage, 78);
 });
@@ -147,6 +162,7 @@ test('local replay keeps the draw, one-shot item and battle, and upgrades older 
   const past = [{ type: 'fight' }, { type: 'battle', result: 'win' }, { type: 'advance' }];
   records.set(SAVE_KEY, JSON.stringify({ version: 1, seed: 84, actions: past }));
   const migrated = restoreMeeting(storage);
+  assert.equal(migrated.rulesVersion, 2);
   assert.equal(migrated.index, 1);
   assert.equal(migrated.phase, 'debate');
   assert.equal(migrated.wins, 1);
@@ -158,4 +174,44 @@ test('local replay keeps the draw, one-shot item and battle, and upgrades older 
   records.set(SAVE_KEY, '{"version":1,"seed":84,"actions":[{"type":"battle","result":"win"}]}');
   assert.equal(restoreMeeting(storage), null);
   assert.doesNotThrow(() => saveMeeting(battle, { setItem() { throw new Error('denied'); } }));
+});
+
+
+test('one-time snack rescue and Jack concern replay exactly, including after an apology', () => {
+  const records = new Map();
+  const storage = { getItem: key => records.get(key), setItem: (key, value) => records.set(key, value) };
+  let state = seeded('cola');
+  for (let index = 0; index < 3; index++) {
+    state = reply(state, 'scold');
+    if (index < 2) state = advance(state);
+  }
+  assert.equal(state.report.intervention, true);
+  saveMeeting(state, storage);
+  assert.deepEqual(restoreMeeting(storage), state);
+  const repaired = advanceMeeting(restoreMeeting(storage), { type: 'repair' });
+  assert.equal(repaired.rage, 31);
+  assert.equal(repaired.jackConcerned, true);
+  assert.equal(repaired.wineIntervened, true);
+  assert.equal(repaired.report.intervention, false);
+  saveMeeting(repaired, storage);
+  assert.deepEqual(restoreMeeting(storage), repaired);
+});
+
+test('schema-two saves keep their original agenda, initial rage and future rules on upgrade', () => {
+  const state = createMeeting(84, null, 2);
+  assert.equal(state.rage, 34);
+  assert.deepEqual(state.agenda, buildAgenda(84, 2));
+  const chosen = state.itemDraw.find(item => !item.loadout);
+  const packed = pack(state, chosen.id);
+  const pending = reply(packed, 'scold');
+  let raw = JSON.stringify({ version: 2, seed: 84, actions: pending.actions, legacyCount: null });
+  const storage = { getItem: () => raw, setItem: (_, value) => { raw = value; } };
+  const restored = restoreMeeting(storage);
+  assert.deepEqual(restored, pending);
+  const continued = reply(advance(restored), 'scold');
+  assert.equal(continued.rage, 90);
+  assert.equal(continued.wineIntervened, false);
+  saveMeeting(continued, storage);
+  assert.equal(JSON.parse(raw).rulesVersion, 2);
+  assert.deepEqual(restoreMeeting(storage), continued);
 });
