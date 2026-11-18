@@ -2,6 +2,22 @@ import { OPENING, CLOSING } from './cases.js';
 
 export const SAM_RULES = '山姆還在用 Gemma 4 寫 unit test，但不准 vibe coding。Code review 必須一行一行看，他管的人也一律照做。';
 
+export const ARRIVAL = {
+  id: 'accidental-arrival',
+  category: '誤闖會議',
+  title: '你為什麼進來？',
+  speaker: 'sam',
+  line: '等一下，你是哪一場的？怎麼自己推門進來了？你進來做什麼？',
+  evidence: [],
+  replies: [
+    { id: 'challenge', label: '我走錯會議室了，以為這裡是另一場會議。', result: '山姆看了看門口。「既然都進來了，先坐。我問你三題。」傑克把空椅子往你這邊挪，笑得更明顯了。', rage: 0, cred: 0 },
+    { id: 'mediate', label: '我聽見裡面有人唱歌，想看看在開什麼會。', result: '山姆朝伊森看了一眼。「這裡是讀書會。你也坐，先回答三題。」伊森沒有停下來。', rage: 0, cred: 0 },
+    { id: 'apology', label: '抱歉，我看錯門牌了。', result: '你回頭確認門牌。山姆示意你坐下，說反正多一個人也能一起讀，接著把三道題翻出來。', rage: 0, cred: 1 },
+    { id: 'scold', label: '門沒鎖，進來一下也要報告嗎？', result: '山姆把講義放下。「那就請你坐好，先回答我的三個問題。」鷲靠在椅背上，還沒有插話。', rage: 28, cred: -1 },
+    { id: 'observe', label: '我只是看見有可樂和薯片。', result: '山姆把薯片往自己那邊移了一點。「可以拿，但要先回答三題。」紅酒把空杯推到你面前。', rage: 8, cred: 0 },
+  ],
+};
+
 const conflictResults = [
   {
     challenge: '你把鷲的工作資料和矩陣的秩畫在同一張白板上。山姆把筆蓋扣得很響，卻又轉身補了一條箭頭。',
@@ -78,7 +94,7 @@ export function ethanSinging(index) {
 
 export function jackReaction(state) {
   if (state.jackConcerned) return '終於收起笑，往兩人中間移了一步。「先別動手，事情一件一件講。」';
-  return state.index < 3
+  return state.index < (state.rulesVersion >= 4 ? 4 : 3)
     ? '低頭捂著嘴，肩膀一下一下抖，假裝在看講義。'
     : '還在旁邊偷笑，視線在山姆和鷲之間來回。';
 }

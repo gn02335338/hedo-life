@@ -1,7 +1,7 @@
 import { advanceMeeting, createMeeting, endingFor, restoreMeeting, saveMeeting } from './game.js';
 
 import { ITEM_BY_ID } from './items.js';
-import { SAM_RULES, ethanSinging, jackReaction } from './meeting-scenes.js';
+import { ARRIVAL, SAM_RULES, ethanSinging, jackReaction } from './meeting-scenes.js';
 
 const main = document.getElementById('game');
 const restart = document.getElementById('reopen');
@@ -46,14 +46,14 @@ function renderIntro() {
       <div class="cover-copy">
         <h1 id="cover-title" tabindex="-1">資料科學<span>大戰</span></h1>
         <p class="cover-location">週五下午 · 會議室 B</p>
-        <p class="cover-lead">你走錯了會議室。山姆請你坐下，準備連問三題。鷲抱著工作資料等在旁邊，伊森的歌聲已經從門內傳出。</p>
+        <p class="cover-lead">你走錯了會議室。山姆先問你為什麼進來，接著準備連問三題。鷲抱著工作資料等在旁邊，伊森的歌聲已經從門內傳出。</p>
         <button class="primary" data-action="start">看看桌上的道具${arrow}</button>
       </div>
       <div class="cover-edge" aria-hidden="true"></div>
     </section>
     <aside class="intro-note">
       <p><strong>目標是讓會議完美結束。</strong> 推進議題、看山姆的反應，必要時請傑克出面。</p>
-      <p>三題隨機提問，再進入會議交鋒 · 進度留在這台瀏覽器</p>
+      <p>先說明來意，再接三題隨機提問與會議交鋒 · 進度留在這台瀏覽器</p>
     </aside>`;
 }
 
@@ -94,7 +94,9 @@ function renderRage(rage) {
 
 function renderMeeting() {
   const scene = meeting.agenda[meeting.index];
-  const quiz = meeting.rulesVersion === 3 && meeting.index < 3;
+  const arrival = scene.id === ARRIVAL.id;
+  const quiz = scene.id.startsWith('q-');
+  const quizNumber = meeting.rulesVersion >= 4 ? meeting.index : meeting.index + 1;
   const isReport = meeting.phase === 'report';
   const transformed = meeting.rage === 100;
   const speaker = transformed ? 'master' : scene.speaker;
@@ -105,14 +107,14 @@ function renderMeeting() {
   const proofAccepted = report?.proof === 'hit';
   const item = meeting.itemId ? ITEM_BY_ID[meeting.itemId] : null;
   const motion = transformed ? ' data-transformed' : '';
-  const company = meeting.rulesVersion === 3 ? `
+  const company = meeting.rulesVersion >= 3 ? `
     <aside class="meeting-company" aria-label="會議室旁觀">
-      <div class="company-person"><img src="${art('ethan')}" alt=""><p><strong>伊森</strong>${ethanSinging(meeting.index)}</p></div>
+      <div class="company-person"><img src="${art('ethan')}" alt=""><p><strong>伊森</strong>${ethanSinging(Math.max(0, meeting.index - Number(meeting.rulesVersion >= 4)))}</p></div>
       <div class="company-person"><img src="${art('jack')}" alt=""><p><strong>傑克</strong>${jackReaction(meeting)}</p></div>
     </aside>` : '';
 
   const line = transformed ? '山姆的眼鏡後竄出紅光，惡魔角從髮際冒出。他仍穿著剛才那件外套，但整間會議室都認出了戰鬥大師。' : scene.line;
-  const evidence = `
+  const evidence = arrival ? '' : `
         <aside class="evidence" aria-labelledby="evidence-title">
           <div class="paper-heading"><h2 id="evidence-title">${quiz ? '你的回答' : '會議資料'}</h2><span>${scene.evidence.length} 份</span></div>
           <p id="evidence-guide">${isReport ? '這是本回合的選項。' : quiz ? '先選一個回答，再按「推進問題」。' : '先選一份資料，再用它回答眼前的問題。'}</p>
@@ -136,12 +138,12 @@ function renderMeeting() {
             <div class="report-actions">
               ${report.repairable ? '<button class="quiet" data-action="repair">虛心認錯，收回剛才那句</button>' : ''}
               ${transformed ? '<button class="combat" data-action="fight">單挑戰鬥大師</button>' : ''}
-              <button class="${transformed ? 'quiet' : 'primary'}" data-action="advance">${meeting.index + 1 === meeting.agenda.length ? '看看怎麼散會' : transformed ? '先冷靜，再繼續' : '下一個議題'}${arrow}</button>
+              <button class="${transformed ? 'quiet' : 'primary'}" data-action="advance">${meeting.index + 1 === meeting.agenda.length ? '看看怎麼散會' : transformed ? '先冷靜，再繼續' : arrival ? '坐下，回答山姆的三題' : quiz && quizNumber < 3 ? '下一題' : '下一個議題'}${arrow}</button>
             </div>
           </section>` : `
           <div class="reply-grid">
-            ${scene.replies.map((reply) => `<button class="${reply.id === 'challenge' ? 'primary' : 'quiet'} action-choice" data-action="reply" data-reply="${reply.id}" ${reply.id === 'challenge' && !selectedEvidence ? 'disabled' : ''}><b>${replyNames[reply.id]}</b><span>${reply.id === 'challenge' ? quiz ? '送出選好的回答' : '出示選好的資料' : reply.label}</span></button>`).join('')}
-            ${item && !meeting.itemUsed && !item.loadout ? `<button class="quiet action-choice" data-action="item"><b>使用道具</b><span>${item.label}</span></button>` : ''}
+            ${scene.replies.map((reply) => `<button class="${reply.id === 'challenge' ? 'primary' : 'quiet'} action-choice" data-action="reply" data-reply="${reply.id}" ${reply.id === 'challenge' && !arrival && !selectedEvidence ? 'disabled' : ''}><b>${arrival ? reply.label : replyNames[reply.id]}</b>${arrival ? '' : `<span>${reply.id === 'challenge' ? quiz ? '送出選好的回答' : '出示選好的資料' : reply.label}</span>`}</button>`).join('')}
+            ${!arrival && item && !meeting.itemUsed && !item.loadout ? `<button class="quiet action-choice" data-action="item"><b>使用道具</b><span>${item.label}</span></button>` : ''}
             <button class="combat action-choice" data-action="fight"><b>跟山姆單挑</b><span>進入禾多島擂台</span></button>
             ${meeting.index + 1 === meeting.agenda.length ? '<button class="quiet action-choice" data-action="wing"><b>請翅膀來收尾</b><span>讓他主持最後一段</span></button>' : ''}
           </div>`}
@@ -151,7 +153,7 @@ function renderMeeting() {
     <section class="meeting" aria-labelledby="scene-title" data-heat="${meeting.rage >= 75 ? 'hot' : meeting.rage >= 50 ? 'warm' : 'cool'}">
       <div class="agenda">
         <div class="agenda-title">
-          <p class="round">${quiz ? '山姆連問' : '回合'} <b>${meeting.index + 1}</b> / ${quiz ? 3 : meeting.agenda.length}<span>${scene.category}</span></p>
+          <p class="round">${quiz ? '山姆連問' : '回合'} <b>${quiz ? quizNumber : meeting.index + 1}</b> / ${quiz ? 3 : meeting.agenda.length}<span>${scene.category}</span></p>
           <h1 id="scene-title" tabindex="-1">${scene.title}</h1>
         </div>
         ${renderRage(meeting.rage)}
@@ -160,8 +162,8 @@ function renderMeeting() {
         <span>已推進 <b>${meeting.resolved}</b> 題</span>
         ${item ? `<span>道具 <b>${item.label}</b>${meeting.itemUsed ? ' · 已用' : item.loadout ? ' · 單挑時生效' : ''}</span>` : ''}
       </div>
-      ${meeting.rulesVersion === 3 && meeting.index === 0 ? `<details class="sam-rules"><summary>山姆的開場規矩</summary><p>${SAM_RULES}</p></details>` : ''}
-      <div class="meeting-grid"${isReport ? ' data-report' : ''}>
+      ${meeting.rulesVersion >= 3 && meeting.index === 0 ? `<details class="sam-rules"><summary>山姆的開場規矩</summary><p>${SAM_RULES}</p></details>` : ''}
+      <div class="meeting-grid"${arrival ? ' data-arrival' : ''}${isReport ? ' data-report' : ''}>
         <div class="debate">
           <div class="speaker-stage"${motion}>
             <img class="scene-portrait" src="${art(portrait)}" alt="">
@@ -193,7 +195,7 @@ function renderEnding() {
         <h1 id="ending-title" tabindex="-1">${ending.title}</h1>
         ${ending.perfect ? '<p class="perfect">會議完美結束</p>' : ''}
         <p class="cover-lead">${ending.text}</p>
-        ${meeting.rulesVersion === 3 ? '<p class="ending-song">走廊那頭，伊森還在唱《修煉愛情》。</p>' : ''}
+        ${meeting.rulesVersion >= 3 ? '<p class="ending-song">走廊那頭，伊森還在唱《修煉愛情》。</p>' : ''}
         <dl class="deltas"><div><dt>議題推進</dt><dd>${meeting.resolved}</dd></div><div><dt>會議信用</dt><dd>${meeting.credibility}</dd></div>${item ? `<div><dt>帶進場的道具</dt><dd>${item.label}</dd></div>` : ''}</dl>
         <button class="primary" data-action="start">再開一場會${arrow}</button>
       </div>
@@ -204,7 +206,7 @@ async function renderBattle() {
   main.innerHTML = `
     <section class="battle-view" aria-labelledby="battle-title">
       <div class="battle-header"><h1 id="battle-title" tabindex="-1">禾多島戰鬥</h1><button class="quiet" data-action="battle-exit">放棄單挑</button></div>
-      ${meeting.rulesVersion === 3 ? '<p class="battle-song">伊森站到擂台旁邊，繼續唱林俊傑的《修煉愛情》。</p>' : ''}
+      ${meeting.rulesVersion >= 3 ? '<p class="battle-song">伊森站到擂台旁邊，繼續唱林俊傑的《修煉愛情》。</p>' : ''}
       <div id="battle-container"><p>前往擂台中…</p></div>
     </section>`;
   const container = document.getElementById('battle-container');

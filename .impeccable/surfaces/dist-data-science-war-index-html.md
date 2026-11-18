@@ -15,7 +15,7 @@ Mode: Experience. A browser game for the 禾多人生 lobby. The Friday story le
 
 **OWN-WORLD** After-hours office cel art, aubergine shadows, hot coral interruption and manila evidence slips. The scene is dark and the paper is bright, like a single light spilling from a projector.
 
-**STORY** An accidental guest becomes the meeting’s moderator, challenger or quiet witness. The others bring their own positions, with Jack hiding his laugh until the first danger signal. Sam starts at zero anger and asks three questions before Joe argues. Ethan sings throughout. Wine intervenes once with cola and chips when anger first reaches 75. The player first takes one of three dealt items and keeps trying to advance the meeting. A confirmed Island duel ends the meeting.
+**STORY** An accidental guest becomes the meeting’s moderator, challenger or quiet witness. The others bring their own positions, with Jack hiding his laugh until the first danger signal. Sam starts at zero anger, asks why the player entered, then asks three questions before Joe argues. Ethan sings throughout. Wine intervenes once with cola and chips when anger first reaches 75. The player first takes one of three dealt items and keeps trying to advance the meeting. A confirmed Island duel ends the meeting.
 
 **FIRST VIEWPORT** A narrow dark lobby bar above a wide illustrated room. A door-side table shows three item choices after the cover. The first debate scene then shows a speaker and transcript on the left and selectable paper evidence on the right. The light becomes more coral as the temper rises.
 

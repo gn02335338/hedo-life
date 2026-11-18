@@ -64,7 +64,7 @@ export function meetingItemEffect(item, scene, rulesVersion = 2) {
     };
   }
   return {
-    text: rulesVersion === 3 ? ({
+    text: rulesVersion >= 3 ? ({
       'search-print': '你拿出計算機，分開核對不同查詢的點擊。鷲把「已證明」改成「先查組成」。',
       stamp: '你把還沒做的事逐項指出來，親手加上負責人和驗收證據。傑克朝白板點了一下頭。',
       manual: '你沿著手冊翻到原始條款。這次大家先確認文字，再改投影上的答案。',

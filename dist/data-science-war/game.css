@@ -370,6 +370,13 @@ svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.7; stroke-linecap: round;
 .ending-song { margin-top: 14px; }
 .battle-song { margin-bottom: 12px; }
 
+.meeting-grid[data-arrival] {
+  grid-template-areas: "stage choices";
+  grid-template-rows: auto;
+}
+.meeting-grid[data-arrival] .reply-grid { grid-template-columns: 1fr; }
+.meeting-grid[data-arrival] .action-choice { min-height: 50px; }
+
 @media (max-width: 880px) {
   .masthead, #game, .credits { width: calc(100% - 36px); }
   .meeting-grid { grid-template-columns: minmax(0, 1.3fr) minmax(260px, 1fr); gap: 12px; }
@@ -394,6 +401,7 @@ svg { width: 1.25rem; height: 1.25rem; stroke-width: 1.7; stroke-linecap: round;
   .rage-face { width: 36px; height: 36px; }
   .meeting-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "stage" "evidence" "choices"; grid-template-rows: auto auto auto; }
   .meeting-grid[data-report] { grid-template-areas: "stage" "choices" "evidence"; }
+  .meeting-grid[data-arrival] { grid-template-areas: "stage" "choices"; grid-template-rows: auto auto; }
   .speaker-stage { min-height: 232px; padding: 10px; }
   .scene-portrait { width: min(60%, 268px); height: 83%; inset: 0 10% auto auto; object-position: center top; }
   .objection { top: 12px; left: 12px; font-size: .85rem; }
